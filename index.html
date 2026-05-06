@@ -670,88 +670,133 @@
 
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-line border border-line rounded-3xl overflow-hidden">
 
-        <button type="button" data-feature="chat" class="ws-card reveal p-8 sm:p-10 group">
-          <div class="flex items-start justify-between gap-3 mb-6">
-            <div class="w-10 h-10 rounded-lg bg-ink/5 flex items-center justify-center">
-              <svg class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" stroke="currentColor" stroke-width="1.8"/></svg>
+        <button type="button" data-feature="chat" class="ws-card reveal group">
+          <span class="ws-edge"></span>
+          <div class="ws-card-top">
+            <div class="ws-icon-frame">
+              <!-- Chat — speech bubble with typing dots -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <path d="M3 6.5C3 5.12 4.12 4 5.5 4h13C19.88 4 21 5.12 21 6.5v8c0 1.38-1.12 2.5-2.5 2.5H8L4 21V6.5z" stroke-linejoin="round"/>
+                <circle cx="8.5" cy="10.5" r="0.9" fill="currentColor" stroke="none"/>
+                <circle cx="12" cy="10.5" r="0.9" fill="currentColor" stroke="none"/>
+                <circle cx="15.5" cy="10.5" r="0.9" fill="currentColor" stroke="none"/>
+              </svg>
             </div>
-            <span class="ws-indicator" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
+            <span class="ws-index">01 / chat</span>
           </div>
-          <h3 class="text-xl font-bold tracking-tight mb-2">Chat</h3>
-          <p class="text-sm text-ink-mid leading-relaxed">Talk to any model. Switch mid-conversation without losing the thread. Voice, files, images — all in one place.</p>
-          <span class="ws-hint">Explore</span>
+          <h3 class="ws-title">Chat</h3>
+          <p class="ws-desc">Talk to any model. Switch mid-conversation without losing the thread. Voice, files, images — all in one place.</p>
+          <div class="ws-foot">
+            <span class="ws-meta">All models · 28 languages</span>
+            <span class="ws-cta">Explore<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
         </button>
 
-        <button type="button" data-feature="projects" class="ws-card reveal p-8 sm:p-10 group">
-          <div class="flex items-start justify-between gap-3 mb-6">
-            <div class="w-10 h-10 rounded-lg bg-yellow-soft flex items-center justify-center">
-              <svg class="w-5 h-5 text-yellow-deep" viewBox="0 0 24 24" fill="none"><path d="M3 7l9-4 9 4v10l-9 4-9-4V7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <button type="button" data-feature="projects" class="ws-card reveal group">
+          <span class="ws-edge"></span>
+          <div class="ws-card-top">
+            <div class="ws-icon-frame">
+              <!-- Projects — 3D wireframe box -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <path d="M3 7.5L12 3l9 4.5v9L12 21l-9-4.5v-9z" stroke-linejoin="round"/>
+                <path d="M3 7.5L12 12l9-4.5M12 12v9" stroke-linejoin="round"/>
+              </svg>
             </div>
-            <span class="ws-indicator" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
+            <span class="ws-index">02 / projects</span>
           </div>
-          <h3 class="text-xl font-bold tracking-tight mb-2">Projects</h3>
-          <p class="text-sm text-ink-mid leading-relaxed">Folders that remember. Drop in your context once and every chat inside picks it up — no copy-paste rituals.</p>
-          <span class="ws-hint">Explore</span>
+          <h3 class="ws-title">Projects</h3>
+          <p class="ws-desc">Folders that remember. Drop in your context once and every chat inside picks it up — no copy-paste rituals.</p>
+          <div class="ws-foot">
+            <span class="ws-meta">Pinned context · auto-recall</span>
+            <span class="ws-cta">Explore<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
         </button>
 
-        <button type="button" data-feature="agents" class="ws-card reveal p-8 sm:p-10 group">
-          <div class="flex items-start justify-between gap-3 mb-6">
-            <div class="w-10 h-10 rounded-lg bg-red/10 flex items-center justify-center">
-              <svg class="w-5 h-5 text-red" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2" stroke="currentColor" stroke-width="1.8"/></svg>
+        <button type="button" data-feature="agents" class="ws-card reveal group">
+          <span class="ws-edge"></span>
+          <div class="ws-card-top">
+            <div class="ws-icon-frame">
+              <!-- Agents — abstract agent / chip head -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <rect x="5" y="6" width="14" height="12" rx="2.5" stroke-linejoin="round"/>
+                <circle cx="9.5" cy="12" r="1" fill="currentColor" stroke="none"/>
+                <circle cx="14.5" cy="12" r="1" fill="currentColor" stroke="none"/>
+                <path d="M12 6V3M9 18v3M15 18v3M3 10h2M3 14h2M19 10h2M19 14h2" stroke-linecap="round"/>
+              </svg>
             </div>
-            <span class="ws-indicator" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
+            <span class="ws-index">03 / agents</span>
           </div>
-          <h3 class="text-xl font-bold tracking-tight mb-2">Agents</h3>
-          <p class="text-sm text-ink-mid leading-relaxed">Assistants that take action. Set them off, watch the live trace, come back to a finished result.</p>
-          <span class="ws-hint">Explore</span>
+          <h3 class="ws-title">Agents</h3>
+          <p class="ws-desc">Assistants that take action. Set them off, watch the live trace, come back to a finished result.</p>
+          <div class="ws-foot">
+            <span class="ws-meta">Replayable · approval gates</span>
+            <span class="ws-cta">Explore<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
         </button>
 
-        <button type="button" data-feature="knowledge" class="ws-card reveal p-8 sm:p-10 group">
-          <div class="flex items-start justify-between gap-3 mb-6">
-            <div class="w-10 h-10 rounded-lg bg-ink/5 flex items-center justify-center">
-              <svg class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4V4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 9h6M9 13h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <button type="button" data-feature="knowledge" class="ws-card reveal group">
+          <span class="ws-edge"></span>
+          <div class="ws-card-top">
+            <div class="ws-icon-frame">
+              <!-- Knowledge — stacked documents with citation lines -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <path d="M8 3h11v15H10a2 2 0 0 1-2-2V3z" stroke-linejoin="round"/>
+                <path d="M5 6v14a1 1 0 0 0 1 1h11" stroke-linejoin="round" stroke-linecap="round"/>
+                <path d="M11 8h5M11 11h5M11 14h3" stroke-linecap="round"/>
+              </svg>
             </div>
-            <span class="ws-indicator" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
+            <span class="ws-index">04 / knowledge</span>
           </div>
-          <h3 class="text-xl font-bold tracking-tight mb-2">Knowledge</h3>
-          <p class="text-sm text-ink-mid leading-relaxed">Bring your team's documents, decks, and notes. Ask anything across them — the answer cites the source.</p>
-          <span class="ws-hint">Explore</span>
+          <h3 class="ws-title">Knowledge</h3>
+          <p class="ws-desc">Bring your team's documents, decks, and notes. Ask anything across them — the answer cites the source.</p>
+          <div class="ws-foot">
+            <span class="ws-meta">Permission-aware · cited</span>
+            <span class="ws-cta">Explore<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
         </button>
 
-        <button type="button" data-feature="spaces" class="ws-card reveal p-8 sm:p-10 group">
-          <div class="flex items-start justify-between gap-3 mb-6">
-            <div class="w-10 h-10 rounded-lg bg-yellow flex items-center justify-center">
-              <svg class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.8"/><circle cx="17" cy="14" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M3 21v-2a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v2" stroke="currentColor" stroke-width="1.8"/></svg>
+        <button type="button" data-feature="spaces" class="ws-card reveal group">
+          <span class="ws-edge"></span>
+          <div class="ws-card-top">
+            <div class="ws-icon-frame">
+              <!-- Spaces — 4 connected workspaces -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <rect x="3" y="3" width="7" height="7" rx="1.4" stroke-linejoin="round"/>
+                <rect x="14" y="3" width="7" height="7" rx="1.4" stroke-linejoin="round"/>
+                <rect x="3" y="14" width="7" height="7" rx="1.4" stroke-linejoin="round"/>
+                <rect x="14" y="14" width="7" height="7" rx="1.4" stroke-linejoin="round"/>
+                <path d="M10 6.5h4M10 17.5h4M6.5 10v4M17.5 10v4" stroke-dasharray="1.5 1.6" stroke-linecap="round"/>
+              </svg>
             </div>
-            <span class="ws-indicator" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
+            <span class="ws-index">05 / spaces</span>
           </div>
-          <h3 class="text-xl font-bold tracking-tight mb-2">Spaces</h3>
-          <p class="text-sm text-ink-mid leading-relaxed">Shared workspaces where teams plan, pair, and review. The same chats and agents, owned together.</p>
-          <span class="ws-hint">Explore</span>
+          <h3 class="ws-title">Spaces</h3>
+          <p class="ws-desc">Shared workspaces where teams plan, pair, and review. The same chats and agents, owned together.</p>
+          <div class="ws-foot">
+            <span class="ws-meta">Real-time · audit trail</span>
+            <span class="ws-cta">Explore<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
         </button>
 
-        <button type="button" data-feature="history" class="ws-card reveal p-8 sm:p-10 group">
-          <div class="flex items-start justify-between gap-3 mb-6">
-            <div class="w-10 h-10 rounded-lg bg-ink flex items-center justify-center">
-              <svg class="w-5 h-5 text-yellow" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <button type="button" data-feature="history" class="ws-card reveal group">
+          <span class="ws-edge"></span>
+          <div class="ws-card-top">
+            <div class="ws-icon-frame">
+              <!-- History — clock with rewind arrow -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <path d="M3 12a9 9 0 1 0 3-6.7" stroke-linecap="round"/>
+                <path d="M3 4v5h5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 7v5l3.5 2" stroke-linecap="round"/>
+              </svg>
             </div>
-            <span class="ws-indicator" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
+            <span class="ws-index">06 / history</span>
           </div>
-          <h3 class="text-xl font-bold tracking-tight mb-2">History</h3>
-          <p class="text-sm text-ink-mid leading-relaxed">Every conversation, every agent run, fully searchable. The thing you said three weeks ago, in one keystroke.</p>
-          <span class="ws-hint">Explore</span>
+          <h3 class="ws-title">History</h3>
+          <p class="ws-desc">Every conversation, every agent run, fully searchable. The thing you said three weeks ago, in one keystroke.</p>
+          <div class="ws-foot">
+            <span class="ws-meta">Cross-search · 3-year window</span>
+            <span class="ws-cta">Explore<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
         </button>
       </div>
     </div>
