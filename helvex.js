@@ -29,6 +29,55 @@
       }, { passive: true });
     })();
 
+    /* Stat count-up — fires when the stat-grid enters the viewport */
+    (function () {
+      var nums = document.querySelectorAll('.stat-num[data-target]');
+      if (!nums.length) return;
+      function format(value, decimals) {
+        return decimals > 0
+          ? value.toFixed(decimals)
+          : Math.round(value).toString();
+      }
+      function settle(n) {
+        var t = parseFloat(n.getAttribute('data-target')) || 0;
+        var d = parseInt(n.getAttribute('data-decimals') || '0', 10);
+        n.textContent = format(t, d);
+      }
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        nums.forEach(settle);
+        return;
+      }
+      function animate(n) {
+        var target   = parseFloat(n.getAttribute('data-target')) || 0;
+        var decimals = parseInt(n.getAttribute('data-decimals') || '0', 10);
+        var duration = 1700;
+        var t0 = performance.now();
+        function tick(t) {
+          var p = Math.min(1, (t - t0) / duration);
+          /* easeOutExpo — fast start, gentle settle */
+          var eased = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+          n.textContent = format(target * eased, decimals);
+          if (p < 1) requestAnimationFrame(tick);
+          else settle(n);
+        }
+        requestAnimationFrame(tick);
+      }
+      if (!('IntersectionObserver' in window)) {
+        nums.forEach(animate);
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry, i) {
+          if (entry.isIntersecting) {
+            /* stagger so the four numbers don't all fire on the same frame */
+            setTimeout(function () { animate(entry.target); }, i * 90);
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.35 });
+      nums.forEach(function (n) { io.observe(n); });
+    })();
+
     /* Research publications filter */
     (function () {
       var filters = document.querySelectorAll('.pub-filter[data-filter]');

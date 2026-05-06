@@ -710,3 +710,49 @@
     ::-webkit-scrollbar-track { background: #FAFAF7; }
     ::-webkit-scrollbar-thumb { background: #D4D4D4; border-radius: 8px; }
     ::-webkit-scrollbar-thumb:hover { background: #A3A3A3; }
+
+    /* ─── STATS section: hover lift + stagger reveal ─── */
+    .stat-tile {
+      position: relative;
+      transition: background-color .3s ease, transform .35s cubic-bezier(.2,.7,.25,1), box-shadow .35s ease;
+    }
+    .stat-tile::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 2px;
+      background: #DC2626;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform .45s cubic-bezier(.2,.7,.25,1);
+    }
+    .stat-tile:hover::after { transform: scaleX(1); }
+    .stat-tile:hover { transform: translateY(-2px); }
+
+    /* Animated number digits get a tabular feel so values don't reflow as they tick */
+    .stat-num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum";
+      display: inline-block;
+      min-width: 1ch;
+    }
+
+    /* When the .stat-grid wrapper becomes visible, stagger each tile's entry */
+    .stat-grid.is-visible .stat-tile {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: stat-tile-in .7s cubic-bezier(.2,.7,.25,1) forwards;
+    }
+    .stat-grid.is-visible .stat-tile:nth-child(1) { animation-delay: .05s; }
+    .stat-grid.is-visible .stat-tile:nth-child(2) { animation-delay: .15s; }
+    .stat-grid.is-visible .stat-tile:nth-child(3) { animation-delay: .25s; }
+    .stat-grid.is-visible .stat-tile:nth-child(4) { animation-delay: .35s; }
+
+    @keyframes stat-tile-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .stat-grid.is-visible .stat-tile { animation: none; opacity: 1; transform: none; }
+      .stat-tile:hover { transform: none; }
+      .stat-tile::after { display: none; }
+    }

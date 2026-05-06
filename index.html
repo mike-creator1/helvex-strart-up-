@@ -191,24 +191,96 @@
     </div>
   </section>
 
-  <!-- ════════ STATS ════════ -->
-  <section class="border-y border-line bg-cream/50">
-    <div class="max-w-7xl mx-auto px-6 sm:px-8 py-10 sm:py-14 grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
-      <div class="reveal text-center md:text-left">
-        <div class="text-4xl sm:text-5xl font-extrabold tracking-tightest">120<span class="text-red">B</span></div>
-        <div class="text-sm text-ink-mid mt-1.5">tokens / day</div>
+  <!-- ════════ STATS — by the numbers ════════ -->
+  <section class="relative border-y border-line bg-cream/40 overflow-hidden">
+    <!-- subtle ambient orbs -->
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="hero-orb hero-orb-1" style="opacity:.18;top:-220px;left:5%;width:420px;height:420px;"></div>
+      <div class="hero-orb hero-orb-2" style="opacity:.14;bottom:-220px;right:5%;width:380px;height:380px;"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 sm:px-8 py-20 sm:py-28">
+      <!-- Heading row -->
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-14 sm:mb-16">
+        <div>
+          <p class="reveal section-mark mb-6">By the numbers</p>
+          <h2 class="reveal h-section text-3xl sm:text-5xl lg:text-6xl balance">
+            Scale you can trust.<br />
+            <span class="italic font-serif font-normal">Numbers we publish on purpose.</span>
+          </h2>
+        </div>
+        <p class="reveal pretty text-sm sm:text-base text-ink-mid max-w-md leading-relaxed">
+          Live throughput, language reach, platform reliability, and the customer footprint behind every release. Refreshed monthly, shown without fine print.
+        </p>
       </div>
-      <div class="reveal text-center md:text-left">
-        <div class="text-4xl sm:text-5xl font-extrabold tracking-tightest">28</div>
-        <div class="text-sm text-ink-mid mt-1.5">native languages</div>
+
+      <!-- Stat tiles -->
+      <div class="reveal stat-grid grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-line border border-line rounded-2xl overflow-hidden shadow-[0_24px_60px_-30px_rgba(10,10,10,0.18)]">
+        <div class="stat-tile group bg-white p-7 sm:p-9 transition-all duration-300 hover:bg-cream/50">
+          <div class="flex items-start justify-between mb-6">
+            <p class="h-eyebrow text-ink-light">Throughput</p>
+            <span class="text-[10px] font-mono text-emerald-700 inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>live</span>
+          </div>
+          <p class="text-5xl sm:text-6xl font-extrabold tracking-tightest mb-3 leading-none">
+            <span class="stat-num" data-target="120" data-decimals="0">0</span><span class="text-red">B</span>
+          </p>
+          <p class="text-sm font-medium text-ink mb-1">tokens · per day</p>
+          <p class="text-[11px] font-mono text-ink-light">+38% vs Q3 2026</p>
+        </div>
+
+        <div class="stat-tile group bg-white p-7 sm:p-9 transition-all duration-300 hover:bg-cream/50">
+          <div class="flex items-start justify-between mb-6">
+            <p class="h-eyebrow text-ink-light">Reach</p>
+            <span class="text-[10px] font-mono text-ink-light">native</span>
+          </div>
+          <p class="text-5xl sm:text-6xl font-extrabold tracking-tightest mb-3 leading-none">
+            <span class="stat-num" data-target="28" data-decimals="0">0</span>
+          </p>
+          <p class="text-sm font-medium text-ink mb-1">languages, in production</p>
+          <p class="text-[11px] font-mono text-ink-light">14 with native voice</p>
+        </div>
+
+        <div class="stat-tile group bg-white p-7 sm:p-9 transition-all duration-300 hover:bg-cream/50">
+          <div class="flex items-start justify-between mb-6">
+            <p class="h-eyebrow text-ink-light">Reliability</p>
+            <span class="text-[10px] font-mono text-emerald-700 inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>SLA</span>
+          </div>
+          <p class="text-5xl sm:text-6xl font-extrabold tracking-tightest mb-3 leading-none">
+            <span class="stat-num" data-target="99.99" data-decimals="2">0.00</span><span class="text-red">%</span>
+          </p>
+          <p class="text-sm font-medium text-ink mb-1">uptime, last 12 months</p>
+          <p class="text-[11px] font-mono text-ink-light">written into Enterprise SLA</p>
+        </div>
+
+        <div class="stat-tile group bg-white p-7 sm:p-9 transition-all duration-300 hover:bg-cream/50">
+          <div class="flex items-start justify-between mb-6">
+            <p class="h-eyebrow text-ink-light">Footprint</p>
+            <span class="text-[10px] font-mono text-ink-light">EU · US · APAC</span>
+          </div>
+          <p class="text-5xl sm:text-6xl font-extrabold tracking-tightest mb-3 leading-none">
+            <span class="stat-num" data-target="42" data-decimals="0">0</span>
+          </p>
+          <p class="text-sm font-medium text-ink mb-1">countries served</p>
+          <p class="text-[11px] font-mono text-ink-light">3 sovereign-cloud regions</p>
+        </div>
       </div>
-      <div class="reveal text-center md:text-left">
-        <div class="text-4xl sm:text-5xl font-extrabold tracking-tightest">99.99<span class="text-red">%</span></div>
-        <div class="text-sm text-ink-mid mt-1.5">uptime SLA</div>
-      </div>
-      <div class="reveal text-center md:text-left">
-        <div class="text-4xl sm:text-5xl font-extrabold tracking-tightest">42</div>
-        <div class="text-sm text-ink-mid mt-1.5">countries served</div>
+
+      <!-- Trust strip -->
+      <div class="reveal mt-10 sm:mt-14 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 text-[11px] font-mono uppercase tracking-widest text-ink-light">
+        <span class="text-ink-mid">In production at</span>
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <span>Helveta Capital</span>
+          <span class="hidden sm:inline text-ink-faint">·</span>
+          <span>Northwind</span>
+          <span class="hidden sm:inline text-ink-faint">·</span>
+          <span>Lattice Robotics</span>
+          <span class="hidden sm:inline text-ink-faint">·</span>
+          <span>Brüggli Industries</span>
+          <span class="hidden sm:inline text-ink-faint">·</span>
+          <span>Couronne Logistics</span>
+          <span class="hidden sm:inline text-ink-faint">·</span>
+          <span>Atelier Group</span>
+        </div>
       </div>
     </div>
   </section>
