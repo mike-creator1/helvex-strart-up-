@@ -7,6 +7,9 @@
     { "source": "/models", "destination": "/models.html" },
     { "source": "/workspace", "destination": "/workspace.html" },
     { "source": "/research", "destination": "/research.html" },
-    { "source": "/updates", "destination": "/updates.html" }
+    { "source": "/updates", "destination": "/updates.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/resources", "destination": "/resources.html" },
+    { "source": "/legal", "destination": "/legal.html" }
   ]
 }

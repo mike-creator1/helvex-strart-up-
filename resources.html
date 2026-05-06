@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
+  <title>Resources — HelveX</title>
+  <meta name="description" content="Quickstart guides, tutorials, the workflow library, use cases, best practices, the help center, community, and platform status — everything you need to get the most out of HelveX." />
+  <meta property="og:title" content="Resources — HelveX" />
+  <meta property="og:description" content="Quickstart, tutorials, workflows, use cases, best practices, help, community, and platform status." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="HelveX" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#FFFFFF" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 4h4v16H4V4zm12 0h4v16h-4V4zM8 11h8v2H8v-2z' fill='%23DC2626'/%3E%3C/svg%3E" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0A0A0A',
+            'ink-soft': '#171717',
+            'ink-mid': '#525252',
+            'ink-light': '#A3A3A3',
+            'ink-faint': '#D4D4D4',
+            line: '#E5E5E5',
+            'line-soft': '#F0EFEC',
+            cream: '#FAFAF7',
+            beige: '#F4EFE6',
+            'beige-warm': '#EDE5D6',
+            red: '#DC2626',
+            'red-deep': '#991B1B',
+            'red-soft': '#FEE2E2',
+            yellow: '#FCD34D',
+            'yellow-deep': '#F59E0B',
+            'yellow-soft': '#FEF3C7',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <link rel="stylesheet" href="/helvex.css" />
+
+</head>
+<body class="bg-white text-ink antialiased">
+
+  <!-- ════════ ANNOUNCEMENT ════════ -->
+  <div class="bg-ink text-white text-xs sm:text-sm">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8 h-9 flex items-center justify-center gap-3">
+      <span class="hidden sm:inline-flex h-1.5 w-1.5 rounded-full bg-yellow"></span>
+      <span class="text-white/80">New —</span>
+      <span class="font-medium">Prometheus 2.0 launches with agents that run for hours.</span>
+      <a href="/research" class="ml-2 text-yellow hover:text-white transition-colors font-medium inline-flex items-center gap-1 group">
+        Read the post
+        <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- ════════ NAV ════════ -->
+  <header class="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-line">
+    <nav class="max-w-7xl mx-auto px-6 sm:px-8 h-16 sm:h-[68px] flex items-center justify-between gap-4">
+      <div class="flex items-center gap-6 lg:gap-10">
+        <a href="/" class="brand-mark text-xl sm:text-[22px] flex items-center gap-2 flex-shrink-0">
+          <svg class="w-6 h-6 sm:w-[26px] sm:h-[26px]" viewBox="0 0 24 24" fill="none"><path d="M4 4h4v16H4V4zm12 0h4v16h-4V4zM8 11h8v2H8v-2z" fill="currentColor"/></svg>
+          Helve<span class="x">X</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1" id="nav-main">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/models" class="nav-link">Models</a>
+          <a href="/workspace" class="nav-link">Workspace</a>
+          <a href="/research" class="nav-link">Research</a>
+          <a href="/updates" class="nav-link">Updates</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" class="mobile-menu-trigger lg:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <a href="/signup.html" class="hidden sm:inline-flex text-[14px] font-medium text-ink-mid hover:text-ink px-3 py-2 transition-colors">Sign in</a>
+        <a href="/signup.html" class="btn-primary inline-flex items-center gap-1.5 bg-ink hover:bg-ink-soft text-white text-[13px] font-semibold px-4 py-2.5 rounded-full transition-colors btn-shadow">
+          Enter Platform
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ════════ MOBILE MENU DRAWER ════════ -->
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Site navigation">
+    <div class="mobile-menu-backdrop" data-close></div>
+    <div class="mobile-menu-panel">
+      <div class="mobile-menu-header">
+        <a href="/" class="brand-mark text-xl flex items-center gap-2">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M4 4h4v16H4V4zm12 0h4v16h-4V4zM8 11h8v2H8v-2z" fill="currentColor"/></svg>
+          Helve<span class="x">X</span>
+        </a>
+        <button type="button" class="mobile-menu-close" data-close aria-label="Close menu">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <nav class="mobile-menu-nav" aria-label="Main">
+        <a href="/" class="mobile-menu-link">Home</a>
+        <a href="/models" class="mobile-menu-link">Models</a>
+        <a href="/workspace" class="mobile-menu-link">Workspace</a>
+        <a href="/research" class="mobile-menu-link">Research</a>
+        <a href="/updates" class="mobile-menu-link">Updates</a>
+      </nav>
+      <div class="mobile-menu-cta">
+        <a href="/signup.html" class="primary">
+          Enter Platform
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </a>
+        <a href="/signup.html" class="secondary">Sign in</a>
+      </div>
+      <div class="mobile-menu-meta">Built in Switzerland</div>
+    </div>
+  </div>
+
+  <!-- ════════ HERO ════════ -->
+  <section class="relative pt-14 sm:pt-24 pb-12 sm:pb-16 overflow-hidden">
+    <div class="hero-orb hero-orb-2" style="opacity: 0.35;"></div>
+
+    <div class="relative max-w-5xl mx-auto px-6 sm:px-8">
+      <p class="reveal section-mark mb-7">Resources</p>
+      <h1 class="reveal h-display balance text-[44px] sm:text-7xl mb-6">
+        Everything you need<br />
+        <span class="italic font-serif font-normal">to ship with HelveX.</span>
+      </h1>
+      <p class="reveal pretty text-base sm:text-xl text-ink-mid max-w-2xl leading-relaxed mb-10">
+        Quickstart guides, full-length tutorials, ready-made workflows, the model picker, real customer stories, best practices, help, community, and live platform status — all in one place.
+      </p>
+
+      <!-- Section nav chips -->
+      <div class="reveal flex flex-wrap items-center gap-2 sm:gap-2.5 text-[12px]">
+        <a href="#quickstart" class="bg-ink text-white rounded-full px-3.5 py-1.5 font-semibold">Quickstart</a>
+        <a href="#tutorials" class="bg-white border border-line text-ink-soft hover:border-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Tutorials</a>
+        <a href="#workflows" class="bg-white border border-line text-ink-soft hover:border-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Workflows</a>
+        <a href="/models#picker" class="bg-white border border-line text-ink-soft hover:border-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Model picker</a>
+        <a href="#use-cases" class="bg-white border border-line text-ink-soft hover:border-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Use cases</a>
+        <a href="#best-practices" class="bg-white border border-line text-ink-soft hover:border-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Best practices</a>
+        <a href="/#stories" class="bg-white border border-line text-ink-soft hover:border-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Customer stories</a>
+        <a href="#help" class="bg-white border border-line text-ink-soft hover:border-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Help</a>
+        <a href="#community" class="bg-white border border-line text-ink-soft hover:border-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Community</a>
+        <a href="#status" class="bg-white border border-line text-ink-soft hover:border-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Status</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ QUICKSTART ════════ -->
+  <section id="quickstart" class="border-y border-line bg-cream/40 py-20 sm:py-28 scroll-mt-24">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-12 sm:mb-14">
+        <p class="section-mark mb-5">Quickstart</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">From sign-up to shipped, in five minutes.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Five steps cover the work most teams do in the first week. Each one takes a minute or two. The full path is documented inside the workspace once you sign in.
+        </p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        <div class="reveal rounded-2xl border border-line bg-white p-6">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 01</p>
+          <h3 class="text-base font-bold tracking-tight mb-2">Create a workspace</h3>
+          <p class="text-sm text-ink-mid leading-relaxed">Pick a region, invite teammates, choose your default model.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-6">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 02</p>
+          <h3 class="text-base font-bold tracking-tight mb-2">Connect knowledge</h3>
+          <p class="text-sm text-ink-mid leading-relaxed">Drive, Notion, SharePoint, Slack — or upload directly. Permissions follow the source.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-6">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 03</p>
+          <h3 class="text-base font-bold tracking-tight mb-2">Open a project</h3>
+          <p class="text-sm text-ink-mid leading-relaxed">Pin the documents, sources, and prompts every conversation should start from.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-6">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 04</p>
+          <h3 class="text-base font-bold tracking-tight mb-2">Try the three models</h3>
+          <p class="text-sm text-ink-mid leading-relaxed">Ask the same question to Ether, Nexus, and Prometheus. Notice the difference.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-6">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 05</p>
+          <h3 class="text-base font-bold tracking-tight mb-2">Run an agent</h3>
+          <p class="text-sm text-ink-mid leading-relaxed">Pick a workflow from the library, watch it run, replay any step.</p>
+        </div>
+      </div>
+      <div class="reveal mt-10">
+        <a href="/signup.html" class="btn-primary inline-flex items-center gap-2 bg-ink hover:bg-ink-soft text-white text-sm font-semibold px-6 py-3.5 rounded-full transition-colors btn-shadow">
+          Start the quickstart
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ TUTORIALS ════════ -->
+  <section id="tutorials" class="py-20 sm:py-28 scroll-mt-24">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-12 sm:mb-14">
+        <p class="section-mark mb-5">Tutorials</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Long-form guides, with screenshots.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Each tutorial walks through one real task end to end — what you're trying to do, which model handles it, the prompt or workflow we used, and what to do when it doesn't work the first time.
+        </p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        <a href="/signup.html" class="reveal card group block rounded-2xl border border-line bg-white overflow-hidden hover:border-ink/20 transition-all">
+          <div class="aspect-[16/9] bg-gradient-to-br from-yellow via-yellow-soft to-cream relative">
+            <div class="absolute inset-0 grid-bg-light opacity-30"></div>
+            <div class="absolute bottom-4 left-4 text-[10px] font-mono uppercase tracking-widest text-ink/60">Tutorial · 18 min</div>
+          </div>
+          <div class="p-6">
+            <p class="h-eyebrow text-ink-light mb-3">Ether · drafting</p>
+            <h3 class="text-lg font-bold tracking-tight mb-2 group-hover:text-red transition-colors">Build a customer-support reply assistant in one afternoon</h3>
+            <p class="text-sm text-ink-mid leading-relaxed">From a fresh workspace to a live agent answering tickets, with hand-off rules that keep humans on the hard ones.</p>
+          </div>
+        </a>
+        <a href="/signup.html" class="reveal card group block rounded-2xl border border-line bg-white overflow-hidden hover:border-ink/20 transition-all">
+          <div class="aspect-[16/9] bg-gradient-to-br from-red-soft via-red/10 to-cream relative">
+            <div class="absolute inset-0 grid-bg-light opacity-30"></div>
+            <div class="absolute bottom-4 left-4 text-[10px] font-mono uppercase tracking-widest text-ink/60">Tutorial · 24 min</div>
+          </div>
+          <div class="p-6">
+            <p class="h-eyebrow text-ink-light mb-3">Nexus · research</p>
+            <h3 class="text-lg font-bold tracking-tight mb-2 group-hover:text-red transition-colors">Investment briefs that cite their own sources</h3>
+            <p class="text-sm text-ink-mid leading-relaxed">A reproducible workflow: ingest filings and transcripts, return a position, link every claim to the line that supports it.</p>
+          </div>
+        </a>
+        <a href="/signup.html" class="reveal card group block rounded-2xl border border-line bg-white overflow-hidden hover:border-ink/20 transition-all">
+          <div class="aspect-[16/9] bg-ink relative">
+            <div class="absolute inset-0 grid-bg-dark opacity-60"></div>
+            <div class="absolute bottom-4 left-4 text-[10px] font-mono uppercase tracking-widest text-white/40">Tutorial · 32 min</div>
+          </div>
+          <div class="p-6">
+            <p class="h-eyebrow text-ink-light mb-3">Prometheus · agents</p>
+            <h3 class="text-lg font-bold tracking-tight mb-2 group-hover:text-red transition-colors">An overnight research agent you can replay in the morning</h3>
+            <p class="text-sm text-ink-mid leading-relaxed">A multi-hour run that branches, retries, and leaves a trace your team can audit at standup.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ WORKFLOWS ════════ -->
+  <section id="workflows" class="border-y border-line bg-cream/40 py-20 sm:py-28 scroll-mt-24">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-12 sm:mb-14">
+        <p class="section-mark mb-5">Workflow library</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Ready-made workflows you can clone.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          A growing library of pre-built workflows for the tasks teams ask us about most. Clone, edit the prompt, point at your sources, run.
+        </p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <a href="/signup.html" class="reveal card group block rounded-xl border border-line bg-white p-5 hover:border-ink/20 transition-all">
+          <p class="h-eyebrow text-ink-light mb-2">Sales</p>
+          <h3 class="text-base font-bold tracking-tight mb-1.5 group-hover:text-red transition-colors">Account research brief</h3>
+          <p class="text-sm text-ink-mid leading-snug">Public filings, recent news, signal extraction.</p>
+        </a>
+        <a href="/signup.html" class="reveal card group block rounded-xl border border-line bg-white p-5 hover:border-ink/20 transition-all">
+          <p class="h-eyebrow text-ink-light mb-2">Operations</p>
+          <h3 class="text-base font-bold tracking-tight mb-1.5 group-hover:text-red transition-colors">Vendor RFP triage</h3>
+          <p class="text-sm text-ink-mid leading-snug">Compare submissions against your scoring rubric.</p>
+        </a>
+        <a href="/signup.html" class="reveal card group block rounded-xl border border-line bg-white p-5 hover:border-ink/20 transition-all">
+          <p class="h-eyebrow text-ink-light mb-2">Engineering</p>
+          <h3 class="text-base font-bold tracking-tight mb-1.5 group-hover:text-red transition-colors">Repo-wide refactor agent</h3>
+          <p class="text-sm text-ink-mid leading-snug">Reads the tree, runs tests, proposes a patch.</p>
+        </a>
+        <a href="/signup.html" class="reveal card group block rounded-xl border border-line bg-white p-5 hover:border-ink/20 transition-all">
+          <p class="h-eyebrow text-ink-light mb-2">Legal</p>
+          <h3 class="text-base font-bold tracking-tight mb-1.5 group-hover:text-red transition-colors">Contract review pass</h3>
+          <p class="text-sm text-ink-mid leading-snug">Diff against the playbook, flag deviations, suggest redlines.</p>
+        </a>
+        <a href="/signup.html" class="reveal card group block rounded-xl border border-line bg-white p-5 hover:border-ink/20 transition-all">
+          <p class="h-eyebrow text-ink-light mb-2">Marketing</p>
+          <h3 class="text-base font-bold tracking-tight mb-1.5 group-hover:text-red transition-colors">Long-form draft + cite</h3>
+          <p class="text-sm text-ink-mid leading-snug">Brief in, draft out, every claim sourced.</p>
+        </a>
+        <a href="/signup.html" class="reveal card group block rounded-xl border border-line bg-white p-5 hover:border-ink/20 transition-all">
+          <p class="h-eyebrow text-ink-light mb-2">Customer success</p>
+          <h3 class="text-base font-bold tracking-tight mb-1.5 group-hover:text-red transition-colors">Renewal-risk synthesis</h3>
+          <p class="text-sm text-ink-mid leading-snug">Tickets, calls, NPS — into one weekly digest.</p>
+        </a>
+        <a href="/signup.html" class="reveal card group block rounded-xl border border-line bg-white p-5 hover:border-ink/20 transition-all">
+          <p class="h-eyebrow text-ink-light mb-2">Finance</p>
+          <h3 class="text-base font-bold tracking-tight mb-1.5 group-hover:text-red transition-colors">Earnings-call summary</h3>
+          <p class="text-sm text-ink-mid leading-snug">Quotes, numbers, sentiment, follow-up questions.</p>
+        </a>
+        <a href="/signup.html" class="reveal card group block rounded-xl border border-line bg-white p-5 hover:border-ink/20 transition-all">
+          <p class="h-eyebrow text-ink-light mb-2">HR</p>
+          <h3 class="text-base font-bold tracking-tight mb-1.5 group-hover:text-red transition-colors">Resume → role match</h3>
+          <p class="text-sm text-ink-mid leading-snug">Compare against the JD, surface gaps, draft outreach.</p>
+        </a>
+        <a href="/signup.html" class="reveal card group block rounded-xl border border-line bg-white p-5 hover:border-ink/20 transition-all">
+          <p class="h-eyebrow text-ink-light mb-2">Research</p>
+          <h3 class="text-base font-bold tracking-tight mb-1.5 group-hover:text-red transition-colors">Literature review agent</h3>
+          <p class="text-sm text-ink-mid leading-snug">Survey the field, surface consensus, flag gaps.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ USE CASES ════════ -->
+  <section id="use-cases" class="py-20 sm:py-28 scroll-mt-24">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-12 sm:mb-14">
+        <p class="section-mark mb-5">Use cases</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">What teams are using it for.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Six categories that account for the majority of HelveX traffic today. Most customers run several at once across different Spaces.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        <div class="reveal rounded-2xl border border-line bg-white p-6 sm:p-7">
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Knowledge work</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">Briefs, memos, reports, synthesis across long context. Teams use Nexus when the answer needs to defend itself with citations.</p>
+          <p class="text-xs font-mono text-ink-light">Best model: Nexus</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-6 sm:p-7">
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Customer support</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">First-line replies, ticket triage, hand-off to humans on the hard ones. Ether is fast enough that the AI feels invisible.</p>
+          <p class="text-xs font-mono text-ink-light">Best model: Ether</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-6 sm:p-7">
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Operations &amp; back-office</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">Multi-step jobs across the documents and tools your team already uses, with approval gates on the irreversible.</p>
+          <p class="text-xs font-mono text-ink-light">Best model: Prometheus</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-6 sm:p-7">
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Research &amp; analysis</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">Investment briefs, scientific review, regulatory walk-through. Long context with traceable citations.</p>
+          <p class="text-xs font-mono text-ink-light">Best model: Nexus</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-6 sm:p-7">
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Engineering &amp; code</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">Repo-wide refactors, code review passes, test generation. Prometheus reads, edits, runs, and proposes.</p>
+          <p class="text-xs font-mono text-ink-light">Best model: Prometheus</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-6 sm:p-7">
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Voice &amp; translation</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">Live translation in 14 languages, dictation, captioning. Ether's streaming-first audio path keeps the lag invisible.</p>
+          <p class="text-xs font-mono text-ink-light">Best model: Ether</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ BEST PRACTICES ════════ -->
+  <section id="best-practices" class="border-y border-line bg-cream/40 py-20 sm:py-28 scroll-mt-24">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-12 sm:mb-14">
+        <p class="section-mark mb-5">Best practices</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">What we have learned from teams that ship.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          The patterns that show up in every team that gets real value out of HelveX. Most are about workflow, not prompting.
+        </p>
+      </div>
+
+      <ol class="space-y-px border-y border-line">
+        <li class="reveal flex gap-5 py-6">
+          <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light pt-1 flex-shrink-0 w-12">01</span>
+          <div>
+            <h3 class="text-base font-bold text-ink mb-1.5">Pick the model on purpose.</h3>
+            <p class="text-sm text-ink-mid leading-relaxed">The router is good but it isn't psychic. If a task is latency-bound, depth-bound, or action-bound, pin it. The <a href="/models#picker" class="underline hover:text-ink transition-colors">model picker</a> takes 30 seconds to read.</p>
+          </div>
+        </li>
+        <li class="reveal flex gap-5 py-6 border-t border-line-soft">
+          <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light pt-1 flex-shrink-0 w-12">02</span>
+          <div>
+            <h3 class="text-base font-bold text-ink mb-1.5">Use Projects for repeated work.</h3>
+            <p class="text-sm text-ink-mid leading-relaxed">Pin the documents and prompts every conversation should start from. The model has the context, the team has a shared starting point, and you stop re-pasting the same brief.</p>
+          </div>
+        </li>
+        <li class="reveal flex gap-5 py-6 border-t border-line-soft">
+          <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light pt-1 flex-shrink-0 w-12">03</span>
+          <div>
+            <h3 class="text-base font-bold text-ink mb-1.5">Treat citations as the answer.</h3>
+            <p class="text-sm text-ink-mid leading-relaxed">For anything you will act on, click the citation. Nexus links every claim back to the line. If a claim is uncited, raise the bar before you trust it.</p>
+          </div>
+        </li>
+        <li class="reveal flex gap-5 py-6 border-t border-line-soft">
+          <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light pt-1 flex-shrink-0 w-12">04</span>
+          <div>
+            <h3 class="text-base font-bold text-ink mb-1.5">Put humans on irreversible steps.</h3>
+            <p class="text-sm text-ink-mid leading-relaxed">Approval gates exist for sends, file writes, payments, and external tool calls. Default them on for shared Spaces, opt-out only when the cost of a wrong action is genuinely small.</p>
+          </div>
+        </li>
+        <li class="reveal flex gap-5 py-6 border-t border-line-soft">
+          <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light pt-1 flex-shrink-0 w-12">05</span>
+          <div>
+            <h3 class="text-base font-bold text-ink mb-1.5">Replay before you blame.</h3>
+            <p class="text-sm text-ink-mid leading-relaxed">When an agent run goes wrong, the trace tells you where. Don't re-prompt — replay from the step that broke and edit the plan. You will fix the same bug in half the time.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ════════ HELP CENTER ════════ -->
+  <section id="help" class="py-20 sm:py-28 scroll-mt-24">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 grid lg:grid-cols-12 gap-10 lg:gap-16">
+      <div class="lg:col-span-5">
+        <p class="reveal section-mark mb-5">Help center</p>
+        <h2 class="reveal h-section text-3xl sm:text-5xl mb-5 balance">When something doesn't behave.</h2>
+        <p class="reveal pretty text-base sm:text-lg text-ink-mid leading-relaxed mb-8">
+          The fastest fix for nine out of ten issues is in the docs inside the workspace. For the tenth, the support team replies in under four hours during business days.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a href="/signup.html" class="btn-primary inline-flex items-center justify-center gap-2 bg-ink hover:bg-ink-soft text-white text-sm font-semibold px-6 py-3.5 rounded-full transition-colors btn-shadow">
+            Open in-app docs
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg>
+          </a>
+          <a href="mailto:support@helvex.ai?subject=HelveX%20-%20Support%20request" class="inline-flex items-center justify-center gap-2 border border-line hover:border-ink text-ink text-sm font-semibold px-6 py-3.5 rounded-full transition-colors">
+            Email support
+          </a>
+        </div>
+      </div>
+      <div class="lg:col-span-7 grid sm:grid-cols-2 gap-4">
+        <div class="reveal rounded-2xl border border-line bg-white p-5">
+          <h3 class="text-sm font-bold text-ink mb-1.5">Login &amp; SSO</h3>
+          <p class="text-xs text-ink-mid leading-relaxed">SAML, OIDC, IdP-initiated, deprovisioning.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-5">
+          <h3 class="text-sm font-bold text-ink mb-1.5">Billing &amp; plans</h3>
+          <p class="text-xs text-ink-mid leading-relaxed">Seats, usage, invoices, plan changes.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-5">
+          <h3 class="text-sm font-bold text-ink mb-1.5">Knowledge sources</h3>
+          <p class="text-xs text-ink-mid leading-relaxed">Connectors, sync errors, permissions.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-5">
+          <h3 class="text-sm font-bold text-ink mb-1.5">Agent runs</h3>
+          <p class="text-xs text-ink-mid leading-relaxed">Pause, resume, replay, debug a failed step.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-5">
+          <h3 class="text-sm font-bold text-ink mb-1.5">Data &amp; export</h3>
+          <p class="text-xs text-ink-mid leading-relaxed">Conversations, projects, traces, retention.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-5">
+          <h3 class="text-sm font-bold text-ink mb-1.5">Security &amp; residency</h3>
+          <p class="text-xs text-ink-mid leading-relaxed">Region pinning, audit logs, DPA.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ COMMUNITY ════════ -->
+  <section id="community" class="border-y border-line bg-cream/40 py-20 sm:py-28 scroll-mt-24">
+    <div class="max-w-5xl mx-auto px-6 sm:px-8 text-center">
+      <p class="reveal section-mark justify-center mb-5">Community</p>
+      <h2 class="reveal h-section text-3xl sm:text-5xl mb-5 balance">Builders who get the most out of HelveX.</h2>
+      <p class="reveal pretty text-base sm:text-lg text-ink-mid leading-relaxed max-w-2xl mx-auto mb-10">
+        A small, technical, off-platform community. Workflow swaps, eval results, prompt patterns, the occasional rant about tokenisation. Slack-based, light on noise, moderated by the team.
+      </p>
+      <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="mailto:community@helvex.ai?subject=HelveX%20-%20Community%20invite%20request" class="btn-primary inline-flex items-center gap-2 bg-ink hover:bg-ink-soft text-white text-sm font-semibold px-6 py-3.5 rounded-full transition-colors btn-shadow">
+          Request an invite
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg>
+        </a>
+        <a href="/updates" class="inline-flex items-center gap-2 border border-line hover:border-ink text-ink text-sm font-semibold px-6 py-3.5 rounded-full transition-colors">See recent updates</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ STATUS ════════ -->
+  <section id="status" class="py-20 sm:py-28 scroll-mt-24">
+    <div class="max-w-5xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-10">
+        <p class="section-mark mb-5">Status</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Live platform health.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Real-time uptime for every public surface, with a 90-day rolling history. Subscribe to status updates by email or RSS.
+        </p>
+      </div>
+
+      <div class="reveal rounded-2xl border border-line bg-white overflow-hidden">
+        <div class="px-6 py-5 bg-cream/60 border-b border-line flex items-center justify-between gap-4 flex-wrap">
+          <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="font-semibold text-ink">All systems operational</span>
+          </div>
+          <span class="text-xs font-mono text-ink-light">Last checked · 2 min ago</span>
+        </div>
+        <div class="divide-y divide-line-soft">
+          <div class="flex items-center justify-between px-6 py-4 gap-4">
+            <span class="text-sm text-ink">Ether · inference</span>
+            <span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.99% (90 d)</span>
+          </div>
+          <div class="flex items-center justify-between px-6 py-4 gap-4">
+            <span class="text-sm text-ink">Nexus · inference</span>
+            <span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.98% (90 d)</span>
+          </div>
+          <div class="flex items-center justify-between px-6 py-4 gap-4">
+            <span class="text-sm text-ink">Prometheus · agent runtime</span>
+            <span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.96% (90 d)</span>
+          </div>
+          <div class="flex items-center justify-between px-6 py-4 gap-4">
+            <span class="text-sm text-ink">Workspace &amp; web app</span>
+            <span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.99% (90 d)</span>
+          </div>
+          <div class="flex items-center justify-between px-6 py-4 gap-4">
+            <span class="text-sm text-ink">Knowledge connectors</span>
+            <span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.95% (90 d)</span>
+          </div>
+          <div class="flex items-center justify-between px-6 py-4 gap-4">
+            <span class="text-sm text-ink">Auth &amp; SSO</span>
+            <span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.99% (90 d)</span>
+          </div>
+        </div>
+        <div class="px-6 py-4 border-t border-line bg-cream/40 flex flex-wrap gap-4 justify-between text-xs text-ink-mid font-mono">
+          <a href="mailto:status@helvex.ai?subject=HelveX%20-%20Status%20subscription" class="hover:text-ink underline">Subscribe to status updates</a>
+          <a href="/updates" class="hover:text-ink underline">View 90-day incident history</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ FOOTER ════════ -->
+  <footer class="pt-16 sm:pt-20 pb-10 bg-white border-t border-line">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8">
+      <div class="grid lg:grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-12 sm:gap-8 mb-14 sm:mb-16">
+        <div>
+          <a href="/" class="brand-mark text-2xl flex items-center gap-2 mb-4">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M4 4h4v16H4V4zm12 0h4v16h-4V4zM8 11h8v2H8v-2z" fill="currentColor"/></svg>
+            Helve<span class="x">X</span>
+          </a>
+          <p class="text-sm text-ink-mid leading-relaxed max-w-sm mb-6">
+            Ether, Nexus, Prometheus — and the workspace around them. Designed and built in Switzerland.
+          </p>
+          <form class="flex gap-2 max-w-sm" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Subscribed ✓';">
+            <input type="email" placeholder="you@company.com" class="flex-1 border border-line rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-ink/40 transition-colors" />
+            <button type="submit" class="bg-ink hover:bg-ink-soft text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap">Subscribe</button>
+          </form>
+          <p class="text-[11px] text-ink-light mt-2">Monthly digest. No spam. Unsubscribe anytime.</p>
+        </div>
+        <div>
+          <p class="h-eyebrow text-ink-light mb-4">Product</p>
+          <ul class="space-y-2.5 text-sm text-ink-soft">
+            <li><a href="/models" class="hover:text-red transition-colors">Models</a></li>
+            <li><a href="/models#ether" class="hover:text-red transition-colors">Ether</a></li>
+            <li><a href="/models#nexus" class="hover:text-red transition-colors">Nexus</a></li>
+            <li><a href="/models#prometheus" class="hover:text-red transition-colors">Prometheus</a></li>
+            <li><a href="/workspace" class="hover:text-red transition-colors">Workspace</a></li>
+            <li><a href="/updates" class="hover:text-red transition-colors">Updates</a></li>
+            <li><a href="/#trust" class="hover:text-red transition-colors">Trust</a></li>
+            <li><a href="/signup.html" class="hover:text-red transition-colors">Enter Platform</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="h-eyebrow text-ink-light mb-4">Company</p>
+          <ul class="space-y-2.5 text-sm text-ink-soft">
+            <li><a href="/about" class="hover:text-red transition-colors">About</a></li>
+            <li><a href="/research" class="hover:text-red transition-colors">Research</a></li>
+            <li><a href="/about#careers" class="hover:text-red transition-colors">Careers</a></li>
+            <li><a href="/about#press" class="hover:text-red transition-colors">Press</a></li>
+            <li><a href="/about#brand" class="hover:text-red transition-colors">Brand</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="h-eyebrow text-ink-light mb-4">Resources</p>
+          <ul class="space-y-2.5 text-sm text-ink-soft">
+            <li><a href="/resources#quickstart" class="hover:text-red transition-colors">Quickstart</a></li>
+            <li><a href="/resources#tutorials" class="hover:text-red transition-colors">Tutorials</a></li>
+            <li><a href="/resources#workflows" class="hover:text-red transition-colors">Workflow library</a></li>
+            <li><a href="/models#picker" class="hover:text-red transition-colors">Model picker</a></li>
+            <li><a href="/resources#use-cases" class="hover:text-red transition-colors">Use cases</a></li>
+            <li><a href="/resources#best-practices" class="hover:text-red transition-colors">Best practices</a></li>
+            <li><a href="/#stories" class="hover:text-red transition-colors">Customer stories</a></li>
+            <li><a href="/resources#help" class="hover:text-red transition-colors">Help center</a></li>
+            <li><a href="/resources#community" class="hover:text-red transition-colors">Community</a></li>
+            <li><a href="/resources#status" class="hover:text-red transition-colors">Status</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="h-eyebrow text-ink-light mb-4">Legal</p>
+          <ul class="space-y-2.5 text-sm text-ink-soft">
+            <li><a href="/#trust" class="hover:text-red transition-colors">Trust center</a></li>
+            <li><a href="/legal#privacy" class="hover:text-red transition-colors">Privacy</a></li>
+            <li><a href="/legal#terms" class="hover:text-red transition-colors">Terms</a></li>
+            <li><a href="/legal#security" class="hover:text-red transition-colors">Security</a></li>
+            <li><a href="/legal#dpa" class="hover:text-red transition-colors">DPA</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-line pt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-ink-mid">
+        <p>© 2026 HelveX AG · All rights reserved.</p>
+        <div class="flex items-center gap-5">
+          <a href="https://x.com/helvex" target="_blank" rel="noopener" aria-label="X / Twitter" class="text-ink-mid hover:text-ink transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/company/helvex" target="_blank" rel="noopener" aria-label="LinkedIn" class="text-ink-mid hover:text-ink transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0H5a5 5 0 00-5 5v14a5 5 0 005 5h14a5 5 0 005-5V5a5 5 0 00-5-5zM8 19H5V8h3v11zm-1.5-12.3a1.7 1.7 0 110-3.4 1.7 1.7 0 010 3.4zM20 19h-3v-5.6c0-1.4-.5-2.4-1.7-2.4-1 0-1.6.7-1.8 1.3-.1.2-.1.5-.1.8V19h-3V8h3v1.3c.4-.6 1.1-1.5 2.7-1.5 2 0 3.5 1.3 3.5 4.1V19z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/helvex.js" defer></script>
+</body>
+</html>
