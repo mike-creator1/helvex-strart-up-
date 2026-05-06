@@ -1907,75 +1907,226 @@
     </div>
   </section>
 
-  <!-- ════════ STORIES ════════ -->
-  <section id="stories" class="relative py-24 sm:py-36 scroll-mt-24 tech-wash-soft overflow-hidden">
+  <!-- ════════ ECOSYSTEM — built to plug in ════════ -->
+  <section id="ecosystem" class="relative py-24 sm:py-36 scroll-mt-24 tech-wash-soft overflow-hidden">
     <div class="tech-aurora"><div class="blob"></div></div>
     <div class="relative max-w-7xl mx-auto px-6 sm:px-8">
-      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-end mb-14 sm:mb-20">
-        <div>
-          <p class="reveal tech-eyebrow mb-6">In production · today</p>
-          <h2 class="reveal h-section balance text-5xl sm:text-7xl">Outcomes,<br /><span class="italic font-serif font-normal tech-gradient-text">not demos.</span></h2>
+
+      <!-- HEADER ROW -->
+      <div class="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 sm:mb-20">
+        <div class="lg:col-span-7">
+          <div class="reveal inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/70 backdrop-blur border border-line mb-7">
+            <span class="w-1.5 h-1.5 rounded-full bg-red"></span>
+            <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-mid font-bold">Ecosystem · 60+ integrations</span>
+          </div>
+          <h2 class="reveal h-section balance text-5xl sm:text-7xl leading-[1.02]">Plugs into<br /><span class="italic font-serif font-normal tech-gradient-text">what you already run.</span></h2>
         </div>
-        <div>
-          <p class="reveal pretty text-base sm:text-xl text-ink-mid leading-relaxed">
-            What teams ship after they switch. Numbers from the field, not from our marketing department.
+        <div class="lg:col-span-5">
+          <p class="reveal pretty text-base sm:text-lg text-ink-mid leading-relaxed mb-6">
+            HelveX connects to the tools your team already lives in — knowledge sources, identity providers, and the rest of your stack. No middleware to maintain, no scripts to write.
           </p>
+          <div class="reveal flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] font-mono uppercase tracking-widest text-ink-light">
+            <span><span class="text-ink font-bold">60+</span> connectors</span>
+            <span class="text-line">·</span>
+            <span><span class="text-ink font-bold">MCP</span> compatible</span>
+            <span class="text-line">·</span>
+            <span><span class="text-ink font-bold">SAML</span> · OIDC SSO</span>
+          </div>
         </div>
       </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      <!-- HUB-AND-SPOKE VISUAL — HelveX in the center, integrations radiating out -->
+      <div class="reveal mb-14 sm:mb-20">
+        <div class="relative rounded-3xl border border-line bg-white/85 backdrop-blur-xl shadow-[0_28px_70px_-30px_rgba(10,10,10,0.18)] overflow-hidden">
+          <div class="absolute inset-0 pointer-events-none" style="background-image:radial-gradient(rgba(10,10,10,0.05) 1px, transparent 1px); background-size: 22px 22px; mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%); -webkit-mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);"></div>
+          <div class="absolute top-0 left-[14%] right-[14%] h-px bg-gradient-to-r from-transparent via-ink/15 to-transparent"></div>
 
-        <a href="#" class="reveal card group block rounded-3xl border border-line overflow-hidden hover:border-ink/20 bg-white">
-          <div class="aspect-[16/10] relative bg-gradient-to-br from-ink to-ink-soft overflow-hidden">
-            <div class="absolute inset-0 grid-bg-dark"></div>
-            <div class="absolute inset-0 flex items-end p-6 sm:p-8">
-              <div>
-                <p class="text-yellow font-mono text-[10px] tracking-widest uppercase mb-3">Case study · Sigma</p>
-                <p class="text-white text-3xl sm:text-4xl font-bold tracking-tightest leading-tight">4.8×<br /><span class="text-white/60 font-normal text-base">faster review cycles</span></p>
+          <div class="relative px-6 sm:px-10 py-12 sm:py-16">
+            <!-- Top label -->
+            <div class="flex items-center justify-between mb-10 flex-wrap gap-3">
+              <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-light font-bold">Live integration mesh · synced every 60 s</p>
+              <span class="inline-flex items-center gap-2 text-[10px] font-mono text-emerald-700"><span class="tech-live-dot"></span>all connectors operational</span>
+            </div>
+
+            <!-- 3-column orbit layout: spokes left, HelveX center, spokes right -->
+            <div class="grid lg:grid-cols-[1fr_auto_1fr] gap-8 lg:gap-12 items-center">
+
+              <!-- LEFT spokes -->
+              <div class="space-y-3">
+                <div class="ecosystem-row group" style="--accent:#FCD34D;">
+                  <span class="ecosystem-spoke"></span>
+                  <div class="ecosystem-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linejoin="round"/><path d="M14 2v6h6"/></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="ecosystem-name">Google Drive</p>
+                    <p class="ecosystem-desc">Knowledge · permission-aware</p>
+                  </div>
+                </div>
+                <div class="ecosystem-row group" style="--accent:#A78BFA;">
+                  <span class="ecosystem-spoke"></span>
+                  <div class="ecosystem-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="3" stroke-linejoin="round"/><path d="M9 7h6M9 12h6M9 17h4" stroke-linecap="round"/></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="ecosystem-name">Notion</p>
+                    <p class="ecosystem-desc">Knowledge · live re-fetch</p>
+                  </div>
+                </div>
+                <div class="ecosystem-row group" style="--accent:#0EA5E9;">
+                  <span class="ecosystem-spoke"></span>
+                  <div class="ecosystem-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="6" width="18" height="13" rx="2" stroke-linejoin="round"/><path d="M3 10h18M9 6V3.5M15 6V3.5" stroke-linecap="round"/></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="ecosystem-name">SharePoint</p>
+                    <p class="ecosystem-desc">Knowledge · enterprise tier</p>
+                  </div>
+                </div>
+                <div class="ecosystem-row group" style="--accent:#22C55E;">
+                  <span class="ecosystem-spoke"></span>
+                  <div class="ecosystem-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 4v8l5 3m4-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="ecosystem-name">Slack</p>
+                    <p class="ecosystem-desc">Channel-as-source</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CENTER · HelveX hub -->
+              <div class="relative flex flex-col items-center justify-center py-10 lg:py-0">
+                <!-- ambient glow -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div class="w-72 h-72 rounded-full bg-gradient-to-br from-red/15 via-yellow/10 to-transparent blur-3xl"></div>
+                </div>
+                <!-- The hub -->
+                <div class="relative w-32 h-32 sm:w-36 sm:h-36 rounded-3xl bg-gradient-to-br from-ink-soft via-ink to-ink-soft border border-white/15 flex items-center justify-center shadow-2xl shadow-ink/40">
+                  <div class="absolute -inset-2 rounded-3xl bg-gradient-to-br from-red/20 via-transparent to-yellow/15 blur-xl opacity-70"></div>
+                  <div class="relative text-center">
+                    <p class="font-mono text-[9px] uppercase tracking-[0.2em] text-yellow font-bold mb-1">helvex.ai</p>
+                    <p class="text-white text-xl font-bold tracking-tight">Hub</p>
+                  </div>
+                </div>
+                <p class="mt-5 text-[10px] font-mono uppercase tracking-[0.22em] text-ink-light font-bold">platform core</p>
+                <p class="mt-1 text-[10px] font-mono text-ink-light">eu-central-2 · 99.99%</p>
+              </div>
+
+              <!-- RIGHT spokes -->
+              <div class="space-y-3">
+                <div class="ecosystem-row ecosystem-row-right group" style="--accent:#171717;">
+                  <span class="ecosystem-spoke ecosystem-spoke-left"></span>
+                  <div class="flex-1 min-w-0 text-right">
+                    <p class="ecosystem-name">GitHub</p>
+                    <p class="ecosystem-desc">Tool · repos · PRs · CI</p>
+                  </div>
+                  <div class="ecosystem-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                </div>
+                <div class="ecosystem-row ecosystem-row-right group" style="--accent:#5E6AD2;">
+                  <span class="ecosystem-spoke ecosystem-spoke-left"></span>
+                  <div class="flex-1 min-w-0 text-right">
+                    <p class="ecosystem-name">Linear</p>
+                    <p class="ecosystem-desc">Tool · issues · cycles</p>
+                  </div>
+                  <div class="ecosystem-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9" stroke-linejoin="round"/><path d="M5 12h14M12 5v14" stroke-linecap="round"/></svg>
+                  </div>
+                </div>
+                <div class="ecosystem-row ecosystem-row-right group" style="--accent:#0EA5E9;">
+                  <span class="ecosystem-spoke ecosystem-spoke-left"></span>
+                  <div class="flex-1 min-w-0 text-right">
+                    <p class="ecosystem-name">Salesforce</p>
+                    <p class="ecosystem-desc">Tool · CRM · accounts</p>
+                  </div>
+                  <div class="ecosystem-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 14a4 4 0 0 1 6.5-3.1A5 5 0 0 1 20 12.5a3.5 3.5 0 0 1-1 6.8H7A4 4 0 0 1 4 14z" stroke-linejoin="round"/></svg>
+                  </div>
+                </div>
+                <div class="ecosystem-row ecosystem-row-right group" style="--accent:#06B6D4;">
+                  <span class="ecosystem-spoke ecosystem-spoke-left"></span>
+                  <div class="flex-1 min-w-0 text-right">
+                    <p class="ecosystem-name">Snowflake</p>
+                    <p class="ecosystem-desc">Output · warehouse · SQL</p>
+                  </div>
+                  <div class="ecosystem-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19" stroke-linecap="round" stroke-opacity=".7"/><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/></svg>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="p-6 sm:p-8">
-            <div class="text-ink-soft font-bold tracking-tight mb-3">SIGMA<span class="text-red">.</span></div>
-            <p class="text-base text-ink-mid leading-relaxed mb-4 italic">"Prometheus took our agent reliability from 'demo-only' to genuinely production. We rebuilt three internal tools on top of it in a quarter."</p>
-            <p class="text-xs text-ink-light"><span class="font-semibold text-ink-soft">Lina Chen</span> · Head of AI Platform</p>
-          </div>
-        </a>
 
-        <a href="#" class="reveal card group block rounded-3xl border border-line overflow-hidden hover:border-ink/20 bg-white">
-          <div class="aspect-[16/10] relative bg-gradient-to-br from-red via-red-deep to-ink overflow-hidden">
-            <div class="absolute inset-0" style="background-image: radial-gradient(circle at 70% 30%, rgba(252,211,77,0.30), transparent 50%);"></div>
-            <div class="absolute inset-0 flex items-end p-6 sm:p-8">
-              <div>
-                <p class="text-yellow font-mono text-[10px] tracking-widest uppercase mb-3">Case study · Northstar</p>
-                <p class="text-white text-3xl sm:text-4xl font-bold tracking-tightest leading-tight">−63%<br /><span class="text-white/60 font-normal text-base">cost per query</span></p>
-              </div>
+            <!-- Footer caption -->
+            <div class="mt-10 pt-6 border-t border-line-soft flex items-center justify-between gap-4 flex-wrap text-[10.5px] font-mono uppercase tracking-widest text-ink-light">
+              <span>Showing 8 of 60+ · <span class="text-ink-soft">all support OAuth + SCIM</span></span>
+              <a href="/resources#workflows" class="text-ink hover:text-red transition-colors inline-flex items-center gap-1.5 font-bold">
+                See full catalog
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
             </div>
           </div>
-          <div class="p-6 sm:p-8">
-            <div class="text-ink-soft font-light italic text-lg mb-3">Northstar</div>
-            <p class="text-base text-ink-mid leading-relaxed mb-4 italic">"Moving to Ether and Nexus together gave us better answers at lower cost — without us having to think about it. The way HelveX picks the right model is invisible."</p>
-            <p class="text-xs text-ink-light"><span class="font-semibold text-ink-soft">Marcus Reuter</span> · Co-Founder, COO</p>
-          </div>
-        </a>
-
-        <a href="#" class="reveal card group block rounded-3xl border border-line overflow-hidden hover:border-ink/20 bg-white">
-          <div class="aspect-[16/10] relative bg-gradient-to-br from-yellow via-yellow-soft to-cream overflow-hidden">
-            <div class="absolute inset-0 grid-bg-light opacity-40"></div>
-            <div class="absolute inset-0 flex items-end p-6 sm:p-8">
-              <div>
-                <p class="text-ink/60 font-mono text-[10px] tracking-widest uppercase mb-3">Case study · Meridian</p>
-                <p class="text-ink text-3xl sm:text-4xl font-bold tracking-tightest leading-tight">12 weeks<br /><span class="text-ink/60 font-normal text-base">to enterprise rollout</span></p>
-              </div>
-            </div>
-          </div>
-          <div class="p-6 sm:p-8">
-            <div class="text-ink-soft font-semibold tracking-tight mb-3">Meridian.</div>
-            <p class="text-base text-ink-mid leading-relaxed mb-4 italic">"From procurement to a global rollout for 1,200 analysts in twelve weeks. The compliance posture sealed it for legal."</p>
-            <p class="text-xs text-ink-light"><span class="font-semibold text-ink-soft">Anya Bernhardt</span> · CIO</p>
-          </div>
-        </a>
+        </div>
       </div>
+
+      <!-- 4-CATEGORY TILES -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+
+        <div class="reveal tech-card group p-6 relative overflow-hidden">
+          <div class="flex items-start justify-between mb-5">
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow/30 to-yellow-soft border border-yellow/30 flex items-center justify-center text-yellow-deep">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4V4z" stroke-linejoin="round"/><path d="M9 9h6M9 13h6" stroke-linecap="round"/></svg>
+            </div>
+            <span class="font-mono text-[10px] text-ink-light">14 connectors</span>
+          </div>
+          <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-yellow-deep mb-2 font-bold">Knowledge</p>
+          <h3 class="text-base font-semibold tracking-tight mb-2 text-ink">Where your data lives</h3>
+          <p class="text-xs text-ink-mid leading-relaxed mb-4">Drive · Notion · SharePoint · Slack · Confluence · Box · Dropbox · Bookstack · S3 · GCS · Azure Blob · DocBase · Coda · Quip</p>
+          <p class="text-[10px] font-mono text-ink-light pt-3 border-t border-line-soft">Permission-aware · live re-fetch</p>
+        </div>
+
+        <div class="reveal tech-card group p-6 relative overflow-hidden">
+          <div class="flex items-start justify-between mb-5">
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-red/15 to-red-soft border border-red/25 flex items-center justify-center text-red">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="10" width="16" height="11" rx="2" stroke-linejoin="round"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="font-mono text-[10px] text-ink-light">12 IdPs</span>
+          </div>
+          <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-red mb-2 font-bold">Identity</p>
+          <h3 class="text-base font-semibold tracking-tight mb-2 text-ink">Who can access what</h3>
+          <p class="text-xs text-ink-mid leading-relaxed mb-4">Okta · Azure AD · Google SSO · OneLogin · JumpCloud · Auth0 · Ping · Duo · CyberArk · ForgeRock · Keycloak · Custom OIDC</p>
+          <p class="text-[10px] font-mono text-ink-light pt-3 border-t border-line-soft">SAML · OIDC · SCIM · MFA</p>
+        </div>
+
+        <div class="reveal tech-card group p-6 relative overflow-hidden">
+          <div class="flex items-start justify-between mb-5">
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-ink/10 to-cream border border-ink/15 flex items-center justify-center text-ink">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="2" stroke-linejoin="round"/><circle cx="18" cy="6" r="2" stroke-linejoin="round"/><circle cx="6" cy="18" r="2" stroke-linejoin="round"/><circle cx="18" cy="18" r="2" stroke-linejoin="round"/><path d="M8 6h8M6 8v8M18 8v8M8 18h8" stroke-linecap="round"/></svg>
+            </div>
+            <span class="font-mono text-[10px] text-ink-light">28 tools</span>
+          </div>
+          <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink mb-2 font-bold">Tools</p>
+          <h3 class="text-base font-semibold tracking-tight mb-2 text-ink">What agents reach for</h3>
+          <p class="text-xs text-ink-mid leading-relaxed mb-4">GitHub · Linear · Jira · Asana · Salesforce · HubSpot · Stripe · Zendesk · Intercom · Figma · Webflow · custom MCP servers</p>
+          <p class="text-[10px] font-mono text-ink-light pt-3 border-t border-line-soft">MCP-native · approval gates</p>
+        </div>
+
+        <div class="reveal tech-card group p-6 relative overflow-hidden">
+          <div class="flex items-start justify-between mb-5">
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-soft to-cream border border-yellow/20 flex items-center justify-center" style="color:#92400E;">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7c0-1 1-2 2-2h14c1 0 2 1 2 2v3H3V7z" stroke-linejoin="round"/><path d="M3 10v7c0 1 1 2 2 2h14c1 0 2-1 2-2v-7M9 14h6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="font-mono text-[10px] text-ink-light">18 outputs</span>
+          </div>
+          <p class="font-mono text-[10px] uppercase tracking-[0.18em] mb-2 font-bold" style="color:#92400E;">Outputs</p>
+          <h3 class="text-base font-semibold tracking-tight mb-2 text-ink">Where answers ship</h3>
+          <p class="text-xs text-ink-mid leading-relaxed mb-4">Snowflake · BigQuery · Databricks · Redshift · Postgres · webhooks · email · S3 · GCS · SharePoint · Tableau · Looker</p>
+          <p class="text-[10px] font-mono text-ink-light pt-3 border-t border-line-soft">Streaming · scheduled · on-demand</p>
+        </div>
+
+      </div>
+
     </div>
   </section>
 
