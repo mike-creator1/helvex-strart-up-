@@ -476,38 +476,128 @@
         </p>
       </div>
 
-      <div class="reveal relative max-w-5xl mx-auto">
-        <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_2fr] gap-8 lg:gap-12 items-center">
-          <div class="rounded-2xl border border-white/10 bg-white/[.04] backdrop-blur p-6 text-center">
-            <p class="text-[10px] font-mono uppercase tracking-widest text-white/40 mb-3">/ input</p>
-            <p class="font-mono text-sm text-white/80 leading-relaxed">"Read this case file<br/>and surface what matters."</p>
-          </div>
+      <!-- Three diagrams, one per routing decision: Ether (yellow), Nexus (red), Prometheus (white) -->
+      <div class="reveal relative max-w-5xl mx-auto space-y-8 sm:space-y-10">
 
-          <div class="relative flex flex-col items-center">
-            <div class="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full w-12 h-px bg-gradient-to-r from-transparent to-white/50"></div>
-            <div class="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 translate-x-full w-12 h-px bg-gradient-to-l from-transparent to-white/50"></div>
-            <div class="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-ink-soft via-ink to-ink-soft border border-white/20 flex items-center justify-center shadow-2xl shadow-black/40">
-              <div class="absolute inset-0 rounded-2xl bg-white/15 blur-xl"></div>
-              <svg class="relative w-9 h-9 text-white" viewBox="0 0 24 24" fill="none"><path d="M12 2v6m0 8v6M2 12h6m8 0h6M5 5l3 3m8 8l3 3M5 19l3-3m8-8l3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </div>
-            <p class="mt-3 text-[10px] font-mono uppercase tracking-widest text-white/60">router · 12 ms</p>
+        <!-- ═════════ DIAGRAM 1 — ETHER (yellow) ═════════ -->
+        <div class="relative rounded-2xl border border-white/10 bg-white/[.025] backdrop-blur-sm p-6 sm:p-8">
+          <div class="flex items-baseline justify-between mb-5 gap-4 flex-wrap">
+            <span class="text-[10px] font-mono uppercase tracking-widest text-yellow">case 01 · latency-bound</span>
+            <span class="text-[10px] font-mono text-white/30">routed in 8 ms</span>
           </div>
+          <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_2fr] gap-6 lg:gap-12 items-center">
+            <div class="rounded-xl border border-white/10 bg-white/[.04] backdrop-blur p-5 text-center">
+              <p class="text-[10px] font-mono uppercase tracking-widest text-white/40 mb-2">/ input</p>
+              <p class="font-mono text-sm text-white/85 leading-relaxed">"Draft a quick reply<br/>to this support ticket."</p>
+            </div>
+            <div class="relative flex flex-col items-center">
+              <div class="hidden lg:block absolute left-0 top-[36px] -translate-x-full w-12 h-px bg-gradient-to-r from-transparent to-yellow/60"></div>
+              <div class="hidden lg:block absolute right-0 top-[36px] translate-x-full w-12 h-px bg-gradient-to-l from-transparent to-yellow/60"></div>
+              <div class="relative w-[72px] h-[72px] rounded-2xl bg-gradient-to-br from-ink-soft via-ink to-ink-soft border border-yellow/40 flex items-center justify-center shadow-2xl shadow-black/40">
+                <div class="absolute inset-0 rounded-2xl bg-yellow/10 blur-xl"></div>
+                <svg class="relative w-8 h-8 text-yellow" viewBox="0 0 24 24" fill="none"><path d="M12 2v6m0 8v6M2 12h6m8 0h6M5 5l3 3m8 8l3 3M5 19l3-3m8-8l3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <p class="mt-3 text-[10px] font-mono uppercase tracking-widest text-white/60">router</p>
+            </div>
+            <div class="space-y-2.5">
+              <div class="flex items-center gap-3 rounded-xl border border-yellow/40 bg-yellow/10 backdrop-blur px-4 py-3 shadow-lg shadow-yellow/10">
+                <span class="w-2 h-2 rounded-full bg-yellow shadow-[0_0_10px_rgba(252,211,77,0.8)]"></span>
+                <span class="text-sm font-bold text-white flex-1">Ether</span>
+                <span class="font-mono text-[11px] text-yellow">selected · &lt; 100 ms</span>
+              </div>
+              <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[.03] backdrop-blur px-4 py-2.5 opacity-45">
+                <span class="w-2 h-2 rounded-full bg-white/30"></span>
+                <span class="text-sm font-medium text-white/70 flex-1">Nexus</span>
+                <span class="font-mono text-[11px] text-white/35">over-spec · skipped</span>
+              </div>
+              <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[.03] backdrop-blur px-4 py-2.5 opacity-45">
+                <span class="w-2 h-2 rounded-full bg-white/30"></span>
+                <span class="text-sm font-medium text-white/70 flex-1">Prometheus</span>
+                <span class="font-mono text-[11px] text-white/35">no tools needed · skipped</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <div class="space-y-3">
-            <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[.04] backdrop-blur px-4 py-3 opacity-50">
-              <span class="w-2 h-2 rounded-full bg-yellow"></span>
-              <span class="text-sm font-medium text-white/80 flex-1">Ether</span>
-              <span class="font-mono text-[11px] text-white/40">latency-bound · skipped</span>
+        <!-- ═════════ DIAGRAM 2 — NEXUS (red, highlighted) ═════════ -->
+        <div class="relative rounded-2xl border border-red/30 bg-red/[.04] backdrop-blur-sm p-6 sm:p-8 shadow-2xl shadow-red/10">
+          <div class="absolute -inset-px rounded-2xl bg-gradient-to-r from-red/0 via-red/30 to-red/0 opacity-40 blur-xl pointer-events-none"></div>
+          <div class="relative">
+            <div class="flex items-baseline justify-between mb-5 gap-4 flex-wrap">
+              <span class="text-[10px] font-mono uppercase tracking-widest text-red">case 02 · depth-bound</span>
+              <span class="text-[10px] font-mono text-white/30">routed in 12 ms</span>
             </div>
-            <div class="flex items-center gap-3 rounded-xl border border-white/30 bg-white/10 backdrop-blur px-4 py-3 shadow-lg shadow-black/30">
-              <span class="tech-live-dot"></span>
-              <span class="text-sm font-bold text-white flex-1">Nexus</span>
-              <span class="font-mono text-[11px] text-white">selected · depth-bound</span>
+            <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_2fr] gap-6 lg:gap-12 items-center">
+              <div class="rounded-xl border border-white/10 bg-white/[.04] backdrop-blur p-5 text-center">
+                <p class="text-[10px] font-mono uppercase tracking-widest text-white/40 mb-2">/ input</p>
+                <p class="font-mono text-sm text-white/85 leading-relaxed">"Read this case file<br/>and surface what matters."</p>
+              </div>
+              <div class="relative flex flex-col items-center">
+                <div class="hidden lg:block absolute left-0 top-[36px] -translate-x-full w-12 h-px bg-gradient-to-r from-transparent to-red/70"></div>
+                <div class="hidden lg:block absolute right-0 top-[36px] translate-x-full w-12 h-px bg-gradient-to-l from-transparent to-red/70"></div>
+                <div class="relative w-[72px] h-[72px] rounded-2xl bg-gradient-to-br from-red via-red-deep to-red border border-red/40 flex items-center justify-center shadow-2xl shadow-red/40">
+                  <div class="absolute inset-0 rounded-2xl bg-red/30 blur-xl"></div>
+                  <svg class="relative w-8 h-8 text-white" viewBox="0 0 24 24" fill="none"><path d="M12 2v6m0 8v6M2 12h6m8 0h6M5 5l3 3m8 8l3 3M5 19l3-3m8-8l3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <p class="mt-3 text-[10px] font-mono uppercase tracking-widest text-red">router</p>
+              </div>
+              <div class="space-y-2.5">
+                <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[.03] backdrop-blur px-4 py-2.5 opacity-45">
+                  <span class="w-2 h-2 rounded-full bg-white/30"></span>
+                  <span class="text-sm font-medium text-white/70 flex-1">Ether</span>
+                  <span class="font-mono text-[11px] text-white/35">latency-bound · skipped</span>
+                </div>
+                <div class="flex items-center gap-3 rounded-xl border border-red/50 bg-red/15 backdrop-blur px-4 py-3 shadow-lg shadow-red/30">
+                  <span class="tech-live-dot"></span>
+                  <span class="text-sm font-bold text-white flex-1">Nexus</span>
+                  <span class="font-mono text-[11px] text-red" style="filter: brightness(1.6);">selected · depth-bound</span>
+                </div>
+                <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[.03] backdrop-blur px-4 py-2.5 opacity-45">
+                  <span class="w-2 h-2 rounded-full bg-white/30"></span>
+                  <span class="text-sm font-medium text-white/70 flex-1">Prometheus</span>
+                  <span class="font-mono text-[11px] text-white/35">no tools needed · skipped</span>
+                </div>
+              </div>
             </div>
-            <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[.04] backdrop-blur px-4 py-3 opacity-50">
-              <span class="w-2 h-2 rounded-full bg-white/40"></span>
-              <span class="text-sm font-medium text-white/80 flex-1">Prometheus</span>
-              <span class="font-mono text-[11px] text-white/40">no tools needed · skipped</span>
+          </div>
+        </div>
+
+        <!-- ═════════ DIAGRAM 3 — PROMETHEUS (white) ═════════ -->
+        <div class="relative rounded-2xl border border-white/10 bg-white/[.025] backdrop-blur-sm p-6 sm:p-8">
+          <div class="flex items-baseline justify-between mb-5 gap-4 flex-wrap">
+            <span class="text-[10px] font-mono uppercase tracking-widest text-white">case 03 · action-bound</span>
+            <span class="text-[10px] font-mono text-white/30">routed in 14 ms</span>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_2fr] gap-6 lg:gap-12 items-center">
+            <div class="rounded-xl border border-white/10 bg-white/[.04] backdrop-blur p-5 text-center">
+              <p class="text-[10px] font-mono uppercase tracking-widest text-white/40 mb-2">/ input</p>
+              <p class="font-mono text-sm text-white/85 leading-relaxed">"Refactor the auth module<br/>and run the test suite."</p>
+            </div>
+            <div class="relative flex flex-col items-center">
+              <div class="hidden lg:block absolute left-0 top-[36px] -translate-x-full w-12 h-px bg-gradient-to-r from-transparent to-white/60"></div>
+              <div class="hidden lg:block absolute right-0 top-[36px] translate-x-full w-12 h-px bg-gradient-to-l from-transparent to-white/60"></div>
+              <div class="relative w-[72px] h-[72px] rounded-2xl bg-gradient-to-br from-ink-soft via-ink to-ink-soft border border-white/30 flex items-center justify-center shadow-2xl shadow-black/40">
+                <div class="absolute inset-0 rounded-2xl bg-white/15 blur-xl"></div>
+                <svg class="relative w-8 h-8 text-white" viewBox="0 0 24 24" fill="none"><path d="M12 2v6m0 8v6M2 12h6m8 0h6M5 5l3 3m8 8l3 3M5 19l3-3m8-8l3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <p class="mt-3 text-[10px] font-mono uppercase tracking-widest text-white/60">router</p>
+            </div>
+            <div class="space-y-2.5">
+              <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[.03] backdrop-blur px-4 py-2.5 opacity-45">
+                <span class="w-2 h-2 rounded-full bg-white/30"></span>
+                <span class="text-sm font-medium text-white/70 flex-1">Ether</span>
+                <span class="font-mono text-[11px] text-white/35">no tools · skipped</span>
+              </div>
+              <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[.03] backdrop-blur px-4 py-2.5 opacity-45">
+                <span class="w-2 h-2 rounded-full bg-white/30"></span>
+                <span class="text-sm font-medium text-white/70 flex-1">Nexus</span>
+                <span class="font-mono text-[11px] text-white/35">no tools · skipped</span>
+              </div>
+              <div class="flex items-center gap-3 rounded-xl border border-white/40 bg-white/15 backdrop-blur px-4 py-3 shadow-lg shadow-black/30">
+                <span class="w-2 h-2 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.85)]"></span>
+                <span class="text-sm font-bold text-white flex-1">Prometheus</span>
+                <span class="font-mono text-[11px] text-white">selected · 8 h horizon</span>
+              </div>
             </div>
           </div>
         </div>
