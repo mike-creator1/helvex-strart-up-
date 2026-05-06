@@ -133,6 +133,190 @@
     .section-mark { display: inline-flex; align-items: center; gap: 10px; font: 700 11px/1 'Inter', sans-serif; letter-spacing: 0.20em; text-transform: uppercase; color: #DC2626; }
     .section-mark::before { content: ''; width: 24px; height: 1px; background: currentColor; }
 
+    /* ── Top nav mega-menu ────────────────────────────────────── */
+    .nav-item { position: relative; }
+    .nav-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font: 500 14px/1 'Inter', sans-serif;
+      letter-spacing: -0.005em;
+      color: #171717;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .nav-trigger:hover,
+    .nav-item[data-open] .nav-trigger {
+      background: #FAFAF7;
+      color: #0A0A0A;
+    }
+    .nav-chevron {
+      width: 11px;
+      height: 11px;
+      margin-left: 1px;
+      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+    }
+    .nav-item[data-open] .nav-chevron { transform: rotate(180deg); }
+
+    .nav-dropdown {
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 0;
+      z-index: 50;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      pointer-events: none;
+      transition:
+        opacity 0.22s ease-out,
+        transform 0.22s cubic-bezier(0.22,1,0.36,1),
+        visibility 0s linear 0.22s;
+    }
+    .nav-item-right .nav-dropdown { left: auto; right: 0; }
+    .nav-item[data-open] .nav-dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      pointer-events: auto;
+      transition:
+        opacity 0.22s ease-out,
+        transform 0.22s cubic-bezier(0.22,1,0.36,1),
+        visibility 0s linear 0s;
+    }
+
+    .nav-dropdown-inner {
+      background: #ffffff;
+      border: 1px solid #E5E5E5;
+      border-radius: 16px;
+      box-shadow: 0 24px 48px -8px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.04);
+      padding: 26px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 36px;
+    }
+    .nav-w-md { width: 640px; }
+    .nav-w-lg { width: 760px; }
+
+    .nav-col-left { display: flex; flex-direction: column; }
+    .nav-eyebrow {
+      font: 700 10px/1 'Inter', sans-serif;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: #DC2626;
+      margin: 0 0 12px;
+    }
+    .nav-headline {
+      font: 800 22px/1.12 'Inter', sans-serif;
+      letter-spacing: -0.025em;
+      margin: 0 0 12px;
+      color: #0A0A0A;
+    }
+    .nav-description {
+      font-size: 13px;
+      line-height: 1.55;
+      color: #525252;
+      margin: 0 0 22px;
+      max-width: 220px;
+    }
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #0A0A0A;
+      text-decoration: none;
+      border-bottom: 1.5px solid #0A0A0A;
+      padding-bottom: 2px;
+      align-self: flex-start;
+      transition: color 0.2s, border-color 0.2s, gap 0.25s cubic-bezier(0.22,1,0.36,1);
+    }
+    .nav-cta:hover { color: #DC2626; border-color: #DC2626; gap: 9px; }
+    .nav-cta svg { width: 11px; height: 11px; }
+
+    .nav-col-right { display: flex; flex-direction: column; gap: 4px; }
+    .nav-stack    { display: flex; flex-direction: column; gap: 4px; }
+    .nav-grid-2   { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; }
+
+    .nav-feature {
+      display: flex;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-align: left;
+      text-decoration: none;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      width: 100%;
+      transition: background 0.22s;
+      align-items: flex-start;
+    }
+    .nav-feature:hover { background: #FAFAF7; }
+    .nav-feature:focus-visible {
+      outline: none;
+      background: #FAFAF7;
+      box-shadow: inset 0 0 0 1.5px #0A0A0A;
+    }
+
+    .nav-feature-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .nav-feature-icon svg { width: 16px; height: 16px; }
+
+    .nav-feature-content { flex: 1; min-width: 0; }
+    .nav-feature-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #0A0A0A;
+      margin: 0 0 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-feature-title-block { display: block; }
+    .nav-feature-tag {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #A3A3A3;
+    }
+    .nav-feature-meta {
+      font: 700 9.5px/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #A3A3A3;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .nav-meta-release { color: #DC2626; }
+    .nav-meta-event   { color: #F59E0B; }
+    .nav-feature-desc {
+      font-size: 12.5px;
+      color: #525252;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-dropdown, .nav-chevron, .nav-feature, .nav-trigger, .nav-cta {
+        transition: none !important;
+      }
+    }
+
     /* ── Workspace card (clickable) ───────────────────────────── */
     .ws-card {
       text-align: left;
@@ -565,11 +749,218 @@
         <svg class="w-6 h-6 sm:w-[26px] sm:h-[26px]" viewBox="0 0 24 24" fill="none"><path d="M4 4h4v16H4V4zm12 0h4v16h-4V4zM8 11h8v2H8v-2z" fill="currentColor"/></svg>
         Helve<span class="x">X</span>
       </a>
-      <div class="hidden lg:flex items-center gap-1 text-[14px] font-medium text-ink-soft">
-        <a href="#models"    class="hover:text-ink hover:bg-cream rounded-lg px-3 py-2 transition-colors">Models</a>
-        <a href="#workspace" class="hover:text-ink hover:bg-cream rounded-lg px-3 py-2 transition-colors">Workspace</a>
-        <a href="#research"  class="hover:text-ink hover:bg-cream rounded-lg px-3 py-2 transition-colors">Research</a>
-        <a href="#trust"     class="hover:text-ink hover:bg-cream rounded-lg px-3 py-2 transition-colors">Trust</a>
+      <div class="hidden lg:flex items-center gap-1" id="nav-mega">
+
+        <!-- Models -->
+        <div class="nav-item" data-nav="models">
+          <button type="button" class="nav-trigger" aria-haspopup="true" aria-expanded="false">
+            Models
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-inner nav-w-md">
+              <div class="nav-col-left">
+                <p class="nav-eyebrow">Three minds</p>
+                <h3 class="nav-headline">Pick the model<br />for the moment.</h3>
+                <p class="nav-description">Each is tuned for a different shape of work — speed, depth, or autonomous action. Switch between them in any chat, or let HelveX choose.</p>
+                <a href="#models" class="nav-cta">See full model details<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
+              </div>
+              <div class="nav-col-right nav-stack">
+                <a href="#model-ether" class="nav-feature">
+                  <span class="nav-feature-icon" style="background:#FCD34D;">
+                    <svg viewBox="0 0 24 24" fill="none" style="color:#0A0A0A;"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+                  </span>
+                  <div class="nav-feature-content">
+                    <p class="nav-feature-title">Ether <span class="nav-feature-tag">Real-time</span></p>
+                    <p class="nav-feature-desc">Sub-100ms responses. Drafting, translating, conversing — the model that feels invisible.</p>
+                  </div>
+                </a>
+                <a href="#model-nexus" class="nav-feature">
+                  <span class="nav-feature-icon" style="background:#DC2626;">
+                    <svg viewBox="0 0 24 24" fill="none" style="color:#fff;"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4M5 5l3 3m8 8l3 3M5 19l3-3m8-8l3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  </span>
+                  <div class="nav-feature-content">
+                    <p class="nav-feature-title">Nexus <span class="nav-feature-tag">Reasoning</span></p>
+                    <p class="nav-feature-desc">1M-token context. Citations, math, science, multi-step analysis — the model that thinks.</p>
+                  </div>
+                </a>
+                <a href="#model-prometheus" class="nav-feature">
+                  <span class="nav-feature-icon" style="background:#0A0A0A;">
+                    <svg viewBox="0 0 24 24" fill="none" style="color:#FCD34D;"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7l3-7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                  </span>
+                  <div class="nav-feature-content">
+                    <p class="nav-feature-title">Prometheus <span class="nav-feature-tag">Agentic</span></p>
+                    <p class="nav-feature-desc">Hours-of-work agents. Plans, calls tools, ships outcomes — the model that acts.</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Workspace -->
+        <div class="nav-item" data-nav="workspace">
+          <button type="button" class="nav-trigger" aria-haspopup="true" aria-expanded="false">
+            Workspace
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-inner nav-w-lg">
+              <div class="nav-col-left">
+                <p class="nav-eyebrow">The product</p>
+                <h3 class="nav-headline">A real place<br />to do the work.</h3>
+                <p class="nav-description">Conversations, projects, agents, knowledge — co-owned by your team and held together by a single workspace.</p>
+                <a href="#workspace" class="nav-cta">Tour the workspace<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
+              </div>
+              <div class="nav-col-right nav-grid-2">
+                <button type="button" data-feature="chat" class="nav-feature">
+                  <span class="nav-feature-icon" style="background:rgba(10,10,10,0.05);">
+                    <svg viewBox="0 0 24 24" fill="none" style="color:#0A0A0A;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" stroke="currentColor" stroke-width="1.8"/></svg>
+                  </span>
+                  <div class="nav-feature-content">
+                    <p class="nav-feature-title">Chat</p>
+                    <p class="nav-feature-desc">Talk to any model. Switch mid-thread.</p>
+                  </div>
+                </button>
+                <button type="button" data-feature="projects" class="nav-feature">
+                  <span class="nav-feature-icon" style="background:#FEF3C7;">
+                    <svg viewBox="0 0 24 24" fill="none" style="color:#F59E0B;"><path d="M3 7l9-4 9 4v10l-9 4-9-4V7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                  </span>
+                  <div class="nav-feature-content">
+                    <p class="nav-feature-title">Projects</p>
+                    <p class="nav-feature-desc">Folders that remember everything.</p>
+                  </div>
+                </button>
+                <button type="button" data-feature="agents" class="nav-feature">
+                  <span class="nav-feature-icon" style="background:rgba(220,38,38,0.10);">
+                    <svg viewBox="0 0 24 24" fill="none" style="color:#DC2626;"><circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2" stroke="currentColor" stroke-width="1.8"/></svg>
+                  </span>
+                  <div class="nav-feature-content">
+                    <p class="nav-feature-title">Agents</p>
+                    <p class="nav-feature-desc">Send work into the background.</p>
+                  </div>
+                </button>
+                <button type="button" data-feature="knowledge" class="nav-feature">
+                  <span class="nav-feature-icon" style="background:rgba(10,10,10,0.05);">
+                    <svg viewBox="0 0 24 24" fill="none" style="color:#0A0A0A;"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4V4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 9h6M9 13h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  </span>
+                  <div class="nav-feature-content">
+                    <p class="nav-feature-title">Knowledge</p>
+                    <p class="nav-feature-desc">Your team's library, asked plain.</p>
+                  </div>
+                </button>
+                <button type="button" data-feature="spaces" class="nav-feature">
+                  <span class="nav-feature-icon" style="background:#FCD34D;">
+                    <svg viewBox="0 0 24 24" fill="none" style="color:#0A0A0A;"><circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.8"/><circle cx="17" cy="14" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M3 21v-2a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v2" stroke="currentColor" stroke-width="1.8"/></svg>
+                  </span>
+                  <div class="nav-feature-content">
+                    <p class="nav-feature-title">Spaces</p>
+                    <p class="nav-feature-desc">Shared rooms for the team.</p>
+                  </div>
+                </button>
+                <button type="button" data-feature="history" class="nav-feature">
+                  <span class="nav-feature-icon" style="background:#0A0A0A;">
+                    <svg viewBox="0 0 24 24" fill="none" style="color:#FCD34D;"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  </span>
+                  <div class="nav-feature-content">
+                    <p class="nav-feature-title">History</p>
+                    <p class="nav-feature-desc">Find anything in one keystroke.</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Research -->
+        <div class="nav-item" data-nav="research">
+          <button type="button" class="nav-trigger" aria-haspopup="true" aria-expanded="false">
+            Research
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-inner nav-w-md">
+              <div class="nav-col-left">
+                <p class="nav-eyebrow">From the lab</p>
+                <h3 class="nav-headline">Methodology,<br />plainly written.</h3>
+                <p class="nav-description">We share how the models think, where they fall short, and what we are doing about it.</p>
+                <a href="#research" class="nav-cta">See all research<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
+              </div>
+              <div class="nav-col-right nav-stack">
+                <a href="#research" class="nav-feature">
+                  <div class="nav-feature-content">
+                    <span class="nav-feature-meta">Paper · Nov 2026</span>
+                    <p class="nav-feature-title nav-feature-title-block">Adaptive depth: when models should think longer</p>
+                    <p class="nav-feature-desc">A study on dynamically allocating compute per token, and the surprising places it pays off.</p>
+                  </div>
+                </a>
+                <a href="#research" class="nav-feature">
+                  <div class="nav-feature-content">
+                    <span class="nav-feature-meta">Engineering · Oct 2026</span>
+                    <p class="nav-feature-title nav-feature-title-block">How Prometheus runs for hours without losing the plot</p>
+                    <p class="nav-feature-desc">Memory hierarchies, plan critique, and the engineering behind reliable long-horizon agents.</p>
+                  </div>
+                </a>
+                <a href="#research" class="nav-feature">
+                  <div class="nav-feature-content">
+                    <span class="nav-feature-meta">Note · Sep 2026</span>
+                    <p class="nav-feature-title nav-feature-title-block">Our approach to evaluation, red-teaming, and refusals</p>
+                    <p class="nav-feature-desc">A pragmatic framework for measuring what matters — and being honest about what we cannot yet measure.</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Updates (replaces Trust in nav) -->
+        <div class="nav-item nav-item-right" data-nav="updates">
+          <button type="button" class="nav-trigger" aria-haspopup="true" aria-expanded="false">
+            Updates
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-inner nav-w-md">
+              <div class="nav-col-left">
+                <p class="nav-eyebrow">What's new</p>
+                <h3 class="nav-headline">The platform,<br />this week.</h3>
+                <p class="nav-description">Releases, model updates, and platform notes — every change in one place. No inbox archaeology required.</p>
+                <a href="#" class="nav-cta">Open the changelog<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
+              </div>
+              <div class="nav-col-right nav-stack">
+                <a href="#research" class="nav-feature">
+                  <div class="nav-feature-content">
+                    <span class="nav-feature-meta nav-meta-release">Release · Nov 12</span>
+                    <p class="nav-feature-title nav-feature-title-block">Prometheus 2.0 — agents that run for hours</p>
+                    <p class="nav-feature-desc">Live now. Plan-and-critique, deterministic replay, and approval gates for sensitive steps.</p>
+                  </div>
+                </a>
+                <a href="#workspace" class="nav-feature">
+                  <div class="nav-feature-content">
+                    <span class="nav-feature-meta">Improvement · Nov 5</span>
+                    <p class="nav-feature-title nav-feature-title-block">Spaces v2: live presence + threaded comments</p>
+                    <p class="nav-feature-desc">See who is reading what right now, and comment on any line — agent steps included.</p>
+                  </div>
+                </a>
+                <a href="#models" class="nav-feature">
+                  <div class="nav-feature-content">
+                    <span class="nav-feature-meta">Model · Oct 28</span>
+                    <p class="nav-feature-title nav-feature-title-block">Ether sub-100ms median, worldwide</p>
+                    <p class="nav-feature-desc">A new routing layer cuts first-token latency by 38% across all regions.</p>
+                  </div>
+                </a>
+                <a href="#" class="nav-feature">
+                  <div class="nav-feature-content">
+                    <span class="nav-feature-meta nav-meta-event">Event · Dec 5</span>
+                    <p class="nav-feature-title nav-feature-title-block">HelveX Forum · Zurich</p>
+                    <p class="nav-feature-desc">A morning of demos and conversations with the team. Engineering, research, and customers.</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
       <div class="flex items-center gap-1 sm:gap-2">
         <a href="/signup.html" class="hidden sm:inline-flex text-[14px] font-medium text-ink-mid hover:text-ink px-3 py-2 transition-colors">Sign in</a>
@@ -1927,13 +2318,80 @@
       }, { passive: true });
     })();
 
+    /* Top nav mega menus */
+    (function () {
+      var navItems = document.querySelectorAll('.nav-item[data-nav]');
+      if (!navItems.length) return;
+
+      var closeTimer = null;
+      var openItem   = null;
+
+      function open(item) {
+        if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+        if (openItem === item) return;
+        if (openItem) close(openItem);
+        item.setAttribute('data-open', '');
+        var trigger = item.querySelector('.nav-trigger');
+        if (trigger) trigger.setAttribute('aria-expanded', 'true');
+        openItem = item;
+      }
+      function close(item) {
+        if (!item) return;
+        item.removeAttribute('data-open');
+        var trigger = item.querySelector('.nav-trigger');
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        if (openItem === item) openItem = null;
+      }
+      function scheduleClose(item) {
+        if (closeTimer) clearTimeout(closeTimer);
+        closeTimer = setTimeout(function () { close(item); }, 140);
+      }
+      function closeAll() {
+        navItems.forEach(close);
+      }
+
+      navItems.forEach(function (item) {
+        item.addEventListener('mouseenter', function () { open(item); });
+        item.addEventListener('mouseleave', function () { scheduleClose(item); });
+        var trigger = item.querySelector('.nav-trigger');
+        if (trigger) {
+          trigger.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (item.hasAttribute('data-open')) close(item);
+            else open(item);
+          });
+          trigger.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              if (item.hasAttribute('data-open')) close(item);
+              else open(item);
+            }
+          });
+        }
+        // Clicking any feature inside should close the dropdown
+        item.querySelectorAll('.nav-feature').forEach(function (link) {
+          link.addEventListener('click', function () {
+            // Allow the navigation/modal-open to proceed, then close
+            setTimeout(function () { close(item); }, 0);
+          });
+        });
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.nav-item[data-nav]')) closeAll();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeAll();
+      });
+    })();
+
     /* Workspace feature modals
        Scroll-lock strategy: simply set overflow:hidden on <html>+<body>
        and compensate for the scrollbar gutter. The page's actual scroll
        position is never touched, so closing the modal leaves the user
        exactly where they were — no jump to top, no jump back. */
     (function () {
-      var triggers = document.querySelectorAll('.ws-card[data-feature]');
+      var triggers = document.querySelectorAll('[data-feature]');
       var modals   = document.querySelectorAll('.ws-modal[data-modal]');
       if (!triggers.length || !modals.length) return;
 
