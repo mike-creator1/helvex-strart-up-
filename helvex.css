@@ -1367,3 +1367,195 @@
       .tech-cta-glow::before { transition: none; }
       .tech-live-dot { animation: none; }
     }
+
+    /* ─── TRUST SECTION · premium dark glass tiles + pillars ───────────── */
+
+    /* Compliance tile (4 across) — subtle lift + reveal-on-hover white shine */
+    .trust-tile {
+      position: relative;
+      padding: 22px 22px 24px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        linear-gradient(150deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.08) inset,
+        0 22px 50px -22px rgba(0,0,0,0.6);
+      transition: transform .45s cubic-bezier(.22,.7,.25,1), border-color .45s ease, background .45s ease;
+      isolation: isolate;
+      overflow: hidden;
+    }
+    .trust-tile:hover {
+      transform: translateY(-3px);
+      border-color: rgba(252,211,77,0.32);
+      background:
+        linear-gradient(150deg, rgba(255,255,255,0.06), rgba(252,211,77,0.04));
+    }
+    /* Top-edge silver hairline */
+    .trust-tile::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 14%; right: 14%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.55), transparent);
+      opacity: .55;
+      transition: opacity .45s ease, background .45s ease;
+      pointer-events: none;
+    }
+    .trust-tile:hover::before {
+      opacity: 1;
+      background: linear-gradient(to right, transparent, rgba(252,211,77,0.85), transparent);
+    }
+    /* On-hover white reflection sweep */
+    .trust-tile-shine {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(115deg,
+        transparent 35%,
+        rgba(255,255,255,0.45) 48%,
+        rgba(255,255,255,0.85) 50%,
+        rgba(255,255,255,0.45) 52%,
+        transparent 65%);
+      background-size: 260% 100%;
+      background-position: -150% 0;
+      opacity: 0;
+      mix-blend-mode: overlay;
+      transition: opacity .35s ease;
+      border-radius: inherit;
+    }
+    .trust-tile:hover .trust-tile-shine {
+      opacity: 1;
+      animation: metallic-shine 1.4s cubic-bezier(.4,0,.2,1);
+    }
+    /* Icon frame inside tile */
+    .trust-tile-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FCD34D;
+      flex-shrink: 0;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.1) inset,
+        0 4px 12px -4px rgba(0,0,0,0.4);
+      transition: border-color .45s ease, color .45s ease, background .45s ease;
+    }
+    .trust-tile-icon svg { width: 19px; height: 19px; }
+    .trust-tile:hover .trust-tile-icon {
+      border-color: rgba(252,211,77,0.45);
+      background: linear-gradient(135deg, rgba(252,211,77,0.15), rgba(255,255,255,0.04));
+    }
+
+    /* Pillar card (residency / privacy) — large, premium, glass */
+    .trust-pillar {
+      position: relative;
+      padding: 36px 32px 36px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        linear-gradient(150deg, rgba(255,255,255,0.04), rgba(255,255,255,0.012));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.08) inset,
+        0 28px 70px -28px rgba(0,0,0,0.7);
+      transition: transform .55s cubic-bezier(.22,.7,.25,1), border-color .55s ease, background .55s ease;
+      isolation: isolate;
+      overflow: hidden;
+    }
+    @media (min-width: 640px) {
+      .trust-pillar { padding: 44px 40px; }
+    }
+    .trust-pillar::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 12%; right: 12%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.55), transparent);
+      opacity: .6;
+      pointer-events: none;
+    }
+    .trust-pillar:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.16);
+    }
+    .trust-pillar-shine {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(115deg,
+        transparent 32%,
+        rgba(255,255,255,0.35) 47%,
+        rgba(255,255,255,0.7) 50%,
+        rgba(255,255,255,0.35) 53%,
+        transparent 68%);
+      background-size: 280% 100%;
+      background-position: -180% 0;
+      opacity: 0;
+      mix-blend-mode: overlay;
+      transition: opacity .35s ease;
+      border-radius: inherit;
+    }
+    .trust-pillar:hover .trust-pillar-shine {
+      opacity: 1;
+      animation: metallic-shine 1.6s cubic-bezier(.4,0,.2,1);
+    }
+    /* Pillar icon frame */
+    .trust-pillar-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.1) inset,
+        0 4px 12px -4px rgba(0,0,0,0.4);
+    }
+    .trust-pillar-icon svg { width: 20px; height: 20px; }
+    .trust-pillar-icon-yellow { color: #FCD34D; }
+    .trust-pillar-icon-red    { color: #FCA5A5; }
+
+    /* Numbered row inside a pillar */
+    .trust-row {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      transition: background .35s ease, border-color .35s ease;
+      font-size: 13.5px;
+      line-height: 1.55;
+    }
+    .trust-row:first-child { border-top: 1px solid rgba(255,255,255,0.06); }
+    .trust-row-num {
+      flex-shrink: 0;
+      font: 700 11px/1.5 ui-monospace, 'SF Mono', Menlo, monospace;
+      letter-spacing: 0.04em;
+      width: 22px;
+      padding-top: 2px;
+    }
+    .trust-row:hover {
+      background: linear-gradient(to right, rgba(255,255,255,0.025), transparent);
+      border-top-color: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .trust-tile,
+      .trust-pillar,
+      .trust-tile-icon,
+      .trust-pillar-icon,
+      .trust-row { transition: none !important; }
+      .trust-tile-shine,
+      .trust-pillar-shine { animation: none !important; display: none; }
+    }

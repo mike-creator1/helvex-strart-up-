@@ -1446,86 +1446,223 @@
     </div>
   </section>
 
-  <!-- ════════ TRUST (privacy + residency, no infra pitch) ════════ -->
+  <!-- ════════ TRUST — premium dark / luxury-tech ════════ -->
   <section id="trust" class="relative py-24 sm:py-36 bg-ink text-white overflow-hidden">
-    <div class="absolute inset-0 grid-bg-dark"></div>
-    <div class="hero-orb hero-orb-1" style="top: -200px; right: -150px; opacity: 0.18;"></div>
+    <!-- ambient layers -->
+    <div class="absolute inset-0 grid-bg-dark opacity-50"></div>
+    <div class="absolute -top-40 -right-32 w-[560px] h-[560px] rounded-full bg-white/[.04] blur-[140px]"></div>
+    <div class="absolute -bottom-40 -left-32 w-[520px] h-[520px] rounded-full bg-yellow/[.06] blur-[140px]"></div>
+    <!-- soft scan-lines -->
+    <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+    <div class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
 
     <div class="relative max-w-7xl mx-auto px-6 sm:px-8">
-      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-end mb-16 sm:mb-20">
-        <div>
-          <p class="reveal section-mark text-yellow mb-6">Trust</p>
-          <h2 class="reveal h-section balance text-5xl sm:text-7xl">Your work,<br /><span class="italic font-serif font-normal">your data, yours.</span></h2>
+
+      <!-- HEADER ROW -->
+      <div class="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-16 sm:mb-24">
+        <div class="lg:col-span-6">
+          <div class="reveal inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/[.05] border border-white/10 backdrop-blur mb-7">
+            <span class="w-1.5 h-1.5 rounded-full bg-yellow"></span>
+            <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-yellow font-bold">Trust · enterprise grade</span>
+          </div>
+          <h2 class="reveal h-section balance text-5xl sm:text-7xl text-white">Your work,<br /><span class="italic font-serif font-normal" style="background:linear-gradient(110deg,#FCD34D 0%,#FFFFFF 50%,#FCA5A5 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">your data, yours.</span></h2>
         </div>
-        <div>
-          <p class="reveal pretty text-base sm:text-xl text-white/70 leading-relaxed">
+        <div class="lg:col-span-6 lg:pb-3">
+          <p class="reveal pretty text-base sm:text-lg text-white/70 leading-relaxed mb-6">
             HelveX is the AI platform serious teams put in front of their CISO without flinching. Privacy, residency, and compliance are decisions we made before you arrived.
           </p>
+          <div class="reveal flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] font-mono uppercase tracking-widest text-white/40">
+            <span class="inline-flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" style="box-shadow:0 0 8px rgba(16,185,129,.7);animation:live-dot 2.2s cubic-bezier(.4,0,.2,1) infinite;"></span>
+              all systems operational
+            </span>
+            <span class="text-white/15">·</span>
+            <span>last audit · Q3 2026</span>
+            <span class="text-white/15">·</span>
+            <a href="/legal" class="text-white/55 hover:text-yellow transition-colors underline-offset-4 hover:underline">view trust center</a>
+          </div>
         </div>
       </div>
 
-      <!-- Compliance row -->
-      <div class="reveal grid grid-cols-2 sm:grid-cols-4 gap-3 mb-12 sm:mb-16">
-        <div class="border border-white/10 rounded-xl p-5 hover:border-yellow/40 transition-colors">
-          <div class="text-xs font-mono uppercase tracking-widest text-yellow mb-2">Audit</div>
-          <div class="text-lg font-bold tracking-tight">SOC 2 Type II</div>
-        </div>
-        <div class="border border-white/10 rounded-xl p-5 hover:border-yellow/40 transition-colors">
-          <div class="text-xs font-mono uppercase tracking-widest text-yellow mb-2">Standard</div>
-          <div class="text-lg font-bold tracking-tight">ISO 27001</div>
-        </div>
-        <div class="border border-white/10 rounded-xl p-5 hover:border-yellow/40 transition-colors">
-          <div class="text-xs font-mono uppercase tracking-widest text-yellow mb-2">Regulation</div>
-          <div class="text-lg font-bold tracking-tight">GDPR · DPA</div>
-        </div>
-        <div class="border border-white/10 rounded-xl p-5 hover:border-yellow/40 transition-colors">
-          <div class="text-xs font-mono uppercase tracking-widest text-yellow mb-2">Healthcare</div>
-          <div class="text-lg font-bold tracking-tight">HIPAA-ready</div>
+      <!-- COMPLIANCE ROW — premium glass tiles with shield-style icons -->
+      <div class="mb-16 sm:mb-20">
+        <p class="reveal text-[11px] font-mono uppercase tracking-[0.22em] text-white/35 mb-5">Audited &amp; certified</p>
+        <div class="reveal grid grid-cols-2 sm:grid-cols-4 gap-3">
+
+          <div class="trust-tile group">
+            <div class="trust-tile-shine"></div>
+            <div class="flex items-start justify-between mb-5">
+              <div class="trust-tile-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                  <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z" stroke-linejoin="round"/>
+                  <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="text-[9px] font-mono text-white/30 mt-1.5">v3.2</span>
+            </div>
+            <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-yellow mb-1.5 font-bold">Audit</p>
+            <p class="text-lg font-semibold tracking-tight text-white">SOC 2 Type II</p>
+            <p class="text-[11px] text-white/40 mt-2">Annual · independent</p>
+          </div>
+
+          <div class="trust-tile group">
+            <div class="trust-tile-shine"></div>
+            <div class="flex items-start justify-between mb-5">
+              <div class="trust-tile-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                  <circle cx="12" cy="12" r="9" stroke-linejoin="round"/>
+                  <path d="M12 3v18M3 12h18" stroke-linecap="round" stroke-opacity=".5"/>
+                  <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/>
+                </svg>
+              </div>
+              <span class="text-[9px] font-mono text-white/30 mt-1.5">2026</span>
+            </div>
+            <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-yellow mb-1.5 font-bold">Standard</p>
+            <p class="text-lg font-semibold tracking-tight text-white">ISO 27001</p>
+            <p class="text-[11px] text-white/40 mt-2">+ ISO 27701 privacy</p>
+          </div>
+
+          <div class="trust-tile group">
+            <div class="trust-tile-shine"></div>
+            <div class="flex items-start justify-between mb-5">
+              <div class="trust-tile-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                  <rect x="4" y="3" width="16" height="18" rx="2" stroke-linejoin="round"/>
+                  <path d="M8 8h8M8 12h8M8 16h5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="text-[9px] font-mono text-white/30 mt-1.5">EU · UK</span>
+            </div>
+            <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-yellow mb-1.5 font-bold">Regulation</p>
+            <p class="text-lg font-semibold tracking-tight text-white">GDPR · DPA</p>
+            <p class="text-[11px] text-white/40 mt-2">Signed on request</p>
+          </div>
+
+          <div class="trust-tile group">
+            <div class="trust-tile-shine"></div>
+            <div class="flex items-start justify-between mb-5">
+              <div class="trust-tile-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                  <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z" stroke-linejoin="round"/>
+                  <path d="M9 11h2v-2h2v2h2v2h-2v2h-2v-2H9z" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="text-[9px] font-mono text-white/30 mt-1.5">BAA</span>
+            </div>
+            <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-yellow mb-1.5 font-bold">Healthcare</p>
+            <p class="text-lg font-semibold tracking-tight text-white">HIPAA-ready</p>
+            <p class="text-[11px] text-white/40 mt-2">Enterprise tier</p>
+          </div>
+
         </div>
       </div>
 
-      <!-- Two pillars: residency + privacy -->
-      <div class="grid lg:grid-cols-2 gap-6 sm:gap-8 mb-12 sm:mb-16">
-        <div class="reveal border border-white/10 rounded-2xl p-8 sm:p-10 backdrop-blur-sm">
-          <p class="h-eyebrow text-yellow mb-5">Where your data stays</p>
-          <h3 class="text-3xl font-bold tracking-tight mb-5 balance">Residency you choose, never guessed.</h3>
-          <ul class="space-y-4 text-sm text-white/70">
-            <li class="flex gap-3"><span class="text-yellow font-bold flex-shrink-0">01</span><div><span class="font-semibold text-white">Two regions</span> — pick US-East or EU-Central at the workspace level. Cross-region routing is opt-in only.</div></li>
-            <li class="flex gap-3"><span class="text-yellow font-bold flex-shrink-0">02</span><div><span class="font-semibold text-white">Single-tenant capacity</span> — Enterprise workspaces run on isolated capacity, not shared with anyone else.</div></li>
-            <li class="flex gap-3"><span class="text-yellow font-bold flex-shrink-0">03</span><div><span class="font-semibold text-white">Customer-controlled retention</span> — set the lifetime of every conversation, attachment, and agent run.</div></li>
-            <li class="flex gap-3"><span class="text-yellow font-bold flex-shrink-0">04</span><div><span class="font-semibold text-white">Audit logs</span> — every action, every actor, exportable to your SIEM.</div></li>
-          </ul>
+      <!-- TWO PILLARS — residency + privacy -->
+      <div class="grid lg:grid-cols-2 gap-5 sm:gap-6 mb-16 sm:mb-20">
+
+        <div class="reveal trust-pillar group">
+          <div class="trust-pillar-shine"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-7">
+              <div class="flex items-center gap-3">
+                <div class="trust-pillar-icon trust-pillar-icon-yellow">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <circle cx="12" cy="12" r="9" stroke-linejoin="round"/>
+                    <path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18" stroke-opacity=".55"/>
+                  </svg>
+                </div>
+                <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-yellow font-bold">Residency</span>
+              </div>
+              <span class="font-mono text-[10px] text-white/30">01 / 02</span>
+            </div>
+            <h3 class="text-3xl sm:text-[34px] font-semibold tracking-tight mb-7 text-white leading-[1.1] balance" style="letter-spacing:-0.025em;">Residency you choose,<br/><span style="background:linear-gradient(110deg,#FCD34D 0%,#FFFFFF 60%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">never guessed.</span></h3>
+            <ul class="space-y-px">
+              <li class="trust-row">
+                <span class="trust-row-num text-yellow">01</span>
+                <div><span class="font-semibold text-white">Two regions.</span> <span class="text-white/65">Pick US-East or EU-Central at the workspace level. Cross-region routing is opt-in only.</span></div>
+              </li>
+              <li class="trust-row">
+                <span class="trust-row-num text-yellow">02</span>
+                <div><span class="font-semibold text-white">Single-tenant capacity.</span> <span class="text-white/65">Enterprise workspaces run on isolated capacity, not shared with anyone else.</span></div>
+              </li>
+              <li class="trust-row">
+                <span class="trust-row-num text-yellow">03</span>
+                <div><span class="font-semibold text-white">Customer-controlled retention.</span> <span class="text-white/65">Set the lifetime of every conversation, attachment, and agent run.</span></div>
+              </li>
+              <li class="trust-row">
+                <span class="trust-row-num text-yellow">04</span>
+                <div><span class="font-semibold text-white">Audit logs.</span> <span class="text-white/65">Every action, every actor, exportable to your SIEM.</span></div>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="reveal border border-white/10 rounded-2xl p-8 sm:p-10 backdrop-blur-sm">
-          <p class="h-eyebrow text-red mb-5">How your data is handled</p>
-          <h3 class="text-3xl font-bold tracking-tight mb-5 balance">Your inputs are not our training set.</h3>
-          <ul class="space-y-4 text-sm text-white/70">
-            <li class="flex gap-3"><span class="text-red font-bold flex-shrink-0">01</span><div><span class="font-semibold text-white">Zero training</span> — what you write into HelveX is never used to improve our models. Ever.</div></li>
-            <li class="flex gap-3"><span class="text-red font-bold flex-shrink-0">02</span><div><span class="font-semibold text-white">Zero retention mode</span> — Enterprise can opt into immediate deletion after a response is delivered.</div></li>
-            <li class="flex gap-3"><span class="text-red font-bold flex-shrink-0">03</span><div><span class="font-semibold text-white">Encryption everywhere</span> — TLS 1.3 in flight, AES-256 at rest, key rotation on by default.</div></li>
-            <li class="flex gap-3"><span class="text-red font-bold flex-shrink-0">04</span><div><span class="font-semibold text-white">Signed DPA</span> — sub-processor list, breach SLAs, deletion guarantees, available before you sign.</div></li>
-          </ul>
+
+        <div class="reveal trust-pillar group">
+          <div class="trust-pillar-shine"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-7">
+              <div class="flex items-center gap-3">
+                <div class="trust-pillar-icon trust-pillar-icon-red">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <rect x="4" y="10" width="16" height="11" rx="2" stroke-linejoin="round"/>
+                    <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke-linejoin="round"/>
+                    <circle cx="12" cy="15.5" r="1.5" fill="currentColor" stroke="none"/>
+                  </svg>
+                </div>
+                <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-red font-bold" style="filter:brightness(1.4);">Privacy</span>
+              </div>
+              <span class="font-mono text-[10px] text-white/30">02 / 02</span>
+            </div>
+            <h3 class="text-3xl sm:text-[34px] font-semibold tracking-tight mb-7 text-white leading-[1.1] balance" style="letter-spacing:-0.025em;">Your inputs are not<br/><span style="background:linear-gradient(110deg,#FCA5A5 0%,#FFFFFF 60%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">our training set.</span></h3>
+            <ul class="space-y-px">
+              <li class="trust-row">
+                <span class="trust-row-num text-red" style="filter:brightness(1.4);">01</span>
+                <div><span class="font-semibold text-white">Zero training.</span> <span class="text-white/65">What you write into HelveX is never used to improve our models. Ever.</span></div>
+              </li>
+              <li class="trust-row">
+                <span class="trust-row-num text-red" style="filter:brightness(1.4);">02</span>
+                <div><span class="font-semibold text-white">Zero retention mode.</span> <span class="text-white/65">Enterprise can opt into immediate deletion after a response is delivered.</span></div>
+              </li>
+              <li class="trust-row">
+                <span class="trust-row-num text-red" style="filter:brightness(1.4);">03</span>
+                <div><span class="font-semibold text-white">Encryption everywhere.</span> <span class="text-white/65">TLS 1.3 in flight, AES-256 at rest, key rotation on by default.</span></div>
+              </li>
+              <li class="trust-row">
+                <span class="trust-row-num text-red" style="filter:brightness(1.4);">04</span>
+                <div><span class="font-semibold text-white">Signed DPA.</span> <span class="text-white/65">Sub-processor list, breach SLAs, deletion guarantees, available before you sign.</span></div>
+              </li>
+            </ul>
+          </div>
         </div>
+
       </div>
 
-      <!-- Reach row -->
-      <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-8 py-10 sm:py-12 border-y border-white/10">
-        <div>
-          <div class="text-3xl sm:text-4xl font-extrabold tracking-tightest text-white mb-1">300+</div>
-          <div class="text-xs uppercase tracking-widest text-white/50 font-bold">enterprise teams</div>
+      <!-- REACH STRIP — premium stat row -->
+      <div class="reveal relative rounded-2xl border border-white/10 bg-white/[.025] backdrop-blur-sm overflow-hidden">
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
+        <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/5">
+          <div class="p-7 sm:p-9 relative group hover:bg-white/[.02] transition-colors">
+            <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">enterprise teams</p>
+            <p class="text-4xl sm:text-5xl font-semibold tracking-tightest text-white" style="letter-spacing:-0.04em;">300<span class="text-yellow">+</span></p>
+            <p class="text-[11px] text-white/40 mt-2 font-mono">across 42 countries</p>
+          </div>
+          <div class="p-7 sm:p-9 relative group hover:bg-white/[.02] transition-colors">
+            <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">data residency</p>
+            <p class="text-4xl sm:text-5xl font-semibold tracking-tightest text-white" style="letter-spacing:-0.04em;">3 <span class="text-2xl sm:text-3xl text-white/60">regions</span></p>
+            <p class="text-[11px] text-white/40 mt-2 font-mono">EU · US · APAC</p>
+          </div>
+          <div class="p-7 sm:p-9 relative group hover:bg-white/[.02] transition-colors">
+            <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">uptime SLA</p>
+            <p class="text-4xl sm:text-5xl font-semibold tracking-tightest text-white" style="letter-spacing:-0.04em;">99.99<span class="text-yellow">%</span></p>
+            <p class="text-[11px] text-white/40 mt-2 font-mono">12-month rolling</p>
+          </div>
+          <div class="p-7 sm:p-9 relative group hover:bg-white/[.02] transition-colors">
+            <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">independent audit</p>
+            <p class="text-4xl sm:text-5xl font-semibold tracking-tightest" style="letter-spacing:-0.04em;background:linear-gradient(110deg,#FCD34D 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Annual</p>
+            <p class="text-[11px] text-white/40 mt-2 font-mono">+ 2× pen-test / year</p>
+          </div>
         </div>
-        <div>
-          <div class="text-3xl sm:text-4xl font-extrabold tracking-tightest text-white mb-1">2 regions</div>
-          <div class="text-xs uppercase tracking-widest text-white/50 font-bold">data residency</div>
-        </div>
-        <div>
-          <div class="text-3xl sm:text-4xl font-extrabold tracking-tightest text-white mb-1">99.99%</div>
-          <div class="text-xs uppercase tracking-widest text-white/50 font-bold">uptime SLA</div>
-        </div>
-        <div>
-          <div class="text-3xl sm:text-4xl font-extrabold tracking-tightest text-yellow mb-1">Annual</div>
-          <div class="text-xs uppercase tracking-widest text-white/50 font-bold">independent audit</div>
-        </div>
+        <div class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"></div>
       </div>
 
     </div>
