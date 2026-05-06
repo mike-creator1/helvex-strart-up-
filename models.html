@@ -70,25 +70,30 @@
   <!-- ════════ NAV ════════ -->
   <header class="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-line">
     <nav class="max-w-7xl mx-auto px-6 sm:px-8 h-16 sm:h-[68px] flex items-center justify-between gap-4">
-      <a href="/" class="brand-mark text-xl sm:text-[22px] flex items-center gap-2 flex-shrink-0">
-        <svg class="w-6 h-6 sm:w-[26px] sm:h-[26px]" viewBox="0 0 24 24" fill="none"><path d="M4 4h4v16H4V4zm12 0h4v16h-4V4zM8 11h8v2H8v-2z" fill="currentColor"/></svg>
-        Helve<span class="x">X</span>
-      </a>
-      <div class="hidden lg:flex items-center gap-1" id="nav-main">
-        <a href="/" class="nav-link">Home</a>
-        <a href="/models" class="nav-link is-active">Models</a>
-        <a href="/workspace" class="nav-link">Workspace</a>
-        <a href="/research" class="nav-link">Research</a>
-        <a href="/updates" class="nav-link">Updates</a>
-      </div>      <button type="button" class="mobile-menu-trigger lg:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>      <div class="flex items-center gap-1 sm:gap-2">
+      <div class="flex items-center gap-6 lg:gap-10">
+        <a href="/" class="brand-mark text-xl sm:text-[22px] flex items-center gap-2 flex-shrink-0">
+          <svg class="w-6 h-6 sm:w-[26px] sm:h-[26px]" viewBox="0 0 24 24" fill="none"><path d="M4 4h4v16H4V4zm12 0h4v16h-4V4zM8 11h8v2H8v-2z" fill="currentColor"/></svg>
+          Helve<span class="x">X</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1" id="nav-main">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/models" class="nav-link is-active">Models</a>
+          <a href="/workspace" class="nav-link">Workspace</a>
+          <a href="/research" class="nav-link">Research</a>
+          <a href="/updates" class="nav-link">Updates</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" class="mobile-menu-trigger lg:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
         <a href="/signup.html" class="hidden sm:inline-flex text-[14px] font-medium text-ink-mid hover:text-ink px-3 py-2 transition-colors">Sign in</a>
         <a href="/signup.html" class="btn-primary inline-flex items-center gap-1.5 bg-ink hover:bg-ink-soft text-white text-[13px] font-semibold px-4 py-2.5 rounded-full transition-colors btn-shadow">
           Enter Platform
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
-    </nav>
-  </header>
+    </nav>  </header>
 
   <!-- ════════ MOBILE MENU DRAWER ════════ -->
   <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Site navigation">
@@ -310,6 +315,314 @@
           <div class="flex items-center gap-3"><span class="text-xs text-ink-mid w-28">Tool use</span><div class="flex-1 h-1.5 bg-line rounded-full overflow-hidden"><div class="h-full bg-ink rounded-full" style="width:94%"></div></div><span class="text-xs font-mono text-ink-light w-8 text-right">94</span></div>
           <div class="flex items-center gap-3"><span class="text-xs text-ink-mid w-28">Reasoning</span><div class="flex-1 h-1.5 bg-line rounded-full overflow-hidden"><div class="h-full bg-ink rounded-full" style="width:88%"></div></div><span class="text-xs font-mono text-ink-light w-8 text-right">88</span></div>
           <div class="flex items-center gap-3"><span class="text-xs text-ink-mid w-28">Reliability</span><div class="flex-1 h-1.5 bg-line rounded-full overflow-hidden"><div class="h-full bg-ink rounded-full" style="width:95%"></div></div><span class="text-xs font-mono text-ink-light w-8 text-right">95</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ DECISION MATRIX ════════ -->
+  <section class="border-y border-line bg-cream/40 py-20 sm:py-28">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-14 sm:mb-16">
+        <p class="section-mark mb-5">Which one for the work</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">A practical decision matrix.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Every task has a shape. The wrong model is rarely "wrong" in the abstract — it is wrong for what the work actually demands. Use the matrix below as a starting point. The router will agree with most of these defaults; you are free to override any of them.
+        </p>
+      </div>
+
+      <div class="reveal overflow-x-auto -mx-6 sm:-mx-8 px-6 sm:px-8">
+        <table class="w-full min-w-[820px] text-left text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-line">
+              <th class="py-4 pr-6 font-semibold text-ink-mid w-64">If the work is …</th>
+              <th class="py-4 px-4 font-semibold text-ink-mid">Pick</th>
+              <th class="py-4 px-4 font-semibold text-ink-mid">Why</th>
+              <th class="py-4 pl-4 font-semibold text-ink-mid w-44">Cost shape</th>
+            </tr>
+          </thead>
+          <tbody class="text-ink-soft align-top">
+            <tr class="border-b border-line-soft">
+              <td class="py-5 pr-6 font-semibold text-ink">High-volume support, drafting, voice</td>
+              <td class="py-5 px-4"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-yellow"></span>Ether</span></td>
+              <td class="py-5 px-4 text-ink-soft">Latency dominates the experience; depth matters less than feeling instant.</td>
+              <td class="py-5 pl-4 font-mono text-xs text-ink-mid">low · per-token</td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-5 pr-6 font-semibold text-ink">Investment briefs, regulatory analysis</td>
+              <td class="py-5 px-4"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red"></span>Nexus</span></td>
+              <td class="py-5 px-4 text-ink-soft">Long-context reading with cited claims; the answer has to defend itself.</td>
+              <td class="py-5 pl-4 font-mono text-xs text-ink-mid">medium · per-turn</td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-5 pr-6 font-semibold text-ink">Operational workflows across tools</td>
+              <td class="py-5 px-4"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-ink"></span>Prometheus</span></td>
+              <td class="py-5 px-4 text-ink-soft">Multi-step planning, tool use, approval gates, and a replayable trace.</td>
+              <td class="py-5 pl-4 font-mono text-xs text-ink-mid">higher · per-run</td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-5 pr-6 font-semibold text-ink">Math, proofs, multi-step derivations</td>
+              <td class="py-5 px-4"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red"></span>Nexus</span></td>
+              <td class="py-5 px-4 text-ink-soft">Adaptive depth lets it spend the budget where the chain is hardest.</td>
+              <td class="py-5 pl-4 font-mono text-xs text-ink-mid">medium · per-turn</td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-5 pr-6 font-semibold text-ink">Live translation, captioning, dictation</td>
+              <td class="py-5 px-4"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-yellow"></span>Ether</span></td>
+              <td class="py-5 px-4 text-ink-soft">Streaming-first audio path; speaker timing preserved on voice replies.</td>
+              <td class="py-5 pl-4 font-mono text-xs text-ink-mid">low · per-second</td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-5 pr-6 font-semibold text-ink">Code review, repo-wide refactors</td>
+              <td class="py-5 px-4"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-ink"></span>Prometheus</span></td>
+              <td class="py-5 px-4 text-ink-soft">Reads the tree, runs tests, proposes a patch a reviewer can defend.</td>
+              <td class="py-5 pl-4 font-mono text-xs text-ink-mid">higher · per-run</td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-5 pr-6 font-semibold text-ink">Single-file edits, focused snippets</td>
+              <td class="py-5 px-4"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-yellow"></span>Ether</span></td>
+              <td class="py-5 px-4 text-ink-soft">Short context, fast feedback loop; calls Nexus for tricky reasoning blocks.</td>
+              <td class="py-5 pl-4 font-mono text-xs text-ink-mid">low · per-token</td>
+            </tr>
+            <tr>
+              <td class="py-5 pr-6 font-semibold text-ink">Overnight research investigations</td>
+              <td class="py-5 px-4"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-ink"></span>Prometheus</span></td>
+              <td class="py-5 px-4 text-ink-soft">Hours-long horizon, branching sub-agents, replay you can audit at standup.</td>
+              <td class="py-5 pl-4 font-mono text-xs text-ink-mid">higher · per-run</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="reveal text-xs text-ink-light mt-6 max-w-3xl">
+        Cost shape describes the dominant unit of pricing for the model in this mode of work. Exact rates appear in the workspace's billing view; volume discounts and committed-use pricing are negotiated separately for Team and Enterprise plans.
+      </p>
+    </div>
+  </section>
+
+  <!-- ════════ BENCHMARKS ════════ -->
+  <section class="py-20 sm:py-28">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-14 sm:mb-16">
+        <p class="section-mark mb-5">The numbers</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Internal benchmarks, ranked.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          We evaluate every release on an internal suite that mirrors the work our customers actually run. The relative ordering on any given benchmark is a better guide than the absolute number — both numbers will drift as we improve them. The leader column highlights the model we'd pick today for that family of work.
+        </p>
+      </div>
+
+      <div class="reveal overflow-x-auto -mx-6 sm:-mx-8 px-6 sm:px-8">
+        <table class="w-full min-w-[760px] text-left text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-line">
+              <th class="py-4 pr-6 font-semibold text-ink-mid w-72">Benchmark</th>
+              <th class="py-4 px-4 font-semibold text-ink-mid text-right">Ether</th>
+              <th class="py-4 px-4 font-semibold text-ink-mid text-right">Nexus</th>
+              <th class="py-4 px-4 font-semibold text-ink-mid text-right">Prometheus</th>
+              <th class="py-4 pl-4 font-semibold text-ink-mid">Leader</th>
+            </tr>
+          </thead>
+          <tbody class="text-ink-soft font-mono text-[13px]">
+            <tr class="border-b border-line-soft">
+              <td class="py-4 pr-6 font-semibold text-ink font-sans">First-token latency (p50, ms)</td>
+              <td class="py-4 px-4 text-right text-ink font-bold">96</td>
+              <td class="py-4 px-4 text-right">1180</td>
+              <td class="py-4 px-4 text-right">820</td>
+              <td class="py-4 pl-4 font-sans"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-yellow"></span>Ether</span></td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-4 pr-6 font-semibold text-ink font-sans">Long-context recall (1M tokens, %)</td>
+              <td class="py-4 px-4 text-right">—</td>
+              <td class="py-4 px-4 text-right text-ink font-bold">94.6</td>
+              <td class="py-4 px-4 text-right">88.2</td>
+              <td class="py-4 pl-4 font-sans"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red"></span>Nexus</span></td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-4 pr-6 font-semibold text-ink font-sans">Cited-claim accuracy (HVX-Cite, %)</td>
+              <td class="py-4 px-4 text-right">71.4</td>
+              <td class="py-4 px-4 text-right text-ink font-bold">93.1</td>
+              <td class="py-4 px-4 text-right">87.5</td>
+              <td class="py-4 pl-4 font-sans"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red"></span>Nexus</span></td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-4 pr-6 font-semibold text-ink font-sans">Multi-step math (HVX-Math, %)</td>
+              <td class="py-4 px-4 text-right">62.0</td>
+              <td class="py-4 px-4 text-right text-ink font-bold">89.4</td>
+              <td class="py-4 px-4 text-right">82.7</td>
+              <td class="py-4 pl-4 font-sans"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red"></span>Nexus</span></td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-4 pr-6 font-semibold text-ink font-sans">Tool-use success (HVX-Agent, %)</td>
+              <td class="py-4 px-4 text-right">69.8</td>
+              <td class="py-4 px-4 text-right">85.6</td>
+              <td class="py-4 px-4 text-right text-ink font-bold">93.7</td>
+              <td class="py-4 pl-4 font-sans"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-ink"></span>Prometheus</span></td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-4 pr-6 font-semibold text-ink font-sans">Long-horizon completion (8h, %)</td>
+              <td class="py-4 px-4 text-right">—</td>
+              <td class="py-4 px-4 text-right">61.2</td>
+              <td class="py-4 px-4 text-right text-ink font-bold">86.4</td>
+              <td class="py-4 pl-4 font-sans"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-ink"></span>Prometheus</span></td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-4 pr-6 font-semibold text-ink font-sans">Coding (HVX-Code, %)</td>
+              <td class="py-4 px-4 text-right">74.5</td>
+              <td class="py-4 px-4 text-right">88.0</td>
+              <td class="py-4 px-4 text-right text-ink font-bold">91.2</td>
+              <td class="py-4 pl-4 font-sans"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-ink"></span>Prometheus</span></td>
+            </tr>
+            <tr class="border-b border-line-soft">
+              <td class="py-4 pr-6 font-semibold text-ink font-sans">Multilingual (HVX-Multi, 28 langs)</td>
+              <td class="py-4 px-4 text-right text-ink font-bold">90.1</td>
+              <td class="py-4 px-4 text-right">88.7</td>
+              <td class="py-4 px-4 text-right">84.4</td>
+              <td class="py-4 pl-4 font-sans"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-yellow"></span>Ether</span></td>
+            </tr>
+            <tr>
+              <td class="py-4 pr-6 font-semibold text-ink font-sans">Refusal calibration (HVX-Safety, %)</td>
+              <td class="py-4 px-4 text-right">94.2</td>
+              <td class="py-4 px-4 text-right text-ink font-bold">96.8</td>
+              <td class="py-4 px-4 text-right">95.5</td>
+              <td class="py-4 pl-4 font-sans"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red"></span>Nexus</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="reveal grid sm:grid-cols-3 gap-4 mt-10">
+        <div class="rounded-xl border border-line p-5 bg-white">
+          <p class="h-eyebrow text-yellow-deep mb-2">HVX-Cite</p>
+          <p class="text-sm text-ink-soft leading-relaxed">A 1,200-question evaluation that scores both the correctness of an answer and the quality of every citation supporting it.</p>
+        </div>
+        <div class="rounded-xl border border-line p-5 bg-white">
+          <p class="h-eyebrow text-red mb-2">HVX-Agent</p>
+          <p class="text-sm text-ink-soft leading-relaxed">Three-tool, four-tool, and seven-tool agentic tasks with adversarial sub-goals; success measured at the workflow level, not the step level.</p>
+        </div>
+        <div class="rounded-xl border border-line p-5 bg-white">
+          <p class="h-eyebrow text-ink mb-2">HVX-Safety</p>
+          <p class="text-sm text-ink-soft leading-relaxed">Adversarial prompts, gray-area requests, and benign look-alikes; we measure both refusal rate and over-refusal rate together.</p>
+        </div>
+      </div>
+
+      <p class="reveal text-xs text-ink-light mt-6 max-w-3xl">
+        Numbers are pulled from internal evaluations on the current production checkpoints and refresh with each release. Where a model is not designed for a benchmark family, we show "—" rather than a low number that misrepresents the model's purpose.
+      </p>
+    </div>
+  </section>
+
+  <!-- ════════ ARCHITECTURE & TRAINING ════════ -->
+  <section class="border-y border-line bg-cream/40 py-20 sm:py-28">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-14 sm:mb-16">
+        <p class="section-mark mb-5">Under the hood</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">How they're built.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Three models, three different design briefs. We publish the specs we can speak to and keep the rest under research review until the work is mature enough to defend in writing.
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-5">
+        <!-- Ether -->
+        <div class="reveal rounded-2xl border border-line bg-white p-7 flex flex-col">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-9 h-9 rounded-lg bg-yellow flex items-center justify-center"><svg class="w-4 h-4 text-ink" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+            <h3 class="text-lg font-bold tracking-tight">Ether</h3>
+          </div>
+          <dl class="space-y-3 text-sm">
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Architecture</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Sparse mixture-of-experts</dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Active params</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">~ 12B / turn</dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Training data</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Web · code · audio · 28 langs</dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Knowledge cutoff</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Feb 2026</dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Native modes</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Text · voice · vision</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-ink-mid">Serving regions</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">EU · US · APAC</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Nexus -->
+        <div class="reveal rounded-2xl border border-line bg-white p-7 flex flex-col">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-9 h-9 rounded-lg bg-red flex items-center justify-center"><svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <h3 class="text-lg font-bold tracking-tight">Nexus</h3>
+          </div>
+          <dl class="space-y-3 text-sm">
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Architecture</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Dense + adaptive depth</dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Compute / token</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Variable, gated by uncertainty</dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Training data</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Curated corpora · cite-grounded RL</dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Knowledge cutoff</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Mar 2026</dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Native modes</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Citations · tables · charts</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-ink-mid">Serving regions</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">EU · US · APAC</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Prometheus -->
+        <div class="reveal rounded-2xl border border-line bg-white p-7 flex flex-col">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-9 h-9 rounded-lg bg-ink flex items-center justify-center"><svg class="w-4 h-4 text-yellow" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7l3-7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+            <h3 class="text-lg font-bold tracking-tight">Prometheus</h3>
+          </div>
+          <dl class="space-y-3 text-sm">
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Architecture</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Planner + executor + critic</dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Run horizon</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Up to 8 h, replayable</dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Training data</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Tool-use traces · process reward</dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Knowledge cutoff</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Feb 2026 (live web in run)</dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-line-soft pb-3">
+              <dt class="text-ink-mid">Native modes</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">Web · files · screen · code</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-ink-mid">Serving regions</dt>
+              <dd class="font-mono text-[12px] text-ink text-right">EU · US · APAC</dd>
+            </div>
+          </dl>
         </div>
       </div>
     </div>

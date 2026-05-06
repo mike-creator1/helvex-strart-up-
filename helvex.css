@@ -235,6 +235,41 @@
       .mobile-menu, .mobile-menu-panel, .mobile-menu-link::after { transition: none !important; }
     }
 
+    /* ── Research publications filter ─────────────────────────── */
+    .pub-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border: 1px solid #E5E5E5;
+      border-radius: 9999px;
+      background: #ffffff;
+      color: #525252;
+      font: 500 12.5px/1 'Inter', sans-serif;
+      letter-spacing: -0.005em;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .pub-filter:hover { border-color: #0A0A0A; color: #0A0A0A; }
+    .pub-filter:focus-visible { outline: none; border-color: #0A0A0A; }
+    .pub-filter-active {
+      background: #0A0A0A;
+      color: #ffffff;
+      border-color: #0A0A0A;
+    }
+    .pub-filter-active:hover { background: #171717; color: #ffffff; }
+    .pub-filter-count {
+      font: 700 10px/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      letter-spacing: 0.04em;
+      opacity: 0.7;
+    }
+    .pub-card {
+      transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s, box-shadow 0.5s;
+    }
+    .pub-card.is-hidden {
+      display: none;
+    }
+
     /* ── Top nav (simple links) ───────────────────────────────── */
     .nav-link {
       display: inline-flex;

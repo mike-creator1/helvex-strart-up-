@@ -29,6 +29,33 @@
       }, { passive: true });
     })();
 
+    /* Research publications filter */
+    (function () {
+      var filters = document.querySelectorAll('.pub-filter[data-filter]');
+      var grid    = document.getElementById('publications-grid');
+      if (!filters.length || !grid) return;
+      var cards = grid.querySelectorAll('.pub-card[data-cat]');
+
+      function apply(filter) {
+        cards.forEach(function (card) {
+          if (filter === 'all' || card.getAttribute('data-cat') === filter) {
+            card.classList.remove('is-hidden');
+          } else {
+            card.classList.add('is-hidden');
+          }
+        });
+        filters.forEach(function (b) {
+          b.classList.toggle('pub-filter-active', b.getAttribute('data-filter') === filter);
+        });
+      }
+
+      filters.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          apply(btn.getAttribute('data-filter'));
+        });
+      });
+    })();
+
     /* Mobile nav drawer */
     (function () {
       var trigger = document.querySelector('.mobile-menu-trigger');

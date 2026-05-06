@@ -70,25 +70,30 @@
   <!-- ════════ NAV ════════ -->
   <header class="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-line">
     <nav class="max-w-7xl mx-auto px-6 sm:px-8 h-16 sm:h-[68px] flex items-center justify-between gap-4">
-      <a href="/" class="brand-mark text-xl sm:text-[22px] flex items-center gap-2 flex-shrink-0">
-        <svg class="w-6 h-6 sm:w-[26px] sm:h-[26px]" viewBox="0 0 24 24" fill="none"><path d="M4 4h4v16H4V4zm12 0h4v16h-4V4zM8 11h8v2H8v-2z" fill="currentColor"/></svg>
-        Helve<span class="x">X</span>
-      </a>
-      <div class="hidden lg:flex items-center gap-1" id="nav-main">
-        <a href="/" class="nav-link">Home</a>
-        <a href="/models" class="nav-link">Models</a>
-        <a href="/workspace" class="nav-link">Workspace</a>
-        <a href="/research" class="nav-link">Research</a>
-        <a href="/updates" class="nav-link is-active">Updates</a>
-      </div>      <button type="button" class="mobile-menu-trigger lg:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>      <div class="flex items-center gap-1 sm:gap-2">
+      <div class="flex items-center gap-6 lg:gap-10">
+        <a href="/" class="brand-mark text-xl sm:text-[22px] flex items-center gap-2 flex-shrink-0">
+          <svg class="w-6 h-6 sm:w-[26px] sm:h-[26px]" viewBox="0 0 24 24" fill="none"><path d="M4 4h4v16H4V4zm12 0h4v16h-4V4zM8 11h8v2H8v-2z" fill="currentColor"/></svg>
+          Helve<span class="x">X</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1" id="nav-main">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/models" class="nav-link">Models</a>
+          <a href="/workspace" class="nav-link">Workspace</a>
+          <a href="/research" class="nav-link">Research</a>
+          <a href="/updates" class="nav-link is-active">Updates</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" class="mobile-menu-trigger lg:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
         <a href="/signup.html" class="hidden sm:inline-flex text-[14px] font-medium text-ink-mid hover:text-ink px-3 py-2 transition-colors">Sign in</a>
         <a href="/signup.html" class="btn-primary inline-flex items-center gap-1.5 bg-ink hover:bg-ink-soft text-white text-[13px] font-semibold px-4 py-2.5 rounded-full transition-colors btn-shadow">
           Enter Platform
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
-    </nav>
-  </header>
+    </nav>  </header>
 
   <!-- ════════ MOBILE MENU DRAWER ════════ -->
   <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Site navigation">
