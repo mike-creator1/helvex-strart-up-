@@ -862,3 +862,255 @@
       .brand-logo:hover { transform: none; filter: none; }
       .brand-logo:hover::before { display: none; }
     }
+
+    /* ════════════════════════════════════════════════════════════════════
+       TECH-GRADE HOMEPAGE — backdrop, glow, glassmorphic, gradients
+       ════════════════════════════════════════════════════════════════════ */
+
+    /* Aurora mesh — soft pink/yellow/red blobs that paint the body backdrop
+       behind hero, models, and CTA sections. */
+    .tech-aurora {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .tech-aurora::before,
+    .tech-aurora::after,
+    .tech-aurora .blob {
+      content: '';
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(80px);
+      mix-blend-mode: multiply;
+      opacity: .55;
+      will-change: transform;
+    }
+    .tech-aurora::before {
+      width: 620px; height: 620px;
+      top: -180px; left: -120px;
+      background: radial-gradient(closest-side, rgba(254, 226, 226, .95), rgba(254, 226, 226, 0));
+      animation: aurora-drift-1 22s ease-in-out infinite;
+    }
+    .tech-aurora::after {
+      width: 540px; height: 540px;
+      bottom: -160px; right: -120px;
+      background: radial-gradient(closest-side, rgba(254, 243, 199, .9), rgba(254, 243, 199, 0));
+      animation: aurora-drift-2 28s ease-in-out infinite;
+    }
+    .tech-aurora .blob {
+      width: 480px; height: 480px;
+      top: 30%; left: 45%;
+      background: radial-gradient(closest-side, rgba(220, 38, 38, .18), rgba(220, 38, 38, 0));
+      animation: aurora-drift-3 18s ease-in-out infinite;
+    }
+    @keyframes aurora-drift-1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50%      { transform: translate(80px, 60px) scale(1.1); }
+    }
+    @keyframes aurora-drift-2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50%      { transform: translate(-60px, -40px) scale(1.15); }
+    }
+    @keyframes aurora-drift-3 {
+      0%, 100% { transform: translate(0, 0) scale(.9); opacity: .35; }
+      50%      { transform: translate(-100px, 50px) scale(1.2); opacity: .55; }
+    }
+
+    /* Subtle dotted-grid backdrop layered above the aurora */
+    .tech-grid {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(10,10,10,0.07) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Glassmorphic card surface — used for premium tile look */
+    .tech-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,255,255,0.78));
+      border: 1px solid rgba(10,10,10,0.08);
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.7) inset,
+        0 24px 60px -30px rgba(10,10,10,0.18);
+      transition: transform .35s cubic-bezier(.2,.7,.25,1), box-shadow .35s ease, border-color .35s ease;
+    }
+    .tech-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(220,38,38,0.25);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.7) inset,
+        0 36px 80px -28px rgba(220,38,38,0.18),
+        0 0 0 1px rgba(220,38,38,0.08);
+    }
+    .tech-card-dark {
+      background: linear-gradient(135deg, rgba(20,20,22,0.96), rgba(10,10,10,0.92));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #FAFAF7;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.05) inset,
+        0 30px 70px -28px rgba(0,0,0,0.55);
+    }
+
+    /* Soft pink section wash + yellow band variant */
+    .tech-wash-pink {
+      background:
+        radial-gradient(1200px 600px at 12% 0%, rgba(254,226,226,0.55), transparent 55%),
+        radial-gradient(900px 500px at 100% 100%, rgba(254,243,199,0.5), transparent 55%),
+        #FFFFFF;
+    }
+    .tech-wash-soft {
+      background:
+        radial-gradient(800px 400px at 50% 0%, rgba(254,226,226,0.35), transparent 60%),
+        #FFFFFF;
+    }
+    .tech-wash-blush {
+      background:
+        radial-gradient(900px 500px at 80% 20%, rgba(254,226,226,0.65), transparent 55%),
+        radial-gradient(700px 400px at 10% 80%, rgba(254,243,199,0.55), transparent 55%),
+        linear-gradient(180deg, #FFF8F8, #FFFCF4);
+    }
+
+    /* Glowing red dot for "live"/"online" indicators */
+    .tech-live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #DC2626;
+      box-shadow: 0 0 0 0 rgba(220,38,38,0.55);
+      animation: live-dot 1.8s cubic-bezier(.4,0,.2,1) infinite;
+    }
+    @keyframes live-dot {
+      0%   { box-shadow: 0 0 0 0   rgba(220,38,38,0.55); }
+      70%  { box-shadow: 0 0 0 10px rgba(220,38,38,0);   }
+      100% { box-shadow: 0 0 0 0   rgba(220,38,38,0);    }
+    }
+
+    /* Gradient text — pink → red → yellow */
+    .tech-gradient-text {
+      background: linear-gradient(110deg, #DC2626 0%, #F59E0B 60%, #DC2626 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradient-shift 6s ease-in-out infinite;
+    }
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% center; }
+      50%      { background-position: 100% center; }
+    }
+
+    /* CTA button — darker, with red glow on hover */
+    .tech-cta-glow {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .tech-cta-glow::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 9999px;
+      background: linear-gradient(120deg, #DC2626, #FCD34D, #DC2626);
+      background-size: 200% auto;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity .35s ease;
+      animation: gradient-shift 6s ease-in-out infinite;
+    }
+    .tech-cta-glow:hover::before { opacity: 1; }
+    .tech-cta-glow:hover {
+      box-shadow: 0 14px 40px -10px rgba(220,38,38,0.55);
+    }
+
+    /* Eyebrow with corner ticks — premium tech feel */
+    .tech-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #525252;
+    }
+    .tech-eyebrow::before,
+    .tech-eyebrow::after {
+      content: '';
+      width: 18px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #DC2626, transparent);
+    }
+
+    /* Divider with red dot in the middle — section separator */
+    .tech-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 0 auto;
+      max-width: 320px;
+    }
+    .tech-divider::before,
+    .tech-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(10,10,10,.18), transparent);
+    }
+    .tech-divider .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #DC2626;
+      box-shadow: 0 0 12px rgba(220,38,38,0.6);
+    }
+
+    /* Connector line w/ red glow — used in workflow / process diagrams */
+    .tech-connector {
+      position: relative;
+      height: 2px;
+      background: linear-gradient(to right, rgba(220,38,38,0.0), rgba(220,38,38,0.6), rgba(220,38,38,0.0));
+    }
+    .tech-connector::after {
+      content: '';
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      left: 0; right: 0; height: 6px;
+      background: linear-gradient(to right, transparent, rgba(220,38,38,0.25), transparent);
+      filter: blur(4px);
+    }
+
+    /* Code-style label / monospace data tag */
+    .tech-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(254, 226, 226, 0.45);
+      border: 1px solid rgba(220, 38, 38, 0.18);
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #991B1B;
+    }
+
+    /* Reduced motion — kill all aurora drift / gradient shifts */
+    @media (prefers-reduced-motion: reduce) {
+      .tech-aurora::before,
+      .tech-aurora::after,
+      .tech-aurora .blob { animation: none; }
+      .tech-gradient-text,
+      .tech-cta-glow::before { animation: none; }
+      .tech-live-dot { animation: none; }
+    }
