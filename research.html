@@ -135,9 +135,147 @@
         How we think<br />
         <span class="italic font-serif font-normal">about intelligence.</span>
       </h1>
-      <p class="reveal pretty text-base sm:text-xl text-ink-mid max-w-2xl mx-auto leading-relaxed">
-        We share methodology, not magic. The papers, engineering posts, and notes below are how we work in public — what we tried, what worked, and where the answer is still open.
+      <p class="reveal pretty text-base sm:text-xl text-ink-mid max-w-2xl mx-auto leading-relaxed mb-10">
+        Our research direction, written plainly. The principles we work from, the experiments running this quarter, the ideas we are betting on, and the open problems we have not solved yet.
       </p>
+
+      <!-- Quick navigation chips into each section -->
+      <div class="reveal flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 text-[12px]">
+        <a href="#principles" class="bg-white/80 hover:bg-white border border-line text-ink-soft hover:text-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Principles</a>
+        <a href="#how-we-work" class="bg-white/80 hover:bg-white border border-line text-ink-soft hover:text-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">How we work</a>
+        <a href="#areas" class="bg-white/80 hover:bg-white border border-line text-ink-soft hover:text-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Areas</a>
+        <a href="#publications" class="bg-white/80 hover:bg-white border border-line text-ink-soft hover:text-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Publications</a>
+        <a href="#vision" class="bg-white/80 hover:bg-white border border-line text-ink-soft hover:text-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Future</a>
+        <a href="#open-questions" class="bg-white/80 hover:bg-white border border-line text-ink-soft hover:text-ink rounded-full px-3.5 py-1.5 font-medium transition-colors">Open questions</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ PRINCIPLES — research philosophy ════════ -->
+  <section id="principles" class="py-20 sm:py-28 scroll-mt-24">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-14 sm:mb-16">
+        <p class="section-mark mb-5">Principles</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">What we believe about AI.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Four ideas shape every research decision we make. They are not slogans — they are the lens we use when we choose what to work on, how to evaluate it, and what we are willing to ship.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-5 sm:gap-6">
+        <div class="reveal rounded-2xl border border-line bg-white p-7 sm:p-9">
+          <div class="flex items-baseline gap-4 mb-5">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-red">Principle 01</span>
+          </div>
+          <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tightest mb-3">Capability with character.</h3>
+          <p class="text-base text-ink-mid leading-relaxed pretty">
+            A model that is more capable should be more honest, more careful, and more useful — not just bigger. We measure character at the same level of seriousness as raw capability, and we will not ship a smarter model that is harder to live with.
+          </p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-7 sm:p-9">
+          <div class="flex items-baseline gap-4 mb-5">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep">Principle 02</span>
+          </div>
+          <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tightest mb-3">Honesty over fluency.</h3>
+          <p class="text-base text-ink-mid leading-relaxed pretty">
+            A confident wrong answer is more harmful than a careful uncertain one. We invest in retrieval grounding, citation traceability, and calibrated uncertainty so that every claim a model makes can be checked, and so that it knows when it should not make one.
+          </p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-7 sm:p-9">
+          <div class="flex items-baseline gap-4 mb-5">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-ink">Principle 03</span>
+          </div>
+          <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tightest mb-3">Useful work, not benchmarks.</h3>
+          <p class="text-base text-ink-mid leading-relaxed pretty">
+            Most public benchmarks reward a narrow definition of "smart." We evaluate on tasks that mirror what our customers actually do — multi-tool agent runs, long-context analysis, real documents — and publish where the public scores do and do not match real-world quality.
+          </p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-7 sm:p-9">
+          <div class="flex items-baseline gap-4 mb-5">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-red-deep">Principle 04</span>
+          </div>
+          <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tightest mb-3">Auditable by default.</h3>
+          <p class="text-base text-ink-mid leading-relaxed pretty">
+            A model people can trust is a model whose work people can read. Every long agent run leaves a replayable trace. Every cited claim links back to the passage. Trust is built by making the inside of the system legible, not by promising it from the outside.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ HOW WE WORK — methodology ════════ -->
+  <section id="how-we-work" class="py-20 sm:py-28 bg-cream/40 border-y border-line scroll-mt-24">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-14 sm:mb-16">
+        <p class="section-mark mb-5">How we work</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">From experiment to product.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Our research lifecycle is short, repeatable, and on-record. Five stages, every project, no exceptions. The point is not the diagram — it's the discipline.
+        </p>
+      </div>
+
+      <ol class="space-y-px">
+        <li class="reveal flex flex-col sm:flex-row gap-5 sm:gap-10 py-7 sm:py-8 border-b border-line">
+          <div class="sm:w-44 flex-shrink-0">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Stage 01</span>
+            <p class="text-2xl sm:text-3xl font-extrabold tracking-tightest mt-1">Hypothesis</p>
+          </div>
+          <div class="flex-1">
+            <p class="text-base text-ink-mid leading-relaxed pretty mb-3">
+              Every project starts with one written sentence: the claim we are trying to test, the population it should hold for, and the precise way we will know if we are wrong. The sentence lives in the project root and gets updated as the work progresses.
+            </p>
+            <p class="text-xs font-mono text-ink-light"><span class="text-ink-soft">Output:</span> a hypothesis doc · 1 page · reviewed weekly</p>
+          </div>
+        </li>
+        <li class="reveal flex flex-col sm:flex-row gap-5 sm:gap-10 py-7 sm:py-8 border-b border-line">
+          <div class="sm:w-44 flex-shrink-0">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Stage 02</span>
+            <p class="text-2xl sm:text-3xl font-extrabold tracking-tightest mt-1">Experiment</p>
+          </div>
+          <div class="flex-1">
+            <p class="text-base text-ink-mid leading-relaxed pretty mb-3">
+              We design the smallest experiment that can falsify the hypothesis. Pre-registered eval set, frozen baseline, single variable changed. If a result is going to be reported, the experiment that produced it must be reproducible by another team member from the spec alone.
+            </p>
+            <p class="text-xs font-mono text-ink-light"><span class="text-ink-soft">Output:</span> a runnable repo · pre-registered eval · weekly results log</p>
+          </div>
+        </li>
+        <li class="reveal flex flex-col sm:flex-row gap-5 sm:gap-10 py-7 sm:py-8 border-b border-line">
+          <div class="sm:w-44 flex-shrink-0">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Stage 03</span>
+            <p class="text-2xl sm:text-3xl font-extrabold tracking-tightest mt-1">Build</p>
+          </div>
+          <div class="flex-1">
+            <p class="text-base text-ink-mid leading-relaxed pretty mb-3">
+              If the experiment supports the hypothesis, the next step is a real implementation behind a feature flag. Engineering and research sit in the same room from this point on. The goal is to get the change in front of internal users so the failure modes show up early.
+            </p>
+            <p class="text-xs font-mono text-ink-light"><span class="text-ink-soft">Output:</span> a flagged build · internal canary · failure mode log</p>
+          </div>
+        </li>
+        <li class="reveal flex flex-col sm:flex-row gap-5 sm:gap-10 py-7 sm:py-8 border-b border-line">
+          <div class="sm:w-44 flex-shrink-0">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Stage 04</span>
+            <p class="text-2xl sm:text-3xl font-extrabold tracking-tightest mt-1">Measure</p>
+          </div>
+          <div class="flex-1">
+            <p class="text-base text-ink-mid leading-relaxed pretty mb-3">
+              Before anything ships, we measure the change against the eval that was registered in stage two — and against a separate held-out set chosen by a colleague who was not on the project. We do not move forward on improvements that show up only on the eval we designed for ourselves.
+            </p>
+            <p class="text-xs font-mono text-ink-light"><span class="text-ink-soft">Output:</span> a written eval report · holdout numbers · safety review</p>
+          </div>
+        </li>
+        <li class="reveal flex flex-col sm:flex-row gap-5 sm:gap-10 py-7 sm:py-8">
+          <div class="sm:w-44 flex-shrink-0">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Stage 05</span>
+            <p class="text-2xl sm:text-3xl font-extrabold tracking-tightest mt-1">Publish</p>
+          </div>
+          <div class="flex-1">
+            <p class="text-base text-ink-mid leading-relaxed pretty mb-3">
+              Whether the project shipped or didn't, we write up what happened. Successful work becomes a paper or an engineering post; work that failed becomes a note. Either way, the result lives on this page so anyone can read what we tried and why.
+            </p>
+            <p class="text-xs font-mono text-ink-light"><span class="text-ink-soft">Output:</span> a public paper, post, or note · added to <a href="#publications" class="underline hover:text-ink transition-colors">Publications</a></p>
+          </div>
+        </li>
+      </ol>
     </div>
   </section>
 
@@ -173,13 +311,13 @@
   </section>
 
   <!-- ════════ RESEARCH AREAS ════════ -->
-  <section class="py-20 sm:py-28 bg-cream/40 border-y border-line">
+  <section id="areas" class="py-20 sm:py-28 bg-cream/40 border-y border-line scroll-mt-24">
     <div class="max-w-7xl mx-auto px-6 sm:px-8">
       <div class="max-w-3xl mb-12 sm:mb-16">
-        <p class="reveal section-mark mb-7">Areas</p>
-        <h2 class="reveal h-section balance text-4xl sm:text-5xl mb-5">What we work on.</h2>
+        <p class="reveal section-mark mb-7">Areas of focus</p>
+        <h2 class="reveal h-section balance text-4xl sm:text-5xl mb-5">Where we spend the budget.</h2>
         <p class="reveal pretty text-base sm:text-lg text-ink-mid leading-relaxed">
-          Six concentrations across the team. The list isn't exhaustive — it's the work we believe matters most for the next era of capable, honest AI.
+          Six concentrations across the team. The list isn't exhaustive — it's where we believe progress on the next two years of AI most depends on careful, well-instrumented research.
         </p>
       </div>
 
@@ -219,11 +357,14 @@
   </section>
 
   <!-- ════════ PUBLICATIONS GRID ════════ -->
-  <section class="py-20 sm:py-28">
+  <section id="publications" class="py-20 sm:py-28 scroll-mt-24">
     <div class="max-w-7xl mx-auto px-6 sm:px-8">
       <div class="mb-10 sm:mb-12">
         <p class="reveal section-mark mb-7">Publications</p>
-        <h2 class="reveal h-section balance text-4xl sm:text-5xl mb-8">Recent work, in our own words.</h2>
+        <h2 class="reveal h-section balance text-4xl sm:text-5xl mb-5">Recent work, in our own words.</h2>
+        <p class="reveal pretty text-base sm:text-lg text-ink-mid leading-relaxed max-w-2xl mb-8">
+          Twelve papers, engineering posts, and notes from the last twelve months. <span class="font-semibold text-ink">Papers</span> document new methods. <span class="font-semibold text-ink">Engineering</span> posts explain how we built things. <span class="font-semibold text-ink">Notes</span> are short, opinionated takes — sometimes about work that didn't ship.
+        </p>
 
         <!-- Filter bar -->
         <div class="reveal flex flex-wrap items-center gap-2 sm:gap-3 text-[12px]">
@@ -408,8 +549,95 @@
     </div>
   </section>
 
+  <!-- ════════ FUTURE VISION ════════ -->
+  <section id="vision" class="py-20 sm:py-28 bg-cream/40 border-y border-line scroll-mt-24">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-14 sm:mb-16">
+        <p class="section-mark mb-5">Future vision</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Where we are taking the work.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Three horizons we are building toward. The 12-month items are funded, staffed, and on the roadmap. The 24-month items are research we believe we can land but have not committed to. The long-term items are the questions that will define this decade of AI — we expect to be wrong about some of them.
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-5 sm:gap-6">
+        <!-- 12 months -->
+        <div class="reveal rounded-2xl border border-line bg-white overflow-hidden">
+          <div class="bg-yellow/15 border-b border-line p-6">
+            <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-2">Horizon 01 · 12 months</p>
+            <h3 class="text-xl sm:text-2xl font-extrabold tracking-tightest">Reliable agents at scale.</h3>
+          </div>
+          <div class="p-6 sm:p-7 space-y-5">
+            <div>
+              <p class="text-sm font-semibold text-ink mb-1.5">8-hour run reliability ≥ 90%</p>
+              <p class="text-sm text-ink-mid leading-relaxed">A single Prometheus run that goes the full workday without intervention, on real customer workloads, on a clear majority of attempts.</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-ink mb-1.5">Live retrieval at any context length</p>
+              <p class="text-sm text-ink-mid leading-relaxed">No retrieval cliff at 200 K, 500 K, or 1 M tokens — the same latency and answer quality at every length we serve.</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-ink mb-1.5">Cross-lingual reasoning parity</p>
+              <p class="text-sm text-ink-mid leading-relaxed">Closing the English / non-English gap on reasoning evals to within 3 points across our 28 languages.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 24 months -->
+        <div class="reveal rounded-2xl border border-line bg-white overflow-hidden">
+          <div class="bg-red/10 border-b border-line p-6">
+            <p class="font-mono text-[11px] tracking-widest uppercase text-red mb-2">Horizon 02 · 24 months</p>
+            <h3 class="text-xl sm:text-2xl font-extrabold tracking-tightest">Models that ship their own work.</h3>
+          </div>
+          <div class="p-6 sm:p-7 space-y-5">
+            <div>
+              <p class="text-sm font-semibold text-ink mb-1.5">Self-supervised process reward</p>
+              <p class="text-sm text-ink-mid leading-relaxed">Agents that grade their own intermediate steps and improve from outcomes, with verifiable feedback on every claim before it is acted on.</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-ink mb-1.5">Customer-controlled fine-tuning</p>
+              <p class="text-sm text-ink-mid leading-relaxed">Bring-your-own-data fine-tuning where the data never leaves the customer's tenant, with quality competitive with central training.</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-ink mb-1.5">Audit-grade tool use</p>
+              <p class="text-sm text-ink-mid leading-relaxed">Every tool call provenance-stamped, every action reversible, every chain of custody admissible to compliance.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Long-term -->
+        <div class="reveal rounded-2xl border border-line bg-ink text-white overflow-hidden">
+          <div class="border-b border-white/10 p-6 grid-bg-dark relative">
+            <div class="relative">
+              <p class="font-mono text-[11px] tracking-widest uppercase text-yellow mb-2">Horizon 03 · long-term bets</p>
+              <h3 class="text-xl sm:text-2xl font-extrabold tracking-tightest text-white">Intelligence we can defend in writing.</h3>
+            </div>
+          </div>
+          <div class="p-6 sm:p-7 space-y-5">
+            <div>
+              <p class="text-sm font-semibold text-white mb-1.5">Models with calibrated taste</p>
+              <p class="text-sm text-white/70 leading-relaxed">Systems that prefer the better of two answers for the right reasons, and can explain the preference in language a human can verify.</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-white mb-1.5">Compute-aware autonomy</p>
+              <p class="text-sm text-white/70 leading-relaxed">Models that decide when to spend more compute, when to ask for help, and when to stop — without a human writing the rule.</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-white mb-1.5">A platform you can audit end to end</p>
+              <p class="text-sm text-white/70 leading-relaxed">From training-data provenance through inference-time decisions to the action that landed in your inbox. Auditable from the outside, not from a press release.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="reveal text-xs text-ink-light mt-10 max-w-3xl font-mono">
+        These horizons are revised every six months. The <a href="#open-questions" class="text-ink underline hover:text-red transition-colors">open questions</a> below are where we currently see the largest gap between what we want and what works.
+      </p>
+    </div>
+  </section>
+
   <!-- ════════ OPEN QUESTIONS — 10 ════════ -->
-  <section class="bg-ink text-white py-20 sm:py-28 overflow-hidden relative">
+  <section id="open-questions" class="bg-ink text-white py-20 sm:py-28 overflow-hidden relative scroll-mt-24">
     <div class="absolute inset-0 grid-bg-dark"></div>
     <div class="hero-orb hero-orb-1" style="top: -180px; right: -120px; opacity: 0.15;"></div>
 
