@@ -2530,39 +2530,29 @@
       canvas.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // ── Sample HelveX logo PNG (edge-only) ──
-      if (logoImg.complete && logoImg.naturalWidth > 0) {
-        var logoMaxW = Math.min(W * 0.72, 540);
-        var aspect = logoImg.naturalHeight / logoImg.naturalWidth;
-        var lw = logoMaxW;
-        var lh = lw * aspect;
-        if (lh > H * 0.78) { lh = H * 0.78; lw = lh / aspect; }
-        var logoCanvas = document.createElement('canvas');
-        logoCanvas.width  = lw;
-        logoCanvas.height = lh;
-        var lctx = logoCanvas.getContext('2d');
-        lctx.drawImage(logoImg, 0, 0, lw, lh);
-        logoPts = samplePixelsEdge(logoCanvas, 2, 1);
-      } else {
-        var hxFontSize = Math.floor(Math.max(40, Math.min(W * 0.14, 92)));
-        var hxFont = '900 ' + hxFontSize + 'px "Inter", system-ui, sans-serif';
-        var hxCanvas = makeTextCanvas('HelveX', hxFont);
-        logoPts = samplePixelsEdge(hxCanvas, 1, 1);
-      }
+      // ── Sample "HelveX" wordmark as text (fill sampling).
+      //    Skipping the PNG entirely: edge detection on the PNG was
+      //    intermittently returning empty arrays (likely background
+      //    alpha quirk), and text rendering on a transparent canvas
+      //    always works reliably across browsers. ──
+      var hxFontSize = Math.floor(Math.max(56, Math.min(W * 0.16, 120)));
+      var hxFont = '800 ' + hxFontSize + 'px "Inter", system-ui, sans-serif';
+      var hxCanvas = makeTextCanvas('HelveX', hxFont);
+      logoPts = samplePixels(hxCanvas, 4, 1);
 
-      // ── Sample each platform concept word (edge-only) ──
+      // ── Sample each platform concept word (fill sampling) ──
       wordPtsList = [];
       var wordFamily = '"Cormorant Garamond", Georgia, serif';
       var wordWeight = '600';
-      var maxWordW = W * 0.80;
-      var maxWordH = H * 0.58;
+      var maxWordW = W * 0.84;
+      var maxWordH = H * 0.62;
       for (var w = 0; w < WORDS.length; w++) {
         var word = WORDS[w];
         var fs = computeFitFontSize(word, wordFamily, wordWeight, maxWordW, maxWordH);
         var spec = wordWeight + ' ' + fs + 'px ' + wordFamily;
         var wc   = makeTextCanvas(word, spec);
-        var density = (word.length <= 10) ? 2 : 3;
-        wordPtsList.push(samplePixelsEdge(wc, density, 1));
+        var density = (word.length <= 10) ? 4 : 5;
+        wordPtsList.push(samplePixels(wc, density, 1));
       }
 
       // ── Equalize point counts (cap for performance) ──
@@ -2570,7 +2560,7 @@
       for (var i = 0; i < wordPtsList.length; i++) {
         if (wordPtsList[i].length > maxLen) maxLen = wordPtsList[i].length;
       }
-      var MAX = (W < 640 ? 850 : 1300);
+      var MAX = (W < 640 ? 700 : 1100);
       if (maxLen > MAX) maxLen = MAX;
 
       logoPts = (logoPts.length > maxLen) ? downsample(logoPts, maxLen) : padPoints(logoPts, maxLen);
@@ -2790,14 +2780,13 @@
         grid[cy * gridCols + cx].push(p);
       }
 
-      // Tight threshold + ink-dark lines = elegant wireframe.
-      // Lines never go red — the red AI accent is delivered by halos.
-      var maxDist   = 18;
+      // Ink-dark connection lines, tight threshold = elegant wireframe.
+      var maxDist   = 22;
       var maxDistSq = maxDist * maxDist;
 
       ctx.lineCap     = 'round';
-      ctx.lineWidth   = 0.75;
-      ctx.strokeStyle = 'rgba(14, 14, 14, ' + (0.20 * stability) + ')';
+      ctx.lineWidth   = 0.7;
+      ctx.strokeStyle = 'rgba(14, 14, 14, ' + (0.18 * stability) + ')';
       ctx.beginPath();
       for (var c = 0; c < grid.length; c++) {
         var bucket = grid[c];
