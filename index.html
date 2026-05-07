@@ -2422,9 +2422,9 @@
       var off = document.createElement('canvas');
       var oc  = off.getContext('2d');
 
-      // Auto-fit: shrink font until text fits within W*0.88 wide, H*0.80 tall
-      var maxW = Math.max(W * 0.88, 200);
-      var maxH = Math.max(H * 0.80, 100);
+      // Auto-fit: shrink font until text fits within W*0.92 wide, H*0.86 tall
+      var maxW = Math.max(W * 0.92, 200);
+      var maxH = Math.max(H * 0.86, 110);
       var fs = Math.floor(Math.min(maxH * 0.92, 180));
       var spec = fontTemplate.replace('PX', String(fs));
       oc.font = spec;
@@ -2483,12 +2483,12 @@
       canvas.style.height = H + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Sample every state's points. Maximum density (2/3) — letters
-      // appear as fully-filled solid dotted typography, every glyph
-      // pixel almost backed by a particle.
+      // Sample every state's points. Pixel-level sampling (1/2) for
+      // the absolute richest filled letterforms — practically every
+      // glyph pixel becomes a particle.
       statePts = [];
       for (var s = 0; s < STATES.length; s++) {
-        var density = (STATES[s].text.length <= 10) ? 2 : 3;
+        var density = (STATES[s].text.length <= 10) ? 2 : 2;
         statePts.push(buildPointsFor(STATES[s].text, STATES[s].font, density));
       }
 
@@ -2497,7 +2497,7 @@
       for (var i = 0; i < statePts.length; i++) {
         if (statePts[i].length > maxLen) maxLen = statePts[i].length;
       }
-      var CAP = (W < 640) ? 2200 : 3200;
+      var CAP = (W < 640) ? 3500 : 5000;
       if (maxLen > CAP) maxLen = CAP;
       if (maxLen < 50)  maxLen = 50;  // safety floor — never zero
       N = maxLen;
@@ -2509,15 +2509,15 @@
 
       // Initialize / resize particle pool. Particles start at the
       // logo state so the first frame already shows the brand.
-      // Dot range (1.7–2.5) tuned for the dense 2/3 spacing — dots
-      // overlap enough to render rich, filled letterforms.
+      // Dot range (1.9–2.9) tuned for the very dense 2-pixel spacing —
+      // dots overlap heavily into solid filled letterforms.
       if (particles.length === 0) {
         for (var p = 0; p < N; p++) {
           particles.push({
             x: statePts[0][p].x,
             y: statePts[0][p].y,
             seed: Math.random(),
-            size: 1.7 + Math.random() * 0.8
+            size: 1.9 + Math.random() * 1.0
           });
         }
       } else if (particles.length < N) {
@@ -2526,7 +2526,7 @@
             x: statePts[0][q].x,
             y: statePts[0][q].y,
             seed: Math.random(),
-            size: 1.7 + Math.random() * 0.8
+            size: 1.9 + Math.random() * 1.0
           });
         }
       } else {
