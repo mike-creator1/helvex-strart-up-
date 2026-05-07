@@ -2535,11 +2535,12 @@
     }
 
     /* Animation phases per state cycle (ms):
-       hold (state stable) → morph (transition to next state) → hold ...
-       The brand state holds slightly longer so it always reads first. */
-    var HOLD_LOGO  = 1600;
-    var HOLD_WORD  = 1300;
-    var MORPH_DUR  = 1100;
+       hold (state stable, readable) → morph (transition to next) → ...
+       Holds are dominant; morph is short + faded so the eye spends
+       most time on clean readable text, not on in-between chaos. */
+    var HOLD_LOGO  = 2200;
+    var HOLD_WORD  = 1900;
+    var MORPH_DUR  = 700;
 
     function easeInOut(t) {
       return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -2580,18 +2581,25 @@
       var fromArr = statePts[st.from];
       var toArr   = statePts[st.to];
       var k = st.k;
+      var isMorph = (st.from !== st.to);
 
       ctx.clearRect(0, 0, W, H);
       ctx.save();
       ctx.translate(W / 2, H / 2);
 
-      // No per-particle shadow blur — that was making the text read
-      // blurry when dots overlapped. Pure crisp dark dots; the red
-      // AI ambient comes only from the CSS .hx-morph-glow halo
-      // behind the canvas.
+      // Bell-curve fade during morph — dots dim to ~30 % at k=0.5
+      // so the messy in-flight stage is visually quiet. At k=0 / k=1
+      // (state locked in) alpha is back to full and the text reads
+      // crisp. Hold phases stay at full alpha throughout.
+      var alpha = 0.95;
+      if (isMorph) {
+        var dip = 1 - Math.abs(k - 0.5) * 2;  // 0 at edges, 1 at midpoint
+        alpha = 0.95 - 0.65 * dip;
+      }
+
       ctx.shadowBlur  = 0;
       ctx.shadowColor = 'transparent';
-      ctx.fillStyle   = 'rgba(10, 10, 10, 0.95)';
+      ctx.fillStyle   = 'rgba(10, 10, 10, ' + alpha + ')';
 
       for (var i = 0; i < N; i++) {
         var fp = fromArr[i], tp = toArr[i];
