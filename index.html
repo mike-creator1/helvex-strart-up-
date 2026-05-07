@@ -2543,12 +2543,12 @@
         logoCanvas.height = lh;
         var lctx = logoCanvas.getContext('2d');
         lctx.drawImage(logoImg, 0, 0, lw, lh);
-        logoPts = samplePixelsEdge(logoCanvas, 3, 1);
+        logoPts = samplePixelsEdge(logoCanvas, 4, 1);
       } else {
         var hxFontSize = Math.floor(Math.max(40, Math.min(W * 0.14, 92)));
         var hxFont = '900 ' + hxFontSize + 'px "Inter", system-ui, sans-serif';
         var hxCanvas = makeTextCanvas('HelveX', hxFont);
-        logoPts = samplePixels(hxCanvas, 4, 1);
+        logoPts = samplePixelsEdge(hxCanvas, 2, 1);
       }
 
       // ── Sample each platform concept word (edge-only) ──
@@ -2557,23 +2557,25 @@
       wordPtsList = [];
       var wordFamily = '"Cormorant Garamond", Georgia, serif';
       var wordWeight = '600';
-      var maxWordW = W * 0.82;
-      var maxWordH = H * 0.62;
+      var maxWordW = W * 0.78;
+      var maxWordH = H * 0.55;
       for (var w = 0; w < WORDS.length; w++) {
         var word = WORDS[w];
         var fs = computeFitFontSize(word, wordFamily, wordWeight, maxWordW, maxWordH);
         var spec = wordWeight + ' ' + fs + 'px ' + wordFamily;
         var wc   = makeTextCanvas(word, spec);
-        var density = (word.length <= 10) ? 2 : 3;
+        var density = (word.length <= 10) ? 3 : 4;
         wordPtsList.push(samplePixelsEdge(wc, density, 1));
       }
 
       // ── Equalize point counts (cap for performance) ──
+      // Smaller cap keeps the constellation airy; the wireframe reads
+      // as a precise letter outline, not a solid mass.
       var maxLen = logoPts.length;
       for (var i = 0; i < wordPtsList.length; i++) {
         if (wordPtsList[i].length > maxLen) maxLen = wordPtsList[i].length;
       }
-      var MAX = (W < 640 ? 800 : 1200);
+      var MAX = (W < 640 ? 550 : 800);
       if (maxLen > MAX) maxLen = MAX;
 
       logoPts = (logoPts.length > maxLen) ? downsample(logoPts, maxLen) : padPoints(logoPts, maxLen);
@@ -2628,7 +2630,7 @@
         sy: Math.sin(angle * 2.3 + i * 0.17) * (40 + Math.random() * 100),
         // Per-particle phase offsets keep motion organic
         seed: Math.random(),
-        size: 1.3 + Math.random() * 0.8
+        size: 1.5 + Math.random() * 0.8
       };
     }
 
@@ -2793,17 +2795,15 @@
         grid[cy * gridCols + cx].push(p);
       }
 
-      var maxDist   = 26;
+      // Tight threshold + low alpha = elegant wireframe, not a red blob.
+      // Lines stay ink-dark for legibility; the red AI accent is delivered
+      // by the halo + dot glow, not by saturating every connection.
+      var maxDist   = 16;
       var maxDistSq = maxDist * maxDist;
-      var inWord = (ph.idx === 3 || ph.idx === 6 ||
-                    (ph.idx === 2 && ph.t > 0.55) ||
-                    (ph.idx === 5 && ph.t > 0.55) ||
-                    (ph.idx === 4) || (ph.idx === 7));
-      var rA = inWord ? 192 : 14, gA = inWord ? 17 : 14, bA = inWord ? 30 : 14;
 
       ctx.lineCap     = 'round';
-      ctx.lineWidth   = 0.7;
-      ctx.strokeStyle = 'rgba(' + rA + ',' + gA + ',' + bA + ',' + (0.22 * stability) + ')';
+      ctx.lineWidth   = 0.55;
+      ctx.strokeStyle = 'rgba(14, 14, 14, ' + (0.10 * stability) + ')';
       ctx.beginPath();
       for (var c = 0; c < grid.length; c++) {
         var bucket = grid[c];
@@ -2863,19 +2863,21 @@
       ctx.shadowColor = 'transparent';
       drawNeuralLinks(ph, stability);
 
-      // Pass 3: dots — with per-particle glow modulating the AI moments.
+      // Pass 3: dots — always ink-dark for legibility. The red accent
+      // comes from a subtle shadowBlur halo around AI-state dots only,
+      // never from saturating the dot itself. Result reads as a precise
+      // wireframe with a warm red wash, not a red blob.
       for (var j = 0; j < len; j++) {
         var pp = particles[j];
-        var rD = pp._w ? 192 : 10, gD = pp._w ? 17 : 10, bD = pp._w ? 30 : 10;
 
-        if (pp._g > 0.04) {
-          ctx.shadowBlur  = 8 + pp._g * 22;
-          ctx.shadowColor = 'rgba(192, 17, 30, ' + Math.min(0.85, pp._g) + ')';
+        if (pp._w && pp._g > 0.04) {
+          ctx.shadowBlur  = 6 + pp._g * 14;
+          ctx.shadowColor = 'rgba(192, 17, 30, ' + Math.min(0.55, pp._g * 0.7) + ')';
         } else {
           ctx.shadowBlur  = 0;
           ctx.shadowColor = 'transparent';
         }
-        ctx.fillStyle = 'rgba(' + rD + ',' + gD + ',' + bD + ',' + pp._a + ')';
+        ctx.fillStyle = 'rgba(10, 10, 10, ' + pp._a + ')';
         ctx.beginPath();
         ctx.arc(pp.x, pp.y, pp.size, 0, 6.2832);
         ctx.fill();
