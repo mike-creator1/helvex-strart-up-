@@ -201,7 +201,7 @@
     .topbar-title{font-size:15px;font-weight:900;color:#fff;letter-spacing:-.01em}
     .main-content{padding:36px 32px 64px;flex:1;max-width:1180px}
 
-    /* ── Settings (Claude-style) ── */
+    /* ── Settings (HelveX-style) ── */
     .settings-layout{display:grid;grid-template-columns:220px 1fr;gap:48px;align-items:start}
     .settings-nav{position:sticky;top:88px;display:flex;flex-direction:column;gap:1px;max-height:calc(100vh - 110px);overflow-y:auto;padding-right:6px}
     .settings-nav::-webkit-scrollbar{width:3px}
@@ -705,7 +705,7 @@
               <div class="card-header no-border">
                 <div>
                   <div class="card-title">AI response language</div>
-                  <div class="card-desc">Default language Claude uses when generating content for you.</div>
+                  <div class="card-desc">Default language HelveX uses when generating content for you.</div>
                 </div>
               </div>
               <select id="lang-ai" class="select" onchange="saveSetting('language','ai',this.value)">
@@ -938,7 +938,7 @@
                 <label class="toggle-wrap"><input type="checkbox" id="dp-public" checked onchange="saveSetting('privacy','public',this.checked)" /><span class="toggle-track"></span></label>
               </div>
               <div class="setting-row">
-                <div class="setting-info"><h4>Use my prompts to train models</h4><p>Anthropic does not train on your inputs by default. Toggling on opts you in.</p></div>
+                <div class="setting-info"><h4>Use my prompts to train models</h4><p>HelveX does not train on your inputs by default. Toggling on opts you in.</p></div>
                 <label class="toggle-wrap"><input type="checkbox" id="dp-train" onchange="saveSetting('privacy','train',this.checked)" /><span class="toggle-track"></span></label>
               </div>
             </div>
@@ -983,7 +983,7 @@
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.7 6.6L13.4 18.4h-2.8L4.3 6.6h2.4l4.9 9.5 4.9-9.5h3.2zm-3.6 0l-4.1 8.2L7.9 6.6h8.2z"/></svg>
                 </div>
                 <div class="app-info">
-                  <div class="app-name">Anthropic Claude <span class="app-pill" id="anth-status">Connected</span></div>
+                  <div class="app-name">HelveX HelveX <span class="app-pill" id="anth-status">Connected</span></div>
                   <div class="app-desc">API key configured · Used by all AI modules</div>
                 </div>
                 <button class="btn-soft" onclick="showSection('developer')">Manage</button>
@@ -1358,7 +1358,7 @@
             <div class="card">
               <div class="card-header no-border">
                 <div>
-                  <div class="card-title">Anthropic API Key</div>
+                  <div class="card-title">HelveX API Key</div>
                   <div class="card-desc">Required for AI generation across all builders. Stored locally — never sent to CreateX servers.</div>
                 </div>
               </div>
@@ -1387,9 +1387,9 @@
                 <div>
                   <label class="label">Default model</label>
                   <select id="dev-model" class="select" onchange="saveSetting('developer','default_model',this.value)">
-                    <option value="4.3">Haiku 4.3 — fastest, lowest cost</option>
-                    <option value="4.7" selected>Sonnet 4.7 — balanced, extended thinking (recommended)</option>
-                    <option value="4.9">Opus 4.9 — most capable</option>
+                    <option value="4.3">InferNext 4.3 — fastest, lowest cost</option>
+                    <option value="4.7" selected>HelvetX 4.7 — balanced, extended thinking (recommended)</option>
+                    <option value="4.9">Prometheus 4.9 — most capable</option>
                   </select>
                 </div>
                 <div>
@@ -1499,7 +1499,7 @@
                 <label class="toggle-wrap"><input type="checkbox" id="dev-voice" onchange="saveSetting('developer','voice',this.checked)" /><span class="toggle-track"></span></label>
               </div>
               <div class="setting-row">
-                <div class="setting-info"><h4>Extended thinking</h4><p>Allow Sonnet 4.7 and Opus 4.9 to think for longer before responding.</p></div>
+                <div class="setting-info"><h4>Extended thinking</h4><p>Allow HelvetX 4.7 and Prometheus 4.9 to think for longer before responding.</p></div>
                 <label class="toggle-wrap"><input type="checkbox" id="dev-thinking" checked onchange="saveSetting('developer','thinking',this.checked)" /><span class="toggle-track"></span></label>
               </div>
               <div class="setting-row">
@@ -1622,7 +1622,7 @@
                 <span class="info-pill">Stable</span>
               </div>
               <div class="info-row">
-                <div><div class="info-row-label">AI Model</div><div class="info-row-val">Claude (Anthropic) via direct browser API</div></div>
+                <div><div class="info-row-label">AI Model</div><div class="info-row-val">HelveX (HelveX) via direct browser API</div></div>
                 <span class="info-pill active">Active</span>
               </div>
               <div class="info-row">

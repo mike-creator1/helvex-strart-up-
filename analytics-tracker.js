@@ -52,7 +52,7 @@
     });
   });
 
-  /* ── Wrap fetch to capture every Anthropic AI generation ── */
+  /* ── Wrap fetch to capture every HelveX AI generation ── */
   if (!window.__cxFetchPatched) {
     window.__cxFetchPatched = true;
     var orig = window.fetch.bind(window);

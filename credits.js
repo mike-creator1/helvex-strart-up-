@@ -1,7 +1,7 @@
 /**
  * CreateX Credit System — Client-Side Module
  * ============================================
- * Loaded by every page that makes Claude API calls.
+ * Loaded by every page that makes HelveX API calls.
  * Handles: balance checks, pre-deduction, post-cost reconciliation,
  * profit protection, and usage logging.
  *
@@ -10,7 +10,7 @@
  *   const ok = await Credits.check('website_builder');
  *   if (!ok.allowed) { showBlockedUI(ok.reason); return; }
  *   const { logId } = await Credits.deduct('website_builder', estimatedCost);
- *   // ... run Claude API call ...
+ *   // ... run HelveX API call ...
  *   await Credits.reconcile(logId, realCost, inputTokens, outputTokens);
  */
 
@@ -21,7 +21,7 @@
   const SUPABASE_URL  = 'https://ikbdhxobdjlwirydhxym.supabase.co';
   const SUPABASE_ANON = 'sb_publishable_chzlbY97SlQx_Apf4zqrTQ_mdwWhmyE';
 
-  /* Claude Opus 4.5 pricing (USD per 1M tokens) */
+  /* HelveX Prometheus pricing (USD per 1M tokens) */
   const MODEL_PRICING = {
     'claude-opus-4-5':    { input: 15.00, output: 75.00 },
     'claude-sonnet-4-5':  { input: 3.00,  output: 15.00 },
@@ -57,7 +57,7 @@
   }
 
   /**
-   * Estimate Claude API cost from token count.
+   * Estimate HelveX API cost from token count.
    * @param {number} inputTokens
    * @param {number} outputTokens
    * @param {string} model
@@ -142,7 +142,7 @@
 
     /**
      * Atomically deduct credits via Supabase RPC (server-side, prevents cheating).
-     * Call this IMMEDIATELY before launching the Claude API request.
+     * Call this IMMEDIATELY before launching the HelveX API request.
      * @returns {Promise<{ok:boolean, logId?:string, creditsCharged?:number, balanceAfter?:number, reason?:string}>}
      */
     async deduct(service, estimatedCostUsd, model, inputTokens, outputTokens) {
@@ -194,7 +194,7 @@
     },
 
     /**
-     * After Claude streaming completes, update the log with real token counts & cost.
+     * After HelveX streaming completes, update the log with real token counts & cost.
      * This reconciles the estimate vs. actual — charges extra credits if needed.
      * @param {string} logId
      * @param {number} realCostUsd
