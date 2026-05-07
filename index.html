@@ -2531,12 +2531,10 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       // ── Sample "HelveX" wordmark as text ──
-      // Sparser sampling now that there are no lines; particles can
-      // breathe and read as a clean constellation, not a fill.
       var hxFontSize = Math.floor(Math.max(56, Math.min(W * 0.16, 120)));
       var hxFont = '800 ' + hxFontSize + 'px "Inter", system-ui, sans-serif';
       var hxCanvas = makeTextCanvas('HelveX', hxFont);
-      logoPts = samplePixels(hxCanvas, 6, 1);
+      logoPts = samplePixels(hxCanvas, 5, 1);
 
       // ── Sample each platform concept word ──
       wordPtsList = [];
@@ -2549,7 +2547,7 @@
         var fs = computeFitFontSize(word, wordFamily, wordWeight, maxWordW, maxWordH);
         var spec = wordWeight + ' ' + fs + 'px ' + wordFamily;
         var wc   = makeTextCanvas(word, spec);
-        var density = (word.length <= 10) ? 6 : 7;
+        var density = (word.length <= 10) ? 5 : 6;
         wordPtsList.push(samplePixels(wc, density, 1));
       }
 
@@ -2558,7 +2556,7 @@
       for (var i = 0; i < wordPtsList.length; i++) {
         if (wordPtsList[i].length > maxLen) maxLen = wordPtsList[i].length;
       }
-      var MAX = (W < 640 ? 500 : 750);
+      var MAX = (W < 640 ? 700 : 1000);
       if (maxLen > MAX) maxLen = MAX;
 
       logoPts = (logoPts.length > maxLen) ? downsample(logoPts, maxLen) : padPoints(logoPts, maxLen);
@@ -2613,7 +2611,7 @@
         sy: Math.sin(angle * 2.3 + i * 0.17) * (40 + Math.random() * 100),
         // Per-particle phase offsets keep motion organic
         seed: Math.random(),
-        size: 2.2 + Math.random() * 1.1
+        size: 2.4 + Math.random() * 1.1
       };
     }
 
@@ -2927,11 +2925,15 @@
       }, 120);
     });
 
-    if (logoImg.complete && logoImg.naturalWidth > 0) {
-      start();
+    /* Wait for the page's fonts to actually load before sampling
+       text — that's the real source of the intermittent renders.
+       If Cormorant Garamond isn't loaded yet, measureText/fillText
+       falls back to a default font, point counts go out of whack,
+       and the constellation reads as a mess (or nothing at all). */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(start, start);
     } else {
-      logoImg.addEventListener('load',  start, { once: true });
-      logoImg.addEventListener('error', start, { once: true });
+      start();
     }
   })();
   </script>
