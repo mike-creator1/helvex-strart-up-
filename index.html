@@ -2445,9 +2445,15 @@
       var oc  = off.getContext('2d');
       oc.font = fontSpec;
       var m  = oc.measureText(text);
-      var fontSize = parseInt(fontSpec.match(/(\d+)px/)[1], 10);
+      // Handle fractional font sizes too (e.g. "137.6px") — the simpler
+      // /(\d+)px/ regex would mis-extract "6" from "137.6px".
+      var match = fontSpec.match(/(\d+(?:\.\d+)?)px/);
+      var fontSize = match ? parseFloat(match[1]) : 32;
       var w = Math.ceil(m.width) + 8;
       var h = Math.ceil(fontSize * 1.4);
+      // Defensive: never zero-size the canvas.
+      if (w < 8) w = 8;
+      if (h < 8) h = 8;
       off.width = w;
       off.height = h;
       var c = off.getContext('2d');
@@ -2459,15 +2465,19 @@
     }
 
     /* Pre-rendered logo. We draw the user's actual logo PNG and
-       sample its dark pixels so the "HelveX state" is the real mark. */
+       sample its dark pixels so the "HelveX state" is the real mark.
+       No crossOrigin attribute — the asset is same-origin and adding
+       it forces a CORS check that taints the canvas on hosts that
+       don't echo CORS headers for same-origin GETs. */
     var logoImg = new Image();
-    logoImg.crossOrigin = 'anonymous';
     logoImg.src = '/helvex-logo.png';
 
-    /* Compute the largest font size that fits text within max bounds. */
+    /* Compute the largest INTEGER font size that fits text within
+       max bounds. Integer is important — fractional values like
+       "137.6px" tripped the regex parser elsewhere in the file. */
     function computeFitFontSize(text, family, weight, maxW, maxH) {
       var probe = document.createElement('canvas').getContext('2d');
-      var fs = Math.min(maxH * 0.92, 220);
+      var fs = Math.floor(Math.min(maxH * 0.92, 220));
       probe.font = weight + ' ' + fs + 'px ' + family;
       var w = probe.measureText(text).width;
       while (w > maxW && fs > 16) {
@@ -2499,7 +2509,8 @@
         lctx.drawImage(logoImg, 0, 0, lw, lh);
         logoPts = samplePixels(logoCanvas, 4, 1);
       } else {
-        var hxFont = '900 ' + Math.max(40, Math.min(W * 0.14, 92)) + 'px "Inter", system-ui, sans-serif';
+        var hxFontSize = Math.floor(Math.max(40, Math.min(W * 0.14, 92)));
+        var hxFont = '900 ' + hxFontSize + 'px "Inter", system-ui, sans-serif';
         var hxCanvas = makeTextCanvas('HelveX', hxFont);
         logoPts = samplePixels(hxCanvas, 3, 1);
       }
@@ -2559,6 +2570,9 @@
       return out;
     }
     function padPoints(arr, n) {
+      // Defensive: if arr is empty (e.g. font failed to render), seed
+      // it with origin so downstream math doesn't NaN out.
+      if (arr.length === 0) arr.push({ x: 0, y: 0 });
       while (arr.length < n) {
         arr.push({
           x: arr[Math.floor(Math.random() * arr.length)].x,
