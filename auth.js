@@ -44,14 +44,19 @@
 
     /* ---------- helpers ---------- */
     HX.auth = {
-      // Send a 6-digit signup verification code
+      // Send a 6-digit signup verification code.
+      // emailRedirectTo points at /verify so that if the user clicks the
+      // magic link in the email instead of typing the code, they still
+      // land on the branded verification screen (not a raw redirect).
       signUp: function (email, password, meta) {
+        var redirect = window.location.origin + '/verify?email=' +
+          encodeURIComponent(String(email || '').trim().toLowerCase());
         return sb.auth.signUp({
           email: String(email || '').trim().toLowerCase(),
           password: password,
           options: {
             data: meta || {},
-            emailRedirectTo: window.location.origin + '/dashboard'
+            emailRedirectTo: redirect
           }
         });
       },
@@ -67,9 +72,13 @@
 
       // Resend the signup verification email
       resendSignup: function (email) {
+        var clean = String(email || '').trim().toLowerCase();
         return sb.auth.resend({
           type: 'signup',
-          email: String(email || '').trim().toLowerCase()
+          email: clean,
+          options: {
+            emailRedirectTo: window.location.origin + '/verify?email=' + encodeURIComponent(clean)
+          }
         });
       },
 

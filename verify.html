@@ -88,15 +88,38 @@
     (function () {
       var qp = new URLSearchParams(location.search);
       var email = (qp.get('email') || '').trim().toLowerCase();
-      if (!email) { window.location.replace('/signup'); return; }
 
-      // Render the email pill
-      var pill = document.getElementById('email-pill');
-      var pillText = document.getElementById('email-text');
-      var pillInitial = document.getElementById('email-initial');
-      pillText.textContent = email;
-      pillInitial.textContent = (email[0] || '·').toUpperCase();
-      pill.style.display = 'inline-flex';
+      // Render the email pill (if we have an email)
+      function renderEmailPill() {
+        if (!email) return;
+        var pill = document.getElementById('email-pill');
+        document.getElementById('email-text').textContent = email;
+        document.getElementById('email-initial').textContent = (email[0] || '·').toUpperCase();
+        pill.style.display = 'inline-flex';
+      }
+      renderEmailPill();
+
+      // Hand-off to /dashboard if the user landed here via the magic link
+      // (Supabase JS auto-detects the session in the URL because we set
+      // detectSessionInUrl: true). Otherwise, if there's no email param at
+      // all and no active session, kick back to signup.
+      function whenAuthReadyOnce(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      whenAuthReadyOnce(function () {
+        window.HX.supabase.auth.getSession().then(function (res) {
+          var session = res && res.data ? res.data.session : null;
+          if (session) {
+            // Magic-link sign-in succeeded — straight into the portal.
+            window.location.replace('/dashboard');
+            return;
+          }
+          if (!email) {
+            window.location.replace('/signup');
+          }
+        });
+      });
 
       // OTP input behaviour
       var inputs = Array.prototype.slice.call(document.querySelectorAll('#otp-grid input'));
