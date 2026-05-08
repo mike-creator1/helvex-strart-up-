@@ -127,8 +127,16 @@
 
       // OTP input behaviour
       var inputs = Array.prototype.slice.call(document.querySelectorAll('#otp-grid input'));
-      function getCode() { return inputs.map(function (i) { return i.value; }).join(''); }
-      function clearAll() { inputs.forEach(function (i) { i.value = ''; i.classList.remove('filled'); }); inputs[0].focus(); }
+      var submitInFlight = false;       // serialise verify calls (no double-submit race)
+      var lastSubmittedCode = '';
+      function getCode() { return inputs.map(function (i) { return (i.value || '').trim(); }).join(''); }
+      function clearAll() { inputs.forEach(function (i) { i.value = ''; i.classList.remove('filled'); }); lastSubmittedCode = ''; inputs[0].focus(); }
+      function maybeAutoSubmit() {
+        var code = getCode();
+        if (code.length !== 6 || !/^\d{6}$/.test(code)) return;
+        if (submitInFlight || code === lastSubmittedCode) return;
+        document.getElementById('form-verify').requestSubmit();
+      }
 
       inputs.forEach(function (input, idx) {
         input.addEventListener('input', function (ev) {
@@ -141,13 +149,13 @@
             });
             var next = Math.min(idx + v.length, inputs.length - 1);
             inputs[next].focus();
-            if (getCode().length === 6) document.getElementById('form-verify').requestSubmit();
+            maybeAutoSubmit();
             return;
           }
           input.value = v;
           if (v) input.classList.add('filled'); else input.classList.remove('filled');
           if (v && idx < inputs.length - 1) inputs[idx + 1].focus();
-          if (getCode().length === 6) document.getElementById('form-verify').requestSubmit();
+          maybeAutoSubmit();
         });
         input.addEventListener('keydown', function (ev) {
           if (ev.key === 'Backspace' && !input.value && idx > 0) {
@@ -169,7 +177,7 @@
           inputs.forEach(function (i, k) { i.value = digits[k] || ''; if (i.value) i.classList.add('filled'); else i.classList.remove('filled'); });
           var nextEmpty = inputs.findIndex(function (i) { return !i.value; });
           (nextEmpty === -1 ? inputs[5] : inputs[nextEmpty]).focus();
-          if (getCode().length === 6) document.getElementById('form-verify').requestSubmit();
+          maybeAutoSubmit();
         });
       });
       setTimeout(function () { inputs[0].focus(); }, 100);
@@ -199,8 +207,15 @@
 
         document.getElementById('form-verify').addEventListener('submit', async function (ev) {
           ev.preventDefault();
+          if (submitInFlight) return;            // hard guard against double-submit race
           var code = getCode();
-          if (code.length !== 6) { showAlert('verify-error', 'Please enter all 6 digits.'); return; }
+          if (!code) { showAlert('verify-error', 'Please enter the 6-digit code.'); return; }
+          if (code.length !== 6 || !/^\d{6}$/.test(code)) {
+            showAlert('verify-error', 'Please enter all 6 digits.');
+            return;
+          }
+          submitInFlight = true;
+          lastSubmittedCode = code;
           var btn = document.getElementById('verify-submit');
           setBusy(btn, true, 'Verifying…');
           try {
@@ -208,19 +223,22 @@
             if (res.status !== 200) {
               var err = (res.body && res.body.error) || 'verify_failed';
               var msg = (err === 'expired') ? 'This code has expired. Request a new one to continue.'
-                      : (err === 'mismatch' || err === 'no_code') ? 'Incorrect code. Double-check the digits and try again.'
+                      : (err === 'mismatch' || err === 'no_code' || err === 'invalid_code_format') ? 'Incorrect code. Double-check the digits and try again.'
                       : (err === 'too_many_attempts') ? 'Too many attempts. Request a new code.'
                       : 'That code did not work.';
               showAlert('verify-error', msg);
               setBusy(btn, false);
+              submitInFlight = false;
               clearAll();
               return;
             }
+            // Success: leave submitInFlight = true so we can never re-submit on the redirect tick
             showAlert('verify-success', 'Email verified. Redirecting…');
             setTimeout(function () { window.location.replace('/dashboard'); }, 600);
           } catch (err) {
             showAlert('verify-error', (err && err.message) || 'That code did not work.');
             setBusy(btn, false);
+            submitInFlight = false;
             clearAll();
           }
         });
