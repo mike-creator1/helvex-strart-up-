@@ -9,6 +9,7 @@
 
   var SUPABASE_URL = 'https://yjmpallrtpeinpdilptj.supabase.co';
   var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_vx5tD4mUizuspej5-g3XlQ_PnbjXSeR';
+  var OTP_FN_URL = SUPABASE_URL + '/functions/v1/auth-otp';
 
   // Public pages that should never trigger an auth redirect.
   var PUBLIC_PATHS = [
@@ -43,92 +44,93 @@
     HX.supabase = sb;
 
     /* ---------- helpers ---------- */
+    function callOtp(action, payload) {
+      return fetch(OTP_FN_URL, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'apikey': SUPABASE_PUBLISHABLE_KEY,
+          'authorization': 'Bearer ' + SUPABASE_PUBLISHABLE_KEY
+        },
+        body: JSON.stringify(Object.assign({
+          action: action,
+          origin: window.location.origin
+        }, payload || {}))
+      }).then(function (r) {
+        return r.json().then(function (body) { return { status: r.status, body: body }; });
+      });
+    }
+
+    function clean(s) { return String(s || '').trim().toLowerCase(); }
+
     HX.auth = {
-      // Send a 6-digit signup verification code.
-      // emailRedirectTo points at /verify so that if the user clicks the
-      // magic link in the email instead of typing the code, they still
-      // land on the branded verification screen (not a raw redirect).
+      // ─── Signup: hands over to the auth-otp Edge Function which creates
+      // the user (unconfirmed) and emails a 6-digit code.
       signUp: function (email, password, meta) {
-        var redirect = window.location.origin + '/verify?email=' +
-          encodeURIComponent(String(email || '').trim().toLowerCase());
-        return sb.auth.signUp({
-          email: String(email || '').trim().toLowerCase(),
-          password: password,
-          options: {
-            data: meta || {},
-            emailRedirectTo: redirect
-          }
+        return callOtp('send-signup', {
+          email: clean(email), password: password, meta: meta || {}
         });
       },
 
-      // Verify the 6-digit signup code → user becomes active and signed in
-      verifySignup: function (email, token) {
-        return sb.auth.verifyOtp({
-          email: String(email || '').trim().toLowerCase(),
-          token: String(token || '').replace(/\s+/g, ''),
-          type: 'signup'
-        });
+      // ─── Verify the 6-digit signup code via Edge Function and hydrate
+      // the resulting Supabase session into the local client.
+      verifySignup: function (email, code) {
+        return callOtp('verify-signup', { email: clean(email), code: String(code || '') })
+          .then(function (res) {
+            if (res.status !== 200 || !res.body || !res.body.session) return res;
+            return sb.auth.setSession({
+              access_token: res.body.session.access_token,
+              refresh_token: res.body.session.refresh_token
+            }).then(function () { return res; });
+          });
       },
 
-      // Resend the signup verification email
+      // ─── Re-issue a signup code for the same email.
       resendSignup: function (email) {
-        var clean = String(email || '').trim().toLowerCase();
-        return sb.auth.resend({
-          type: 'signup',
-          email: clean,
-          options: {
-            emailRedirectTo: window.location.origin + '/verify?email=' + encodeURIComponent(clean)
-          }
-        });
+        // For UX we ask the operator to re-enter their password before we
+        // issue a new code. Calling /signup again from the UI handles that.
+        // The OTP fn rotates active codes automatically.
+        return Promise.resolve({ status: 200, body: { sent: true, hint: 'use_signup_form' } });
       },
 
-      // Email + password sign-in
+      // ─── Email + password sign-in (after verification has completed)
       signInPassword: function (email, password) {
-        return sb.auth.signInWithPassword({
-          email: String(email || '').trim().toLowerCase(),
-          password: password
-        });
+        return sb.auth.signInWithPassword({ email: clean(email), password: password });
       },
 
-      // Social sign-in (Google / Apple / GitHub)
+      // ─── Social sign-in (Google / Apple / GitHub)
       signInOAuth: function (provider) {
         return sb.auth.signInWithOAuth({
           provider: provider,
-          options: {
-            redirectTo: window.location.origin + '/dashboard'
-          }
+          options: { redirectTo: window.location.origin + '/dashboard' }
         });
       },
 
-      // Send a 6-digit password-reset code
+      // ─── Send a 6-digit password-reset code
       requestPasswordReset: function (email) {
-        return sb.auth.resetPasswordForEmail(
-          String(email || '').trim().toLowerCase(),
-          { redirectTo: window.location.origin + '/reset-password' }
-        );
+        return callOtp('send-recovery', { email: clean(email) });
       },
 
-      // Verify a 6-digit recovery code (logs user in for password change)
-      verifyRecovery: function (email, token) {
-        return sb.auth.verifyOtp({
-          email: String(email || '').trim().toLowerCase(),
-          token: String(token || '').replace(/\s+/g, ''),
-          type: 'recovery'
-        });
+      // ─── Verify a 6-digit recovery code → returns a recovery session
+      verifyRecovery: function (email, code) {
+        return callOtp('verify-recovery', { email: clean(email), code: String(code || '') })
+          .then(function (res) {
+            if (res.status !== 200 || !res.body || !res.body.session) return res;
+            return sb.auth.setSession({
+              access_token: res.body.session.access_token,
+              refresh_token: res.body.session.refresh_token
+            }).then(function () { return res; });
+          });
       },
 
-      // Set new password for the currently authenticated user
+      // ─── Set new password for the currently authenticated user
       updatePassword: function (newPassword) {
         return sb.auth.updateUser({ password: newPassword });
       },
 
-      // Get the current session (or null)
       session: function () { return sb.auth.getSession(); },
+      user:    function () { return sb.auth.getUser(); },
 
-      // Get the currently signed-in user (or null)
-      user: function () { return sb.auth.getUser(); },
-
-      // Sign out + return to /signup
       signOut: function () {
         return sb.auth.signOut().then(function () {
           window.location.replace('/signup');

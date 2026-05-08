@@ -201,40 +201,30 @@
           setBusy(btn, true, 'Verifying…');
           try {
             var res = await window.HX.auth.verifySignup(email, code);
-            if (res.error) throw res.error;
+            if (res.status !== 200) {
+              var err = (res.body && res.body.error) || 'verify_failed';
+              var msg = (err === 'expired') ? 'This code has expired. Request a new one to continue.'
+                      : (err === 'mismatch' || err === 'no_code') ? 'Incorrect code. Double-check the digits and try again.'
+                      : (err === 'too_many_attempts') ? 'Too many attempts. Request a new code.'
+                      : 'That code did not work.';
+              showAlert('verify-error', msg);
+              setBusy(btn, false);
+              clearAll();
+              return;
+            }
             showAlert('verify-success', 'Email verified. Redirecting…');
             setTimeout(function () { window.location.replace('/dashboard'); }, 600);
           } catch (err) {
-            var msg = err && err.message ? err.message : 'That code did not work.';
-            if (/expired/i.test(msg)) msg = 'This code has expired. Request a new one to continue.';
-            else if (/invalid/i.test(msg) || /token/i.test(msg)) msg = 'Incorrect code. Double-check the digits and try again.';
-            showAlert('verify-error', msg);
+            showAlert('verify-error', (err && err.message) || 'That code did not work.');
             setBusy(btn, false);
             clearAll();
           }
         });
 
-        var lastResend = 0;
-        document.getElementById('resend-btn').addEventListener('click', async function () {
-          var now = Date.now();
-          if (now - lastResend < 30000) {
-            showAlert('verify-info', 'You can resend in ' + Math.ceil((30000 - (now - lastResend)) / 1000) + 's.');
-            return;
-          }
-          var btn = this;
-          btn.disabled = true; btn.textContent = 'Sending…';
-          try {
-            var res = await window.HX.auth.resendSignup(email);
-            if (res.error) throw res.error;
-            lastResend = Date.now();
-            showAlert('verify-success', 'A new 6-digit code is on its way.');
-            btn.textContent = 'Resend code';
-          } catch (err) {
-            showAlert('verify-error', (err && err.message) || 'Could not resend the code.');
-            btn.textContent = 'Resend code';
-          } finally {
-            btn.disabled = false;
-          }
+        document.getElementById('resend-btn').addEventListener('click', function () {
+          // Code is rotated whenever signup is re-submitted, so we send the
+          // user back to the create-account form with the email pre-filled.
+          window.location.href = '/signup?tab=signup&email=' + encodeURIComponent(email);
         });
 
       });

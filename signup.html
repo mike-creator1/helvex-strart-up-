@@ -253,15 +253,23 @@
               last_name: last,
               company: company || null
             });
-            if (res.error) throw res.error;
-            // Persist email on the verify page through query param
+            if (res.status !== 200) {
+              var err = (res.body && res.body.error) || 'signup_failed';
+              if (err === 'user_already_exists') {
+                showError('signup-error', 'An account with this email already exists. Try signing in instead.');
+              } else if (err === 'password_too_short') {
+                showError('signup-error', 'Password must be at least 10 characters.');
+              } else if (err === 'invalid_email') {
+                showError('signup-error', 'That email looks invalid.');
+              } else {
+                showError('signup-error', 'Could not create account: ' + err);
+              }
+              setBusy(btn, false);
+              return;
+            }
             window.location.href = '/verify?email=' + encodeURIComponent(email);
           } catch (err) {
-            var msg = err && err.message ? err.message : 'Could not create account.';
-            if (/already\s*registered/i.test(msg) || /user\s*already/i.test(msg)) {
-              msg = 'An account with this email already exists. Try signing in instead.';
-            }
-            showError('signup-error', msg);
+            showError('signup-error', (err && err.message) || 'Could not create account.');
             setBusy(btn, false);
           }
         });
