@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
-   HelveX · Client Portal · shared sidebar + topbar injector
-   Each platform page sets <body data-active="dashboard"> (etc.)
-   to highlight the current item in the nav.
+   HelveX · Client Portal · shared sidebar + top-bar injector
+   Each platform page sets <body data-active="dashboard"> to
+   highlight the current item and render the right breadcrumb.
    ═══════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -10,7 +10,7 @@
     {
       label: 'Workspace',
       items: [
-        { id: 'dashboard',     href: '/dashboard.html',     label: 'Dashboard',    icon: 'home' },
+        { id: 'dashboard',     href: '/dashboard.html',     label: 'Overview',     icon: 'home' },
         { id: 'projects',      href: '/projects.html',      label: 'Projects',     icon: 'folder' },
         { id: 'services',      href: '/services.html',      label: 'Services',     icon: 'grid' }
       ]
@@ -18,20 +18,20 @@
     {
       label: 'Billing',
       items: [
-        { id: 'credits',       href: '/credits.html',       label: 'Credits',      icon: 'coin', badge: '2,400' },
-        { id: 'pricing',       href: '/pricing.html',       label: 'Pricing',      icon: 'tag' },
+        { id: 'credits',       href: '/credits.html',       label: 'Credits',       icon: 'coin', badge: '2,400' },
+        { id: 'pricing',       href: '/pricing.html',       label: 'Pricing',       icon: 'tag' },
         { id: 'subscriptions', href: '/subscriptions.html', label: 'Subscriptions', icon: 'refresh' },
-        { id: 'invoices',      href: '/invoices.html',      label: 'Invoices',     icon: 'doc' },
-        { id: 'orders',        href: '/orders.html',        label: 'Orders',       icon: 'box' },
-        { id: 'billing',       href: '/billing.html',       label: 'Billing',      icon: 'card' }
+        { id: 'invoices',      href: '/invoices.html',      label: 'Invoices',      icon: 'doc' },
+        { id: 'orders',        href: '/orders.html',        label: 'Orders',        icon: 'box' },
+        { id: 'billing',       href: '/billing.html',       label: 'Billing',       icon: 'card' }
       ]
     },
     {
       label: 'Account',
       items: [
-        { id: 'profile',       href: '/profile.html',       label: 'Profile',      icon: 'user' },
-        { id: 'settings',      href: '/settings.html',      label: 'Settings',     icon: 'cog' },
-        { id: 'support',       href: '/support.html',       label: 'Support',      icon: 'help' }
+        { id: 'profile',       href: '/profile.html',       label: 'Profile',  icon: 'user' },
+        { id: 'settings',      href: '/settings.html',      label: 'Settings', icon: 'cog'  },
+        { id: 'support',       href: '/support.html',       label: 'Support',  icon: 'help' }
       ]
     }
   ];
@@ -49,19 +49,44 @@
     user:    '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
     cog:     '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
     help:    '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
-    logout:  '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>'
+    logout:  '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
+    chev:    '<polyline points="6 9 12 15 18 9"/>',
+    search:  '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+    bell:    '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
   };
 
-  function svg(name) {
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[name] || '') + '</svg>';
+  function svg(name, opts) {
+    var stroke = (opts && opts.stroke) || 'currentColor';
+    var sw = (opts && opts.sw) || 1.7;
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="' + stroke + '" stroke-width="' + sw + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
+  }
+
+  function findActive(activeId) {
+    for (var g = 0; g < NAV_GROUPS.length; g++) {
+      var grp = NAV_GROUPS[g];
+      for (var i = 0; i < grp.items.length; i++) {
+        if (grp.items[i].id === activeId) return grp.items[i];
+      }
+    }
+    return null;
   }
 
   function buildSidebar(activeId) {
     var html = '';
-    html += '<div class="hx-sidebar-brand"><img src="/helvex-logo.png" alt="HelveX" /></div>';
+    html += '<a href="/dashboard.html" class="hx-sidebar-brand">';
+    html +=   '<img src="/helvex-logo.png" alt="HelveX" />';
+    html += '</a>';
+
+    // Workspace switcher (HelveX-signature)
+    html += '<button type="button" class="hx-workspace" id="hx-workspace-btn" title="Switch workspace (coming soon)">';
+    html +=   '<span class="hx-workspace-avatar" id="hx-workspace-avatar">·</span>';
+    html +=   '<span class="hx-workspace-name" id="hx-workspace-name">Loading…</span>';
+    html +=   '<span class="hx-workspace-chev">' + svg('chev', { sw: 1.8 }) + '</span>';
+    html += '</button>';
+
     NAV_GROUPS.forEach(function (group) {
       html += '<div class="hx-nav-section">';
-      html += '<div class="hx-nav-label">' + group.label + '</div>';
+      html +=   '<div class="hx-nav-label">' + group.label + '</div>';
       group.items.forEach(function (item) {
         var activeClass = (item.id === activeId) ? ' active' : '';
         var badge = item.badge ? '<span class="hx-nav-badge">' + item.badge + '</span>' : '';
@@ -69,23 +94,40 @@
       });
       html += '</div>';
     });
+
     html += '<div class="hx-sidebar-foot">';
-    html += '<div class="hx-user-card" id="hx-user-card">';
-    html += '<div class="hx-user-avatar" id="hx-user-avatar">·</div>';
-    html += '<div class="hx-user-meta"><div class="hx-user-name" id="hx-user-name">Loading…</div><div class="hx-user-email" id="hx-user-email">&nbsp;</div></div>';
-    html += '<button type="button" class="hx-user-action" title="Sign out" data-action="signout" aria-label="Sign out">' + svg('logout') + '</button>';
-    html += '</div>';
+    html +=   '<div class="hx-user-card" id="hx-user-card" title="Account menu">';
+    html +=     '<div class="hx-user-avatar" id="hx-user-avatar">·</div>';
+    html +=     '<div class="hx-user-meta">';
+    html +=       '<div class="hx-user-name" id="hx-user-name">Loading…</div>';
+    html +=       '<div class="hx-user-email" id="hx-user-email">&nbsp;</div>';
+    html +=     '</div>';
+    html +=     '<button type="button" class="hx-user-action" title="Sign out" data-action="signout" aria-label="Sign out">' + svg('logout') + '</button>';
+    html +=   '</div>';
     html += '</div>';
     return html;
   }
 
-  function buildTopbar() {
-    return ''
-      + '<button type="button" class="hx-menu-toggle" aria-label="Open menu" id="hx-menu-toggle">'
-      +   '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>'
-      + '</button>'
-      + '<a href="/" class="hx-sidebar-brand" style="margin:0;padding:0;"><img src="/helvex-logo.png" alt="HelveX" style="height:32px;" /></a>'
-      + '<div style="width:38px"></div>';
+  function buildTopbar(activeItem) {
+    var pageLabel = activeItem ? activeItem.label : 'Platform';
+    var html = '';
+    html += '<button type="button" class="hx-menu-toggle" aria-label="Open menu" id="hx-menu-toggle">';
+    html +=   svg('home', { sw: 2 }).replace(ICONS.home, '<path d="M3 6h18M3 12h18M3 18h18"/>');
+    html += '</button>';
+    html += '<nav class="hx-breadcrumb" aria-label="Breadcrumb">';
+    html +=   '<a href="/dashboard.html" id="hx-crumb-workspace">Workspace</a>';
+    html +=   '<span class="crumb-sep">/</span>';
+    html +=   '<span class="crumb-current">' + pageLabel + '</span>';
+    html += '</nav>';
+    html += '<button type="button" class="hx-cmdk" id="hx-cmdk" aria-label="Search">';
+    html +=   svg('search', { sw: 1.8 });
+    html +=   '<span class="hx-cmdk-text">Search…</span>';
+    html +=   '<span class="hx-cmdk-kbd">⌘K</span>';
+    html += '</button>';
+    html += '<div class="hx-topbar-actions">';
+    html +=   '<button type="button" class="hx-icon-btn" aria-label="Notifications" title="Notifications">' + svg('bell', { sw: 1.7 }) + '</button>';
+    html += '</div>';
+    return html;
   }
 
   function loadAuthScript() {
@@ -105,7 +147,7 @@
     return e ? e[0].toUpperCase() : '·';
   }
 
-  function hydrateUserCard() {
+  function hydrateUser() {
     var sb = window.HX && window.HX.supabase;
     if (!sb) return;
     sb.auth.getUser().then(function (res) {
@@ -120,6 +162,17 @@
       if (nameEl) nameEl.textContent = fullName;
       if (mailEl) mailEl.textContent = user.email || '';
       if (avEl)   avEl.textContent   = initials(meta.first_name, meta.last_name, user.email);
+
+      // Hydrate workspace pill from company metadata, fallback to email domain.
+      var wsName = (meta.company || '').trim();
+      if (!wsName && user.email) {
+        var domain = user.email.split('@')[1] || '';
+        wsName = domain ? domain.split('.')[0].replace(/^./, function (c) { return c.toUpperCase(); }) : 'Workspace';
+      }
+      var wsNameEl = document.getElementById('hx-workspace-name');
+      var wsAvEl   = document.getElementById('hx-workspace-avatar');
+      if (wsNameEl) wsNameEl.textContent = wsName || 'Personal';
+      if (wsAvEl)   wsAvEl.textContent   = (wsName || 'P').slice(0, 1).toUpperCase();
     });
   }
 
@@ -127,20 +180,21 @@
     var body = document.body;
     if (!body) return;
     var activeId = body.getAttribute('data-active') || '';
+    var activeItem = findActive(activeId);
 
     var sidebar = document.querySelector('.hx-sidebar');
     if (sidebar) sidebar.innerHTML = buildSidebar(activeId);
 
     var topbar = document.querySelector('.hx-topbar');
-    if (topbar) topbar.innerHTML = buildTopbar();
+    if (topbar) topbar.innerHTML = buildTopbar(activeItem);
 
+    // Mobile menu toggle
     var toggle = document.getElementById('hx-menu-toggle');
     if (toggle && sidebar) {
       toggle.addEventListener('click', function () {
         sidebar.classList.toggle('open');
       });
     }
-    // Click outside sidebar (mobile) closes it
     if (sidebar) {
       document.addEventListener('click', function (e) {
         if (window.innerWidth > 900) return;
@@ -150,10 +204,23 @@
       });
     }
 
-    // Boot Supabase auth (session guard, signout, user hydration)
+    // Cmd-K affordance: focus a future command palette (placeholder for now)
+    var cmdk = document.getElementById('hx-cmdk');
+    if (cmdk) {
+      cmdk.addEventListener('click', function () { /* hook into command palette here */ });
+    }
+    document.addEventListener('keydown', function (e) {
+      var meta = e.metaKey || e.ctrlKey;
+      if (meta && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        if (cmdk) cmdk.focus();
+      }
+    });
+
+    // Boot Supabase auth (session guard + signout binding)
     loadAuthScript();
-    if (window.HX && window.HX.auth) hydrateUserCard();
-    else document.addEventListener('hx:auth-ready', hydrateUserCard, { once: true });
+    if (window.HX && window.HX.auth) hydrateUser();
+    else document.addEventListener('hx:auth-ready', hydrateUser, { once: true });
   }
 
   if (document.readyState === 'loading') {
