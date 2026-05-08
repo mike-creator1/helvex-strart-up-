@@ -88,6 +88,15 @@
     (function () {
       var qp = new URLSearchParams(location.search);
       var email = (qp.get('email') || '').trim().toLowerCase();
+      // Fallback to the email we stored when the user kicked off the flow
+      // (so /verify still has the right email even after a refresh that
+      //  drops the URL param, or if something stripped query strings).
+      if (!email) {
+        try { email = (sessionStorage.getItem('helvex.flow_email') || '').trim().toLowerCase(); } catch (_) {}
+      }
+      if (email) {
+        try { sessionStorage.setItem('helvex.flow_email', email); } catch (_) {}
+      }
 
       // Render the email pill (if we have an email)
       function renderEmailPill() {

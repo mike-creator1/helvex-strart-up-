@@ -87,11 +87,35 @@
       try { sessionStorage.removeItem(PENDING_KEY); } catch (_) {}
     }
 
+    // Page-to-page email persistence — survives URL param loss, refresh, etc.
+    // The current "auth flow email" is the email the user is mid-flow on,
+    // regardless of which page they're on (signup, verify, forgot, reset).
+    var EMAIL_KEY = 'helvex.flow_email';
+    HX.flowEmail = {
+      set: function (email) {
+        try { sessionStorage.setItem(EMAIL_KEY, clean(email)); } catch (_) {}
+      },
+      get: function () {
+        try { return sessionStorage.getItem(EMAIL_KEY) || ''; } catch (_) { return ''; }
+      },
+      clear: function () { try { sessionStorage.removeItem(EMAIL_KEY); } catch (_) {} },
+      // Resolve the active email for a page: URL ?email= param wins, then
+      // sessionStorage, then null. Caller decides whether to redirect home.
+      resolve: function () {
+        var qp;
+        try { qp = new URLSearchParams(window.location.search); } catch (_) { qp = null; }
+        var fromUrl = qp ? clean(qp.get('email') || '') : '';
+        if (fromUrl) { this.set(fromUrl); return fromUrl; }
+        return this.get();
+      }
+    };
+
     HX.auth = {
       // ─── Signup: create user (admin) + email a HelveX 6-digit code via Resend
       signUp: function (email, password, meta) {
         var clean_email = clean(email);
         rememberPendingSignup(clean_email, password); // remember for /verify
+        HX.flowEmail.set(clean_email);                // remember for any page
         return callOtp('send-signup', {
           email: clean_email, password: password, meta: meta || {}
         });
@@ -143,7 +167,9 @@
 
       // ─── Send the 6-digit password-reset code via Resend
       requestPasswordReset: function (email) {
-        return callOtp('send-recovery', { email: clean(email) });
+        var clean_email = clean(email);
+        HX.flowEmail.set(clean_email);                // remember for /reset-password
+        return callOtp('send-recovery', { email: clean_email });
       },
 
       // ─── Verify the 6-digit recovery code → returns a one-shot recovery_token
