@@ -98,6 +98,32 @@
     }
     .hx-model-cta:hover { border-color: var(--hx-text); gap: 6px; }
     .hx-model-cta::after { content: '→'; font-weight: 400; }
+
+    /* Playground */
+    .hx-pg-card { display: flex; flex-direction: column; gap: 14px; }
+    .hx-pg-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .hx-pg-row > label { font-size: 12.5px; font-weight: 500; color: var(--hx-text); min-width: 60px; }
+    .hx-pg-models { display: inline-flex; gap: 0; padding: 3px; background: var(--hx-bg-2); border: 1px solid var(--hx-line); border-radius: var(--hx-r); }
+    .hx-pg-models button {
+      padding: 6px 14px; font-size: 12.5px; font-weight: 500; color: var(--hx-text-mid);
+      background: transparent; border: none; border-radius: var(--hx-r-sm);
+      cursor: pointer; font-family: inherit; transition: color 0.12s, background 0.12s, box-shadow 0.12s;
+    }
+    .hx-pg-models button:hover { color: var(--hx-text); }
+    .hx-pg-models button.is-active { background: var(--hx-surface); color: var(--hx-text); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+    .hx-pg-meta {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      font-size: 12px; color: var(--hx-text-mid);
+      padding: 10px 12px; background: var(--hx-bg-2); border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm); margin-top: 6px;
+    }
+    .hx-pg-meta strong { display: inline; font-weight: 500; color: var(--hx-text-dim); margin-right: 4px; }
+    .hx-pg-response {
+      margin-top: 10px; padding: 16px; background: var(--hx-bg); border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm); font-size: 13.5px; line-height: 1.6; color: var(--hx-text);
+      white-space: pre-wrap; word-wrap: break-word; max-height: 500px; overflow-y: auto;
+    }
+    .hx-pg-error { border-color: rgba(220,38,38,0.3); background: var(--hx-red-soft); color: var(--hx-red); }
   </style>
 </head>
 <body data-active="models">
@@ -171,6 +197,45 @@
 
         </div>
 
+        <!-- Playground — runs real model calls through model-proxy -->
+        <div class="hx-section-head">
+          <h2>Try a model</h2>
+          <span class="meta" id="hx-pg-balance">— credits available</span>
+        </div>
+        <div class="hx-card hx-pg-card">
+          <div class="hx-pg-row">
+            <label>Model</label>
+            <div class="hx-pg-models" id="hx-pg-models">
+              <button type="button" data-model="ether" class="is-active">Ether</button>
+              <button type="button" data-model="nexus">Nexus</button>
+              <button type="button" data-model="prometheus">Prometheus</button>
+            </div>
+          </div>
+          <div class="hx-field" style="margin:0;">
+            <label for="hx-pg-system">System prompt (optional)</label>
+            <input type="text" id="hx-pg-system" placeholder="e.g. You are a concise technical writer." />
+          </div>
+          <div class="hx-field" style="margin:0;">
+            <label for="hx-pg-prompt">Prompt</label>
+            <textarea id="hx-pg-prompt" rows="4" placeholder="Ask the model anything…"></textarea>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <button id="hx-pg-run" class="hx-btn hx-btn-primary">Run</button>
+            <button id="hx-pg-clear" class="hx-btn hx-btn-ghost" type="button">Clear</button>
+            <span id="hx-pg-status" class="hx-mono" style="font-size:12px;color:var(--hx-text-dim);"></span>
+          </div>
+          <div id="hx-pg-output" hidden>
+            <div class="hx-pg-meta" id="hx-pg-meta">
+              <span><strong>Model</strong><span id="hx-pg-mdl">—</span></span>
+              <span><strong>Latency</strong><span id="hx-pg-lat">—</span></span>
+              <span><strong>Tokens</strong><span id="hx-pg-tok">—</span></span>
+              <span><strong>Credits</strong><span id="hx-pg-cr">—</span></span>
+              <span class="hx-mono" style="margin-left:auto;color:var(--hx-text-faint);font-size:11px;" id="hx-pg-trace"></span>
+            </div>
+            <div class="hx-pg-response" id="hx-pg-response"></div>
+          </div>
+        </div>
+
         <div class="hx-section-head">
           <h2>Choosing a model</h2>
         </div>
@@ -183,5 +248,120 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Playground — calls the model-proxy Edge Function with the user's
+       Supabase session JWT. Records appear in usage_events / log_events
+       so /usage, /logs, /monitoring, and /activity all populate live. */
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      var $ = function (id) { return document.getElementById(id); };
+      function escape(s) { return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+      var selectedModel = 'ether';
+      var PROJECT_URL = 'https://yjmpallrtpeinpdilptj.supabase.co';
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+
+        // Model picker
+        document.querySelectorAll('#hx-pg-models button').forEach(function (b) {
+          b.addEventListener('click', function () {
+            document.querySelectorAll('#hx-pg-models button').forEach(function (x) { x.classList.remove('is-active'); });
+            b.classList.add('is-active');
+            selectedModel = b.getAttribute('data-model');
+          });
+        });
+
+        // Live balance display
+        async function refreshBalance() {
+          var r = await sb.from('credits_balance').select('credits_total,credits_used').maybeSingle();
+          if (r && r.data) {
+            var avail = Math.max(0, (r.data.credits_total || 0) - (r.data.credits_used || 0));
+            $('hx-pg-balance').textContent = avail.toLocaleString() + ' credits available';
+          }
+        }
+        refreshBalance();
+
+        // Clear
+        $('hx-pg-clear').addEventListener('click', function () {
+          $('hx-pg-prompt').value = '';
+          $('hx-pg-system').value = '';
+          $('hx-pg-output').hidden = true;
+          $('hx-pg-status').textContent = '';
+        });
+
+        // Run
+        $('hx-pg-run').addEventListener('click', async function () {
+          var prompt = ($('hx-pg-prompt').value || '').trim();
+          var system = ($('hx-pg-system').value || '').trim();
+          if (!prompt) { $('hx-pg-status').textContent = 'Type a prompt first.'; return; }
+
+          var btn = $('hx-pg-run'); var lbl = btn.textContent;
+          btn.disabled = true; btn.textContent = 'Running…';
+          $('hx-pg-status').textContent = '';
+          $('hx-pg-output').hidden = true;
+          $('hx-pg-response').classList.remove('hx-pg-error');
+
+          var t0 = Date.now();
+          try {
+            var sess = (await sb.auth.getSession()).data.session;
+            if (!sess || !sess.access_token) throw new Error('Not signed in.');
+
+            var resp = await fetch(PROJECT_URL + '/functions/v1/model-proxy', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sess.access_token
+              },
+              body: JSON.stringify({
+                model: selectedModel,
+                ...(system ? { system: system } : {}),
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 2048
+              })
+            });
+            var data = await resp.json().catch(function () { return null; });
+
+            if (!resp.ok || !data) {
+              var msg = (data && (data.hint || data.message || data.error)) || ('HTTP ' + resp.status);
+              $('hx-pg-output').hidden = false;
+              $('hx-pg-mdl').textContent = selectedModel;
+              $('hx-pg-lat').textContent = (Date.now() - t0) + ' ms';
+              $('hx-pg-tok').textContent = '—';
+              $('hx-pg-cr').textContent  = (data && data.estimate) ? data.estimate.toLocaleString() : '—';
+              $('hx-pg-trace').textContent = (data && data.trace_id) ? data.trace_id : '';
+              $('hx-pg-response').classList.add('hx-pg-error');
+              $('hx-pg-response').textContent = msg;
+              return;
+            }
+
+            // Success — render content text blocks
+            var text = '';
+            (data.content || []).forEach(function (b) {
+              if (b && b.type === 'text' && typeof b.text === 'string') text += b.text;
+            });
+
+            $('hx-pg-output').hidden = false;
+            $('hx-pg-mdl').textContent = data.model + ' · ' + (data.upstream_model || '');
+            $('hx-pg-lat').textContent = (data.latency_ms || (Date.now() - t0)) + ' ms';
+            $('hx-pg-tok').textContent = (data.usage ? (data.usage.prompt_tokens + ' in / ' + data.usage.completion_tokens + ' out') : '—');
+            $('hx-pg-cr').textContent  = data.usage ? data.usage.credits.toLocaleString() : '—';
+            $('hx-pg-trace').textContent = data.trace_id || '';
+            $('hx-pg-response').textContent = text || '(no text content)';
+            await refreshBalance();
+          } catch (err) {
+            $('hx-pg-output').hidden = false;
+            $('hx-pg-response').classList.add('hx-pg-error');
+            $('hx-pg-response').textContent = (err && err.message) || 'Run failed.';
+          } finally {
+            btn.disabled = false; btn.textContent = lbl;
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
