@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat — HelveX</title>
+  <meta name="description" content="HelveX chat — your real AI workspace." />
+  <link rel="icon" type="image/png" href="/helvex-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
+  <style>
+    /* The chat workspace replaces the standard .hx-main scroll with its
+       own column-flex layout so the composer stays pinned. */
+    body[data-active="chat"] .hx-main {
+      padding: 0;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      height: calc(100vh - var(--hx-topbar-h));
+      min-height: 0;
+    }
+    @media (max-width: 900px) {
+      body[data-active="chat"] .hx-main { grid-template-columns: 1fr; }
+      .hx-chat-rail { display: none; }
+    }
+
+    /* Left rail — conversation list */
+    .hx-chat-rail {
+      border-right: 1px solid var(--hx-line);
+      background: var(--hx-surface);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .hx-chat-rail-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--hx-line);
+    }
+    .hx-chat-rail-title {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--hx-text-dim);
+      margin: 0;
+    }
+    .hx-chat-new {
+      width: 26px; height: 26px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--hx-text); color: #FFF;
+      border: 1px solid var(--hx-text); border-radius: var(--hx-r-sm);
+      cursor: pointer; transition: background 0.12s, border-color 0.12s;
+    }
+    .hx-chat-new:hover { background: #1F1F1F; border-color: #1F1F1F; }
+    .hx-chat-new svg { width: 13px; height: 13px; }
+
+    .hx-chat-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 6px;
+    }
+    .hx-chat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 8px 10px;
+      border-radius: var(--hx-r-sm);
+      cursor: pointer;
+      transition: background 0.12s;
+      border: 1px solid transparent;
+    }
+    .hx-chat-item:hover { background: var(--hx-bg-2); }
+    .hx-chat-item.is-active { background: var(--hx-bg-2); border-color: var(--hx-line); }
+    .hx-chat-item-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--hx-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hx-chat-item-meta {
+      font-size: 11px;
+      color: var(--hx-text-dim);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hx-chat-item-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--hx-text-faint); }
+
+    .hx-chat-empty-list {
+      padding: 24px 14px;
+      text-align: center;
+      color: var(--hx-text-dim);
+      font-size: 12.5px;
+    }
+
+    /* Right pane — thread + composer */
+    .hx-chat-pane {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: var(--hx-bg);
+    }
+    .hx-chat-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-bottom: 1px solid var(--hx-line);
+      background: var(--hx-surface);
+      flex-wrap: wrap;
+    }
+    .hx-chat-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--hx-text);
+      margin: 0 auto 0 0;
+      max-width: 60%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hx-chat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 28px;
+      padding: 0 10px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm);
+      color: var(--hx-text);
+      font-size: 12.5px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: border-color 0.12s, background 0.12s;
+    }
+    .hx-chat-pill:hover { border-color: var(--hx-line-strong); background: var(--hx-surface); }
+    .hx-chat-pill svg { width: 11px; height: 11px; opacity: 0.6; }
+    .hx-chat-pill select {
+      border: none; background: transparent; font-size: 12.5px; font-family: inherit;
+      color: var(--hx-text); padding: 0; outline: none; cursor: pointer;
+    }
+
+    /* Thread */
+    .hx-chat-thread {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 28px 0;
+    }
+    .hx-chat-thread-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .hx-msg { display: flex; gap: 12px; align-items: flex-start; }
+    .hx-msg-avatar {
+      width: 28px; height: 28px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600;
+      background: var(--hx-text); color: #FFF;
+    }
+    .hx-msg.is-assistant .hx-msg-avatar {
+      background: var(--hx-yellow-soft); color: var(--hx-yellow-deep);
+      border: 1px solid rgba(252, 211, 77, 0.4);
+    }
+    .hx-msg-body { flex: 1; min-width: 0; }
+    .hx-msg-meta {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      font-size: 11.5px; color: var(--hx-text-dim);
+      margin-bottom: 6px;
+    }
+    .hx-msg-meta strong { font-weight: 500; color: var(--hx-text); }
+    .hx-msg-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--hx-text-faint); }
+    .hx-msg-content {
+      font-size: 14px; line-height: 1.65; color: var(--hx-text);
+      white-space: pre-wrap; word-wrap: break-word;
+    }
+    .hx-msg-actions {
+      display: flex; align-items: center; gap: 4px;
+      margin-top: 8px;
+      opacity: 0;
+      transition: opacity 0.12s;
+    }
+    .hx-msg:hover .hx-msg-actions { opacity: 1; }
+    .hx-msg-act {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px;
+      font-size: 11.5px; font-weight: 500;
+      color: var(--hx-text-mid);
+      background: transparent; border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+    }
+    .hx-msg-act:hover { background: var(--hx-bg-2); color: var(--hx-text); border-color: var(--hx-line); }
+    .hx-msg-act svg { width: 11px; height: 11px; }
+
+    .hx-msg-error .hx-msg-content {
+      color: var(--hx-red);
+      background: var(--hx-red-soft);
+      border: 1px solid rgba(220, 38, 38, 0.22);
+      border-radius: var(--hx-r-sm);
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    /* Typing indicator */
+    .hx-typing {
+      display: inline-flex; gap: 4px; align-items: center;
+      padding: 6px 0;
+    }
+    .hx-typing span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--hx-text-faint);
+      animation: hx-typing-bounce 1.2s infinite;
+    }
+    .hx-typing span:nth-child(2) { animation-delay: 0.15s; }
+    .hx-typing span:nth-child(3) { animation-delay: 0.30s; }
+    @keyframes hx-typing-bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+      30%           { transform: translateY(-4px); opacity: 1; }
+    }
+
+    /* Empty state */
+    .hx-chat-blank {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--hx-text-mid);
+    }
+    .hx-chat-blank h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic; font-size: 32px;
+      letter-spacing: -0.015em;
+      color: var(--hx-text);
+      margin: 0 0 8px;
+    }
+    .hx-chat-blank p { font-size: 13.5px; max-width: 420px; line-height: 1.6; margin: 0; }
+
+    /* Composer */
+    .hx-chat-compose {
+      border-top: 1px solid var(--hx-line);
+      background: var(--hx-surface);
+      padding: 14px 24px 18px;
+    }
+    .hx-chat-compose-inner {
+      max-width: 760px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .hx-chat-input-row {
+      display: flex; align-items: flex-end; gap: 8px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-lg);
+      padding: 10px 10px 10px 14px;
+      transition: border-color 0.12s, box-shadow 0.12s;
+    }
+    .hx-chat-input-row:focus-within {
+      border-color: var(--hx-text);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+    }
+    .hx-chat-textarea {
+      flex: 1;
+      border: none; outline: none;
+      background: transparent;
+      resize: none;
+      font: inherit; font-size: 14px; line-height: 1.55;
+      color: var(--hx-text);
+      max-height: 200px; min-height: 22px;
+      padding: 4px 0;
+    }
+    .hx-chat-textarea::placeholder { color: var(--hx-text-faint); }
+    .hx-chat-send {
+      width: 32px; height: 32px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--hx-text); color: #FFF;
+      border: 1px solid var(--hx-text); border-radius: var(--hx-r-sm);
+      cursor: pointer; flex-shrink: 0;
+      transition: background 0.12s, opacity 0.12s;
+    }
+    .hx-chat-send:hover:not(:disabled) { background: #1F1F1F; }
+    .hx-chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+    .hx-chat-send svg { width: 14px; height: 14px; }
+
+    .hx-chat-foot {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      font-size: 11.5px; color: var(--hx-text-dim);
+      padding: 0 4px;
+    }
+    .hx-chat-foot .hx-mono { font-size: 11px; }
+    .hx-chat-foot a { color: var(--hx-text); border-bottom: 1px solid transparent; padding-bottom: 1px; }
+    .hx-chat-foot a:hover { border-color: var(--hx-text); }
+
+    /* Mobile thread tweaks */
+    @media (max-width: 700px) {
+      .hx-chat-thread-inner, .hx-chat-compose-inner { padding: 0 16px; }
+      .hx-chat-toolbar { padding: 10px 12px; gap: 6px; }
+      .hx-chat-title { font-size: 13px; }
+    }
+  </style>
+</head>
+<body data-active="chat">
+
+  <div class="hx-app">
+    <aside class="hx-sidebar"></aside>
+    <div>
+      <div class="hx-topbar"></div>
+      <main class="hx-main">
+
+        <!-- Conversation rail -->
+        <aside class="hx-chat-rail">
+          <div class="hx-chat-rail-head">
+            <p class="hx-chat-rail-title">Conversations</p>
+            <button class="hx-chat-new" type="button" id="hx-c-new" aria-label="New chat" title="New chat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+          <div class="hx-chat-list" id="hx-c-list">
+            <div class="hx-chat-empty-list" id="hx-c-empty">No conversations yet.</div>
+          </div>
+        </aside>
+
+        <!-- Main chat pane -->
+        <section class="hx-chat-pane">
+          <div class="hx-chat-toolbar">
+            <p class="hx-chat-title" id="hx-c-title">New chat</p>
+            <label class="hx-chat-pill" title="Model">
+              <span style="color:var(--hx-text-dim);font-size:11.5px;">Model</span>
+              <select id="hx-c-model">
+                <option value="ether">Ether</option>
+                <option value="nexus">Nexus</option>
+                <option value="prometheus">Prometheus</option>
+              </select>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </label>
+            <label class="hx-chat-pill" title="Project">
+              <span style="color:var(--hx-text-dim);font-size:11.5px;">Project</span>
+              <select id="hx-c-project">
+                <option value="">None</option>
+              </select>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </label>
+            <button class="hx-chat-pill" type="button" id="hx-c-clear" title="Delete this conversation">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+              Delete
+            </button>
+            <span class="hx-mono" id="hx-c-balance" style="font-size:11px;color:var(--hx-text-dim);">—</span>
+          </div>
+
+          <div class="hx-chat-thread" id="hx-c-thread">
+            <div class="hx-chat-blank" id="hx-c-blank">
+              <h2>Start a conversation.</h2>
+              <p>Pick a model, type a prompt, and press <span class="hx-mono" style="background:var(--hx-bg-2);padding:1px 5px;border-radius:3px;border:1px solid var(--hx-line);">Enter</span> — every send updates Usage, Logs, Activity, Monitoring, and your credit balance in real time.</p>
+            </div>
+          </div>
+
+          <div class="hx-chat-compose">
+            <div class="hx-chat-compose-inner">
+              <div class="hx-chat-input-row">
+                <textarea
+                  id="hx-c-input"
+                  class="hx-chat-textarea"
+                  placeholder="Ask anything…"
+                  rows="1"
+                  autocomplete="off"
+                  spellcheck="true"></textarea>
+                <button class="hx-chat-send" id="hx-c-send" type="button" disabled aria-label="Send">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </div>
+              <div class="hx-chat-foot">
+                <span><span class="hx-mono" id="hx-c-trace">—</span></span>
+                <span style="margin-left:auto;">Press Enter to send · Shift+Enter for new line</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/platform.js"></script>
+  <script>
+    /* HelveX Chat workspace.
+       Real conversations + messages persisted to Supabase, real model
+       calls through model-proxy, realtime subscription on messages so
+       the assistant reply appears the moment the proxy commits the row. */
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      var $ = function (id) { return document.getElementById(id); };
+      function escape(s) {
+        return (s == null ? '' : String(s))
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+      function relTime(iso) {
+        var d = new Date(iso); var diff = (Date.now() - d.getTime()) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+        return Math.floor(diff/86400) + 'd ago';
+      }
+
+      var PROJECT_URL = 'https://yjmpallrtpeinpdilptj.supabase.co';
+
+      var state = {
+        owner: null,
+        conversation: null,    // current conversation row
+        conversations: [],     // sidebar list
+        messages: [],          // current thread
+        sending: false,
+        msgChannel: null,
+      };
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+
+        // ─── Auth + balance ───────────────────────────────────
+        async function refreshBalance() {
+          var r = await sb.from('credits_balance').select('credits_total,credits_used').maybeSingle();
+          if (r && r.data) {
+            var avail = Math.max(0, (r.data.credits_total || 0) - (r.data.credits_used || 0));
+            $('hx-c-balance').textContent = avail.toLocaleString() + ' cr';
+          }
+        }
+
+        // ─── Project picker ──────────────────────────────────
+        async function loadProjects() {
+          var r = await sb.from('projects').select('id,name,status').order('name');
+          var sel = $('hx-c-project');
+          while (sel.options.length > 1) sel.remove(1);
+          (r.data || []).filter(function (p) { return p.status !== 'archived'; }).forEach(function (p) {
+            var opt = document.createElement('option');
+            opt.value = p.id; opt.textContent = p.name;
+            sel.appendChild(opt);
+          });
+        }
+
+        // ─── Conversation list ───────────────────────────────
+        async function refreshList() {
+          var r = await sb.from('conversations').select('id,title,model,updated_at,project_id')
+            .is('archived_at', null).order('updated_at', { ascending: false }).limit(100);
+          state.conversations = r.data || [];
+          renderList();
+        }
+
+        function renderList() {
+          var host = $('hx-c-list');
+          if (!state.conversations.length) {
+            host.innerHTML = '<div class="hx-chat-empty-list" id="hx-c-empty">No conversations yet.</div>';
+            return;
+          }
+          var html = '';
+          state.conversations.forEach(function (c) {
+            var active = state.conversation && state.conversation.id === c.id;
+            html += '<div class="hx-chat-item' + (active ? ' is-active' : '') + '" data-id="' + escape(c.id) + '">' +
+              '<span class="hx-chat-item-title">' + escape(c.title || 'Untitled') + '</span>' +
+              '<span class="hx-chat-item-meta">' +
+                '<span class="hx-mono" style="text-transform:capitalize;">' + escape(c.model || 'ether') + '</span>' +
+                '<span class="dot"></span>' +
+                '<span>' + escape(relTime(c.updated_at)) + '</span>' +
+              '</span>' +
+            '</div>';
+          });
+          host.innerHTML = html;
+          host.querySelectorAll('.hx-chat-item').forEach(function (el) {
+            el.addEventListener('click', function () { openConversation(el.getAttribute('data-id')); });
+          });
+        }
+
+        // ─── Open/close conversation ─────────────────────────
+        async function openConversation(id) {
+          // Tear down previous realtime channel
+          if (state.msgChannel) { try { state.msgChannel.unsubscribe(); } catch (e) {} state.msgChannel = null; }
+
+          var conv = state.conversations.find(function (c) { return c.id === id; });
+          if (!conv) {
+            var r = await sb.from('conversations').select('*').eq('id', id).maybeSingle();
+            conv = r.data;
+          }
+          if (!conv) return;
+          state.conversation = conv;
+
+          // Sync toolbar
+          $('hx-c-title').textContent = conv.title || 'New chat';
+          $('hx-c-model').value = conv.model || 'ether';
+          $('hx-c-project').value = conv.project_id || '';
+
+          // Load messages
+          var m = await sb.from('messages').select('*').eq('conversation_id', id)
+            .order('created_at', { ascending: true });
+          state.messages = m.data || [];
+          renderThread();
+
+          // Realtime subscription — new messages stream in live
+          state.msgChannel = sb.channel('hx-msg-' + id)
+            .on('postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'messages', filter: 'conversation_id=eq.' + id },
+                function (payload) {
+                  // Avoid duplicating optimistic inserts
+                  var newMsg = payload.new;
+                  if (state.messages.find(function (x) { return x.id === newMsg.id; })) return;
+                  // Replace any optimistic placeholder of the same role
+                  var lastIdx = state.messages.length - 1;
+                  if (lastIdx >= 0 && state.messages[lastIdx].__optimistic && state.messages[lastIdx].role === newMsg.role) {
+                    state.messages[lastIdx] = newMsg;
+                  } else {
+                    state.messages.push(newMsg);
+                  }
+                  renderThread();
+                })
+            .subscribe();
+
+          renderList();
+        }
+
+        function renderThread() {
+          var thread = $('hx-c-thread');
+          if (!state.conversation) {
+            thread.innerHTML = '<div class="hx-chat-blank"><h2>Start a conversation.</h2><p>Pick a model, type a prompt, and press <span class="hx-mono" style="background:var(--hx-bg-2);padding:1px 5px;border-radius:3px;border:1px solid var(--hx-line);">Enter</span> — every send updates Usage, Logs, Activity, Monitoring, and your credit balance in real time.</p></div>';
+            return;
+          }
+          if (!state.messages.length && !state.sending) {
+            thread.innerHTML = '<div class="hx-chat-blank"><h2 style="font-size:24px;">' + escape(state.conversation.title || 'New chat') + '</h2><p>Empty so far. Send your first message below.</p></div>';
+            return;
+          }
+          var html = '<div class="hx-chat-thread-inner">';
+          state.messages.forEach(function (m) {
+            html += renderMessage(m);
+          });
+          if (state.sending) {
+            html += '<div class="hx-msg is-assistant">' +
+              '<div class="hx-msg-avatar">A</div>' +
+              '<div class="hx-msg-body">' +
+                '<div class="hx-msg-meta"><strong>Assistant</strong><span class="dot"></span><span>thinking…</span></div>' +
+                '<div class="hx-typing"><span></span><span></span><span></span></div>' +
+              '</div>' +
+            '</div>';
+          }
+          html += '</div>';
+          thread.innerHTML = html;
+          // Wire copy/regenerate actions
+          thread.querySelectorAll('button[data-act]').forEach(function (b) {
+            b.addEventListener('click', function () {
+              var act = b.getAttribute('data-act');
+              var idx = parseInt(b.getAttribute('data-idx'), 10);
+              var msg = state.messages[idx];
+              if (!msg) return;
+              if (act === 'copy') {
+                navigator.clipboard && navigator.clipboard.writeText(msg.content || '').then(function () {
+                  var l = b.textContent; b.innerHTML = 'Copied'; setTimeout(function () { b.innerHTML = l; }, 1200);
+                });
+              }
+              if (act === 'regenerate') regenerate(idx);
+            });
+          });
+          // Scroll to bottom
+          thread.scrollTop = thread.scrollHeight;
+        }
+
+        function renderMessage(m, idx) {
+          var i = state.messages.indexOf(m);
+          var initials = m.role === 'assistant' ? 'A' : 'U';
+          var label = m.role === 'assistant' ? 'Assistant' : 'You';
+          var meta = '<strong>' + label + '</strong>';
+          if (m.role === 'assistant' && m.model) meta += '<span class="dot"></span><span class="hx-mono" style="text-transform:capitalize;">' + escape(m.model) + '</span>';
+          if (m.role === 'assistant' && m.latency_ms) meta += '<span class="dot"></span><span class="hx-mono">' + m.latency_ms + ' ms</span>';
+          if (m.role === 'assistant' && m.completion_tokens) meta += '<span class="dot"></span><span class="hx-mono">' + (m.prompt_tokens||0) + '+' + m.completion_tokens + 't</span>';
+
+          var actions = '';
+          if (m.role === 'assistant' && m.content) {
+            actions = '<div class="hx-msg-actions">' +
+              '<button class="hx-msg-act" type="button" data-act="copy" data-idx="' + i + '">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
+                'Copy' +
+              '</button>' +
+              '<button class="hx-msg-act" type="button" data-act="regenerate" data-idx="' + i + '">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>' +
+                'Regenerate' +
+              '</button>' +
+            '</div>';
+          }
+
+          return '<div class="hx-msg ' + (m.role === 'assistant' ? 'is-assistant' : '') + '">' +
+            '<div class="hx-msg-avatar">' + initials + '</div>' +
+            '<div class="hx-msg-body">' +
+              '<div class="hx-msg-meta">' + meta + '</div>' +
+              '<div class="hx-msg-content">' + escape(m.content || '') + '</div>' +
+              actions +
+            '</div>' +
+          '</div>';
+        }
+
+        // ─── New conversation ────────────────────────────────
+        async function newConversation() {
+          var u = (await sb.auth.getUser()).data.user; if (!u) return;
+          var model = $('hx-c-model').value || 'ether';
+          var proj  = $('hx-c-project').value || null;
+          var ins = await sb.from('conversations').insert({
+            owner_id: u.id, project_id: proj, model: model, title: 'New chat'
+          }).select().maybeSingle();
+          if (ins.error) { alert(ins.error.message); return; }
+          await sb.rpc('log_event', { p_kind: 'chat.conversation_created', p_payload: { id: ins.data.id, model: model } });
+          await refreshList();
+          await openConversation(ins.data.id);
+          $('hx-c-input').focus();
+        }
+
+        // ─── Send message ────────────────────────────────────
+        async function send(retryFromIdx) {
+          if (state.sending) return;
+          var text = $('hx-c-input').value.trim();
+
+          // Regenerate path: pull last user message from history
+          if (typeof retryFromIdx === 'number') {
+            // Strip messages from retryFromIdx onward (those will be replaced)
+            // Actually keep history up to but NOT including the assistant we're regenerating.
+            var lastUser = null;
+            for (var i = retryFromIdx - 1; i >= 0; i--) {
+              if (state.messages[i].role === 'user') { lastUser = state.messages[i]; break; }
+            }
+            if (!lastUser) return;
+            text = lastUser.content;
+            // Optimistically drop the old assistant from view (we don't delete from DB,
+            // it'll just appear above the new one in the thread).
+          }
+
+          if (!text) return;
+
+          // Need a conversation
+          if (!state.conversation) await newConversation();
+
+          $('hx-c-input').value = '';
+          autoSize($('hx-c-input'));
+
+          // Optimistic user message
+          state.messages.push({ id: 'opt-' + Date.now(), role: 'user', content: text, created_at: new Date().toISOString(), __optimistic: true });
+          state.sending = true;
+          renderThread();
+
+          var send_msgs = state.messages
+            .filter(function (m) { return !m.__optimistic ? true : (m.role === 'user'); })  // include the optimistic user msg too
+            .map(function (m) { return { role: m.role, content: m.content }; });
+
+          var t0 = Date.now();
+          var traceCell = $('hx-c-trace');
+          traceCell.textContent = '…';
+
+          try {
+            var sess = (await sb.auth.getSession()).data.session;
+            if (!sess || !sess.access_token) throw new Error('Not signed in.');
+
+            var resp = await fetch(PROJECT_URL + '/functions/v1/model-proxy', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sess.access_token
+              },
+              body: JSON.stringify({
+                model: $('hx-c-model').value || 'ether',
+                conversation_id: state.conversation.id,
+                messages: send_msgs,
+                max_tokens: 2048
+              })
+            });
+            var data = await resp.json().catch(function () { return null; });
+            traceCell.textContent = (data && data.trace_id) ? data.trace_id : ('hxr_' + Math.random().toString(36).slice(2, 10));
+
+            if (!resp.ok || !data) {
+              var msg = (data && (data.hint || data.message || data.error)) || ('HTTP ' + resp.status);
+              state.sending = false;
+              // Inject an inline error bubble
+              state.messages.push({ id: 'err-' + Date.now(), role: 'assistant', content: msg, model: $('hx-c-model').value, latency_ms: Date.now() - t0, created_at: new Date().toISOString(), __error: true });
+              renderThread();
+            } else {
+              // The proxy will INSERT both user + assistant rows server-side. Realtime
+              // subscription delivers them. We simply wait for the realtime event,
+              // but as a safety net also reload after 600 ms in case realtime is
+              // throttled.
+              setTimeout(async function () {
+                state.sending = false;
+                if (!state.messages.find(function (m) { return m.role === 'assistant' && !m.__optimistic && !m.__error; })) {
+                  // Fallback fetch
+                  var m = await sb.from('messages').select('*').eq('conversation_id', state.conversation.id).order('created_at', { ascending: true });
+                  state.messages = m.data || [];
+                }
+                renderThread();
+                refreshBalance();
+                // Reload list (title may have been auto-derived from first user msg)
+                refreshList();
+              }, 600);
+            }
+          } catch (err) {
+            state.sending = false;
+            state.messages.push({ id: 'err-' + Date.now(), role: 'assistant', content: (err && err.message) || 'Send failed.', __error: true, created_at: new Date().toISOString() });
+            renderThread();
+          }
+        }
+
+        function regenerate(assistantIdx) {
+          send(assistantIdx);
+        }
+
+        // ─── Delete current conversation ─────────────────────
+        async function deleteCurrent() {
+          if (!state.conversation) return;
+          if (!confirm('Delete this conversation? Messages stay in your activity log.')) return;
+          var id = state.conversation.id;
+          await sb.from('conversations').update({ archived_at: new Date().toISOString() }).eq('id', id);
+          await sb.rpc('log_event', { p_kind: 'chat.conversation_archived', p_payload: { id: id } });
+          if (state.msgChannel) { try { state.msgChannel.unsubscribe(); } catch (e) {} state.msgChannel = null; }
+          state.conversation = null;
+          state.messages = [];
+          renderThread();
+          await refreshList();
+        }
+
+        // ─── Toolbar interactions ────────────────────────────
+        $('hx-c-new').addEventListener('click', newConversation);
+        $('hx-c-clear').addEventListener('click', deleteCurrent);
+
+        $('hx-c-model').addEventListener('change', async function () {
+          if (!state.conversation) return;
+          var model = $('hx-c-model').value;
+          await sb.from('conversations').update({ model: model }).eq('id', state.conversation.id);
+          state.conversation.model = model;
+        });
+        $('hx-c-project').addEventListener('change', async function () {
+          if (!state.conversation) return;
+          var proj = $('hx-c-project').value || null;
+          await sb.from('conversations').update({ project_id: proj }).eq('id', state.conversation.id);
+          state.conversation.project_id = proj;
+        });
+
+        // ─── Composer wiring ─────────────────────────────────
+        function autoSize(el) {
+          el.style.height = 'auto';
+          el.style.height = Math.min(200, el.scrollHeight) + 'px';
+        }
+        var inputEl = $('hx-c-input');
+        var sendBtn = $('hx-c-send');
+        inputEl.addEventListener('input', function () {
+          sendBtn.disabled = !inputEl.value.trim();
+          autoSize(inputEl);
+        });
+        inputEl.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            send();
+          }
+        });
+        sendBtn.addEventListener('click', function () { send(); });
+
+        // ─── Boot ────────────────────────────────────────────
+        sb.auth.getUser().then(async function (res) {
+          var u = res && res.data ? res.data.user : null; if (!u) return;
+          state.owner = u.id;
+          await Promise.all([loadProjects(), refreshList(), refreshBalance()]);
+          if (state.conversations.length) await openConversation(state.conversations[0].id);
+        });
+
+        window.addEventListener('beforeunload', function () {
+          try { if (state.msgChannel) state.msgChannel.unsubscribe(); } catch (e) {}
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
