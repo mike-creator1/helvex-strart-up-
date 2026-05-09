@@ -440,7 +440,8 @@
         conversation: null,    // current conversation row
         conversations: [],     // sidebar list
         messages: [],          // current thread
-        sending: false,
+        sending: false,        // request in flight, no first delta yet
+        streaming: false,      // first delta received, actively streaming
         msgChannel: null,
       };
 
@@ -522,22 +523,31 @@
           state.messages = m.data || [];
           renderThread();
 
-          // Realtime subscription — new messages stream in live
+          // Realtime subscription — new messages stream in live. The dedup
+          // walks back through state.messages to find the most recent
+          // optimistic placeholder of the same role and swaps in the
+          // canonical row, so both the optimistic user turn and the
+          // optimistic streaming-assistant turn are replaced cleanly.
           state.msgChannel = sb.channel('hx-msg-' + id)
             .on('postgres_changes',
                 { event: 'INSERT', schema: 'public', table: 'messages', filter: 'conversation_id=eq.' + id },
                 function (payload) {
-                  // Avoid duplicating optimistic inserts
                   var newMsg = payload.new;
                   if (state.messages.find(function (x) { return x.id === newMsg.id; })) return;
-                  // Replace any optimistic placeholder of the same role
-                  var lastIdx = state.messages.length - 1;
-                  if (lastIdx >= 0 && state.messages[lastIdx].__optimistic && state.messages[lastIdx].role === newMsg.role) {
-                    state.messages[lastIdx] = newMsg;
-                  } else {
-                    state.messages.push(newMsg);
+                  for (var i = state.messages.length - 1; i >= 0; i--) {
+                    var m = state.messages[i];
+                    if (m.__optimistic && m.role === newMsg.role) {
+                      state.messages[i] = newMsg;
+                      // While streaming, suppress full re-renders — the
+                      // streaming text node is already up to date and a
+                      // re-render would briefly flash. The end-of-stream
+                      // path explicitly calls renderThread once.
+                      if (!state.streaming) renderThread();
+                      return;
+                    }
                   }
-                  renderThread();
+                  state.messages.push(newMsg);
+                  if (!state.streaming) renderThread();
                 })
             .subscribe();
 
@@ -593,7 +603,7 @@
           var meta = isAssist ? '<strong>Helix</strong>' : '';
 
           var actions = '';
-          if (isAssist && m.content && !m.__error) {
+          if (isAssist && m.content && !m.__error && !m.__streaming) {
             actions = '<div class="hx-msg-actions">' +
               '<button class="hx-msg-act" type="button" data-act="copy" data-idx="' + i + '">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
@@ -606,7 +616,7 @@
             '</div>';
           }
 
-          return '<div class="hx-msg ' + (isAssist ? 'is-assistant' : 'is-user') + (m.__error ? ' hx-msg-error' : '') + '">' +
+          return '<div class="hx-msg ' + (isAssist ? 'is-assistant' : 'is-user') + (m.__error ? ' hx-msg-error' : '') + '" data-msg-key="' + escape(m.id) + '">' +
             '<div class="hx-msg-body">' +
               (meta ? '<div class="hx-msg-meta">' + meta + '</div>' : '') +
               '<div class="hx-msg-content">' + escape(m.content || '') + '</div>' +
@@ -630,45 +640,99 @@
           $('hx-c-input').focus();
         }
 
-        // ─── Send message ────────────────────────────────────
+        // ─── Send message (SSE streaming) ────────────────────
         async function send(retryFromIdx) {
-          if (state.sending) return;
+          if (state.sending || state.streaming) return;
           var text = $('hx-c-input').value.trim();
 
-          // Regenerate path: pull last user message from history
+          // Regenerate path: replay the last user message
           if (typeof retryFromIdx === 'number') {
-            // Strip messages from retryFromIdx onward (those will be replaced)
-            // Actually keep history up to but NOT including the assistant we're regenerating.
             var lastUser = null;
             for (var i = retryFromIdx - 1; i >= 0; i--) {
               if (state.messages[i].role === 'user') { lastUser = state.messages[i]; break; }
             }
             if (!lastUser) return;
             text = lastUser.content;
-            // Optimistically drop the old assistant from view (we don't delete from DB,
-            // it'll just appear above the new one in the thread).
           }
-
           if (!text) return;
 
-          // Need a conversation
           if (!state.conversation) await newConversation();
 
           $('hx-c-input').value = '';
           autoSize($('hx-c-input'));
 
-          // Optimistic user message
-          state.messages.push({ id: 'opt-' + Date.now(), role: 'user', content: text, created_at: new Date().toISOString(), __optimistic: true });
+          // Optimistic user message + typing indicator
+          var userOptId = 'opt-u-' + Date.now();
+          state.messages.push({
+            id: userOptId, role: 'user', content: text,
+            created_at: new Date().toISOString(), __optimistic: true,
+          });
           state.sending = true;
           renderThread();
 
           var send_msgs = state.messages
-            .filter(function (m) { return !m.__optimistic ? true : (m.role === 'user'); })  // include the optimistic user msg too
+            .filter(function (m) { return !m.__optimistic ? true : (m.role === 'user'); })
             .map(function (m) { return { role: m.role, content: m.content }; });
 
           var t0 = Date.now();
           var traceCell = $('hx-c-trace');
           traceCell.textContent = '…';
+
+          // Streaming state — locals so retries don't collide with class state
+          var streamId       = null;
+          var streamNode     = null;
+          var assistantText  = '';
+          var thread         = $('hx-c-thread');
+
+          function ensureStreamMessage() {
+            if (streamId) return;
+            streamId = 'opt-a-' + Date.now();
+            state.messages.push({
+              id: streamId, role: 'assistant', content: '',
+              created_at: new Date().toISOString(),
+              __optimistic: true, __streaming: true,
+            });
+            state.sending  = false;
+            state.streaming = true;
+            renderThread();
+            streamNode = thread.querySelector(
+              '[data-msg-key="' + streamId + '"] .hx-msg-content',
+            );
+          }
+
+          function appendDelta(t) {
+            if (!t) return;
+            ensureStreamMessage();
+            if (streamNode) streamNode.appendChild(document.createTextNode(t));
+            assistantText += t;
+            // Keep the model in sync so any incidental re-render still
+            // shows what the user has been reading.
+            var s = state.messages.find(function (m) { return m.id === streamId; });
+            if (s) s.content = assistantText;
+            // Auto-scroll only if the user hasn't scrolled up to read.
+            var nearBottom = (thread.scrollHeight - thread.scrollTop - thread.clientHeight) < 80;
+            if (nearBottom) thread.scrollTop = thread.scrollHeight;
+          }
+
+          function finalizeError(msg) {
+            // Replace the typing indicator with an inline error bubble
+            state.sending  = false;
+            state.streaming = false;
+            // If a streaming bubble was already created, mark it as error.
+            var existing = streamId ? state.messages.find(function (m) { return m.id === streamId; }) : null;
+            if (existing) {
+              existing.content = msg;
+              existing.__error = true;
+              existing.__streaming = false;
+              existing.__optimistic = false;
+            } else {
+              state.messages.push({
+                id: 'err-' + Date.now(), role: 'assistant', content: msg,
+                __error: true, created_at: new Date().toISOString(),
+              });
+            }
+            renderThread();
+          }
 
           try {
             var sess = (await sb.auth.getSession()).data.session;
@@ -678,47 +742,94 @@
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + sess.access_token
+                'Accept':       'text/event-stream',
+                'Authorization': 'Bearer ' + sess.access_token,
               },
               body: JSON.stringify({
-                model: $('hx-c-model').value || 'ether',
+                model:           $('hx-c-model').value || 'ether',
                 conversation_id: state.conversation.id,
-                system: HELIX_SYSTEM,
-                messages: send_msgs,
-                max_tokens: 2048
-              })
+                system:          HELIX_SYSTEM,
+                messages:        send_msgs,
+                max_tokens:      2048,
+                stream:          true,
+              }),
             });
-            var data = await resp.json().catch(function () { return null; });
-            traceCell.textContent = (data && data.trace_id) ? data.trace_id : ('hxr_' + Math.random().toString(36).slice(2, 10));
 
-            if (!resp.ok || !data) {
-              var msg = (data && (data.hint || data.message || data.error)) || ('HTTP ' + resp.status);
-              state.sending = false;
-              // Inject an inline error bubble
-              state.messages.push({ id: 'err-' + Date.now(), role: 'assistant', content: msg, model: $('hx-c-model').value, latency_ms: Date.now() - t0, created_at: new Date().toISOString(), __error: true });
-              renderThread();
-            } else {
-              // The proxy will INSERT both user + assistant rows server-side. Realtime
-              // subscription delivers them. We simply wait for the realtime event,
-              // but as a safety net also reload after 600 ms in case realtime is
-              // throttled.
-              setTimeout(async function () {
-                state.sending = false;
-                if (!state.messages.find(function (m) { return m.role === 'assistant' && !m.__optimistic && !m.__error; })) {
-                  // Fallback fetch
-                  var m = await sb.from('messages').select('*').eq('conversation_id', state.conversation.id).order('created_at', { ascending: true });
-                  state.messages = m.data || [];
-                }
-                renderThread();
-                refreshBalance();
-                // Reload list (title may have been auto-derived from first user msg)
-                refreshList();
-              }, 600);
+            var ct = (resp.headers.get('content-type') || '').toLowerCase();
+
+            if (!resp.ok) {
+              var errBody = null;
+              try { errBody = await resp.json(); } catch (e) { /* ignore */ }
+              var emsg = (errBody && (errBody.hint || errBody.message || errBody.error)) || ('HTTP ' + resp.status);
+              finalizeError(emsg);
+              return;
             }
+
+            // Fallback: server didn't actually stream. Read the full JSON
+            // and let realtime deliver canonical rows in a moment.
+            if (ct.indexOf('text/event-stream') !== 0 || !resp.body) {
+              await resp.json().catch(function () { return null; });
+              state.sending  = false;
+              state.streaming = false;
+              setTimeout(function () { renderThread(); refreshBalance(); refreshList(); }, 600);
+              return;
+            }
+
+            // Stream — read SSE from the body
+            var reader  = resp.body.getReader();
+            var decoder = new TextDecoder();
+            var buf = '';
+
+            while (true) {
+              var chunk = await reader.read();
+              if (chunk.done) break;
+              buf += decoder.decode(chunk.value, { stream: true });
+              var events = buf.split('\n\n');
+              buf = events.pop() || '';
+              for (var ei = 0; ei < events.length; ei++) {
+                var evt = events[ei];
+                if (!evt) continue;
+                var evname = '';
+                var dataStr = '';
+                var lines = evt.split('\n');
+                for (var li = 0; li < lines.length; li++) {
+                  var line = lines[li];
+                  if (line.indexOf('event:') === 0) evname = line.slice(6).trim();
+                  else if (line.indexOf('data:') === 0) dataStr += line.slice(5).trim();
+                }
+                if (!dataStr) continue;
+                var obj = null;
+                try { obj = JSON.parse(dataStr); } catch (e) { continue; }
+                if (evname === 'content_block_delta' && obj.delta && obj.delta.type === 'text_delta') {
+                  appendDelta(obj.delta.text || '');
+                } else if (evname === 'helvex_done') {
+                  if (obj.trace_id) traceCell.textContent = obj.trace_id;
+                } else if (evname === 'error' && obj.error && obj.error.message) {
+                  finalizeError(obj.error.message);
+                }
+              }
+            }
+
+            // Stream complete — commit final state.
+            if (streamId) {
+              var s = state.messages.find(function (m) { return m.id === streamId; });
+              if (s) { s.content = assistantText; s.__streaming = false; }
+            } else if (assistantText) {
+              // No deltas were ever observed but a final blob came through —
+              // unlikely, but cover it.
+              ensureStreamMessage();
+              if (streamNode) streamNode.textContent = assistantText;
+            }
+
+            state.streaming = false;
+            state.sending   = false;
+
+            // Realtime will deliver the canonical row from chat_record_pair
+            // and dedup will replace the optimistic streaming message. Re-
+            // render once afterwards so the action buttons attach.
+            setTimeout(function () { renderThread(); refreshBalance(); refreshList(); }, 350);
           } catch (err) {
-            state.sending = false;
-            state.messages.push({ id: 'err-' + Date.now(), role: 'assistant', content: (err && err.message) || 'Send failed.', __error: true, created_at: new Date().toISOString() });
-            renderThread();
+            finalizeError((err && err.message) || 'Send failed.');
           }
         }
 
