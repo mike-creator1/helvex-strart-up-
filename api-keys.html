@@ -22,45 +22,76 @@
         <div class="hx-page-head">
           <div>
             <h1>API Keys.</h1>
-            <p class="sub">Programmatic access to your HelveX deployments, workflows, and models. Keys are scoped per project, rotatable on demand, and revocable instantly.</p>
+            <p class="sub">Programmatic access to your HelveX workspace. Keys are generated server-side, hashed before storage, and only the plaintext is shown once.</p>
           </div>
           <div class="hx-page-actions">
             <a href="/support.html" class="hx-btn hx-btn-secondary">Read API docs</a>
-            <button class="hx-btn hx-btn-primary" disabled>Create API key</button>
+            <button class="hx-btn hx-btn-primary" id="hx-new-key">+ Create API key</button>
+          </div>
+        </div>
+
+        <!-- New key inline form -->
+        <div class="hx-card" id="hx-key-form" hidden style="margin-bottom:14px;">
+          <h3 style="margin-top:0;">New API key</h3>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+            <div class="hx-field" style="margin:0;">
+              <label>Name</label>
+              <input type="text" id="hx-key-name" placeholder="Server backend, CI bot, ..." maxlength="60" />
+              <div class="help">A short label so you remember which integration it powers.</div>
+            </div>
+            <div class="hx-field" style="margin:0;">
+              <label>Project (optional)</label>
+              <select id="hx-key-project">
+                <option value="">No project — workspace-wide</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:14px;">
+            <button class="hx-btn hx-btn-primary" id="hx-key-create">Generate key</button>
+            <button class="hx-btn hx-btn-ghost" id="hx-key-cancel">Cancel</button>
+            <p id="hx-key-status" style="margin:0;font-size:12.5px;font-weight:500;"></p>
+          </div>
+        </div>
+
+        <!-- Plaintext-once banner (shown after key is generated) -->
+        <div class="hx-card" id="hx-key-reveal" hidden style="margin-bottom:14px;border-color:rgba(252,211,77,0.45);background:var(--hx-yellow-soft);">
+          <div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:240px;">
+              <p class="hx-card-eyebrow" style="color:var(--hx-yellow-deep);">Copy this now — it won't be shown again</p>
+              <p style="margin:0 0 10px;color:var(--hx-text);font-size:13px;">Store it in your secrets manager. We only keep a SHA-256 hash and the last four characters.</p>
+              <code id="hx-key-plaintext" style="display:block;word-break:break-all;background:var(--hx-surface);border:1px solid var(--hx-line);border-radius:var(--hx-r-sm);padding:10px 12px;font-size:13px;"></code>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <button class="hx-btn hx-btn-secondary" id="hx-key-copy">Copy</button>
+              <button class="hx-btn hx-btn-ghost hx-btn-sm" id="hx-key-dismiss">Dismiss</button>
+            </div>
           </div>
         </div>
 
         <div class="hx-section-head">
           <h2>Your keys</h2>
-          <span class="meta">0 active · 0 revoked</span>
+          <span class="meta" id="hx-keys-meta">—</span>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-          </div>
-          <h3>No API keys yet</h3>
-          <p>API keys unlock programmatic access to your deployments. They're issued the moment your first agent ships — not before — so there's nothing to secrete or rotate today.</p>
-          <a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>
-        </div>
+        <div id="hx-keys-host"></div>
 
         <div class="hx-section-head">
           <h2>How keys work</h2>
         </div>
         <div class="hx-grid hx-grid-3">
           <div class="hx-card">
-            <p class="hx-card-eyebrow">Scope</p>
-            <h3>Project-scoped</h3>
-            <p class="desc">Each key is bound to one project. Revoke a key without affecting the rest of your workspace.</p>
+            <p class="hx-card-eyebrow">Generation</p>
+            <h3>Server-side, never logged</h3>
+            <p class="desc">Keys are created with cryptographically-random bytes inside Postgres. The plaintext is shown to you once and immediately hashed.</p>
           </div>
           <div class="hx-card">
-            <p class="hx-card-eyebrow">Rotation</p>
-            <h3>Rotate any time</h3>
-            <p class="desc">Issue a new key, run both side-by-side during a grace window, then deactivate the old one. Zero downtime.</p>
+            <p class="hx-card-eyebrow">Scope</p>
+            <h3>Workspace or project-bound</h3>
+            <p class="desc">Bind a key to a single project, or leave it workspace-wide. Revoke a key without affecting the rest of your workspace.</p>
           </div>
           <div class="hx-card">
             <p class="hx-card-eyebrow">Audit</p>
-            <h3>Every call logged</h3>
-            <p class="desc">Per-key usage shows up in <a href="/logs.html" style="color:var(--hx-text);text-decoration:underline;">Logs</a> with trace IDs and tied to the key fingerprint.</p>
+            <h3>Every issuance &amp; revoke logged</h3>
+            <p class="desc">Each create and revoke writes to <a href="/activity.html" style="color:var(--hx-text);text-decoration:underline;">Activity</a> with timestamp and the key's last-four.</p>
           </div>
         </div>
 
@@ -69,5 +100,172 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Real generate / list / revoke via Postgres RPC + table query. */
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      var $ = function (id) { return document.getElementById(id); };
+      function escape(s) {
+        return (s == null ? '' : String(s))
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      function fmtDate(iso) {
+        if (!iso) return '—';
+        try { return new Date(iso).toLocaleString(undefined, { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); }
+        catch (e) { return '—'; }
+      }
+      function status(elId, msg, kind) {
+        var el = $(elId); if (!el) return;
+        el.style.color = kind === 'error' ? 'var(--hx-red)' : 'var(--hx-emerald)';
+        el.textContent = msg || '';
+      }
+      function badgeFor(row) {
+        if (row.revoked_at) return '<span class="hx-badge hx-badge-red"><span class="hx-badge-dot"></span>Revoked</span>';
+        return '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Active</span>';
+      }
+
+      function renderEmpty(host) {
+        host.innerHTML =
+          '<div class="hx-empty">' +
+            '<div class="icon" aria-hidden="true">' +
+              '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>' +
+            '</div>' +
+            '<h3>No API keys yet</h3>' +
+            '<p>Generate your first key to call HelveX from your code, CI pipeline, or a third-party service.</p>' +
+            '<button class="hx-btn hx-btn-primary" id="hx-empty-new">+ Create API key</button>' +
+          '</div>';
+        var b = $('hx-empty-new'); if (b) b.addEventListener('click', openForm);
+      }
+
+      function renderTable(host, rows, projects) {
+        var pmap = {};
+        (projects || []).forEach(function (p) { pmap[p.id] = p.name; });
+        var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr>' +
+          '<th>Name</th><th>Key</th><th>Project</th><th>Created</th><th>Last used</th><th>Status</th><th class="right">Actions</th>' +
+          '</tr></thead><tbody>';
+        rows.forEach(function (r) {
+          html += '<tr data-id="' + escape(r.id) + '">' +
+            '<td><strong>' + escape(r.name) + '</strong></td>' +
+            '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.prefix) + '••••' + escape(r.last_four) + '</span></td>' +
+            '<td>' + (r.project_id ? escape(pmap[r.project_id] || r.project_id.slice(0,8)) : '<span style="color:var(--hx-text-faint);">—</span>') + '</td>' +
+            '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(r.created_at) + '</span></td>' +
+            '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + (r.last_used_at ? fmtDate(r.last_used_at) : 'Never') + '</span></td>' +
+            '<td>' + badgeFor(r) + '</td>' +
+            '<td class="right">' +
+              (r.revoked_at
+                ? '<span style="color:var(--hx-text-faint);font-size:12px;">' + fmtDate(r.revoked_at) + '</span>'
+                : '<button class="hx-btn hx-btn-danger hx-btn-sm" data-act="revoke">Revoke</button>') +
+            '</td>' +
+          '</tr>';
+        });
+        html += '</tbody></table></div>';
+        host.innerHTML = html;
+      }
+
+      function openForm() { $('hx-key-form').hidden = false; $('hx-key-name').focus(); }
+      function closeForm() {
+        $('hx-key-form').hidden = true;
+        $('hx-key-name').value = ''; $('hx-key-project').value = '';
+        status('hx-key-status', '');
+      }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        var host = $('hx-keys-host');
+
+        async function loadProjects() {
+          var r = await sb.from('projects').select('id,name,status').order('name');
+          var sel = $('hx-key-project');
+          while (sel.options.length > 1) sel.remove(1);
+          (r.data || []).forEach(function (p) {
+            if (p.status === 'archived') return;
+            var opt = document.createElement('option');
+            opt.value = p.id; opt.textContent = p.name;
+            sel.appendChild(opt);
+          });
+          return r.data || [];
+        }
+
+        async function refresh() {
+          var [keys, projects] = await Promise.all([
+            sb.from('api_keys').select('*').order('created_at', { ascending: false }),
+            loadProjects()
+          ]);
+          if (keys.error) {
+            host.innerHTML = '<div class="hx-empty"><h3>Could not load keys</h3><p>' + escape(keys.error.message) + '</p></div>';
+            return;
+          }
+          var rows = keys.data || [];
+          var active = rows.filter(function (r) { return !r.revoked_at; }).length;
+          var revoked = rows.length - active;
+          $('hx-keys-meta').textContent = active + ' active · ' + revoked + ' revoked';
+          if (rows.length === 0) renderEmpty(host); else renderTable(host, rows, projects);
+        }
+
+        host.addEventListener('click', async function (e) {
+          var btn = e.target.closest && e.target.closest('button[data-act="revoke"]');
+          if (!btn) return;
+          var tr = btn.closest('tr'); if (!tr) return;
+          var id = tr.getAttribute('data-id');
+          if (!confirm('Revoke this key? Calls using it will start failing immediately.')) return;
+          btn.disabled = true;
+          try {
+            var r = await sb.rpc('revoke_api_key', { p_id: id });
+            if (r.error) throw r.error;
+            await refresh();
+          } catch (err) {
+            alert((err && err.message) || 'Could not revoke.');
+          }
+        });
+
+        $('hx-new-key').addEventListener('click', openForm);
+        $('hx-key-cancel').addEventListener('click', closeForm);
+        $('hx-key-create').addEventListener('click', async function (e) {
+          e.preventDefault();
+          var name = ($('hx-key-name').value || '').trim();
+          var pid = $('hx-key-project').value || null;
+          if (!name) { status('hx-key-status', 'Name is required.', 'error'); return; }
+
+          var btn = e.currentTarget; var lbl = btn.textContent;
+          btn.disabled = true; btn.textContent = 'Generating…';
+          try {
+            var r = await sb.rpc('generate_api_key', { p_name: name, p_project_id: pid });
+            if (r.error) throw r.error;
+            var data = Array.isArray(r.data) ? r.data[0] : r.data;
+            if (!data || !data.plaintext) throw new Error('Key generation returned no data.');
+            $('hx-key-plaintext').textContent = data.plaintext;
+            $('hx-key-reveal').hidden = false;
+            closeForm();
+            await refresh();
+          } catch (err) {
+            status('hx-key-status', (err && err.message) || 'Could not generate key.', 'error');
+          } finally {
+            btn.disabled = false; btn.textContent = lbl;
+          }
+        });
+
+        $('hx-key-copy').addEventListener('click', function () {
+          var txt = $('hx-key-plaintext').textContent;
+          if (!txt) return;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(txt).then(function () {
+              var b = $('hx-key-copy'); var l = b.textContent;
+              b.textContent = 'Copied'; setTimeout(function () { b.textContent = l; }, 1500);
+            });
+          }
+        });
+        $('hx-key-dismiss').addEventListener('click', function () {
+          $('hx-key-reveal').hidden = true;
+          $('hx-key-plaintext').textContent = '';
+        });
+
+        refresh();
+      });
+    })();
+  </script>
 </body>
 </html>

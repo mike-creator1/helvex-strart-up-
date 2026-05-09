@@ -32,15 +32,9 @@
 
         <div class="hx-section-head">
           <h2>Your workflows</h2>
+          <span class="meta" id="hx-wf-meta">—</span>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          </div>
-          <h3>No workflows yet</h3>
-          <p>Once a workflow is built and shipped from a project, you'll find it here with its trigger, steps, recent runs, and SLA.</p>
-          <a href="/support.html" class="hx-btn hx-btn-primary">Brief a workflow</a>
-        </div>
+        <div id="hx-wf-host"></div>
 
         <div class="hx-section-head">
           <h2>Templates</h2>
@@ -72,5 +66,44 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Real workflows list. */
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      var $ = function (id) { return document.getElementById(id); };
+      function escape(s) { return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+      function fmtDate(iso) { if (!iso) return '—'; try { return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); } catch (e) { return '—'; } }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        sb.auth.getUser().then(async function (res) {
+          var u = res && res.data ? res.data.user : null; if (!u) return;
+          var r = await sb.from('workflows').select('*').order('created_at', { ascending: false });
+          var rows = r.data || [];
+          $('hx-wf-meta').textContent = rows.length + (rows.length === 1 ? ' workflow' : ' workflows');
+          var host = $('hx-wf-host');
+          if (rows.length === 0) {
+            host.innerHTML =
+              '<div class="hx-empty">' +
+                '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>' +
+                '<h3>No workflows yet</h3>' +
+                '<p>Once a workflow is built and shipped from a project, you\'ll find it here with its trigger, steps, recent runs, and SLA.</p>' +
+                '<a href="/support.html" class="hx-btn hx-btn-primary">Brief a workflow</a>' +
+              '</div>';
+          } else {
+            var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Name</th><th>Trigger</th><th>Status</th><th>Last run</th><th>Created</th></tr></thead><tbody>';
+            rows.forEach(function (r) {
+              html += '<tr><td><strong>' + escape(r.name) + '</strong></td><td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.trigger) + '</span></td><td>' + (r.enabled ? '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Enabled</span>' : '<span class="hx-badge hx-badge-neutral">Disabled</span>') + '</td><td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + (r.last_run_at ? fmtDate(r.last_run_at) : 'Never') + '</span></td><td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(r.created_at) + '</span></td></tr>';
+            });
+            html += '</tbody></table></div>';
+            host.innerHTML = html;
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

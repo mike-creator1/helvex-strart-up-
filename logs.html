@@ -55,21 +55,81 @@
 
         <div class="hx-section-head">
           <h2>Live stream</h2>
-          <span class="meta">All sources · all severities</span>
+          <span class="meta" id="hx-log-meta">All sources · all severities</span>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-          </div>
-          <h3>No log events yet</h3>
-          <p>When a workflow runs or an agent handles a request, structured log lines will appear here with trace ID, model, latency, and status — searchable and exportable.</p>
-          <a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>
-        </div>
+        <div id="hx-log-host"></div>
 
       </main>
     </div>
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Real log_events feed with realtime subscription. */
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      var $ = function (id) { return document.getElementById(id); };
+      function escape(s) { return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+      function fmtTime(iso) { try { return new Date(iso).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' }); } catch (e) { return ''; } }
+      function levelTag(l) {
+        var col = 'var(--hx-text-mid)';
+        if (l === 'error') col = 'var(--hx-red)';
+        if (l === 'warn')  col = 'var(--hx-yellow-deep)';
+        if (l === 'info')  col = 'var(--hx-emerald)';
+        return '<span class="hx-mono" style="font-size:11px;font-weight:600;text-transform:uppercase;color:' + col + ';">' + (l || 'info') + '</span>';
+      }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        var host = $('hx-log-host');
+        var channel = null;
+
+        async function refresh() {
+          var [logs, total24] = await Promise.all([
+            sb.from('log_events').select('*').order('created_at', { ascending: false }).limit(200),
+            sb.from('log_events').select('id', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 86400000).toISOString())
+          ]);
+          $('hx-log-meta').textContent = ((total24 && total24.count) || 0) + ' events / 24h · all severities';
+          $('hx-stat-events').textContent = ((total24 && total24.count) || 0).toLocaleString();
+          var rows = logs.data || [];
+          if (rows.length === 0) {
+            host.innerHTML =
+              '<div class="hx-empty">' +
+                '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>' +
+                '<h3>No log events yet</h3>' +
+                '<p>When a workflow runs or an agent handles a request, structured log lines will appear here with trace ID, model, latency, and status — searchable and exportable.</p>' +
+                '<a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>' +
+              '</div>';
+            return;
+          }
+          var html = '<div class="hx-card" style="padding:0;font-family:var(--hx-mono);font-size:12.5px;overflow:hidden;">';
+          rows.forEach(function (r, i) {
+            html += '<div style="display:grid;grid-template-columns:auto auto 1fr auto;gap:14px;padding:8px 14px;align-items:center;' + (i > 0 ? 'border-top:1px solid var(--hx-line);' : '') + '">' +
+              '<span style="color:var(--hx-text-dim);">' + escape(fmtTime(r.created_at)) + '</span>' +
+              levelTag(r.level) +
+              '<span style="color:var(--hx-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escape(r.message) + '</span>' +
+              '<span style="color:var(--hx-text-faint);font-size:11px;">' + escape(r.trace_id || '') + '</span>' +
+            '</div>';
+          });
+          html += '</div>';
+          host.innerHTML = html;
+        }
+
+        sb.auth.getUser().then(function (res) {
+          var u = res && res.data ? res.data.user : null; if (!u) return;
+          if (sb.channel) {
+            channel = sb.channel('hx-logs-' + u.id)
+              .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'log_events', filter: 'owner_id=eq.' + u.id }, function () { refresh(); })
+              .subscribe();
+          }
+        });
+        window.addEventListener('beforeunload', function () { try { if (channel) channel.unsubscribe(); } catch (e) {} });
+        refresh();
+      });
+    })();
+  </script>
 </body>
 </html>

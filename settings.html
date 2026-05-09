@@ -38,16 +38,73 @@
             </div>
             <div class="hx-field" style="margin:0;">
               <label>Default time zone</label>
-              <select>
-                <option>Europe / Zurich (UTC+1)</option>
-                <option>Europe / Berlin (UTC+1)</option>
-                <option>Europe / London (UTC)</option>
-                <option>America / New York (UTC−5)</option>
+              <select id="hx-ws-timezone">
+                <option value="Europe/Zurich">Europe / Zurich (UTC+1)</option>
+                <option value="Europe/Berlin">Europe / Berlin (UTC+1)</option>
+                <option value="Europe/Athens">Europe / Athens (UTC+2)</option>
+                <option value="Europe/London">Europe / London (UTC)</option>
+                <option value="Europe/Paris">Europe / Paris (UTC+1)</option>
+                <option value="Europe/Rome">Europe / Rome (UTC+1)</option>
+                <option value="America/New_York">America / New York (UTC−5)</option>
+                <option value="America/Los_Angeles">America / Los Angeles (UTC−8)</option>
+                <option value="Asia/Tokyo">Asia / Tokyo (UTC+9)</option>
+              </select>
+            </div>
+            <div class="hx-field" style="margin:0;">
+              <label>Language</label>
+              <select id="hx-ws-language">
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="el">Ελληνικά</option>
+                <option value="fr">Français</option>
+                <option value="it">Italiano</option>
+              </select>
+            </div>
+            <div class="hx-field" style="margin:0;">
+              <label>Theme</label>
+              <select id="hx-ws-theme">
+                <option value="system">System</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
               </select>
             </div>
           </div>
-          <div style="display:flex;gap:8px;margin-top:20px;">
-            <button class="hx-btn hx-btn-primary">Save workspace</button>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:20px;">
+            <button class="hx-btn hx-btn-primary" id="hx-ws-save">Save workspace</button>
+            <p id="hx-ws-status" style="margin:0;font-size:12.5px;font-weight:500;"></p>
+          </div>
+        </div>
+
+        <div class="hx-section-head">
+          <h2>Email notifications</h2>
+        </div>
+        <div class="hx-card">
+          <div style="display:grid;gap:14px;">
+            <label style="display:flex;align-items:center;gap:12px;cursor:pointer;">
+              <input type="checkbox" id="hx-notif-product" style="width:16px;height:16px;accent-color:var(--hx-text);" />
+              <span>
+                <span style="display:block;font-weight:500;">Product updates</span>
+                <span style="display:block;color:var(--hx-text-mid);font-size:12.5px;">Releases, new platform sections, and roadmap changes.</span>
+              </span>
+            </label>
+            <label style="display:flex;align-items:center;gap:12px;cursor:pointer;">
+              <input type="checkbox" id="hx-notif-security" style="width:16px;height:16px;accent-color:var(--hx-text);" />
+              <span>
+                <span style="display:block;font-weight:500;">Security alerts</span>
+                <span style="display:block;color:var(--hx-text-mid);font-size:12.5px;">New sign-ins, password changes, API key issuance.</span>
+              </span>
+            </label>
+            <label style="display:flex;align-items:center;gap:12px;cursor:pointer;">
+              <input type="checkbox" id="hx-notif-billing" style="width:16px;height:16px;accent-color:var(--hx-text);" />
+              <span>
+                <span style="display:block;font-weight:500;">Billing &amp; invoices</span>
+                <span style="display:block;color:var(--hx-text-mid);font-size:12.5px;">Receipts, plan changes, credit top-ups.</span>
+              </span>
+            </label>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:18px;">
+            <button class="hx-btn hx-btn-primary" id="hx-notif-save">Save preferences</button>
+            <p id="hx-notif-status" style="margin:0;font-size:12.5px;font-weight:500;"></p>
           </div>
         </div>
 
@@ -91,19 +148,92 @@
 
   <script src="/platform.js"></script>
   <script>
-    /* Hydrate workspace name from real user metadata. */
+    /* Real read/write of public.profiles.company + public.user_settings. */
     (function () {
       function whenAuthReady(fn) {
         if (window.HX && window.HX.auth) { fn(); return; }
         document.addEventListener('hx:auth-ready', fn, { once: true });
       }
+      var $ = function (id) { return document.getElementById(id); };
+      function status(elId, msg, kind) {
+        var el = $(elId); if (!el) return;
+        el.style.color = kind === 'error' ? 'var(--hx-red)' : 'var(--hx-emerald)';
+        el.textContent = msg || '';
+        if (msg) setTimeout(function () { if (el.textContent === msg) el.textContent = ''; }, 3000);
+      }
+
       whenAuthReady(function () {
-        window.HX.supabase.auth.getUser().then(function (res) {
+        var sb = window.HX.supabase;
+        var uid = null;
+
+        sb.auth.getUser().then(async function (res) {
           var user = res && res.data ? res.data.user : null;
           if (!user) return;
-          var company = (user.user_metadata && user.user_metadata.company) || '';
-          var input = document.getElementById('hx-ws-name-input');
-          if (input && company) input.value = company;
+          uid = user.id;
+
+          // Load profile (workspace name lives in profiles.company)
+          var p = await sb.from('profiles').select('company').eq('id', uid).maybeSingle();
+          if (p && p.data && p.data.company) $('hx-ws-name-input').value = p.data.company;
+          else if (user.user_metadata && user.user_metadata.company) $('hx-ws-name-input').value = user.user_metadata.company;
+
+          // Load user_settings (the bootstrap trigger creates a row on signup)
+          var s = await sb.from('user_settings').select('*').eq('user_id', uid).maybeSingle();
+          var st = (s && s.data) || { language:'en', timezone:'Europe/Zurich', theme:'system', email_product:true, email_security:true, email_billing:true };
+          $('hx-ws-timezone').value = st.timezone || 'Europe/Zurich';
+          $('hx-ws-language').value = st.language || 'en';
+          $('hx-ws-theme').value    = st.theme || 'system';
+          $('hx-notif-product').checked  = st.email_product  !== false;
+          $('hx-notif-security').checked = st.email_security !== false;
+          $('hx-notif-billing').checked  = st.email_billing  !== false;
+        });
+
+        // Save workspace (company → profiles, timezone/lang/theme → user_settings)
+        $('hx-ws-save').addEventListener('click', async function (e) {
+          e.preventDefault();
+          if (!uid) return;
+          var btn = e.currentTarget; var lbl = btn.textContent;
+          btn.disabled = true; btn.textContent = 'Saving…';
+          try {
+            var company = ($('hx-ws-name-input').value || '').trim() || null;
+            var tz = $('hx-ws-timezone').value;
+            var lg = $('hx-ws-language').value;
+            var th = $('hx-ws-theme').value;
+            var p1 = sb.from('profiles').upsert({ id: uid, email: (await sb.auth.getUser()).data.user.email, company: company }, { onConflict: 'id' });
+            var p2 = sb.from('user_settings').upsert({ user_id: uid, timezone: tz, language: lg, theme: th }, { onConflict: 'user_id' });
+            var [r1, r2] = await Promise.all([p1, p2]);
+            if (r1.error) throw r1.error;
+            if (r2.error) throw r2.error;
+            await sb.rpc('log_event', { p_kind: 'settings.workspace_updated', p_payload: { timezone: tz, language: lg, theme: th, company: !!company } });
+            status('hx-ws-status', 'Saved.', 'ok');
+          } catch (err) {
+            status('hx-ws-status', (err && err.message) || 'Could not save.', 'error');
+          } finally {
+            btn.disabled = false; btn.textContent = lbl;
+          }
+        });
+
+        // Save notification preferences
+        $('hx-notif-save').addEventListener('click', async function (e) {
+          e.preventDefault();
+          if (!uid) return;
+          var btn = e.currentTarget; var lbl = btn.textContent;
+          btn.disabled = true; btn.textContent = 'Saving…';
+          try {
+            var patch = {
+              user_id: uid,
+              email_product:  $('hx-notif-product').checked,
+              email_security: $('hx-notif-security').checked,
+              email_billing:  $('hx-notif-billing').checked
+            };
+            var r = await sb.from('user_settings').upsert(patch, { onConflict: 'user_id' });
+            if (r.error) throw r.error;
+            await sb.rpc('log_event', { p_kind: 'settings.notifications_updated', p_payload: patch });
+            status('hx-notif-status', 'Saved.', 'ok');
+          } catch (err) {
+            status('hx-notif-status', (err && err.message) || 'Could not save.', 'error');
+          } finally {
+            btn.disabled = false; btn.textContent = lbl;
+          }
         });
       });
     })();

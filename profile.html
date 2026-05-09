@@ -70,18 +70,20 @@
         </div>
 
         <div class="hx-section-head">
-          <h2>Team members</h2>
-          <button class="hx-btn hx-btn-secondary hx-btn-sm" disabled>Invite (coming soon)</button>
+          <h2>Account</h2>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-            </svg>
+        <div class="hx-card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;">
+            <div>
+              <p class="hx-card-eyebrow">Member since</p>
+              <p class="hx-mono" id="hx-profile-since" style="margin:0;font-size:14px;color:var(--hx-text);">—</p>
+            </div>
+            <div>
+              <p class="hx-card-eyebrow">User ID</p>
+              <p class="hx-mono" id="hx-profile-uid" style="margin:0;font-size:12.5px;color:var(--hx-text-mid);word-break:break-all;">—</p>
+            </div>
+            <a href="/team.html" class="hx-btn hx-btn-secondary hx-btn-sm">Manage team</a>
           </div>
-          <h3>It's just you for now</h3>
-          <p>Multi-seat workspaces let you invite team members to collaborate on shared engagements. Coming with the Scale plan.</p>
-          <a href="/pricing.html" class="hx-btn hx-btn-secondary">Compare plans</a>
         </div>
 
       </main>
@@ -90,7 +92,7 @@
 
   <script src="/platform.js"></script>
   <script>
-    /* Hydrate from the real signed-in user. */
+    /* Real read/write of public.profiles via Supabase JS. */
     (function () {
       function whenAuthReady(fn) {
         if (window.HX && window.HX.auth) { fn(); return; }
@@ -103,36 +105,125 @@
         var e = (email || '').trim();
         return e ? e[0].toUpperCase() : '·';
       }
+      function fmtDate(iso) {
+        if (!iso) return '—';
+        try {
+          return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
+        } catch (e) { return '—'; }
+      }
+
+      var $ = function (id) { return document.getElementById(id); };
+      var btnSave = null, btnCancel = null;
+      var snapshot = {};
+      var user = null;
+
+      function setHeader(first, last, company, email) {
+        var fullName = (first + ' ' + last).trim() || (email ? email.split('@')[0] : 'Account');
+        if ($('hx-profile-avatar')) $('hx-profile-avatar').textContent = initials(first, last, email);
+        if ($('hx-profile-name'))   $('hx-profile-name').textContent = fullName;
+        if ($('hx-profile-meta'))   {
+          var bits = [];
+          if (company) bits.push(company);
+          if (email) bits.push(email);
+          $('hx-profile-meta').textContent = bits.join(' · ') || '—';
+        }
+      }
+
+      function fillForm(p) {
+        if ($('hx-input-first'))   $('hx-input-first').value   = p.first_name || '';
+        if ($('hx-input-last'))    $('hx-input-last').value    = p.last_name  || '';
+        if ($('hx-input-email'))   $('hx-input-email').value   = p.email      || '';
+        if ($('hx-input-title'))   $('hx-input-title').value   = p.title      || '';
+        if ($('hx-input-company')) $('hx-input-company').value = p.company    || '';
+      }
+
+      function readForm() {
+        return {
+          first_name: ($('hx-input-first').value || '').trim() || null,
+          last_name:  ($('hx-input-last').value  || '').trim() || null,
+          title:      ($('hx-input-title').value || '').trim() || null,
+          company:    ($('hx-input-company').value || '').trim() || null
+        };
+      }
+
+      function setStatus(msg, kind) {
+        var existing = $('hx-profile-status');
+        if (!existing) {
+          existing = document.createElement('p');
+          existing.id = 'hx-profile-status';
+          existing.style.cssText = 'margin:12px 0 0;font-size:12.5px;font-weight:500;';
+          var actionsRow = btnSave && btnSave.parentNode;
+          if (actionsRow && actionsRow.parentNode) actionsRow.parentNode.appendChild(existing);
+        }
+        existing.style.color = kind === 'error' ? 'var(--hx-red)' : 'var(--hx-emerald)';
+        existing.textContent = msg || '';
+      }
+
       whenAuthReady(function () {
-        window.HX.supabase.auth.getUser().then(function (res) {
-          var user = res && res.data ? res.data.user : null;
-          if (!user) return;
-          var meta = user.user_metadata || {};
-          var first = meta.first_name || '';
-          var last  = meta.last_name  || '';
-          var fullName = (first + ' ' + last).trim() || (user.email ? user.email.split('@')[0] : 'Account');
-
-          var av = document.getElementById('hx-profile-avatar');
-          if (av) av.textContent = initials(first, last, user.email);
-
-          var nm = document.getElementById('hx-profile-name');
-          if (nm) nm.textContent = fullName;
-
-          var mt = document.getElementById('hx-profile-meta');
-          if (mt) {
-            var bits = [];
-            if (meta.company) bits.push(meta.company);
-            if (user.email) bits.push(user.email);
-            mt.textContent = bits.join(' · ') || '—';
-          }
-
-          var i;
-          if ((i = document.getElementById('hx-input-first')))   i.value = first;
-          if ((i = document.getElementById('hx-input-last')))    i.value = last;
-          if ((i = document.getElementById('hx-input-email')))   i.value = user.email || '';
-          if ((i = document.getElementById('hx-input-title')))   i.value = meta.title || '';
-          if ((i = document.getElementById('hx-input-company'))) i.value = meta.company || '';
+        var sb = window.HX.supabase;
+        // Wire the buttons (the markup uses two buttons in a row — the
+        // primary one is "Save profile", the ghost one is "Cancel").
+        var actions = document.querySelectorAll('.hx-btn');
+        actions.forEach(function (b) {
+          if (/save profile/i.test(b.textContent)) btnSave = b;
+          if (/^cancel$/i.test(b.textContent.trim())) btnCancel = b;
         });
+
+        sb.auth.getUser().then(function (res) {
+          user = res && res.data ? res.data.user : null;
+          if (!user) return;
+          // Read or upsert the row in public.profiles. The signup edge fn
+          // already inserts a row on account creation; read it.
+          sb.from('profiles').select('*').eq('id', user.id).maybeSingle()
+            .then(function (r) {
+              var prof = (r && r.data) || {
+                id: user.id,
+                email: user.email,
+                first_name: (user.user_metadata || {}).first_name || '',
+                last_name:  (user.user_metadata || {}).last_name  || '',
+                company:    (user.user_metadata || {}).company    || ''
+              };
+              snapshot = JSON.parse(JSON.stringify(prof));
+              setHeader(prof.first_name, prof.last_name, prof.company, prof.email);
+              fillForm(prof);
+              if ($('hx-profile-since')) $('hx-profile-since').textContent = fmtDate(prof.created_at || user.created_at);
+              if ($('hx-profile-uid'))   $('hx-profile-uid').textContent   = user.id;
+            });
+        });
+
+        if (btnCancel) {
+          btnCancel.addEventListener('click', function (e) {
+            e.preventDefault();
+            fillForm(snapshot);
+            setStatus('');
+          });
+        }
+        if (btnSave) {
+          btnSave.addEventListener('click', async function (e) {
+            e.preventDefault();
+            if (!user) return;
+            var label = btnSave.textContent;
+            btnSave.disabled = true; btnSave.textContent = 'Saving…';
+            setStatus('');
+            try {
+              var patch = readForm();
+              // Upsert ensures the row exists (in case the trigger missed it
+              // for a legacy account). Always sets id + email server-side.
+              var up = await sb.from('profiles').upsert({
+                id: user.id, email: user.email, ...patch
+              }, { onConflict: 'id' }).select().maybeSingle();
+              if (up.error) throw up.error;
+              snapshot = up.data;
+              setHeader(snapshot.first_name, snapshot.last_name, snapshot.company, snapshot.email);
+              await sb.rpc('log_event', { p_kind: 'profile.updated', p_payload: { fields: Object.keys(patch) } });
+              setStatus('Saved.', 'ok');
+            } catch (err) {
+              setStatus((err && err.message) || 'Could not save.', 'error');
+            } finally {
+              btnSave.disabled = false; btnSave.textContent = label;
+            }
+          });
+        }
       });
     })();
   </script>

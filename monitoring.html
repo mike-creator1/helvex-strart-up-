@@ -33,42 +33,114 @@
         <div class="hx-grid hx-grid-4">
           <div class="hx-stat">
             <p class="hx-stat-label">Health</p>
-            <p class="hx-stat-value" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta">No deployments</p>
+            <p class="hx-stat-value" id="hx-mon-health" style="font-size:18px;color:var(--hx-text-dim);">—</p>
+            <p class="hx-stat-meta" id="hx-mon-health-meta">No deployments</p>
           </div>
           <div class="hx-stat">
-            <p class="hx-stat-label">Uptime (30 d)</p>
-            <p class="hx-stat-value" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta">No data</p>
+            <p class="hx-stat-label">Live deployments</p>
+            <p class="hx-stat-value hx-mono" id="hx-mon-live">0</p>
+            <p class="hx-stat-meta" id="hx-mon-live-meta">Across all regions</p>
           </div>
           <div class="hx-stat">
-            <p class="hx-stat-label">p95 latency</p>
-            <p class="hx-stat-value" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta">No data</p>
+            <p class="hx-stat-label">p95 latency (24 h)</p>
+            <p class="hx-stat-value" id="hx-mon-p95" style="font-size:18px;color:var(--hx-text-dim);">—</p>
+            <p class="hx-stat-meta">From usage_events</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Error rate (24 h)</p>
-            <p class="hx-stat-value hx-mono">0<span class="suffix">%</span></p>
-            <p class="hx-stat-meta">No data</p>
+            <p class="hx-stat-value hx-mono" id="hx-mon-errrate">0<span class="suffix">%</span></p>
+            <p class="hx-stat-meta" id="hx-mon-errrate-meta">All deployments</p>
           </div>
         </div>
 
         <div class="hx-section-head">
           <h2>Service health</h2>
+          <span class="meta" id="hx-mon-meta">—</span>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          </div>
-          <h3>Nothing to monitor yet</h3>
-          <p>Once an agent or workflow ships, this view shows live uptime, p50/p95/p99 latency, error budgets, and active alerts per deployment.</p>
-          <a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>
-        </div>
+        <div id="hx-mon-host"></div>
 
       </main>
     </div>
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Real monitoring — aggregates deployments + usage_events. */
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      var $ = function (id) { return document.getElementById(id); };
+      function escape(s) { return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        sb.auth.getUser().then(async function (res) {
+          var u = res && res.data ? res.data.user : null; if (!u) return;
+          var since24 = new Date(Date.now() - 24*3600*1000).toISOString();
+          var [deps, usage24, errs24] = await Promise.all([
+            sb.from('deployments').select('*'),
+            sb.from('usage_events').select('latency_ms,status,deployment_id').gte('created_at', since24),
+            sb.from('usage_events').select('id', { count: 'exact', head: true }).neq('status', 'ok').gte('created_at', since24)
+          ]);
+          var rows = deps.data || [];
+          var live = rows.filter(function (r) { return r.status === 'live'; }).length;
+          var degraded = rows.filter(function (r) { return r.status === 'degraded' || r.status === 'failed'; }).length;
+          $('hx-mon-live').textContent = live;
+          $('hx-mon-live-meta').textContent = degraded ? degraded + ' degraded/failed' : 'Across all regions';
+
+          var health = 'Healthy';
+          var healthColor = 'var(--hx-emerald)';
+          if (rows.length === 0) { health = '—'; healthColor = 'var(--hx-text-dim)'; }
+          else if (degraded > 0) { health = 'Degraded'; healthColor = 'var(--hx-red)'; }
+          $('hx-mon-health').textContent = health;
+          $('hx-mon-health').style.color = healthColor;
+          $('hx-mon-health-meta').textContent = rows.length === 0 ? 'No deployments' : (live + ' / ' + rows.length + ' live');
+
+          var ev = usage24.data || [];
+          if (ev.length) {
+            var lats = ev.map(function (r) { return r.latency_ms || 0; }).sort(function (a,b) { return a-b; });
+            var p95 = lats[Math.floor(lats.length * 0.95)] || lats[lats.length - 1];
+            $('hx-mon-p95').textContent = p95 + ' ms';
+            $('hx-mon-p95').style.color = 'var(--hx-text)';
+            var errCount = (errs24 && errs24.count) || 0;
+            var rate = ev.length ? ((errCount / ev.length) * 100) : 0;
+            $('hx-mon-errrate').innerHTML = rate.toFixed(2) + '<span class="suffix">%</span>';
+            $('hx-mon-errrate-meta').textContent = errCount + ' / ' + ev.length;
+          }
+
+          var host = $('hx-mon-host');
+          $('hx-mon-meta').textContent = rows.length + (rows.length === 1 ? ' deployment' : ' deployments');
+          if (rows.length === 0) {
+            host.innerHTML =
+              '<div class="hx-empty">' +
+                '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>' +
+                '<h3>Nothing to monitor yet</h3>' +
+                '<p>Once an agent or workflow ships, this view shows live uptime, p50/p95/p99 latency, error budgets, and active alerts per deployment.</p>' +
+                '<a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>' +
+              '</div>';
+          } else {
+            var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Deployment</th><th>Region</th><th>Status</th><th>Version</th></tr></thead><tbody>';
+            rows.forEach(function (r) {
+              var statusBadge = r.status === 'live'
+                ? '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Live</span>'
+                : (r.status === 'degraded'
+                    ? '<span class="hx-badge hx-badge-yellow"><span class="hx-badge-dot"></span>Degraded</span>'
+                    : '<span class="hx-badge hx-badge-neutral">' + escape(r.status) + '</span>');
+              html += '<tr>' +
+                '<td><strong>' + escape(r.name) + '</strong></td>' +
+                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.region) + '</span></td>' +
+                '<td>' + statusBadge + '</td>' +
+                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.version) + '</span></td>' +
+              '</tr>';
+            });
+            html += '</tbody></table></div>';
+            host.innerHTML = html;
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

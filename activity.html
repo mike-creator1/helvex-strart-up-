@@ -22,27 +22,135 @@
         <div class="hx-page-head">
           <div>
             <h1>Activity.</h1>
-            <p class="sub">Every event across your HelveX workspace — sign-ins, project briefs, deployments, scope changes, billing — in one chronological feed.</p>
+            <p class="sub">Every event across your HelveX workspace — sign-ins, project briefs, API key issuance, plan changes, deployments — in one chronological feed with actor, timestamp, and trace ID.</p>
+          </div>
+          <div class="hx-page-actions">
+            <button id="hx-act-refresh" class="hx-btn hx-btn-secondary">Refresh</button>
           </div>
         </div>
 
         <div class="hx-section-head">
           <h2>Recent activity</h2>
-          <span class="meta">All events</span>
+          <span class="meta" id="hx-act-meta">—</span>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          </div>
-          <h3>No activity yet</h3>
-          <p>Once you brief a project, deploy an agent, or change a plan, every action will be logged here with actor, timestamp, and trace ID.</p>
-          <a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>
-        </div>
+        <div id="hx-act-host"></div>
 
       </main>
     </div>
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Real activity feed from public.activity_events with realtime subscription. */
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      var $ = function (id) { return document.getElementById(id); };
+      function escape(s) {
+        return (s == null ? '' : String(s))
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      function fmtTime(iso) {
+        if (!iso) return '—';
+        try { return new Date(iso).toLocaleString(undefined, { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); }
+        catch (e) { return '—'; }
+      }
+      function relTime(iso) {
+        var d = new Date(iso); var diff = (Date.now() - d.getTime()) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+        return Math.floor(diff/86400) + 'd ago';
+      }
+      function iconFor(kind) {
+        if (/api_key/.test(kind))   return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg>';
+        if (/project/.test(kind))   return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
+        if (/profile|settings/.test(kind)) return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+        if (/team|invitation/.test(kind)) return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>';
+        return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>';
+      }
+      function labelFor(kind) {
+        return (kind || '').split('.').map(function (s) {
+          return s.charAt(0).toUpperCase() + s.slice(1).replace(/_/g, ' ');
+        }).join(' / ');
+      }
+
+      function renderEmpty(host) {
+        host.innerHTML =
+          '<div class="hx-empty">' +
+            '<div class="icon" aria-hidden="true">' +
+              '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' +
+            '</div>' +
+            '<h3>No activity yet</h3>' +
+            '<p>Once you sign in elsewhere, brief a project, generate an API key, change a setting, or deploy — every action is logged here with actor, timestamp, and a unique event ID.</p>' +
+            '<a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>' +
+          '</div>';
+      }
+
+      function renderList(host, rows) {
+        var html = '<div class="hx-card" style="padding:0;overflow:hidden;">';
+        rows.forEach(function (r, idx) {
+          var payload = '';
+          if (r.payload && Object.keys(r.payload).length) {
+            try { payload = '<code class="hx-mono" style="font-size:11.5px;color:var(--hx-text-dim);background:var(--hx-bg-2);padding:2px 6px;border-radius:4px;">' + escape(JSON.stringify(r.payload)) + '</code>'; }
+            catch (e) {}
+          }
+          html += '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;' + (idx > 0 ? 'border-top:1px solid var(--hx-line);' : '') + '">' +
+            '<div style="width:28px;height:28px;border-radius:var(--hx-r-sm);background:var(--hx-bg-2);border:1px solid var(--hx-line);display:flex;align-items:center;justify-content:center;color:var(--hx-text-mid);flex-shrink:0;">' + iconFor(r.kind) + '</div>' +
+            '<div style="flex:1;min-width:0;">' +
+              '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;">' +
+                '<span style="font-size:13.5px;font-weight:500;">' + escape(labelFor(r.kind)) + '</span>' +
+                '<span class="hx-mono" style="font-size:11.5px;color:var(--hx-text-dim);" title="' + escape(fmtTime(r.created_at)) + '">' + escape(relTime(r.created_at)) + '</span>' +
+              '</div>' +
+              (r.actor_email ? '<div style="font-size:12px;color:var(--hx-text-mid);margin-top:2px;">' + escape(r.actor_email) + '</div>' : '') +
+              (payload ? '<div style="margin-top:6px;">' + payload + '</div>' : '') +
+            '</div>' +
+            '<span class="hx-mono" style="font-size:10.5px;color:var(--hx-text-faint);flex-shrink:0;">#' + r.id + '</span>' +
+          '</div>';
+        });
+        html += '</div>';
+        host.innerHTML = html;
+      }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        var host = $('hx-act-host');
+        var channel = null;
+
+        async function refresh() {
+          var r = await sb.from('activity_events').select('*').order('created_at', { ascending: false }).limit(200);
+          if (r.error) {
+            host.innerHTML = '<div class="hx-empty"><h3>Could not load activity</h3><p>' + escape(r.error.message) + '</p></div>';
+            return;
+          }
+          var rows = r.data || [];
+          $('hx-act-meta').textContent = rows.length + (rows.length === 1 ? ' event' : ' events');
+          if (rows.length === 0) renderEmpty(host); else renderList(host, rows);
+        }
+
+        $('hx-act-refresh').addEventListener('click', refresh);
+
+        // Realtime subscription — new events appear at the top live
+        sb.auth.getUser().then(function (res) {
+          var u = res && res.data ? res.data.user : null;
+          if (!u || !sb.channel) return;
+          channel = sb.channel('hx-activity-' + u.id)
+            .on('postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'activity_events', filter: 'owner_id=eq.' + u.id },
+                function () { refresh(); })
+            .subscribe();
+        });
+
+        window.addEventListener('beforeunload', function () {
+          try { if (channel) channel.unsubscribe(); } catch (e) {}
+        });
+
+        refresh();
+      });
+    })();
+  </script>
 </body>
 </html>

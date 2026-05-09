@@ -126,20 +126,96 @@
 
   <script src="/platform.js"></script>
   <script>
-    /* Personalise greeting from the real signed-in user (no fake names). */
+    /* Real dashboard — reads from profiles, projects, credits_balance,
+       subscriptions, invoices, activity_events. */
     (function () {
       function whenAuthReady(fn) {
         if (window.HX && window.HX.auth) { fn(); return; }
         document.addEventListener('hx:auth-ready', fn, { once: true });
       }
+      var $ = function (id) { return document.getElementById(id); };
+      function escape(s) {
+        return (s == null ? '' : String(s))
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      function relTime(iso) {
+        var d = new Date(iso); var diff = (Date.now() - d.getTime()) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+        return Math.floor(diff/86400) + 'd ago';
+      }
+      function labelFor(kind) {
+        return (kind || '').split('.').map(function (s) {
+          return s.charAt(0).toUpperCase() + s.slice(1).replace(/_/g, ' ');
+        }).join(' / ');
+      }
+
       whenAuthReady(function () {
-        window.HX.supabase.auth.getUser().then(function (res) {
+        var sb = window.HX.supabase;
+        sb.auth.getUser().then(async function (res) {
           var user = res && res.data ? res.data.user : null;
           if (!user) return;
-          var first = (user.user_metadata && user.user_metadata.first_name) || '';
-          if (first) {
-            var el = document.getElementById('hx-greeting');
-            if (el) el.textContent = 'Welcome back, ' + first + '.';
+          var meta = user.user_metadata || {};
+          var first = meta.first_name || '';
+          var el = $('hx-greeting');
+          if (el && first) el.textContent = 'Welcome back, ' + first + '.';
+
+          // Parallel fetch of every dashboard data source
+          var [projects, credits, subs, invoices, recent] = await Promise.all([
+            sb.from('projects').select('id,status', { count: 'exact', head: false }),
+            sb.from('credits_balance').select('credits_total,credits_used').maybeSingle(),
+            sb.from('subscriptions').select('plan,status,current_period_end').maybeSingle(),
+            sb.from('invoices').select('id,status', { count: 'exact', head: true }).neq('status', 'paid'),
+            sb.from('activity_events').select('id,kind,created_at,payload').order('created_at', { ascending: false }).limit(8)
+          ]);
+
+          // Credits
+          if (credits && credits.data) {
+            var available = Math.max(0, (credits.data.credits_total || 0) - (credits.data.credits_used || 0));
+            $('hx-stat-credits').textContent = available.toLocaleString();
+            $('hx-stat-credits-meta').textContent = (subs && subs.data && subs.data.plan && subs.data.plan !== 'free')
+              ? subs.data.plan.charAt(0).toUpperCase() + subs.data.plan.slice(1) + ' plan · refreshes monthly'
+              : 'Free plan — pick a plan to top up';
+          }
+
+          // Active projects
+          var rows = projects.data || [];
+          var activeCount = rows.filter(function (p) { return p.status === 'active'; }).length;
+          $('hx-stat-projects').textContent = activeCount;
+          $('hx-stat-projects').nextElementSibling.textContent = activeCount === 0
+            ? 'Nothing in flight'
+            : (rows.length - activeCount) + ' paused / archived';
+
+          // Subscription
+          if (subs && subs.data) {
+            var planLabel = (subs.data.plan || 'free').charAt(0).toUpperCase() + (subs.data.plan || 'free').slice(1);
+            $('hx-stat-plan').textContent = planLabel;
+            $('hx-stat-plan-meta').textContent = subs.data.plan === 'free'
+              ? 'Pick a plan to get started'
+              : (subs.data.status === 'active' ? 'Renews ' + (subs.data.current_period_end ? new Date(subs.data.current_period_end).toLocaleDateString() : 'soon') : subs.data.status);
+          }
+
+          // Open invoices
+          $('hx-stat-invoices').textContent = (invoices && invoices.count) || 0;
+
+          // Recent activity — populate the hx-empty section if events exist
+          if (recent && recent.data && recent.data.length) {
+            var actHosts = document.querySelectorAll('.hx-empty');
+            // The 2nd hx-empty on the page is the "Recent activity" one
+            var actEmpty = actHosts.length > 1 ? actHosts[1] : null;
+            if (actEmpty) {
+              var html = '<div class="hx-card" style="padding:0;overflow:hidden;">';
+              recent.data.forEach(function (r, i) {
+                html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;' + (i > 0 ? 'border-top:1px solid var(--hx-line);' : '') + '">' +
+                  '<span style="font-size:13px;">' + escape(labelFor(r.kind)) + '</span>' +
+                  '<span class="hx-mono" style="font-size:11.5px;color:var(--hx-text-dim);">' + escape(relTime(r.created_at)) + '</span>' +
+                  '</div>';
+              });
+              html += '</div>';
+              actEmpty.outerHTML = html;
+            }
           }
         });
       });

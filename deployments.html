@@ -33,8 +33,8 @@
         <div class="hx-grid hx-grid-4">
           <div class="hx-stat">
             <p class="hx-stat-label">Live</p>
-            <p class="hx-stat-value hx-mono">0</p>
-            <p class="hx-stat-meta">Nothing deployed yet</p>
+            <p class="hx-stat-value hx-mono" id="hx-dep-live">0</p>
+            <p class="hx-stat-meta" id="hx-dep-live-meta">Nothing deployed yet</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Region</p>
@@ -42,33 +42,90 @@
             <p class="hx-stat-meta">Default Swiss region</p>
           </div>
           <div class="hx-stat">
-            <p class="hx-stat-label">Uptime (30 d)</p>
-            <p class="hx-stat-value" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta">No data</p>
+            <p class="hx-stat-label">Total</p>
+            <p class="hx-stat-value hx-mono" id="hx-dep-total">0</p>
+            <p class="hx-stat-meta">Across all states</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Errors (24 h)</p>
-            <p class="hx-stat-value hx-mono">0</p>
-            <p class="hx-stat-meta">No data</p>
+            <p class="hx-stat-value hx-mono" id="hx-dep-errors">0</p>
+            <p class="hx-stat-meta" id="hx-dep-errors-meta">From log_events</p>
           </div>
         </div>
 
         <div class="hx-section-head">
           <h2>Active deployments</h2>
+          <span class="meta" id="hx-dep-meta">—</span>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-          </div>
-          <h3>No active deployments</h3>
-          <p>When a HelveX engagement ships, the resulting agent or workflow is deployed here with a public endpoint, version history, and rollback.</p>
-          <a href="/services.html" class="hx-btn hx-btn-primary">Browse services</a>
-        </div>
+        <div id="hx-dep-host"></div>
 
       </main>
     </div>
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Real deployments from public.deployments + recent error count from log_events. */
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      var $ = function (id) { return document.getElementById(id); };
+      function escape(s) { return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+      function fmtDate(iso) { if (!iso) return '—'; try { return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); } catch (e) { return '—'; } }
+      function badge(s) {
+        if (s === 'live')     return '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Live</span>';
+        if (s === 'degraded') return '<span class="hx-badge hx-badge-yellow"><span class="hx-badge-dot"></span>Degraded</span>';
+        if (s === 'failed')   return '<span class="hx-badge hx-badge-red"><span class="hx-badge-dot"></span>Failed</span>';
+        if (s === 'stopped')  return '<span class="hx-badge hx-badge-neutral">Stopped</span>';
+        return '<span class="hx-badge hx-badge-neutral">' + escape(s || 'pending') + '</span>';
+      }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        sb.auth.getUser().then(async function (res) {
+          var u = res && res.data ? res.data.user : null; if (!u) return;
+          var since = new Date(Date.now() - 24*3600*1000).toISOString();
+          var [deps, errs] = await Promise.all([
+            sb.from('deployments').select('*').order('created_at', { ascending: false }),
+            sb.from('log_events').select('id', { count: 'exact', head: true }).eq('level', 'error').gte('created_at', since)
+          ]);
+          var rows = deps.data || [];
+          var live = rows.filter(function (r) { return r.status === 'live'; }).length;
+          $('hx-dep-live').textContent = live;
+          $('hx-dep-live-meta').textContent = live ? live + ' running' : 'Nothing deployed yet';
+          $('hx-dep-total').textContent = rows.length;
+          $('hx-dep-errors').textContent = (errs && errs.count) || 0;
+          $('hx-dep-meta').textContent = rows.length + (rows.length === 1 ? ' deployment' : ' deployments');
+
+          var host = $('hx-dep-host');
+          if (rows.length === 0) {
+            host.innerHTML =
+              '<div class="hx-empty">' +
+                '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>' +
+                '<h3>No active deployments</h3>' +
+                '<p>When a HelveX engagement ships, the resulting agent or workflow is deployed here with a public endpoint, version history, and rollback.</p>' +
+                '<a href="/services.html" class="hx-btn hx-btn-primary">Browse services</a>' +
+              '</div>';
+          } else {
+            var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Name</th><th>Endpoint</th><th>Region</th><th>Version</th><th>Created</th><th>Status</th></tr></thead><tbody>';
+            rows.forEach(function (r) {
+              html += '<tr>' +
+                '<td><strong>' + escape(r.name) + '</strong></td>' +
+                '<td>' + (r.endpoint_url ? '<a href="' + escape(r.endpoint_url) + '" target="_blank" rel="noopener" class="hx-mono" style="font-size:12.5px;">' + escape(r.endpoint_url) + '</a>' : '<span style="color:var(--hx-text-faint);">—</span>') + '</td>' +
+                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.region) + '</span></td>' +
+                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.version) + '</span></td>' +
+                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(r.created_at) + '</span></td>' +
+                '<td>' + badge(r.status) + '</td>' +
+              '</tr>';
+            });
+            html += '</tbody></table></div>';
+            host.innerHTML = html;
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

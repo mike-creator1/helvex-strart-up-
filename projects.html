@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects — HelveX</title>
-  <meta name="description" content="HelveX client portal — track every active engagement and its delivery status." />
+  <meta name="description" content="HelveX projects — every engagement with current status, owner, and timeline." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,55 +22,242 @@
         <div class="hx-page-head">
           <div>
             <h1>Projects.</h1>
-            <p class="sub">Every engagement you have running with HelveX. Click into a row to see its cycle brief, current owner, and delivery checkpoints.</p>
+            <p class="sub">Every engagement you have running with HelveX. Click a row for its brief, owner, and delivery state.</p>
           </div>
           <div class="hx-page-actions">
             <a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>
-            <a href="/support.html" class="hx-btn hx-btn-primary">Start a project</a>
+            <button id="hx-new-project" class="hx-btn hx-btn-primary">+ New project</button>
           </div>
         </div>
 
         <div class="hx-grid hx-grid-4">
           <div class="hx-stat">
             <p class="hx-stat-label">Active</p>
-            <p class="hx-stat-value hx-mono">0</p>
-            <p class="hx-stat-meta">No projects in flight</p>
+            <p class="hx-stat-value hx-mono" id="hx-stat-active">0</p>
+            <p class="hx-stat-meta" id="hx-stat-active-meta">No projects in flight</p>
           </div>
           <div class="hx-stat">
-            <p class="hx-stat-label">In review</p>
-            <p class="hx-stat-value hx-mono">0</p>
-            <p class="hx-stat-meta">Awaiting your sign-off</p>
+            <p class="hx-stat-label">Paused</p>
+            <p class="hx-stat-value hx-mono" id="hx-stat-paused">0</p>
+            <p class="hx-stat-meta">Resumed on demand</p>
           </div>
           <div class="hx-stat">
-            <p class="hx-stat-label">Shipped</p>
-            <p class="hx-stat-value hx-mono">0</p>
+            <p class="hx-stat-label">Archived</p>
+            <p class="hx-stat-value hx-mono" id="hx-stat-archived">0</p>
             <p class="hx-stat-meta">All-time</p>
           </div>
           <div class="hx-stat">
-            <p class="hx-stat-label">Avg delivery</p>
-            <p class="hx-stat-value" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta">Brief → first ship</p>
+            <p class="hx-stat-label">Total</p>
+            <p class="hx-stat-value hx-mono" id="hx-stat-total">0</p>
+            <p class="hx-stat-meta">Across the workspace</p>
           </div>
         </div>
 
         <div class="hx-section-head">
-          <h2>Active engagements</h2>
+          <h2>Your projects</h2>
+          <span class="meta" id="hx-projects-meta">—</span>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-            </svg>
+
+        <!-- New-project inline form (hidden by default) -->
+        <div class="hx-card" id="hx-new-form" hidden style="margin-bottom:14px;">
+          <h3 style="margin-top:0;">New project</h3>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+            <div class="hx-field" style="margin:0;">
+              <label>Name</label>
+              <input type="text" id="hx-new-name" placeholder="Acme inbox triage" maxlength="80" />
+            </div>
+            <div class="hx-field" style="margin:0;">
+              <label>Slug</label>
+              <input type="text" id="hx-new-slug" placeholder="acme-inbox-triage" pattern="[a-z0-9][a-z0-9-]*" />
+              <div class="help">Lowercase letters, digits, dashes. Auto-derived from name.</div>
+            </div>
+            <div class="hx-field" style="margin:0;grid-column:span 2;">
+              <label>Description (optional)</label>
+              <textarea id="hx-new-desc" rows="2" placeholder="What is this project for?"></textarea>
+            </div>
           </div>
-          <h3>No active projects yet</h3>
-          <p>Send us a brief from any service in the catalog and a senior engineer will scope it within one business day.</p>
-          <a href="/services.html" class="hx-btn hx-btn-primary">Browse services</a>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:14px;">
+            <button class="hx-btn hx-btn-primary" id="hx-new-create">Create project</button>
+            <button class="hx-btn hx-btn-ghost" id="hx-new-cancel">Cancel</button>
+            <p id="hx-new-status" style="margin:0;font-size:12.5px;font-weight:500;"></p>
+          </div>
         </div>
+
+        <!-- Project list / empty state lives here -->
+        <div id="hx-projects-host"></div>
 
       </main>
     </div>
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Real CRUD on public.projects via Supabase JS. */
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      var $ = function (id) { return document.getElementById(id); };
+
+      function slugify(s) {
+        return (s || '').toString().toLowerCase().trim()
+          .replace(/[^a-z0-9-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').slice(0, 64);
+      }
+      function fmtDate(iso) {
+        if (!iso) return '—';
+        try { return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); }
+        catch (e) { return '—'; }
+      }
+      function escape(s) {
+        return (s == null ? '' : String(s))
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      function badge(status) {
+        var c = 'hx-badge-neutral', label = status || 'unknown';
+        if (status === 'active')   c = 'hx-badge-emerald';
+        if (status === 'paused')   c = 'hx-badge-yellow';
+        if (status === 'archived') c = 'hx-badge-neutral';
+        return '<span class="hx-badge ' + c + '"><span class="hx-badge-dot"></span>' + escape(label) + '</span>';
+      }
+
+      function renderEmpty(host) {
+        host.innerHTML =
+          '<div class="hx-empty">' +
+            '<div class="icon" aria-hidden="true">' +
+              '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>' +
+            '</div>' +
+            '<h3>No projects yet</h3>' +
+            '<p>Create your first project to organise services, deployments, API keys, and activity in one place.</p>' +
+            '<button class="hx-btn hx-btn-primary" id="hx-empty-new">+ New project</button>' +
+          '</div>';
+        var btn = $('hx-empty-new');
+        if (btn) btn.addEventListener('click', openForm);
+      }
+
+      function renderTable(host, rows) {
+        var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr>' +
+          '<th>Name</th><th>Slug</th><th>Status</th><th>Created</th><th class="right">Actions</th>' +
+          '</tr></thead><tbody>';
+        rows.forEach(function (r) {
+          html += '<tr data-id="' + escape(r.id) + '">' +
+            '<td><strong>' + escape(r.name) + '</strong>' + (r.description ? '<div style="color:var(--hx-text-mid);font-size:12.5px;margin-top:2px;">' + escape(r.description) + '</div>' : '') + '</td>' +
+            '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.slug) + '</span></td>' +
+            '<td>' + badge(r.status) + '</td>' +
+            '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(r.created_at) + '</span></td>' +
+            '<td class="right">' +
+              (r.status === 'active'
+                ? '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="pause">Pause</button> '
+                : (r.status === 'paused'
+                    ? '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="resume">Resume</button> '
+                    : '')) +
+              (r.status !== 'archived'
+                ? '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="archive">Archive</button> '
+                : '') +
+              '<button class="hx-btn hx-btn-danger hx-btn-sm" data-act="delete">Delete</button>' +
+            '</td>' +
+          '</tr>';
+        });
+        html += '</tbody></table></div>';
+        host.innerHTML = html;
+      }
+
+      function openForm() {
+        $('hx-new-form').hidden = false;
+        $('hx-new-name').focus();
+      }
+      function closeForm() {
+        $('hx-new-form').hidden = true;
+        $('hx-new-name').value = ''; $('hx-new-slug').value = ''; $('hx-new-desc').value = '';
+        $('hx-new-status').textContent = '';
+      }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        var host = $('hx-projects-host');
+
+        async function refresh() {
+          var r = await sb.from('projects').select('*').order('created_at', { ascending: false });
+          if (r.error) {
+            host.innerHTML = '<div class="hx-empty"><h3>Could not load projects</h3><p>' + escape(r.error.message) + '</p></div>';
+            return;
+          }
+          var rows = r.data || [];
+          // Stats
+          var counts = { active: 0, paused: 0, archived: 0 };
+          rows.forEach(function (p) { counts[p.status] = (counts[p.status] || 0) + 1; });
+          $('hx-stat-active').textContent   = counts.active   || 0;
+          $('hx-stat-paused').textContent   = counts.paused   || 0;
+          $('hx-stat-archived').textContent = counts.archived || 0;
+          $('hx-stat-total').textContent    = rows.length;
+          $('hx-stat-active-meta').textContent = counts.active === 0 ? 'No projects in flight' : counts.active + ' running';
+          $('hx-projects-meta').textContent = rows.length + (rows.length === 1 ? ' project' : ' projects');
+          if (rows.length === 0) renderEmpty(host); else renderTable(host, rows);
+        }
+
+        // Wire row actions
+        host.addEventListener('click', async function (e) {
+          var btn = e.target.closest && e.target.closest('button[data-act]');
+          if (!btn) return;
+          var tr = btn.closest('tr'); if (!tr) return;
+          var id = tr.getAttribute('data-id');
+          var act = btn.getAttribute('data-act');
+          btn.disabled = true;
+          try {
+            if (act === 'pause')   { await sb.from('projects').update({ status: 'paused' }).eq('id', id); await sb.rpc('log_event', { p_kind: 'project.paused', p_payload: { id: id }, p_project_id: id }); }
+            if (act === 'resume')  { await sb.from('projects').update({ status: 'active' }).eq('id', id); await sb.rpc('log_event', { p_kind: 'project.resumed', p_payload: { id: id }, p_project_id: id }); }
+            if (act === 'archive') { await sb.from('projects').update({ status: 'archived' }).eq('id', id); await sb.rpc('log_event', { p_kind: 'project.archived', p_payload: { id: id }, p_project_id: id }); }
+            if (act === 'delete')  {
+              if (!confirm('Delete this project? Activity events stay, but the project row is removed.')) { btn.disabled = false; return; }
+              await sb.from('projects').delete().eq('id', id);
+              await sb.rpc('log_event', { p_kind: 'project.deleted', p_payload: { id: id } });
+            }
+            await refresh();
+          } catch (err) {
+            alert((err && err.message) || 'Action failed.');
+          }
+        });
+
+        // New project form
+        $('hx-new-project').addEventListener('click', openForm);
+        $('hx-new-cancel').addEventListener('click', closeForm);
+        $('hx-new-name').addEventListener('input', function (e) {
+          var slug = $('hx-new-slug');
+          if (!slug.dataset.touched) slug.value = slugify(e.target.value);
+        });
+        $('hx-new-slug').addEventListener('input', function (e) { e.target.dataset.touched = '1'; });
+        $('hx-new-create').addEventListener('click', async function (e) {
+          e.preventDefault();
+          var name = ($('hx-new-name').value || '').trim();
+          var slug = slugify($('hx-new-slug').value || $('hx-new-name').value);
+          var desc = ($('hx-new-desc').value || '').trim() || null;
+          var status = $('hx-new-status');
+          status.style.color = 'var(--hx-red)';
+          if (!name) { status.textContent = 'Name is required.'; return; }
+          if (!slug) { status.textContent = 'Slug is required.'; return; }
+
+          var btn = e.currentTarget; var lbl = btn.textContent;
+          btn.disabled = true; btn.textContent = 'Creating…';
+          try {
+            var u = (await sb.auth.getUser()).data.user;
+            var r = await sb.from('projects').insert({
+              owner_id: u.id, name: name, slug: slug, description: desc, status: 'active'
+            }).select().maybeSingle();
+            if (r.error) throw r.error;
+            await sb.rpc('log_event', { p_kind: 'project.created', p_payload: { id: r.data.id, name: name, slug: slug }, p_project_id: r.data.id });
+            closeForm();
+            await refresh();
+          } catch (err) {
+            status.textContent = (err && err.message) || 'Could not create project.';
+          } finally {
+            btn.disabled = false; btn.textContent = lbl;
+          }
+        });
+
+        refresh();
+      });
+    })();
+  </script>
 </body>
 </html>

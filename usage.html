@@ -33,42 +33,113 @@
         <div class="hx-grid hx-grid-4">
           <div class="hx-stat">
             <p class="hx-stat-label">Credits used</p>
-            <p class="hx-stat-value hx-mono">0</p>
+            <p class="hx-stat-value hx-mono" id="hx-u-credits">0</p>
             <p class="hx-stat-meta">This billing period</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Model calls</p>
-            <p class="hx-stat-value hx-mono">0</p>
+            <p class="hx-stat-value hx-mono" id="hx-u-calls">0</p>
             <p class="hx-stat-meta">Last 30 days</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Avg p50 latency</p>
-            <p class="hx-stat-value" style="font-size:18px;color:var(--hx-text-dim);">—</p>
+            <p class="hx-stat-value" id="hx-u-latency" style="font-size:18px;color:var(--hx-text-dim);">—</p>
             <p class="hx-stat-meta">Across all models</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Error rate</p>
-            <p class="hx-stat-value" style="font-size:18px;color:var(--hx-text-dim);">—</p>
+            <p class="hx-stat-value" id="hx-u-errrate" style="font-size:18px;color:var(--hx-text-dim);">—</p>
             <p class="hx-stat-meta">Last 24 hours</p>
           </div>
         </div>
 
         <div class="hx-section-head">
           <h2>Usage by model</h2>
+          <span class="meta" id="hx-u-meta">—</span>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg>
-          </div>
-          <h3>No usage to display</h3>
-          <p>Once you have a deployment running, this page will break down spend per model, per project, and per workflow.</p>
-          <a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>
-        </div>
+        <div id="hx-u-host"></div>
 
       </main>
     </div>
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Real usage_events aggregation. */
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      var $ = function (id) { return document.getElementById(id); };
+      function escape(s) { return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        sb.auth.getUser().then(async function (res) {
+          var u = res && res.data ? res.data.user : null; if (!u) return;
+          var since30 = new Date(Date.now() - 30*86400*1000).toISOString();
+          var since24 = new Date(Date.now() - 24*3600*1000).toISOString();
+          var [credits, last30, last24errs, last24total] = await Promise.all([
+            sb.from('credits_balance').select('credits_used').maybeSingle(),
+            sb.from('usage_events').select('model,latency_ms,status,prompt_tokens,completion_tokens').gte('created_at', since30),
+            sb.from('usage_events').select('id', { count: 'exact', head: true }).neq('status', 'ok').gte('created_at', since24),
+            sb.from('usage_events').select('id', { count: 'exact', head: true }).gte('created_at', since24)
+          ]);
+
+          $('hx-u-credits').textContent = ((credits && credits.data && credits.data.credits_used) || 0).toLocaleString();
+          var rows = last30.data || [];
+          $('hx-u-calls').textContent = rows.length.toLocaleString();
+
+          if (rows.length) {
+            var lats = rows.map(function (r) { return r.latency_ms || 0; }).sort(function (a,b) { return a-b; });
+            var p50 = lats[Math.floor(lats.length / 2)] || 0;
+            $('hx-u-latency').textContent = p50 + ' ms';
+            $('hx-u-latency').style.color = 'var(--hx-text)';
+          }
+
+          var totalErr = (last24errs && last24errs.count) || 0;
+          var totalAll = (last24total && last24total.count) || 0;
+          if (totalAll > 0) {
+            var pct = ((totalErr / totalAll) * 100).toFixed(2);
+            $('hx-u-errrate').textContent = pct + '%';
+            $('hx-u-errrate').style.color = totalErr === 0 ? 'var(--hx-emerald)' : (pct > 1 ? 'var(--hx-red)' : 'var(--hx-text)');
+          }
+
+          // Per-model breakdown
+          var byModel = {};
+          rows.forEach(function (r) {
+            var m = r.model || 'unknown';
+            if (!byModel[m]) byModel[m] = { calls: 0, prompt: 0, completion: 0, errors: 0 };
+            byModel[m].calls++;
+            byModel[m].prompt += r.prompt_tokens || 0;
+            byModel[m].completion += r.completion_tokens || 0;
+            if (r.status !== 'ok') byModel[m].errors++;
+          });
+          var models = Object.keys(byModel);
+          $('hx-u-meta').textContent = models.length + (models.length === 1 ? ' model' : ' models');
+
+          var host = $('hx-u-host');
+          if (models.length === 0) {
+            host.innerHTML =
+              '<div class="hx-empty">' +
+                '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg></div>' +
+                '<h3>No usage to display</h3>' +
+                '<p>Once you have a deployment running, this page will break down spend per model, per project, and per workflow.</p>' +
+                '<a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>' +
+              '</div>';
+          } else {
+            var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Model</th><th class="right">Calls</th><th class="right">Prompt tokens</th><th class="right">Completion tokens</th><th class="right">Errors</th></tr></thead><tbody>';
+            models.forEach(function (m) {
+              var b = byModel[m];
+              html += '<tr><td><strong>' + escape(m) + '</strong></td><td class="right hx-mono">' + b.calls.toLocaleString() + '</td><td class="right hx-mono">' + b.prompt.toLocaleString() + '</td><td class="right hx-mono">' + b.completion.toLocaleString() + '</td><td class="right hx-mono">' + b.errors + '</td></tr>';
+            });
+            html += '</tbody></table></div>';
+            host.innerHTML = html;
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

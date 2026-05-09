@@ -26,20 +26,20 @@
           </div>
           <div class="hx-page-actions">
             <a href="/pricing.html" class="hx-btn hx-btn-secondary">View plans</a>
-            <button class="hx-btn hx-btn-primary" disabled title="Available on the Scale plan">Invite member</button>
+            <button id="hx-invite-open" class="hx-btn hx-btn-primary">+ Invite member</button>
           </div>
         </div>
 
         <div class="hx-grid hx-grid-4">
           <div class="hx-stat">
             <p class="hx-stat-label">Members</p>
-            <p class="hx-stat-value hx-mono">1</p>
-            <p class="hx-stat-meta">You · owner</p>
+            <p class="hx-stat-value hx-mono" id="hx-stat-members">1</p>
+            <p class="hx-stat-meta">You + active members</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Pending invites</p>
-            <p class="hx-stat-value hx-mono">0</p>
-            <p class="hx-stat-meta">None</p>
+            <p class="hx-stat-value hx-mono" id="hx-stat-pending">0</p>
+            <p class="hx-stat-meta" id="hx-stat-pending-meta">None waiting</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Roles</p>
@@ -47,28 +47,49 @@
             <p class="hx-stat-meta">Owner · Admin · Member</p>
           </div>
           <div class="hx-stat">
-            <p class="hx-stat-label">SSO</p>
-            <p class="hx-stat-value" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta">Available on Scale</p>
+            <p class="hx-stat-label">Plan</p>
+            <p class="hx-stat-value" id="hx-stat-plan" style="font-size:18px;color:var(--hx-text-dim);">Free</p>
+            <p class="hx-stat-meta">SSO on Scale</p>
+          </div>
+        </div>
+
+        <!-- Invite form -->
+        <div class="hx-card" id="hx-invite-form" hidden style="margin-bottom:14px;">
+          <h3 style="margin-top:0;">Invite a team member</h3>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+            <div class="hx-field" style="margin:0;">
+              <label>Email</label>
+              <input type="email" id="hx-invite-email" placeholder="colleague@company.com" autocomplete="email" />
+            </div>
+            <div class="hx-field" style="margin:0;">
+              <label>Role</label>
+              <select id="hx-invite-role">
+                <option value="member">Member — brief projects, view shared deployments</option>
+                <option value="admin">Admin — also rotate keys and manage members</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:14px;">
+            <button class="hx-btn hx-btn-primary" id="hx-invite-create">Send invite</button>
+            <button class="hx-btn hx-btn-ghost" id="hx-invite-cancel">Cancel</button>
+            <p id="hx-invite-status" style="margin:0;font-size:12.5px;font-weight:500;"></p>
           </div>
         </div>
 
         <div class="hx-section-head">
           <h2>Members</h2>
-          <span class="meta">1 active</span>
+          <span class="meta" id="hx-members-meta">—</span>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
-          <h3>It's just you for now</h3>
-          <p>Multi-seat workspaces, role-based access control, and SCIM-provisioned SSO arrive on the Scale plan. Until then, your workspace is single-tenant and locked to your account.</p>
-          <a href="/pricing.html" class="hx-btn hx-btn-secondary">Compare plans</a>
+        <div id="hx-members-host"></div>
+
+        <div class="hx-section-head">
+          <h2>Pending invitations</h2>
+          <span class="meta" id="hx-invites-meta">—</span>
         </div>
+        <div id="hx-invites-host"></div>
 
         <div class="hx-section-head">
           <h2>Roles</h2>
-          <span class="meta">Available when team is enabled</span>
         </div>
         <div class="hx-grid hx-grid-3">
           <div class="hx-card">
@@ -93,5 +114,157 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Real team_members + invitations. */
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      var $ = function (id) { return document.getElementById(id); };
+      function escape(s) { return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+      function fmtDate(iso) {
+        if (!iso) return '—';
+        try { return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); } catch (e) { return '—'; }
+      }
+      function status(elId, msg, kind) {
+        var el = $(elId); if (!el) return;
+        el.style.color = kind === 'error' ? 'var(--hx-red)' : 'var(--hx-emerald)';
+        el.textContent = msg || '';
+      }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        var origin = window.location.origin;
+
+        async function refresh() {
+          var u = (await sb.auth.getUser()).data.user;
+          if (!u) return;
+
+          var [members, invites, sub] = await Promise.all([
+            sb.from('team_members').select('*').order('joined_at', { ascending: false, nullsFirst: false }),
+            sb.from('invitations').select('*').is('accepted_at', null).order('created_at', { ascending: false }),
+            sb.from('subscriptions').select('plan').maybeSingle()
+          ]);
+
+          var memberRows = members.data || [];
+          var inviteRows = invites.data || [];
+
+          // Header includes the owner themselves (always +1)
+          $('hx-stat-members').textContent = (memberRows.filter(function (m) { return m.status === 'active'; }).length + 1);
+          $('hx-stat-pending').textContent = inviteRows.length;
+          $('hx-stat-pending-meta').textContent = inviteRows.length ? 'Waiting on accept' : 'None waiting';
+
+          if (sub && sub.data && sub.data.plan) {
+            var planLabel = sub.data.plan.charAt(0).toUpperCase() + sub.data.plan.slice(1);
+            $('hx-stat-plan').textContent = planLabel;
+            $('hx-stat-plan').style.color = sub.data.plan === 'free' ? 'var(--hx-text-dim)' : 'var(--hx-text)';
+          }
+
+          // Members list — always include the owner row first
+          var firstName = (u.user_metadata && u.user_metadata.first_name) || '';
+          var lastName = (u.user_metadata && u.user_metadata.last_name) || '';
+          var ownerName = (firstName + ' ' + lastName).trim() || (u.email || 'You');
+          var memberHtml = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr>' +
+            '<th>Member</th><th>Role</th><th>Joined</th><th>Status</th>' +
+          '</tr></thead><tbody>';
+          memberHtml += '<tr>' +
+            '<td><strong>' + escape(ownerName) + ' (you)</strong><div style="color:var(--hx-text-mid);font-size:12.5px;">' + escape(u.email) + '</div></td>' +
+            '<td><span class="hx-badge hx-badge-yellow">Owner</span></td>' +
+            '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(u.created_at) + '</span></td>' +
+            '<td><span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Active</span></td>' +
+          '</tr>';
+          memberRows.forEach(function (m) {
+            memberHtml += '<tr data-id="' + escape(m.id) + '">' +
+              '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(m.member_id.slice(0, 8)) + '…</span></td>' +
+              '<td><span class="hx-badge hx-badge-neutral">' + escape(m.role) + '</span></td>' +
+              '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + (m.joined_at ? fmtDate(m.joined_at) : '—') + '</span></td>' +
+              '<td>' + (m.status === 'active'
+                ? '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Active</span>'
+                : '<span class="hx-badge hx-badge-neutral">' + escape(m.status) + '</span>') +
+              '</td>' +
+            '</tr>';
+          });
+          memberHtml += '</tbody></table></div>';
+          $('hx-members-host').innerHTML = memberHtml;
+          $('hx-members-meta').textContent = (memberRows.length + 1) + (memberRows.length === 0 ? ' member' : ' members');
+
+          // Invites list
+          if (inviteRows.length === 0) {
+            $('hx-invites-host').innerHTML =
+              '<div class="hx-empty"><div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7L13.03 12.7a2 2 0 0 1-2.06 0L2 7"/></svg></div><h3>No pending invitations</h3><p>Invitations you send appear here until the recipient accepts.</p></div>';
+            $('hx-invites-meta').textContent = '0 pending';
+          } else {
+            var ihtml = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Email</th><th>Role</th><th>Sent</th><th>Expires</th><th>Invite link</th><th class="right">Actions</th></tr></thead><tbody>';
+            inviteRows.forEach(function (inv) {
+              var url = origin + '/signup.html?invite=' + encodeURIComponent(inv.token);
+              ihtml += '<tr data-id="' + escape(inv.id) + '">' +
+                '<td><strong>' + escape(inv.email) + '</strong></td>' +
+                '<td><span class="hx-badge hx-badge-neutral">' + escape(inv.role) + '</span></td>' +
+                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(inv.created_at) + '</span></td>' +
+                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(inv.expires_at) + '</span></td>' +
+                '<td><button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="copy" data-url="' + escape(url) + '">Copy link</button></td>' +
+                '<td class="right"><button class="hx-btn hx-btn-danger hx-btn-sm" data-act="revoke">Revoke</button></td>' +
+              '</tr>';
+            });
+            ihtml += '</tbody></table></div>';
+            $('hx-invites-host').innerHTML = ihtml;
+            $('hx-invites-meta').textContent = inviteRows.length + ' pending';
+          }
+        }
+
+        // Wire actions
+        $('hx-invites-host').addEventListener('click', async function (e) {
+          var btn = e.target.closest && e.target.closest('button[data-act]');
+          if (!btn) return;
+          var tr = btn.closest('tr'); if (!tr) return;
+          var id = tr.getAttribute('data-id');
+          if (btn.getAttribute('data-act') === 'copy') {
+            var url = btn.getAttribute('data-url');
+            if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () {
+              var l = btn.textContent; btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = l; }, 1500);
+            });
+          }
+          if (btn.getAttribute('data-act') === 'revoke') {
+            if (!confirm('Revoke this invitation? The link will stop working immediately.')) return;
+            await sb.from('invitations').delete().eq('id', id);
+            await sb.rpc('log_event', { p_kind: 'team.invitation_revoked', p_payload: { id: id } });
+            await refresh();
+          }
+        });
+
+        $('hx-invite-open').addEventListener('click', function () { $('hx-invite-form').hidden = false; $('hx-invite-email').focus(); });
+        $('hx-invite-cancel').addEventListener('click', function () {
+          $('hx-invite-form').hidden = true;
+          $('hx-invite-email').value = ''; status('hx-invite-status', '');
+        });
+        $('hx-invite-create').addEventListener('click', async function (e) {
+          e.preventDefault();
+          var email = ($('hx-invite-email').value || '').trim().toLowerCase();
+          var role  = $('hx-invite-role').value;
+          if (!email || !/.+@.+\..+/.test(email)) { status('hx-invite-status', 'Enter a valid email.', 'error'); return; }
+
+          var btn = e.currentTarget; var lbl = btn.textContent;
+          btn.disabled = true; btn.textContent = 'Sending…';
+          try {
+            var u = (await sb.auth.getUser()).data.user;
+            var r = await sb.from('invitations').insert({ owner_id: u.id, email: email, role: role }).select().maybeSingle();
+            if (r.error) throw r.error;
+            await sb.rpc('log_event', { p_kind: 'team.invitation_sent', p_payload: { email: email, role: role, id: r.data.id } });
+            $('hx-invite-form').hidden = true;
+            $('hx-invite-email').value = '';
+            status('hx-invite-status', '');
+            await refresh();
+          } catch (err) {
+            status('hx-invite-status', (err && err.message) || 'Could not send invite.', 'error');
+          } finally {
+            btn.disabled = false; btn.textContent = lbl;
+          }
+        });
+
+        refresh();
+      });
+    })();
+  </script>
 </body>
 </html>
