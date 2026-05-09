@@ -158,37 +158,36 @@
       padding: 28px 0;
     }
     .hx-chat-thread-inner {
-      max-width: 760px;
+      max-width: 720px;
       margin: 0 auto;
       padding: 0 24px;
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 28px;
     }
-    .hx-msg { display: flex; gap: 12px; align-items: flex-start; }
-    .hx-msg-avatar {
-      width: 28px; height: 28px;
-      flex-shrink: 0;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 600;
-      background: var(--hx-text); color: #FFF;
-    }
-    .hx-msg.is-assistant .hx-msg-avatar {
-      background: var(--hx-yellow-soft); color: var(--hx-yellow-deep);
-      border: 1px solid rgba(252, 211, 77, 0.4);
-    }
-    .hx-msg-body { flex: 1; min-width: 0; }
+    .hx-msg { display: flex; flex-direction: column; gap: 4px; }
+    /* Avatars are intentionally not rendered. Premium chats keep the
+       speaker identity to a single faint label and let the prose breathe. */
+    .hx-msg-avatar { display: none; }
+    .hx-msg-body { min-width: 0; width: 100%; }
     .hx-msg-meta {
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-      font-size: 11.5px; color: var(--hx-text-dim);
-      margin-bottom: 6px;
+      font-size: 11px; color: var(--hx-text-faint);
+      letter-spacing: 0.04em; text-transform: uppercase;
+      margin-bottom: 4px;
     }
-    .hx-msg-meta strong { font-weight: 500; color: var(--hx-text); }
-    .hx-msg-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--hx-text-faint); }
+    .hx-msg.is-assistant .hx-msg-meta { color: var(--hx-text-dim); }
+    .hx-msg-meta strong { font-weight: 500; color: inherit; }
     .hx-msg-content {
-      font-size: 14px; line-height: 1.65; color: var(--hx-text);
+      font-size: 15px; line-height: 1.7; color: var(--hx-text);
       white-space: pre-wrap; word-wrap: break-word;
+    }
+    /* User turns sit in a soft chip; assistant turns are flush plain prose. */
+    .hx-msg.is-user .hx-msg-content {
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-md);
+      padding: 12px 14px;
+      font-size: 14px; line-height: 1.6;
     }
     .hx-msg-actions {
       display: flex; align-items: center; gap: 4px;
@@ -366,8 +365,8 @@
 
           <div class="hx-chat-thread" id="hx-c-thread">
             <div class="hx-chat-blank" id="hx-c-blank">
-              <h2>Start a conversation.</h2>
-              <p>Pick a model, type a prompt, and press <span class="hx-mono" style="background:var(--hx-bg-2);padding:1px 5px;border-radius:3px;border:1px solid var(--hx-line);">Enter</span> — every send updates Usage, Logs, Activity, Monitoring, and your credit balance in real time.</p>
+              <h2>Helix</h2>
+              <p>Begin a conversation when you are ready.</p>
             </div>
           </div>
 
@@ -386,7 +385,7 @@
                 </button>
               </div>
               <div class="hx-chat-foot">
-                <span><span class="hx-mono" id="hx-c-trace">—</span></span>
+                <span class="hx-mono" id="hx-c-trace" style="display:none;">—</span>
                 <span style="margin-left:auto;">Press Enter to send · Shift+Enter for new line</span>
               </div>
             </div>
@@ -422,6 +421,19 @@
       }
 
       var PROJECT_URL = 'https://yjmpallrtpeinpdilptj.supabase.co';
+
+      // The system prompt that defines Helix's identity and tone for every
+      // turn. Kept short, deliberately calm, and explicit about no emoji.
+      var HELIX_SYSTEM = [
+        'You are Helix, the resident assistant of the HelveX platform.',
+        'Communicate in a calm, precise, and professional tone.',
+        'Never use emojis, kaomoji, decorative symbols, or playful punctuation.',
+        'Never include phrases like "Hi there!", "Sure!", or other filler greetings.',
+        'Do not introduce yourself unless explicitly asked. When asked your name, you are Helix.',
+        'Never identify as Claude, Anthropic, GPT, OpenAI, or any third-party model or provider — you are Helix.',
+        'Match the language the user writes in. If the user writes in Greek, reply in Greek.',
+        'Be concise and substantive. Skip preamble. Lead with the answer, then add context only if useful.'
+      ].join(' ');
 
       var state = {
         owner: null,
@@ -476,8 +488,6 @@
             html += '<div class="hx-chat-item' + (active ? ' is-active' : '') + '" data-id="' + escape(c.id) + '">' +
               '<span class="hx-chat-item-title">' + escape(c.title || 'Untitled') + '</span>' +
               '<span class="hx-chat-item-meta">' +
-                '<span class="hx-mono" style="text-transform:capitalize;">' + escape(c.model || 'ether') + '</span>' +
-                '<span class="dot"></span>' +
                 '<span>' + escape(relTime(c.updated_at)) + '</span>' +
               '</span>' +
             '</div>';
@@ -537,11 +547,11 @@
         function renderThread() {
           var thread = $('hx-c-thread');
           if (!state.conversation) {
-            thread.innerHTML = '<div class="hx-chat-blank"><h2>Start a conversation.</h2><p>Pick a model, type a prompt, and press <span class="hx-mono" style="background:var(--hx-bg-2);padding:1px 5px;border-radius:3px;border:1px solid var(--hx-line);">Enter</span> — every send updates Usage, Logs, Activity, Monitoring, and your credit balance in real time.</p></div>';
+            thread.innerHTML = '<div class="hx-chat-blank"><h2>Helix</h2><p>Begin a conversation when you are ready.</p></div>';
             return;
           }
           if (!state.messages.length && !state.sending) {
-            thread.innerHTML = '<div class="hx-chat-blank"><h2 style="font-size:24px;">' + escape(state.conversation.title || 'New chat') + '</h2><p>Empty so far. Send your first message below.</p></div>';
+            thread.innerHTML = '<div class="hx-chat-blank"><h2 style="font-size:24px;">' + escape(state.conversation.title || 'New chat') + '</h2><p>Send your first message below.</p></div>';
             return;
           }
           var html = '<div class="hx-chat-thread-inner">';
@@ -550,9 +560,8 @@
           });
           if (state.sending) {
             html += '<div class="hx-msg is-assistant">' +
-              '<div class="hx-msg-avatar">H</div>' +
               '<div class="hx-msg-body">' +
-                '<div class="hx-msg-meta"><strong>HelveX</strong><span class="dot"></span><span>thinking…</span></div>' +
+                '<div class="hx-msg-meta"><strong>Helix</strong></div>' +
                 '<div class="hx-typing"><span></span><span></span><span></span></div>' +
               '</div>' +
             '</div>';
@@ -578,17 +587,13 @@
           thread.scrollTop = thread.scrollHeight;
         }
 
-        function renderMessage(m, idx) {
+        function renderMessage(m) {
           var i = state.messages.indexOf(m);
-          var initials = m.role === 'assistant' ? 'H' : 'U';
-          var label = m.role === 'assistant' ? 'HelveX' : 'You';
-          var meta = '<strong>' + label + '</strong>';
-          if (m.role === 'assistant' && m.model) meta += '<span class="dot"></span><span class="hx-mono" style="text-transform:capitalize;">' + escape(m.model) + '</span>';
-          if (m.role === 'assistant' && m.latency_ms) meta += '<span class="dot"></span><span class="hx-mono">' + m.latency_ms + ' ms</span>';
-          if (m.role === 'assistant' && m.completion_tokens) meta += '<span class="dot"></span><span class="hx-mono">' + (m.prompt_tokens||0) + '+' + m.completion_tokens + 't</span>';
+          var isAssist = m.role === 'assistant';
+          var meta = isAssist ? '<strong>Helix</strong>' : '';
 
           var actions = '';
-          if (m.role === 'assistant' && m.content) {
+          if (isAssist && m.content && !m.__error) {
             actions = '<div class="hx-msg-actions">' +
               '<button class="hx-msg-act" type="button" data-act="copy" data-idx="' + i + '">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
@@ -601,10 +606,9 @@
             '</div>';
           }
 
-          return '<div class="hx-msg ' + (m.role === 'assistant' ? 'is-assistant' : '') + '">' +
-            '<div class="hx-msg-avatar">' + initials + '</div>' +
+          return '<div class="hx-msg ' + (isAssist ? 'is-assistant' : 'is-user') + (m.__error ? ' hx-msg-error' : '') + '">' +
             '<div class="hx-msg-body">' +
-              '<div class="hx-msg-meta">' + meta + '</div>' +
+              (meta ? '<div class="hx-msg-meta">' + meta + '</div>' : '') +
               '<div class="hx-msg-content">' + escape(m.content || '') + '</div>' +
               actions +
             '</div>' +
@@ -679,6 +683,7 @@
               body: JSON.stringify({
                 model: $('hx-c-model').value || 'ether',
                 conversation_id: state.conversation.id,
+                system: HELIX_SYSTEM,
                 messages: send_msgs,
                 max_tokens: 2048
               })
