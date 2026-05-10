@@ -1870,3 +1870,186 @@
       .industry-foot,
       .industry-cta { transition: none !important; }
     }
+
+    /* ═══════════════════════════════════════════════════════════
+       PREMIUM POLISH LAYER · v2
+       ─────────────────────────────────────────────────────────────
+       Cascading refinements that lift the entire site without
+       touching any HTML structure or working logic. Surgical
+       overrides only — every rule below intentionally bumps the
+       existing baseline rather than replacing it. Designed for a
+       Swiss-precise, editorial-luxury feel:
+       • softer display weight, tighter tracking
+       • deeper card hover with quieter borders
+       • refined button hover (scale + shine)
+       • premium nav active marker
+       • quieter footer dividers
+       • generous section rhythm
+       ═══════════════════════════════════════════════════════════ */
+
+    /* — Type refinement — */
+    body { letter-spacing: -0.012em; }
+    .h-display {
+      font-weight: 550;
+      letter-spacing: -0.058em;
+      line-height: 0.94;
+      color: #0F0F10;
+      text-wrap: balance;
+    }
+    .h-section {
+      font-weight: 600;
+      letter-spacing: -0.038em;
+      line-height: 1.04;
+      color: #111113;
+    }
+    /* Subtle calibrated optical sizing on very large displays */
+    @media (min-width: 1280px) {
+      .h-display { letter-spacing: -0.062em; }
+    }
+    /* Italic serif accents — tighter tracking + slight optical lift */
+    .italic.font-serif {
+      letter-spacing: -0.018em;
+      font-style: italic;
+      font-feature-settings: "kern", "liga", "calt";
+    }
+    p, .text-base, .text-lg { letter-spacing: -0.005em; }
+
+    /* — Eyebrow / section-mark refinement — */
+    .section-mark { color: #C8102E; font-weight: 600; letter-spacing: 0.22em; }
+    .h-eyebrow { color: #525252; font-weight: 600; letter-spacing: 0.22em; }
+
+    /* — Cards: quieter border, deeper lift, hairline highlight — */
+    .card {
+      border-color: #ECECEC;
+      transition:
+        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.35s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: #DCDCDC;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.9) inset,
+        0 1px 2px rgba(15, 15, 16, 0.04),
+        0 32px 64px -22px rgba(15, 15, 16, 0.16);
+    }
+
+    /* — Primary CTA: refined hover with subtle scale lift — */
+    .btn-primary {
+      transition:
+        transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.18s ease,
+        box-shadow 0.3s ease;
+      will-change: transform;
+    }
+    .btn-primary:hover { transform: translateY(-1px) scale(1.015); }
+    .btn-primary:active { transform: translateY(0) scale(0.99); }
+    .btn-primary:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 2px #FFFFFF,
+        0 0 0 4px rgba(15, 15, 16, 0.55),
+        0 18px 44px -8px rgba(10, 10, 10, 0.18);
+    }
+    .btn-shadow:hover {
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.08),
+        0 22px 50px -10px rgba(10, 10, 10, 0.22);
+    }
+
+    /* — Nav links: refined hover + active underline — */
+    .nav-link {
+      position: relative;
+      font-weight: 500;
+      transition: color 0.22s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 4px;
+      height: 1px;
+      background: currentColor;
+      opacity: 0;
+      transform: scaleX(0.6);
+      transform-origin: center;
+      transition: opacity 0.25s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+    .nav-link:hover::after,
+    .nav-link.is-active::after {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+    .nav-link:hover { color: #0A0A0A; }
+
+    /* — Sticky header: a touch more presence on scroll — */
+    header.sticky { backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%); }
+
+    /* — Services dropdown menu: softer shadow, quieter rail — */
+    .nav-dropdown-menu > div {
+      box-shadow:
+        0 1px 2px rgba(15, 15, 16, 0.04),
+        0 24px 64px -18px rgba(15, 15, 16, 0.18) !important;
+      border-color: #ECECEC !important;
+    }
+
+    /* — Footer: cleaner, quieter — */
+    footer {
+      border-top: 1px solid #ECECEC;
+      color: #404044;
+    }
+    footer a { transition: color 0.18s ease; }
+    footer a:hover { color: #0A0A0A; }
+
+    /* — Section rhythm: utility for generous breathing room — */
+    .section-pad-lg { padding-top: clamp(96px, 10vw, 168px); padding-bottom: clamp(96px, 10vw, 168px); }
+    .section-pad-md { padding-top: clamp(72px, 8vw, 120px); padding-bottom: clamp(72px, 8vw, 120px); }
+
+    /* — Subtle horizontal divider between major sections — */
+    .section-divider {
+      position: relative; height: 1px;
+      background: linear-gradient(to right, transparent, #ECECEC 35%, #ECECEC 65%, transparent);
+    }
+
+    /* — Reveal: longer easing for editorial feel — */
+    .reveal {
+      transition:
+        opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+      transform: translateY(24px);
+    }
+
+    /* — LIVE pill / floating badge polish — */
+    .pulse-dot { animation-duration: 2.4s; }
+
+    /* — Premium scrollbar — */
+    @media (pointer: fine) {
+      html { scrollbar-color: #D4D4D4 transparent; scrollbar-width: thin; }
+      ::-webkit-scrollbar { width: 10px; height: 10px; }
+      ::-webkit-scrollbar-thumb { background: transparent; border-radius: 999px; border: 2px solid transparent; background-clip: content-box; }
+      ::-webkit-scrollbar-thumb:hover { background-color: #C4C4C4; background-clip: content-box; }
+    }
+
+    /* — Selection: subtle, non-shouty — */
+    ::selection { background: rgba(252, 211, 77, 0.45); color: #0A0A0A; }
+
+    /* — Image rendering: keep crisp on high-DPI — */
+    img { image-rendering: -webkit-optimize-contrast; }
+
+    /* — Reduce motion when requested — */
+    @media (prefers-reduced-motion: reduce) {
+      .btn-primary, .card, .nav-link, .reveal {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+
+    /* — Mobile typography: smaller leading + crisper headlines — */
+    @media (max-width: 640px) {
+      .h-display { letter-spacing: -0.05em; line-height: 0.96; }
+      .h-section { letter-spacing: -0.03em; line-height: 1.06; }
+    }
+
