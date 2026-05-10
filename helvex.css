@@ -2053,3 +2053,253 @@
       .h-section { letter-spacing: -0.03em; line-height: 1.06; }
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       ULTRA-PREMIUM POLISH · v3
+       ─────────────────────────────────────────────────────────────
+       Apple / Stripe / Linear / Swiss-banking-grade refinements.
+       Every rule below is purely additive — no existing selector
+       is rewritten. Cascades on top of v2 to bring the surface
+       finish from "premium" to "ultra-premium."
+       ═══════════════════════════════════════════════════════════ */
+
+    /* — Site-wide scroll-driven header evolution —
+       The header gains presence as you scroll past the hero. The
+       scroll listener (helvex.js) toggles the `is-scrolled` class
+       on <header>; the styling here makes the transition feel
+       cinematic rather than abrupt. */
+    header.sticky {
+      transition:
+        background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        backdrop-filter 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    header.sticky.is-scrolled {
+      background-color: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(22px) saturate(180%);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      border-color: rgba(15, 15, 16, 0.06);
+      box-shadow:
+        0 1px 0 rgba(15, 15, 16, 0.02),
+        0 8px 24px -12px rgba(15, 15, 16, 0.08);
+    }
+    /* Header height collapses subtly on scroll — Apple-style */
+    header.sticky nav { transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+    @media (min-width: 640px) {
+      header.sticky.is-scrolled nav { height: 76px; }
+    }
+
+    /* — Hero "LIVE" pill: breathing ambient halo —
+       Targets any pill containing the .pulse-dot live marker. */
+    .pulse-dot {
+      position: relative;
+    }
+    .pulse-dot::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: rgba(220, 38, 38, 0.2);
+      filter: blur(6px);
+      opacity: 0;
+      animation: hxLiveHalo 3.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+    @keyframes hxLiveHalo {
+      0%, 100% { opacity: 0; transform: scale(0.85); }
+      50%      { opacity: 0.55; transform: scale(1.4); }
+    }
+
+    /* — Cards · luxury depth · v3 —
+       Sophisticated layered shadows + a subtle border-tone gradient
+       that intensifies on hover. Cards no longer just lift; they
+       acquire physical weight. */
+    .card {
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.5) inset,
+        0 1px 1px rgba(15, 15, 16, 0.02),
+        0 2px 4px rgba(15, 15, 16, 0.025);
+      transition:
+        transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.45s ease;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: #D8D8D8;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 1) inset,
+        0 4px 8px -2px rgba(15, 15, 16, 0.04),
+        0 18px 32px -12px rgba(15, 15, 16, 0.10),
+        0 40px 80px -20px rgba(15, 15, 16, 0.18);
+    }
+    /* Hairline highlight at the top of every card — captures light
+       from the ambient (fakes a subtle bevel without weight). */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 12%; right: 12%;
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent,
+        rgba(15, 15, 16, 0.08) 25%,
+        rgba(15, 15, 16, 0.08) 75%,
+        transparent);
+      opacity: 0;
+      transition: opacity 0.45s ease;
+      pointer-events: none;
+    }
+    .card:hover::before { opacity: 1; }
+
+    /* — Buttons · refined physics · v3 —
+       Press feedback uses a slight overshoot ease that mimics a
+       physical key. Hover gains a subtle 1px shadow grow. */
+    .btn-primary {
+      transition:
+        transform 0.32s cubic-bezier(0.5, 1.4, 0.5, 1),
+        background 0.18s ease,
+        box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1.5px) scale(1.018);
+    }
+    .btn-primary:active {
+      transform: translateY(0.5px) scale(0.985);
+      transition-duration: 0.12s;
+    }
+    /* Inset highlight at the top edge of dark buttons — Apple-style */
+    .btn-primary.bg-ink::after,
+    a.btn-primary.bg-ink::after,
+    button.btn-primary.bg-ink::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 8%; right: 8%;
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent,
+        rgba(255, 255, 255, 0.25) 35%,
+        rgba(255, 255, 255, 0.25) 65%,
+        transparent);
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    /* — Nav · refined active marker · v3 —
+       The animated underline from v2 gets a gentle scale-in + a
+       subtle glow on the active link. */
+    .nav-link.is-active::after {
+      background: linear-gradient(to right, transparent, currentColor 30%, currentColor 70%, transparent);
+    }
+    .nav-link {
+      transition: color 0.22s ease, opacity 0.22s ease;
+    }
+
+    /* — Section dividers · cinematic hairline —
+       Drops a faint, edge-fading line between hero/services etc.
+       when authors apply `.section-divider` to a 1px element. */
+    .section-divider {
+      background: linear-gradient(to right,
+        transparent 0%,
+        rgba(15, 15, 16, 0.06) 20%,
+        rgba(15, 15, 16, 0.10) 50%,
+        rgba(15, 15, 16, 0.06) 80%,
+        transparent 100%);
+    }
+
+    /* — Footer · architectural rhythm —
+       Quieter borders, mono numerals on stat-style links. */
+    footer { border-top-color: #ECECEC; color: #404044; }
+    footer a {
+      position: relative;
+      transition: color 0.2s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    footer a:hover {
+      color: #0A0A0A;
+      transform: translateX(2px);
+    }
+    /* Optional: footer eyebrow uppercase tracking */
+    footer h3, footer h4, footer .footer-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #525252;
+    }
+
+    /* — Reveal · cinematic scroll-in —
+       Slightly longer duration + gentler curve at the start. */
+    .reveal {
+      transform: translateY(28px);
+      transition:
+        opacity 1.15s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.is-visible {
+      transform: translateY(0);
+    }
+
+    /* — Subtle parallax on hero orbs —
+       Drift slower than the surrounding content so the hero feels
+       like depth-of-field. The animation is already in v1; we just
+       slow it for a more luxurious tempo. */
+    .hero-orb { animation-duration: 26s; }
+
+    /* — Refined focus state across all interactives —
+       A consistent dual-ring outline that reads as intentional design. */
+    a:focus-visible,
+    button:focus-visible,
+    [role="button"]:focus-visible,
+    [tabindex]:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 2px #FFFFFF,
+        0 0 0 3.5px rgba(15, 15, 16, 0.55);
+      border-radius: inherit;
+    }
+
+    /* — Caret colour on form fields — quieter, on-brand */
+    input, textarea, [contenteditable="true"] { caret-color: #0A0A0A; }
+
+    /* — Loading shimmer utility (for skeletons / placeholders) —
+       Apply `.hx-shimmer` to any element that currently shows a
+       solid skeleton; this gives it a calm horizontal sweep. */
+    .hx-shimmer {
+      position: relative;
+      background: linear-gradient(90deg, #F4F4F5 0%, #ECECEC 50%, #F4F4F5 100%);
+      background-size: 200% 100%;
+      animation: hxShimmer 1.6s ease-in-out infinite;
+    }
+    @keyframes hxShimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* — Number tabular alignment for stat blocks —
+       Forces same-width digits everywhere a number appears in mono. */
+    .hx-mono, code, kbd, samp, pre, .stat-grid * {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* — Tighter mobile breakpoints —
+       Cards, gaps, and headline scale all step down a notch on
+       very small screens to keep the rhythm intact. */
+    @media (max-width: 480px) {
+      .card { border-radius: 14px; }
+      .h-display { font-size: clamp(36px, 11vw, 60px); }
+      .h-section { font-size: clamp(28px, 8.5vw, 44px); }
+    }
+
+    /* — Smoother smooth-scroll —
+       Honour reduced-motion AND set a friendlier scroll-behavior. */
+    @media (prefers-reduced-motion: no-preference) {
+      html { scroll-behavior: smooth; }
+    }
+
+    /* — Print: clean, unstyled, readable — */
+    @media print {
+      header, footer, .mobile-menu, .hero-orb, .nav-dropdown-menu { display: none !important; }
+      body { background: #FFFFFF; color: #000000; }
+      .card { border: 1px solid #D4D4D4; box-shadow: none; }
+    }
+

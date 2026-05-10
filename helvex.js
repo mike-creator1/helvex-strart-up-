@@ -29,6 +29,27 @@
       }, { passive: true });
     })();
 
+    /* Header presence on scroll — toggles `.is-scrolled` on the
+       sticky <header> once the user scrolls past a small threshold.
+       The visual transition lives in helvex.css (header.sticky.is-scrolled). */
+    (function () {
+      var header = document.querySelector('header.sticky');
+      if (!header) return;
+      var threshold = 12;
+      var ticking = false;
+      function update() {
+        ticking = false;
+        if (window.scrollY > threshold) header.classList.add('is-scrolled');
+        else                            header.classList.remove('is-scrolled');
+      }
+      function onScroll() {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }
+      // Run once on load to settle initial state (e.g. mid-page reload)
+      update();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    })();
+
     /* Stat count-up — fires when the stat-grid enters the viewport */
     (function () {
       var nums = document.querySelectorAll('.stat-num[data-target]');
