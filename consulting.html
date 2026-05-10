@@ -4,118 +4,276 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Consulting — HelveX</title>
-  <meta name="description" content="HelveX Consulting — strategy, business planning, and team sync engagements for founders and operators." />
+  <meta name="description" content="HelveX Consulting plans — Business Strategy, Business Plan, and Sync Plan engagements." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
   <style>
-    /* Consulting — three engagements, one CTA. Single column, max 720
-       so prose stays comfortable; cards line up flush with the page
-       head and the CTA panel below. */
-    .hx-cons-list {
-      max-width: 720px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+    /* ─── Plan grid ───────────────────────────────────────────── */
+    .hx-plans-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      max-width: 1080px;
+      margin-bottom: 120px;       /* room for the sticky CTA */
     }
-    .hx-cons-card {
+    @media (max-width: 900px) {
+      .hx-plans-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Plan card itself — a button so it's accessible by default. */
+    .hx-plan {
+      position: relative;
+      text-align: left;
       background: var(--hx-surface);
       border: 1px solid var(--hx-line);
       border-radius: var(--hx-r-lg);
-      padding: 22px 22px 20px;
-      display: grid;
-      grid-template-columns: 38px 1fr;
+      padding: 26px 24px 22px;
+      cursor: pointer;
+      transition:
+        transform   0.18s cubic-bezier(.2,.8,.2,1),
+        box-shadow  0.22s cubic-bezier(.2,.8,.2,1),
+        border-color 0.18s,
+        background  0.18s;
+      display: flex;
+      flex-direction: column;
       gap: 14px;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      font-family: inherit;
+      color: inherit;
+      width: 100%;
     }
-    .hx-cons-card:hover {
+    .hx-plan:hover {
+      transform: translateY(-2px);
       border-color: var(--hx-line-strong);
-      box-shadow: var(--hx-shadow-xs);
+      box-shadow: 0 6px 22px -10px rgba(0,0,0,0.10), 0 1px 0 rgba(0,0,0,0.02);
     }
-    .hx-cons-icon {
-      width: 38px; height: 38px;
-      display: flex; align-items: center; justify-content: center;
+    .hx-plan:focus-visible {
+      outline: none;
+      border-color: var(--hx-text);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
+    }
+    .hx-plan.is-selected {
+      border-color: var(--hx-text);
       background: var(--hx-bg-2);
-      border: 1px solid var(--hx-line);
-      border-radius: var(--hx-r-sm);
-      color: var(--hx-text-mid);
-      flex-shrink: 0;
+      box-shadow:
+        0 10px 30px -12px rgba(0,0,0,0.18),
+        0 0 0 1px var(--hx-text) inset;
+      transform: translateY(-2px);
     }
-    .hx-cons-icon svg { width: 18px; height: 18px; }
-    .hx-cons-name {
-      font-size: 16px;
+
+    /* "Most Popular" badge sits above the card and looks like a pill */
+    .hx-plan-popular-mark {
+      position: absolute;
+      top: -11px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--hx-text);
+      color: #FFF;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .hx-plan.is-popular { border-color: var(--hx-text); }
+
+    /* Header row: name + tier tag */
+    .hx-plan-head {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 8px;
+    }
+    .hx-plan-name {
+      font-size: 18px;
       font-weight: 600;
       letter-spacing: -0.012em;
       color: var(--hx-text);
-      margin: 0 0 4px;
+      margin: 0;
     }
-    .hx-cons-tag {
+    .hx-plan-tier {
       font-family: var(--hx-mono);
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 500;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--hx-text-dim);
-      margin: 0 0 10px;
-    }
-    .hx-cons-desc {
-      font-size: 13.5px;
-      line-height: 1.65;
-      color: var(--hx-text-mid);
-      margin: 0;
+      padding: 3px 7px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: 4px;
+      white-space: nowrap;
     }
 
-    /* CTA panel sits below the list. Single primary action — the user
-       asked for one CTA and one CTA only. */
-    .hx-cons-cta {
-      max-width: 720px;
-      margin-top: 10px;
-      background: var(--hx-surface);
-      border: 1px solid var(--hx-line);
-      border-radius: var(--hx-r-lg);
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+    /* Big price */
+    .hx-plan-price {
+      display: flex; align-items: baseline; gap: 6px;
+      margin-top: 4px;
     }
-    .hx-cons-cta-title {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-style: italic;
-      font-size: 26px;
-      letter-spacing: -0.01em;
+    .hx-plan-currency {
+      font-family: var(--hx-mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--hx-text-dim);
+      letter-spacing: 0.04em;
+    }
+    .hx-plan-amount {
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
       color: var(--hx-text);
-      margin: 0;
+      line-height: 1;
     }
-    .hx-cons-cta-sub {
+    .hx-plan-amount-meta {
+      font-size: 12px;
+      color: var(--hx-text-dim);
+      align-self: flex-end;
+      margin-bottom: 4px;
+      margin-left: 4px;
+    }
+
+    .hx-plan-desc {
       font-size: 13px;
       line-height: 1.6;
       color: var(--hx-text-mid);
       margin: 0;
-      max-width: 540px;
-    }
-    .hx-cons-cta-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .hx-cons-cta-row .hx-mono {
-      font-size: 11.5px;
-      color: var(--hx-text-dim);
     }
 
-    @media (max-width: 640px) {
-      .hx-cons-card {
-        grid-template-columns: 30px 1fr;
-        gap: 12px;
-        padding: 18px 16px 16px;
+    /* Bullet list */
+    .hx-plan-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-top: 1px solid var(--hx-line);
+      padding-top: 14px;
+    }
+    .hx-plan-list li {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13px; line-height: 1.5;
+      color: var(--hx-text-mid);
+    }
+    .hx-plan-list li svg {
+      width: 14px; height: 14px;
+      color: var(--hx-text-mid);
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .hx-plan.is-selected .hx-plan-list li svg { color: var(--hx-text); }
+
+    /* In-card CTA — turns into "Selected" when active */
+    .hx-plan-cta {
+      margin-top: 4px;
+      width: 100%;
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: transparent;
+      color: var(--hx-text);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      pointer-events: none;            /* the whole card is the click target */
+    }
+    .hx-plan:hover .hx-plan-cta {
+      border-color: var(--hx-text);
+      background: var(--hx-bg-2);
+    }
+    .hx-plan.is-selected .hx-plan-cta {
+      background: var(--hx-text);
+      color: #FFF;
+      border-color: var(--hx-text);
+    }
+    .hx-plan-cta-icon {
+      width: 14px; height: 14px;
+      opacity: 0;
+      transform: translateX(-4px) scale(0.8);
+      transition: opacity 0.18s, transform 0.18s;
+    }
+    .hx-plan.is-selected .hx-plan-cta-icon {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+
+    /* ─── Sticky checkout bar (revealed once a plan is selected) ─ */
+    .hx-checkout-bar {
+      position: fixed;
+      left: 50%;
+      transform: translate(-50%, calc(100% + 24px));
+      bottom: 24px;
+      background: var(--hx-text);
+      color: #FFF;
+      border-radius: 999px;
+      padding: 10px 12px 10px 22px;
+      box-shadow:
+        0 18px 40px -12px rgba(0,0,0,0.35),
+        0 4px 14px -8px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: transform 0.32s cubic-bezier(.2,.8,.2,1), opacity 0.2s;
+      opacity: 0;
+      z-index: 50;
+      max-width: calc(100% - 32px);
+    }
+    .hx-checkout-bar.is-visible {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+    .hx-checkout-bar-summary {
+      display: flex; flex-direction: column;
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+    }
+    .hx-checkout-bar-name {
+      color: #FFF;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    .hx-checkout-bar-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 18px;
+      background: #FFF;
+      color: var(--hx-text);
+      border: none;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+      text-decoration: none;
+    }
+    .hx-checkout-bar-cta:hover { transform: scale(1.02); }
+    .hx-checkout-bar-cta svg { width: 14px; height: 14px; }
+    .hx-checkout-bar-amount {
+      font-family: var(--hx-mono);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    @media (max-width: 600px) {
+      .hx-checkout-bar {
+        left: 12px; right: 12px;
+        bottom: 12px;
+        max-width: none;
+        transform: translateY(calc(100% + 24px));
+        border-radius: 16px;
+        padding: 12px 14px;
+        flex-direction: row;
+        justify-content: space-between;
       }
-      .hx-cons-icon { width: 30px; height: 30px; }
-      .hx-cons-icon svg { width: 15px; height: 15px; }
-      .hx-cons-name { font-size: 15px; }
-      .hx-cons-cta-title { font-size: 22px; }
+      .hx-checkout-bar.is-visible { transform: translateY(0); }
+      .hx-checkout-bar-cta { padding: 10px 14px; font-size: 12.5px; }
+      .hx-plan-amount { font-size: 32px; }
     }
   </style>
 </head>
@@ -130,72 +288,181 @@
         <div class="hx-page-head">
           <div>
             <h1>Consulting.</h1>
-            <p class="sub">Senior advisory engagements for founders and operators. Three formats, scoped on a call, delivered with the same hand that runs the rest of HelveX.</p>
+            <p class="sub">Senior advisory engagements for founders and operators. Pick a plan, scope it on a 30-minute call, get a fixed quote within 48 hours.</p>
           </div>
         </div>
 
-        <div class="hx-cons-list">
+        <!-- Plan grid -->
+        <div class="hx-plans-grid" role="radiogroup" aria-label="Consulting plans" id="hx-plans">
 
-          <article class="hx-cons-card">
-            <div class="hx-cons-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="9"/>
-                <path d="M12 3v18M3 12h18"/>
-              </svg>
+          <button type="button" class="hx-plan" role="radio" aria-checked="false"
+                  data-slug="business-strategy" data-name="Business Strategy" data-amount="499">
+            <div class="hx-plan-head">
+              <h2 class="hx-plan-name">Business Strategy</h2>
+              <span class="hx-plan-tier">Engagement 01</span>
             </div>
-            <div>
-              <p class="hx-cons-tag">Engagement 01</p>
-              <h2 class="hx-cons-name">Business Strategy</h2>
-              <p class="hx-cons-desc">Sharpening the long-term direction of your venture: positioning, market thesis, operating model, and the few decisions that compound. Output is a written strategic frame and a quarterly milestone map you can defend to your team and your investors.</p>
+            <div class="hx-plan-price">
+              <span class="hx-plan-currency">CHF</span>
+              <span class="hx-plan-amount">499</span>
+              <span class="hx-plan-amount-meta">one-time</span>
             </div>
-          </article>
+            <p class="hx-plan-desc">Long-term direction for your venture: positioning, market thesis, and the few decisions that compound.</p>
+            <ul class="hx-plan-list">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Strategic direction</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Market positioning</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Growth roadmap</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Executive advisory</li>
+            </ul>
+            <span class="hx-plan-cta">
+              <svg class="hx-plan-cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span class="hx-plan-cta-label">Select Plan</span>
+            </span>
+          </button>
 
-          <article class="hx-cons-card">
-            <div class="hx-cons-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="9" y1="13" x2="15" y2="13"/>
-                <line x1="9" y1="17" x2="13" y2="17"/>
-              </svg>
+          <button type="button" class="hx-plan is-popular" role="radio" aria-checked="false"
+                  data-slug="business-plan" data-name="Business Plan" data-amount="399">
+            <span class="hx-plan-popular-mark">Most Popular</span>
+            <div class="hx-plan-head">
+              <h2 class="hx-plan-name">Business Plan</h2>
+              <span class="hx-plan-tier">Engagement 02</span>
             </div>
-            <div>
-              <p class="hx-cons-tag">Engagement 02</p>
-              <h2 class="hx-cons-name">Business Plan</h2>
-              <p class="hx-cons-desc">A formal, investor-ready document covering the company, the market, the financial model, and the 18–24 month execution roadmap. Written to be defended in a room — not filed in a drawer — and delivered alongside the working spreadsheet behind every number.</p>
+            <div class="hx-plan-price">
+              <span class="hx-plan-currency">CHF</span>
+              <span class="hx-plan-amount">399</span>
+              <span class="hx-plan-amount-meta">one-time</span>
             </div>
-          </article>
+            <p class="hx-plan-desc">Investor-ready document covering the company, the market, the financial model, and the execution roadmap.</p>
+            <ul class="hx-plan-list">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Investor-ready documentation</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Financial projections</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Execution roadmap</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Market analysis</li>
+            </ul>
+            <span class="hx-plan-cta">
+              <svg class="hx-plan-cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span class="hx-plan-cta-label">Select Plan</span>
+            </span>
+          </button>
 
-          <article class="hx-cons-card">
-            <div class="hx-cons-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <polyline points="23 4 23 10 17 10"/>
-                <polyline points="1 20 1 14 7 14"/>
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-              </svg>
+          <button type="button" class="hx-plan" role="radio" aria-checked="false"
+                  data-slug="sync-plan" data-name="Sync Plan" data-amount="199">
+            <div class="hx-plan-head">
+              <h2 class="hx-plan-name">Sync Plan</h2>
+              <span class="hx-plan-tier">Engagement 03</span>
             </div>
-            <div>
-              <p class="hx-cons-tag">Engagement 03</p>
-              <h2 class="hx-cons-name">Sync Plan</h2>
-              <p class="hx-cons-desc">A coordination layer for founders, internal teams, and external partners. We define the single timeline, the decision cadence, and the ownership map so delivery actually moves together — not in three parallel directions. Useful before a launch, a fundraise, or a re-org.</p>
+            <div class="hx-plan-price">
+              <span class="hx-plan-currency">CHF</span>
+              <span class="hx-plan-amount">199</span>
+              <span class="hx-plan-amount-meta">one-time</span>
             </div>
-          </article>
+            <p class="hx-plan-desc">Coordination layer for founders, internal teams, and external partners — single timeline, single ownership map.</p>
+            <ul class="hx-plan-list">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Team coordination</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Operational alignment</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Founder advisory</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Launch planning</li>
+            </ul>
+            <span class="hx-plan-cta">
+              <svg class="hx-plan-cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span class="hx-plan-cta-label">Select Plan</span>
+            </span>
+          </button>
 
-        </div>
-
-        <div class="hx-cons-cta">
-          <h3 class="hx-cons-cta-title">Ready to start?</h3>
-          <p class="hx-cons-cta-sub">Engagements begin with a 30-minute scoping call. We send back the format, timeline, and a fixed quote within 48 hours — you decide whether to move forward.</p>
-          <div class="hx-cons-cta-row">
-            <a href="/support.html?topic=consulting" class="hx-btn hx-btn-primary">Book Consulting</a>
-            <span class="hx-mono">No card on file is required to scope an engagement.</span>
-          </div>
         </div>
 
       </main>
     </div>
   </div>
 
+  <!-- Sticky checkout bar — revealed once a plan is selected -->
+  <div class="hx-checkout-bar" id="hx-checkout-bar" role="region" aria-label="Selected plan">
+    <div class="hx-checkout-bar-summary">
+      <span>Selected plan</span>
+      <span class="hx-checkout-bar-name" id="hx-checkout-bar-name">—</span>
+    </div>
+    <a class="hx-checkout-bar-cta" id="hx-checkout-bar-cta" href="#">
+      <span>Continue to Checkout</span>
+      <span aria-hidden="true">·</span>
+      <span class="hx-checkout-bar-amount" id="hx-checkout-bar-amount">CHF —</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+
   <script src="/platform.js"></script>
+  <script>
+    (function () {
+      // The plan catalogue is mirrored server-side in the
+      // create-checkout-session Edge Function — never trust the
+      // client-side data attributes for actual billing.
+      var STORAGE_KEY = 'hx.consulting.selectedPlan';
+
+      var grid = document.getElementById('hx-plans');
+      var bar  = document.getElementById('hx-checkout-bar');
+      var barName   = document.getElementById('hx-checkout-bar-name');
+      var barAmount = document.getElementById('hx-checkout-bar-amount');
+      var barCta    = document.getElementById('hx-checkout-bar-cta');
+      var plans     = grid.querySelectorAll('.hx-plan');
+
+      var selected = null;
+
+      function selectPlan(card) {
+        plans.forEach(function (c) {
+          var on = c === card;
+          c.classList.toggle('is-selected', on);
+          c.setAttribute('aria-checked', on ? 'true' : 'false');
+          var label = c.querySelector('.hx-plan-cta-label');
+          if (label) label.textContent = on ? 'Selected' : 'Select Plan';
+        });
+
+        selected = {
+          slug:   card.getAttribute('data-slug'),
+          name:   card.getAttribute('data-name'),
+          amount: parseInt(card.getAttribute('data-amount'), 10),
+          currency: 'CHF',
+        };
+
+        barName.textContent   = selected.name;
+        barAmount.textContent = 'CHF ' + selected.amount;
+        barCta.setAttribute('href', '/checkout/' + selected.slug);
+        bar.classList.add('is-visible');
+
+        try {
+          sessionStorage.setItem(STORAGE_KEY, JSON.stringify(selected));
+        } catch (e) { /* private mode etc — non-fatal */ }
+      }
+
+      // Click + keyboard activation on each card.
+      plans.forEach(function (card) {
+        card.addEventListener('click', function () { selectPlan(card); });
+        card.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            selectPlan(card);
+          }
+        });
+      });
+
+      // Persist + intercept the CTA click so we always carry the
+      // selection through the navigation. The href is the source of
+      // truth — sessionStorage is just so checkout.html can render
+      // immediately without re-running price logic.
+      barCta.addEventListener('click', function (e) {
+        if (!selected) { e.preventDefault(); return; }
+        try {
+          sessionStorage.setItem(STORAGE_KEY, JSON.stringify(selected));
+        } catch (err) { /* ignore */ }
+      });
+
+      // If the user lands here with a previously-selected plan in
+      // sessionStorage (e.g. came back from /checkout), pre-select it.
+      try {
+        var prev = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null');
+        if (prev && prev.slug) {
+          var c = grid.querySelector('.hx-plan[data-slug="' + prev.slug + '"]');
+          if (c) selectPlan(c);
+        }
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
 </body>
 </html>

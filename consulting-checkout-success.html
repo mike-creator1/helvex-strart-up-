@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking confirmed — HelveX</title>
+  <meta name="description" content="Your HelveX consulting engagement has been booked." />
+  <link rel="icon" type="image/png" href="/helvex-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
+  <style>
+    .hx-confirm-card {
+      max-width: 560px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-lg);
+      padding: 36px 32px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .hx-confirm-tick {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--hx-text);
+      color: #FFF;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hx-confirm-tick svg { width: 26px; height: 26px; }
+    .hx-confirm-title {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-size: 32px;
+      letter-spacing: -0.01em;
+      color: var(--hx-text);
+      margin: 6px 0 0;
+    }
+    .hx-confirm-sub {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--hx-text-mid);
+      margin: 0;
+      max-width: 440px;
+    }
+    .hx-confirm-meta {
+      font-family: var(--hx-mono);
+      font-size: 11.5px;
+      color: var(--hx-text-dim);
+      margin-top: 8px;
+    }
+    .hx-confirm-actions {
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body data-active="consulting">
+
+  <div class="hx-app">
+    <aside class="hx-sidebar"></aside>
+    <div>
+      <div class="hx-topbar"></div>
+      <main class="hx-main">
+
+        <div class="hx-confirm-card" id="hx-confirm">
+          <div class="hx-confirm-tick">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <h1 class="hx-confirm-title">Booking confirmed.</h1>
+          <p class="hx-confirm-sub" id="hx-confirm-sub">
+            Thank you. Your consulting engagement is booked. We'll email you within one business day to schedule the 30-minute scoping call.
+          </p>
+          <p class="hx-confirm-meta" id="hx-confirm-meta"></p>
+          <div class="hx-confirm-actions">
+            <a class="hx-btn hx-btn-primary" href="/dashboard">Back to workspace</a>
+            <a class="hx-btn hx-btn-secondary" href="/consulting">Browse plans</a>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/platform.js"></script>
+  <script>
+    (function () {
+      // Best-effort surfacing of the session_id Stripe redirected with,
+      // so the user has a reference if they need to reach support.
+      // No verification call is made client-side — that happens via the
+      // Stripe webhook server-side, which is what actually changes any
+      // billing state.
+      try {
+        var qs = new URLSearchParams(location.search);
+        var sid = qs.get('session_id');
+        if (sid) {
+          var meta = document.getElementById('hx-confirm-meta');
+          if (meta) meta.textContent = 'Reference: ' + sid;
+        }
+        // Clear the locally-cached selection — the funnel is complete.
+        sessionStorage.removeItem('hx.consulting.selectedPlan');
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
+</body>
+</html>
