@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — HelveX</title>
+  <meta name="description" content="HelveX Consulting checkout — review your selection and complete your booking." />
+  <link rel="icon" type="image/png" href="/helvex-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
+  <style>
+    .hx-checkout-wrap {
+      max-width: 720px;
+      display: grid;
+      gap: 18px;
+    }
+    .hx-checkout-card {
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-lg);
+      padding: 26px 24px;
+    }
+    .hx-checkout-section-title {
+      font-family: var(--hx-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--hx-text-dim);
+      margin: 0 0 14px;
+    }
+    .hx-checkout-line {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 14px;
+      padding: 10px 0;
+    }
+    .hx-checkout-line-label {
+      font-size: 14px;
+      color: var(--hx-text);
+      font-weight: 500;
+    }
+    .hx-checkout-line-sub {
+      font-size: 12.5px;
+      color: var(--hx-text-mid);
+      margin-top: 2px;
+      max-width: 440px;
+    }
+    .hx-checkout-line-price {
+      font-family: var(--hx-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--hx-text);
+      white-space: nowrap;
+    }
+    .hx-checkout-total {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 14px;
+      padding-top: 14px;
+      margin-top: 14px;
+      border-top: 1px solid var(--hx-line);
+    }
+    .hx-checkout-total-label {
+      font-size: 13px;
+      color: var(--hx-text-mid);
+      font-weight: 500;
+    }
+    .hx-checkout-total-amount {
+      font-family: var(--hx-mono);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--hx-text);
+    }
+
+    .hx-checkout-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .hx-checkout-pay {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px 18px;
+      background: var(--hx-text);
+      color: #FFF;
+      border: 1px solid var(--hx-text);
+      border-radius: var(--hx-r-sm);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.12s;
+    }
+    .hx-checkout-pay:hover:not(:disabled) { background: #1F1F1F; }
+    .hx-checkout-pay:disabled { opacity: 0.5; cursor: wait; }
+    .hx-checkout-pay svg { width: 14px; height: 14px; }
+
+    .hx-checkout-back {
+      font-size: 13px;
+      color: var(--hx-text-mid);
+      align-self: flex-start;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+      transition: border-color 0.12s, color 0.12s;
+    }
+    .hx-checkout-back:hover { border-color: var(--hx-text); color: var(--hx-text); }
+
+    .hx-checkout-disclaimer {
+      font-size: 12px;
+      color: var(--hx-text-dim);
+      line-height: 1.55;
+    }
+
+    .hx-checkout-error {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: var(--hx-red-soft);
+      border: 1px solid rgba(220, 38, 38, 0.22);
+      border-radius: var(--hx-r-sm);
+      color: var(--hx-red);
+      font-size: 13px;
+      line-height: 1.5;
+      display: none;
+      overflow-wrap: anywhere;
+    }
+    .hx-checkout-error.is-visible { display: block; }
+
+    .hx-checkout-missing {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--hx-text-mid);
+    }
+    .hx-checkout-missing h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-size: 28px;
+      color: var(--hx-text);
+      margin: 0 0 8px;
+    }
+    .hx-checkout-missing p { margin: 0 0 18px; font-size: 14px; }
+  </style>
+</head>
+<body data-active="consulting">
+
+  <div class="hx-app">
+    <aside class="hx-sidebar"></aside>
+    <div>
+      <div class="hx-topbar"></div>
+      <main class="hx-main">
+
+        <div class="hx-page-head">
+          <div>
+            <h1>Checkout.</h1>
+            <p class="sub">Review your selected consulting engagement and complete the booking.</p>
+          </div>
+        </div>
+
+        <div class="hx-checkout-wrap" id="hx-checkout-wrap"></div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/platform.js"></script>
+  <script>
+    (function () {
+      // Mirror of the server-side catalogue. Display only — every price
+      // is re-validated by the create-checkout-session Edge Function
+      // before any Stripe Checkout Session is created.
+      var PLANS = {
+        'business-strategy': { slug: 'business-strategy', name: 'Business Strategy', amount: 499, currency: 'CHF', summary: 'Strategic direction, market positioning, growth roadmap, executive advisory.' },
+        'business-plan':     { slug: 'business-plan',     name: 'Business Plan',     amount: 399, currency: 'CHF', summary: 'Investor-ready documentation, financial projections, execution roadmap, market analysis.' },
+        'sync-plan':         { slug: 'sync-plan',         name: 'Sync Plan',         amount: 199, currency: 'CHF', summary: 'Team coordination, operational alignment, founder advisory, launch planning.' },
+      };
+
+      var STORAGE_KEY = 'hx.consulting.selectedPlan';
+      var PROJECT_URL = 'https://yjmpallrtpeinpdilptj.supabase.co';
+      var wrap = document.getElementById('hx-checkout-wrap');
+
+      function planFromPath() {
+        var m = location.pathname.match(/\/checkout\/([a-z0-9-]+)/i);
+        if (m && m[1]) return PLANS[m[1].toLowerCase()] || null;
+        return null;
+      }
+      function planFromStorage() {
+        try {
+          var s = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null');
+          return s && s.slug ? (PLANS[s.slug] || null) : null;
+        } catch (e) { return null; }
+      }
+
+      var plan = planFromPath() || planFromStorage();
+
+      if (!plan) {
+        wrap.innerHTML =
+          '<div class="hx-checkout-card hx-checkout-missing">' +
+            '<h2>No plan selected.</h2>' +
+            '<p>Choose an engagement to continue.</p>' +
+            '<a class="hx-btn hx-btn-primary" href="/consulting">Browse plans</a>' +
+          '</div>';
+        return;
+      }
+
+      try {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+          slug: plan.slug, name: plan.name, amount: plan.amount, currency: plan.currency,
+        }));
+      } catch (e) { /* ignore */ }
+
+      function escape(s) {
+        return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      wrap.innerHTML =
+        '<div class="hx-checkout-card">' +
+          '<p class="hx-checkout-section-title">Order summary</p>' +
+          '<div class="hx-checkout-line">' +
+            '<div>' +
+              '<div class="hx-checkout-line-label">' + escape(plan.name) + '</div>' +
+              '<div class="hx-checkout-line-sub">' + escape(plan.summary) + '</div>' +
+            '</div>' +
+            '<div class="hx-checkout-line-price">' + escape(plan.currency) + ' ' + plan.amount + '</div>' +
+          '</div>' +
+          '<div class="hx-checkout-total">' +
+            '<div>' +
+              '<div class="hx-checkout-total-label">Total due today</div>' +
+              '<div class="hx-checkout-line-sub">VAT calculated at the next step where applicable.</div>' +
+            '</div>' +
+            '<div class="hx-checkout-total-amount">' + escape(plan.currency) + ' ' + plan.amount + '</div>' +
+          '</div>' +
+          '<div id="hx-checkout-error" class="hx-checkout-error" role="alert"></div>' +
+        '</div>' +
+        '<div class="hx-checkout-card">' +
+          '<p class="hx-checkout-section-title">Payment</p>' +
+          '<div class="hx-checkout-actions">' +
+            '<button type="button" class="hx-checkout-pay" id="hx-checkout-pay">' +
+              '<span>Pay</span>' +
+              '<span style="opacity:0.5;">·</span>' +
+              '<span>' + escape(plan.currency) + ' ' + plan.amount + '</span>' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>' +
+            '</button>' +
+            '<p class="hx-checkout-disclaimer">You\'ll be redirected to a secure payment page. After payment we\'ll email you to schedule the 30-minute scoping call.</p>' +
+            '<a class="hx-checkout-back" href="/consulting">← Change plan</a>' +
+          '</div>' +
+        '</div>';
+
+      var payBtn = document.getElementById('hx-checkout-pay');
+      var errEl  = document.getElementById('hx-checkout-error');
+      var origLabel = payBtn.innerHTML;
+
+      function showError(msg) {
+        errEl.textContent = msg;
+        errEl.classList.add('is-visible');
+      }
+      function clearError() {
+        errEl.classList.remove('is-visible');
+        errEl.textContent = '';
+      }
+
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        payBtn.addEventListener('click', async function () {
+          clearError();
+          payBtn.disabled = true;
+          payBtn.innerHTML = '<span>Redirecting to payment…</span>';
+          try {
+            var sess = (await sb.auth.getSession()).data.session;
+            if (!sess || !sess.access_token) {
+              throw new Error('Please sign in to complete the booking.');
+            }
+            var resp = await fetch(PROJECT_URL + '/functions/v1/create-checkout-session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sess.access_token },
+              body: JSON.stringify({ slug: plan.slug }),
+            });
+            var data = null;
+            try { data = await resp.json(); } catch (e) { /* ignore */ }
+            if (!resp.ok) {
+              var msg = (data && (data.message || data.hint || data.error)) || ('Checkout failed (HTTP ' + resp.status + ').');
+              if (msg.length > 240) msg = msg.slice(0, 237) + '…';
+              throw new Error(msg);
+            }
+            if (!data || !data.url) {
+              throw new Error('Payment provider did not return a checkout URL.');
+            }
+            window.location.href = data.url;
+          } catch (err) {
+            payBtn.disabled = false;
+            payBtn.innerHTML = origLabel;
+            showError((err && err.message) || 'Checkout failed.');
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
