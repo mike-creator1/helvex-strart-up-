@@ -2303,3 +2303,177 @@
       .card { border: 1px solid #D4D4D4; box-shadow: none; }
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       PREMIUM POLISH LAYER · v4
+       Surgical refinements on top of the existing design language.
+       No colour or layout changes — only spacing, typography, depth,
+       motion physics, alignment, and responsiveness.
+       ═══════════════════════════════════════════════════════════ */
+
+    /* — Global motion easing token. Anything inheriting `transition`
+         picks up a calmer Apple-style curve unless overridden. */
+    :root {
+      --hx-ease:        cubic-bezier(0.22, 1, 0.36, 1);
+      --hx-ease-soft:   cubic-bezier(0.32, 0.72, 0.24, 1);
+      --hx-ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+      --hx-elev-1:      0 1px 0 rgba(255,255,255,0.85) inset,
+                        0 1px 2px rgba(15,15,16,0.04),
+                        0 6px 18px -8px rgba(15,15,16,0.08);
+      --hx-elev-2:      0 1px 0 rgba(255,255,255,0.9) inset,
+                        0 1px 3px rgba(15,15,16,0.05),
+                        0 14px 36px -10px rgba(15,15,16,0.12);
+      --hx-elev-3:      0 1px 0 rgba(255,255,255,0.95) inset,
+                        0 2px 6px rgba(15,15,16,0.06),
+                        0 30px 70px -14px rgba(15,15,16,0.18);
+    }
+
+    /* — Typography: gentle optical refinement on body text. Slightly
+         relaxed paragraph leading reads more confidently on premium
+         pages without altering the existing scale. */
+    body { line-height: 1.55; }
+    p { line-height: 1.62; }
+    p + p { margin-top: 1em; }
+
+    /* — Display headlines: a touch more breathing room on the body
+         that follows them. Subtle, but it lifts the rhythm. */
+    .h-display + p,
+    .h-display + .hero-sub,
+    .h-section + p,
+    .h-section + .section-sub { margin-top: 18px; }
+
+    /* — Optical letter-spacing on the very largest display sizes —
+         large type wants slightly tighter tracking; small type wants
+         a hair more. Done with size-relative `em` so it scales. */
+    .h-display { letter-spacing: -0.056em; }
+    .h-section { letter-spacing: -0.038em; }
+    .h-eyebrow,
+    .section-mark,
+    .footer-eyebrow { letter-spacing: 0.22em; }
+
+    /* — Card: deeper resting elevation + cinematic hover —
+         Keeps the same border and radius; just adds quiet depth. */
+    .card { box-shadow: var(--hx-elev-1); transition-duration: 0.55s; }
+    .card:hover { box-shadow: var(--hx-elev-3); }
+
+    /* — Buttons: a touch of vertical reactivity on press for a
+         tactile, premium feel. Pulls back the lift on :active so
+         the click is felt, not just seen. */
+    .btn,
+    .btn-primary,
+    .ghost-btn,
+    .primary-btn,
+    button[type="submit"] {
+      transition:
+        transform 0.32s var(--hx-ease-out),
+        box-shadow 0.32s var(--hx-ease-out),
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease;
+      will-change: transform;
+    }
+    .btn:hover,
+    .btn-primary:hover,
+    .ghost-btn:hover,
+    .primary-btn:hover,
+    button[type="submit"]:hover { transform: translateY(-1px); }
+    .btn:active,
+    .btn-primary:active,
+    .ghost-btn:active,
+    .primary-btn:active,
+    button[type="submit"]:active {
+      transform: translateY(0);
+      transition-duration: 0.08s;
+    }
+
+    /* — Nav: smoother transition between resting and scrolled states.
+         The shadow grows in subtly instead of popping. */
+    header.sticky,
+    header[class*="sticky"] {
+      transition:
+        background-color 0.4s var(--hx-ease-soft),
+        backdrop-filter 0.4s var(--hx-ease-soft),
+        -webkit-backdrop-filter 0.4s var(--hx-ease-soft),
+        box-shadow 0.4s var(--hx-ease-soft),
+        border-color 0.4s var(--hx-ease-soft);
+    }
+
+    /* — Section rhythm: slightly more generous vertical spacing on
+         desktop, snappier on mobile. Uses padding-block so it stacks
+         additively with any existing utilities. */
+    @media (min-width: 1024px) {
+      section[id],
+      main > section { padding-block: clamp(80px, 9vw, 144px); }
+    }
+
+    /* — Container alignment: lock the visual edge across the whole
+         page on wide viewports so brand mark, headlines, and section
+         marks share the same vertical axis. */
+    .max-w-7xl { width: min(100% - 48px, 1280px); margin-inline: auto; }
+
+    /* — Reveal: stagger children inside the same scroll-reveal block
+         so groups feel choreographed instead of synchronised. The
+         classes are opt-in (.stagger > .reveal) so legacy reveals
+         are untouched. */
+    .stagger > .reveal { transition-delay: 0ms; }
+    .stagger > .reveal:nth-child(2) { transition-delay: 80ms; }
+    .stagger > .reveal:nth-child(3) { transition-delay: 160ms; }
+    .stagger > .reveal:nth-child(4) { transition-delay: 240ms; }
+    .stagger > .reveal:nth-child(5) { transition-delay: 320ms; }
+    .stagger > .reveal:nth-child(n+6) { transition-delay: 400ms; }
+
+    /* — Focus ring: keep the existing dual-ring intent but soften it
+         a touch and respect dark surfaces (ink section backgrounds). */
+    .bg-ink a:focus-visible,
+    .bg-ink button:focus-visible,
+    .bg-ink [role="button"]:focus-visible {
+      box-shadow:
+        0 0 0 2px rgba(10, 10, 10, 0.9),
+        0 0 0 3.5px rgba(255, 255, 255, 0.7);
+    }
+
+    /* — Image polish: subtle anti-flash on lazy-loaded images and a
+         crisper rendering on small device-pixel-ratio screens. */
+    img {
+      image-rendering: -webkit-optimize-contrast;
+      transition: opacity 0.4s var(--hx-ease-out);
+    }
+    img[loading="lazy"]:not([src]) { opacity: 0; }
+
+    /* — Form fields: aligned vertical rhythm with the rest of the
+         body. Calmer borders, softer focus glow. */
+    input, textarea, select {
+      transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background-color 0.25s ease;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      box-shadow:
+        0 0 0 1px rgba(220, 38, 38, 0.45),
+        0 0 0 4px rgba(220, 38, 38, 0.10);
+    }
+
+    /* — Mobile rhythm: tighten the visual cadence on phones while
+         keeping the desktop generosity. Uses min/max instead of
+         hard breakpoints so the transition is smooth. */
+    @media (max-width: 640px) {
+      .h-display + p,
+      .h-display + .hero-sub,
+      .h-section + p,
+      .h-section + .section-sub { margin-top: 14px; }
+      section[id],
+      main > section { padding-block: clamp(56px, 14vw, 96px); }
+      .card { border-radius: 18px; }
+    }
+
+    /* — Reduced motion: keep all the visual polish, just no movement. */
+    @media (prefers-reduced-motion: reduce) {
+      .card,
+      .btn, .btn-primary, .ghost-btn, .primary-btn,
+      header.sticky, header[class*="sticky"],
+      img,
+      input, textarea, select,
+      .stagger > .reveal { transition: none !important; transform: none !important; }
+    }
+
