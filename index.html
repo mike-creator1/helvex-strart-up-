@@ -1266,12 +1266,10 @@
 
     var running = true;
 
-    /* Uniform dot — 1.2 px radius. With 3 px sample spacing the dots
-       form a clean halftone pattern: each one is a discrete circle
-       with a ~0.6 px gap to its neighbour, but Inter 900's thick
-       strokes still hold 8+ dots across so letterforms read as solid
-       black mass with a visible dotted texture. */
-    var DOT = 1.2;
+    /* Uniform dot — 1.4 px radius on a 3 px grid. Dots almost touch
+       (~0.2 px gap) so the letterforms read with more visual mass
+       while the dotted halftone texture stays clearly visible. */
+    var DOT = 1.4;
 
     function render(now) {
       if (!running) return;
