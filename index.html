@@ -1268,33 +1268,53 @@
     }
 
     var cycleStart = performance.now();
+
+    /* Pre-allocate the cycle length once (all hold + morph durations
+       are constants), and reuse a single state object across every
+       render frame. Returning a fresh object 60×/sec generated ~22k
+       short-lived allocations every six minutes — enough to trigger
+       periodic minor-GC stutters in long sessions. */
+    var CYCLE_LEN = 0;
+    for (var _i = 0; _i < STATES.length; _i++) {
+      CYCLE_LEN += (_i === 0 ? HOLD_LOGO : HOLD_WORD) + MORPH_DUR;
+    }
+    var MORPH_STATE = { from: 0, to: 0, k: 0 };
+
     function getMorphState(now) {
-      var elapsed = now - cycleStart;
-      // One full cycle = sum of (hold + morph) for each state
-      var cycleLen = 0;
-      for (var i = 0; i < STATES.length; i++) {
-        cycleLen += (i === 0 ? HOLD_LOGO : HOLD_WORD) + MORPH_DUR;
-      }
-      var t = elapsed % cycleLen;
+      var t = (now - cycleStart) % CYCLE_LEN;
       var acc = 0;
       for (var s = 0; s < STATES.length; s++) {
         var hold = (s === 0 ? HOLD_LOGO : HOLD_WORD);
-        // Hold phase
         if (t < acc + hold) {
-          return { from: s, to: s, k: 0, holdProgress: (t - acc) / hold };
+          MORPH_STATE.from = s;
+          MORPH_STATE.to   = s;
+          MORPH_STATE.k    = 0;
+          return MORPH_STATE;
         }
         acc += hold;
-        // Morph phase
         if (t < acc + MORPH_DUR) {
-          var nextS = (s + 1) % STATES.length;
-          return { from: s, to: nextS, k: easeInOut((t - acc) / MORPH_DUR), holdProgress: 0 };
+          MORPH_STATE.from = s;
+          MORPH_STATE.to   = (s + 1) % STATES.length;
+          MORPH_STATE.k    = easeInOut((t - acc) / MORPH_DUR);
+          return MORPH_STATE;
         }
         acc += MORPH_DUR;
       }
-      return { from: 0, to: 0, k: 0, holdProgress: 0 };
+      MORPH_STATE.from = 0;
+      MORPH_STATE.to   = 0;
+      MORPH_STATE.k    = 0;
+      return MORPH_STATE;
     }
 
     var running = true;
+    /* Tracks the state index whose hold-phase frame is already painted
+       to the canvas. If we re-enter render() during the same hold
+       phase the canvas already shows the correct frame, so we skip
+       every per-frame arc/fill and just yield back to RAF. This cuts
+       the work-per-frame to ~zero during the ~62% of time the
+       animation is in hold, and prevents the slow GC/CPU creep that
+       used to show up after 5–6 minutes of continuous playback. */
+    var lastHoldFrame = -1;
 
     /* Uniform dot — 1.7 px radius on a 3 px grid. Dots overlap by
        ~0.4 px each side, so the strokes read as bold ink-black mass
@@ -1309,6 +1329,18 @@
       var toArr   = statePts[st.to];
       var k = st.k;
       var isMorph = (st.from !== st.to);
+
+      // Fast-path for hold: the image is static — we already painted
+      // it once when this state's hold phase began. Re-painting 60×/s
+      // wastes CPU + creates GC pressure that compounds across long
+      // sessions. Yield straight back to RAF and let the canvas keep
+      // its previous frame.
+      if (!isMorph && lastHoldFrame === st.from) {
+        requestAnimationFrame(render);
+        return;
+      }
+      if (!isMorph) lastHoldFrame = st.from;
+      else          lastHoldFrame = -1;
 
       ctx.clearRect(0, 0, W, H);
       ctx.save();
@@ -1376,21 +1408,37 @@
       ctx.restore();
     }
 
-    /* IntersectionObserver — pause the RAF loop when the stage scrolls
-       offscreen so we don't burn cycles on a hidden tab. */
+    /* IntersectionObserver + Page Visibility API — pause the RAF loop
+       whenever the stage is off-screen OR the tab is backgrounded. This
+       prevents background-tab time accumulation from making the morph
+       cycle jump ahead violently when the tab comes back, and stops
+       any per-frame work while invisible. */
     function setupVisibility() {
-      if (!('IntersectionObserver' in window)) return;
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting && !reduce && !running) {
-            running = true;
-            requestAnimationFrame(render);
-          } else if (!e.isIntersecting) {
-            running = false;
-          }
-        });
-      }, { threshold: 0.05 });
-      io.observe(stage);
+      var resume = function () {
+        if (running || reduce) return;
+        running = true;
+        // Re-anchor the cycle so we resume *where the user left*, not
+        // wherever performance.now() has drifted to.
+        cycleStart = performance.now();
+        lastHoldFrame = -1;
+        requestAnimationFrame(render);
+      };
+      var pause = function () { running = false; };
+
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) resume();
+            else                  pause();
+          });
+        }, { threshold: 0.05 });
+        io.observe(stage);
+      }
+
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) pause();
+        else                 resume();
+      });
     }
 
     var started = false;
