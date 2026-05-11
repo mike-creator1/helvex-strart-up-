@@ -73,13 +73,9 @@
       width: 100%;
       height: 100%;
       display: block;
-      /* Restrained glow: a tight 0.5 px ink rim sharpens every dot, and
-         a quiet warm halo sits below the letters. The previous wide
-         red bloom was bleeding into the letterforms and softening the
-         text — removed. Legibility is the priority. */
-      filter:
-        drop-shadow(0 0 0.5px rgba(10, 10, 10, 0.6))
-        drop-shadow(0 2px 10px rgba(220, 38, 38, 0.08));
+      /* No drop-shadow filter — every prior glow multiplied across
+         every dot and produced the dirty, hazy fringe. Clean ink dots
+         on a clean background. */
     }
     /* Subtle ambient halo behind the particle field */
     .hx-morph-glow {
@@ -1068,17 +1064,22 @@
        logical coordinates — the dotted texture reads as clean type,
        not jagged pixels. */
     function buildPointsFor(text, fontTemplate, density) {
-      var SCALE = 2;
+      /* 3× internal raster — supersampling at 3× then sampling the
+         alpha map at our logical density gives ultra-crisp glyph
+         outlines. Combined with a strict alpha threshold, every dot
+         we keep lies on a solid letter core, not on the antialiased
+         fringe. This is the difference between a clean printed-screen
+         look and a fuzzy outlined-letter look. */
+      var SCALE = 3;
       var off = document.createElement('canvas');
       var oc  = off.getContext('2d');
 
-      // Auto-fit: fill the canvas. Larger maximum + minimum spec keeps
-      // the wordmark commanding even for long phrases. Italic serifs
-      // still need a touch more vertical room than upright sans, so
-      // the H ratio sits at 0.92.
-      var maxW = Math.max(W * 0.96, 220);
-      var maxH = Math.max(H * 0.92, 140);
-      var fs = Math.floor(Math.min(maxH * 0.94, 220));
+      // Auto-fit. Smaller cap (180 px) gives more uniform italic
+      // stroke widths than the previous 220 — at 220 the thin strokes
+      // varied so much that the dotted result looked uneven.
+      var maxW = Math.max(W * 0.94, 220);
+      var maxH = Math.max(H * 0.88, 140);
+      var fs = Math.floor(Math.min(maxH * 0.86, 180));
       var spec = fontTemplate.replace('PX', String(fs));
       oc.font = spec;
       var textW = oc.measureText(text).width;
@@ -1108,15 +1109,15 @@
       var stride = density * SCALE;
       var rowW = logicalW * SCALE;
       var pts = [];
-      // Alpha threshold 96 — keeps the full stroke (including stroke
-      // ends, serif tips, and the inner curves of italic glyphs) so
-      // letters render whole and intense, not broken/dotty. We rely
-      // on the 2× internal raster to keep edges crisp at this lower
-      // threshold instead of clipping the antialiased fringe.
+      // Alpha threshold 170 — strict. With the 3× supersample, anything
+      // ≥ 67% alpha is solid letter interior; everything below is the
+      // antialiased fringe that was causing the dirty fuzzy outline.
+      // Dropping the fringe is what makes every dot land on a clean
+      // letter core and the result read as crystal-clear typography.
       for (var y = 0; y < logicalH * SCALE; y += stride) {
         for (var x = 0; x < logicalW * SCALE; x += stride) {
           var i = (y * rowW + x) * 4;
-          if (data[i + 3] > 96) {
+          if (data[i + 3] > 170) {
             pts.push({
               x: (x / SCALE - logicalW / 2),
               y: (y / SCALE - logicalH / 2)
@@ -1252,13 +1253,13 @@
 
     var running = true;
 
-    /* Uniform dot — 1.4 px radius paired with 2-px sampling spacing.
-       Each italic stroke holds three or four overlapping dots across
-       its width, which renders the letter as a solid, ink-intense
-       form. The overlap is small enough that the dotted character of
-       the effect still reads at full size; tight enough that no
-       letter ever looks broken or perforated. */
-    var DOT = 1.4;
+    /* Uniform dot — 1.05 px radius paired with 2-px sampling spacing.
+       The dots barely touch (~0.1 px overlap) instead of piling on
+       top of each other; that's what turns the result from a fuzzy
+       ink blob into a crisp printed-dot field. With the 3× raster +
+       strict alpha threshold above, every dot also sits on a solid
+       letter core, so the dotted typography reads cleanly. */
+    var DOT = 1.05;
 
     function render(now) {
       if (!running) return;
@@ -1309,8 +1310,8 @@
         var tx = fp.x + (tp.x - fp.x) * localK;
         var ty = fp.y + (tp.y - fp.y) * localK;
 
-        p.x += (tx - p.x) * 0.18;
-        p.y += (ty - p.y) * 0.18;
+        p.x += (tx - p.x) * 0.22;
+        p.y += (ty - p.y) * 0.22;
 
         // Sub-pixel-snap to half-pixel grid for crisper arcs on
         // non-retina screens.
