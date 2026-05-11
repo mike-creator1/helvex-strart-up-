@@ -73,12 +73,13 @@
       width: 100%;
       height: 100%;
       display: block;
-      /* Premium dual-layer glow: tight crisp red rim + soft warm bloom.
-         GPU-accelerated, no runtime cost in the canvas loop. */
+      /* Restrained glow: a tight 0.5 px ink rim sharpens every dot, and
+         a quiet warm halo sits below the letters. The previous wide
+         red bloom was bleeding into the letterforms and softening the
+         text — removed. Legibility is the priority. */
       filter:
-        drop-shadow(0 0 0.8px rgba(10, 10, 10, 0.35))
-        drop-shadow(0 0 10px rgba(220, 38, 38, 0.18))
-        drop-shadow(0 0 32px rgba(220, 38, 38, 0.10));
+        drop-shadow(0 0 0.5px rgba(10, 10, 10, 0.6))
+        drop-shadow(0 2px 10px rgba(220, 38, 38, 0.08));
     }
     /* Subtle ambient halo behind the particle field */
     .hx-morph-glow {
@@ -1103,13 +1104,15 @@
       var stride = density * SCALE;
       var rowW = logicalW * SCALE;
       var pts = [];
-      // Sample on a regular grid; alpha ≥ ~50% counts as a target. The
-      // 2× rasterisation gives sub-pixel-accurate letter edges before
-      // we downsample back to the logical grid spacing.
+      // Sample on a regular grid; alpha ≥ ~63% counts as a target. The
+      // raised threshold drops the soft anti-aliased halo around every
+      // glyph so only the solid letter cores get sampled — the dotted
+      // letterforms read with sharp, well-defined edges instead of a
+      // fuzzy fringe.
       for (var y = 0; y < logicalH * SCALE; y += stride) {
         for (var x = 0; x < logicalW * SCALE; x += stride) {
           var i = (y * rowW + x) * 4;
-          if (data[i + 3] > 128) {
+          if (data[i + 3] > 160) {
             pts.push({
               x: (x / SCALE - logicalW / 2),
               y: (y / SCALE - logicalH / 2)
@@ -1143,12 +1146,14 @@
       canvas.style.height = H + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Sample every state's points. Density 2 with 2× raster = rich,
-      // crisply-edged dot field that reads as solid letterforms while
-      // still keeping the dotted character of the effect.
+      // Sample every state's points. Density 3 → 3 px between dot
+      // centres in logical space. Paired with a 1.1 px dot radius
+      // this leaves a clean ~0.8 px gap between every dot, so every
+      // letter reads as a printed dotted pattern instead of a blurry
+      // overlapping blob field.
       statePts = [];
       for (var s = 0; s < STATES.length; s++) {
-        statePts.push(buildPointsFor(STATES[s].text, STATES[s].font, 2));
+        statePts.push(buildPointsFor(STATES[s].text, STATES[s].font, 3));
       }
 
       // Equalize lengths
@@ -1156,9 +1161,10 @@
       for (var i = 0; i < statePts.length; i++) {
         if (statePts[i].length > maxLen) maxLen = statePts[i].length;
       }
-      // Higher cap on desktop = richer letterforms while staying inside
-      // the 60 fps budget thanks to the single batched Path2D fill.
-      var CAP = (W < 640) ? 2400 : 3800;
+      // Lower cap — wider dot spacing means fewer dots are needed for
+      // a fully-formed letter. The result is crisp, readable type
+      // with plenty of 60 fps headroom.
+      var CAP = (W < 640) ? 1800 : 2800;
       if (maxLen > CAP) maxLen = CAP;
       if (maxLen < 50)  maxLen = 50;  // safety floor — never zero
       N = maxLen;
@@ -1242,11 +1248,11 @@
 
     var running = true;
 
-    /* Uniform dot — 1.9 px paired with 2-px sampling spacing gives
-       just enough overlap to render filled, ink-solid letterforms.
-       The CSS drop-shadow on the canvas adds the premium red bloom
-       without any per-frame shadow cost. */
-    var DOT = 1.9;
+    /* Uniform dot — 1.1 px radius paired with 3-px sampling spacing.
+       Every dot is a clean, discrete circle with a clear gap to its
+       neighbour, so the letterforms render as crisp dotted typography
+       instead of an overlap-fuzzy ink blob. Maximum legibility. */
+    var DOT = 1.1;
 
     function render(now) {
       if (!running) return;
@@ -1275,9 +1281,11 @@
 
       // Single batched path — every particle joins one Path2D and is
       // filled in a single sub-pixel-accurate stroke. Per-particle
-      // `seed` adds ±18% of the morph window to its own timing, so
-      // the transition reads as a calm wave instead of a synchronous
-      // snap. The slower lerp (0.16) softens any residual jitter.
+      // `seed` adds a small ±10% offset to the morph window so the
+      // transition reads as a calm wave instead of a synchronous
+      // snap, but kept tight enough that mid-morph never gets messy.
+      // Lerp 0.18 — soft enough to suppress jitter, snappy enough
+      // that the letterform locks into shape decisively.
       ctx.beginPath();
       for (var i = 0; i < N; i++) {
         var p  = particles[i];
@@ -1285,7 +1293,7 @@
 
         var localK = k;
         if (isMorph) {
-          var offset = (p.seed - 0.5) * 0.36;  // -0.18 … +0.18
+          var offset = (p.seed - 0.5) * 0.20;  // -0.10 … +0.10
           localK = (k - 0.5) / (1 - Math.abs(offset)) + 0.5 + offset * 0.5;
           if (localK < 0) localK = 0;
           if (localK > 1) localK = 1;
@@ -1295,8 +1303,8 @@
         var tx = fp.x + (tp.x - fp.x) * localK;
         var ty = fp.y + (tp.y - fp.y) * localK;
 
-        p.x += (tx - p.x) * 0.16;
-        p.y += (ty - p.y) * 0.16;
+        p.x += (tx - p.x) * 0.18;
+        p.y += (ty - p.y) * 0.18;
 
         // Sub-pixel-snap to half-pixel grid for crisper arcs on
         // non-retina screens.
