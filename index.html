@@ -1205,10 +1205,14 @@
       for (var i = 0; i < statePts.length; i++) {
         if (statePts[i].length > maxLen) maxLen = statePts[i].length;
       }
-      // Cap raised — denser sampling needs more particles. Still
-      // within the 60 fps budget thanks to the single batched Path2D
-      // fill: one beginPath + one fill per frame regardless of N.
-      var CAP = (W < 640) ? 2600 : 4000;
+      // Cap dramatically raised — long phrases like "Intelligent
+      // Workflows" / "Advanced Reasoning" produce ~8k natural sample
+      // points at this font size. The previous 4 k cap downsampled
+      // them by ~50%, leaving visible gaps inside the strokes. With
+      // CAP = 9000 every state can be sampled at full density and the
+      // single batched Path2D fill keeps performance flat regardless
+      // of N.
+      var CAP = (W < 640) ? 5500 : 9000;
       if (maxLen > CAP) maxLen = CAP;
       if (maxLen < 50)  maxLen = 50;  // safety floor — never zero
       N = maxLen;
