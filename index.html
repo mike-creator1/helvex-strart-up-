@@ -1029,23 +1029,21 @@
     var reduce = (typeof matchMedia === 'function') &&
                  matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* States to morph through. Index 0 is the brand wordmark. */
+    /* States to morph through. Index 0 is the brand wordmark.
+       Curated list — fewer states, sharper editorial rhythm. The
+       Instrument Serif italic is already loaded by the page <head>,
+       so renderings stay crisp instead of falling back to Georgia. */
     var STATES = [
-      { text: 'HelveX',                font: '800 PXpx "Inter", system-ui, sans-serif' },
-      { text: 'AI Agents',             font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'Smart Automation',      font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'AI Infrastructure',     font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'Enterprise AI',         font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'Intelligent Workflows', font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'Real-Time AI',          font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'Secure AI Systems',     font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'Advanced Reasoning',    font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'Scalable AI',           font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'Autonomous Systems',    font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'AI Execution',          font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'Productivity AI',       font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'AI Operations',         font: '600 PXpx "Cormorant Garamond", Georgia, serif' },
-      { text: 'AI Platform',           font: '600 PXpx "Cormorant Garamond", Georgia, serif' }
+      { text: 'HelveX',                font: '700 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'AI Agents',             font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
+      { text: 'Smart Automation',      font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
+      { text: 'AI Infrastructure',     font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
+      { text: 'Enterprise AI',         font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
+      { text: 'Intelligent Workflows', font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
+      { text: 'Advanced Reasoning',    font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
+      { text: 'Autonomous Systems',    font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
+      { text: 'AI Execution',          font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
+      { text: 'AI Platform',           font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' }
     ];
 
     var W = 0, H = 0;
@@ -1055,43 +1053,60 @@
 
     /* Render text to an offscreen canvas with auto-fit font sizing,
        then sample its dark pixels to a sparse list of (x,y) targets
-       centered on origin. */
+       centered on origin. Internally rasterises at 2× so the sampled
+       letterforms have crisp anti-aliased edges, then maps back to
+       logical coordinates — the dotted texture reads as clean type,
+       not jagged pixels. */
     function buildPointsFor(text, fontTemplate, density) {
+      var SCALE = 2;
       var off = document.createElement('canvas');
       var oc  = off.getContext('2d');
 
-      // Auto-fit: shrink font until text fits within W*0.94 wide, H*0.90 tall
+      // Auto-fit: shrink font until text fits within W*0.94 wide, H*0.90 tall.
+      // Italic serifs need a touch more vertical room than upright sans.
       var maxW = Math.max(W * 0.94, 200);
-      var maxH = Math.max(H * 0.90, 120);
-      var fs = Math.floor(Math.min(maxH * 0.92, 180));
+      var maxH = Math.max(H * 0.86, 120);
+      var fs = Math.floor(Math.min(maxH * 0.88, 170));
       var spec = fontTemplate.replace('PX', String(fs));
       oc.font = spec;
       var textW = oc.measureText(text).width;
       while (textW > maxW && fs > 18) {
-        fs -= 4;
+        fs -= 3;
         spec = fontTemplate.replace('PX', String(fs));
         oc.font = spec;
         textW = oc.measureText(text).width;
       }
 
-      var canvasW = Math.max(Math.ceil(textW) + 16, 32);
-      var canvasH = Math.max(Math.ceil(fs * 1.4),    32);
-      off.width  = canvasW;
-      off.height = canvasH;
+      var logicalW = Math.max(Math.ceil(textW) + 24, 32);
+      var logicalH = Math.max(Math.ceil(fs * 1.3),   32);
+      off.width  = logicalW * SCALE;
+      off.height = logicalH * SCALE;
 
       var c = off.getContext('2d');
+      c.scale(SCALE, SCALE);
       c.font = spec;
       c.fillStyle = '#000';
       c.textBaseline = 'middle';
-      c.fillText(text, 8, canvasH / 2);
+      c.textAlign = 'left';
+      // Sharper text rendering hints where supported
+      if ('textRendering' in c) { c.textRendering = 'geometricPrecision'; }
+      c.fillText(text, 12, logicalH / 2);
 
-      var data = c.getImageData(0, 0, canvasW, canvasH).data;
+      var data = c.getImageData(0, 0, logicalW * SCALE, logicalH * SCALE).data;
+      var stride = density * SCALE;
+      var rowW = logicalW * SCALE;
       var pts = [];
-      for (var y = 0; y < canvasH; y += density) {
-        for (var x = 0; x < canvasW; x += density) {
-          var i = (y * canvasW + x) * 4;
-          if (data[i + 3] > 96) {
-            pts.push({ x: (x - canvasW / 2), y: (y - canvasH / 2) });
+      // Sample on a regular grid; alpha ≥ ~50% counts as a target. The
+      // 2× rasterisation gives sub-pixel-accurate letter edges before
+      // we downsample back to the logical grid spacing.
+      for (var y = 0; y < logicalH * SCALE; y += stride) {
+        for (var x = 0; x < logicalW * SCALE; x += stride) {
+          var i = (y * rowW + x) * 4;
+          if (data[i + 3] > 128) {
+            pts.push({
+              x: (x / SCALE - logicalW / 2),
+              y: (y / SCALE - logicalH / 2)
+            });
           }
         }
       }
@@ -1121,13 +1136,12 @@
       canvas.style.height = H + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Sample every state's points. Density 2 — pixel-pair sampling
-      // gives the richest filled letterforms. Higher cap holds more
-      // particles after downsampling, so the dotted texture is dense.
+      // Sample every state's points. Density 3 — slightly sparser
+      // sampling than before, but the 2× internal raster keeps edges
+      // sharp. Fewer, cleaner dots > more, jittery dots.
       statePts = [];
       for (var s = 0; s < STATES.length; s++) {
-        var density = 2;
-        statePts.push(buildPointsFor(STATES[s].text, STATES[s].font, density));
+        statePts.push(buildPointsFor(STATES[s].text, STATES[s].font, 3));
       }
 
       // Equalize lengths
@@ -1135,8 +1149,9 @@
       for (var i = 0; i < statePts.length; i++) {
         if (statePts[i].length > maxLen) maxLen = statePts[i].length;
       }
-      // Cap chosen so 60 fps stays smooth with batched path rendering
-      var CAP = (W < 640) ? 2400 : 3500;
+      // Lower cap = cleaner texture. Each dot now reads as type, not
+      // noise. 60fps headroom preserved.
+      var CAP = (W < 640) ? 1500 : 2200;
       if (maxLen > CAP) maxLen = CAP;
       if (maxLen < 50)  maxLen = 50;  // safety floor — never zero
       N = maxLen;
@@ -1148,15 +1163,15 @@
 
       // Initialize / resize particle pool. Particles start at the
       // logo state so the first frame already shows the brand.
-      // Dot range (2.0–3.0): slight overlap with 2-pixel spacing
-      // produces solid filled letterforms with rich dotted texture.
+      // Uniform 1.5px dot — eliminates the random-size flicker that
+      // made the old morph feel rough. `seed` drives the per-particle
+      // morph stagger so the transition reads as a choreographed wave.
       if (particles.length === 0) {
         for (var p = 0; p < N; p++) {
           particles.push({
             x: statePts[0][p].x,
             y: statePts[0][p].y,
-            seed: Math.random(),
-            size: 2.0 + Math.random() * 1.0
+            seed: Math.random()
           });
         }
       } else if (particles.length < N) {
@@ -1164,8 +1179,7 @@
           particles.push({
             x: statePts[0][q].x,
             y: statePts[0][q].y,
-            seed: Math.random(),
-            size: 2.0 + Math.random() * 1.0
+            seed: Math.random()
           });
         }
       } else {
@@ -1175,14 +1189,21 @@
 
     /* Animation phases per state cycle (ms):
        hold (state stable, readable) → morph (transition to next) → ...
-       Each state cycle is 2000 ms total (1300 ms readable + 700 ms
-       transition), so a new word lands roughly every 2 seconds. */
-    var HOLD_LOGO  = 1300;
-    var HOLD_WORD  = 1300;
-    var MORPH_DUR  = 700;
+       Longer hold (1800 ms) + slower morph (1100 ms) ≈ 2.9 s/state —
+       gives the eye time to land on each word, and the transition
+       feels cinematic instead of strobing. */
+    var HOLD_LOGO  = 1800;
+    var HOLD_WORD  = 1800;
+    var MORPH_DUR  = 1100;
 
+    /* Apple-style ease — out-quint-ish. Smooth at start, deliberate
+       at the end, no perceptible kick. */
     function easeInOut(t) {
-      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      return t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2;
     }
 
     var cycleStart = performance.now();
@@ -1214,6 +1235,12 @@
 
     var running = true;
 
+    /* Uniform dot — 1.5 px reads as sharp typography at retina,
+       2 px on standard displays. The size is paired with the dot
+       spacing so filled letterforms still look solid without the
+       overlap-induced fuzz of the old size-randomised dots. */
+    var DOT = 1.5;
+
     function render(now) {
       if (!running) return;
       var st = getMorphState(now);
@@ -1226,35 +1253,50 @@
       ctx.save();
       ctx.translate(W / 2, H / 2);
 
-      // Bell-curve fade during morph — dots dim to ~30 % at k=0.5
-      // so the messy in-flight stage is visually quiet. At k=0 / k=1
-      // (state locked in) alpha is back to full and the text reads
-      // crisp. Hold phases stay at full alpha throughout.
+      // Gentle alpha dip mid-morph — keeps presence (0.55 floor,
+      // not 0.30) so the in-flight phase still reads as type in
+      // motion rather than a strobe. Held states sit at full ink.
       var alpha = 0.95;
       if (isMorph) {
         var dip = 1 - Math.abs(k - 0.5) * 2;  // 0 at edges, 1 at midpoint
-        alpha = 0.95 - 0.65 * dip;
+        alpha = 0.95 - 0.40 * dip;
       }
 
       ctx.shadowBlur  = 0;
       ctx.shadowColor = 'transparent';
       ctx.fillStyle   = 'rgba(10, 10, 10, ' + alpha + ')';
 
-      // Single batched path for ALL particles — drastically faster
-      // than N separate beginPath/fill cycles. Each particle is a
-      // tiny circle added to one shared path, painted once.
+      // Single batched path — every particle joins one Path2D and is
+      // filled in a single sub-pixel-accurate stroke. Per-particle
+      // `seed` adds ±18% of the morph window to its own timing, so
+      // the transition reads as a calm wave instead of a synchronous
+      // snap. The slower lerp (0.16) softens any residual jitter.
       ctx.beginPath();
       for (var i = 0; i < N; i++) {
+        var p  = particles[i];
         var fp = fromArr[i], tp = toArr[i];
-        var tx = fp.x + (tp.x - fp.x) * k;
-        var ty = fp.y + (tp.y - fp.y) * k;
 
-        var p = particles[i];
-        p.x += (tx - p.x) * 0.25;
-        p.y += (ty - p.y) * 0.25;
+        var localK = k;
+        if (isMorph) {
+          var offset = (p.seed - 0.5) * 0.36;  // -0.18 … +0.18
+          localK = (k - 0.5) / (1 - Math.abs(offset)) + 0.5 + offset * 0.5;
+          if (localK < 0) localK = 0;
+          if (localK > 1) localK = 1;
+          localK = easeInOut(localK);
+        }
 
-        ctx.moveTo(p.x + p.size, p.y);
-        ctx.arc(p.x, p.y, p.size, 0, 6.2832);
+        var tx = fp.x + (tp.x - fp.x) * localK;
+        var ty = fp.y + (tp.y - fp.y) * localK;
+
+        p.x += (tx - p.x) * 0.16;
+        p.y += (ty - p.y) * 0.16;
+
+        // Sub-pixel-snap to half-pixel grid for crisper arcs on
+        // non-retina screens.
+        var ax = Math.round(p.x * 2) / 2;
+        var ay = Math.round(p.y * 2) / 2;
+        ctx.moveTo(ax + DOT, ay);
+        ctx.arc(ax, ay, DOT, 0, 6.2832);
       }
       ctx.fill();
 
@@ -1268,11 +1310,14 @@
       ctx.translate(W / 2, H / 2);
       ctx.fillStyle = 'rgba(10, 10, 10, 0.95)';
       var pts = statePts[0];
+      ctx.beginPath();
       for (var i = 0; i < pts.length; i++) {
-        ctx.beginPath();
-        ctx.arc(pts[i].x, pts[i].y, 2.2, 0, 6.2832);
-        ctx.fill();
+        var ax = Math.round(pts[i].x * 2) / 2;
+        var ay = Math.round(pts[i].y * 2) / 2;
+        ctx.moveTo(ax + DOT, ay);
+        ctx.arc(ax, ay, DOT, 0, 6.2832);
       }
+      ctx.fill();
       ctx.restore();
     }
 
