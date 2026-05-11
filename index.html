@@ -1159,9 +1159,9 @@
          are then scaled proportionally per state, so the ratio of
          dots-per-stroke stays identical and every word reads at the
          same visual weight. */
-      var maxW = Math.max(W * 0.96, 220);
-      var maxH = Math.max(H * 0.92, 140);
-      var maxFs = Math.floor(Math.min(maxH * 0.94, 300));
+      var maxW = Math.max(W * 0.84, 200);
+      var maxH = Math.max(H * 0.82, 130);
+      var maxFs = Math.floor(Math.min(maxH * 0.86, 240));
 
       var measureCanvas = document.createElement('canvas');
       var measureCtx    = measureCanvas.getContext('2d');
