@@ -1035,21 +1035,23 @@
        Curated list — fewer states, sharper editorial rhythm. The
        Instrument Serif italic is already loaded by the page <head>,
        so renderings stay crisp instead of falling back to Georgia. */
-    /* Instrument Serif only ships weight 400 in italic, so the previous
-       `italic 600` was a synthesised faux-bold — the browser stretched
-       the strokes and the dotted result came out broken and uneven.
-       Locked to italic 400 = real glyphs, clean strokes. */
+    /* All states now share a single high-end tech voice: Inter at the
+       heaviest weights we load (800 for the wordmark, 700 for the
+       concepts). The italic serif read as elegant but came out thin
+       and uneven in dotted form — replaced with a bold geometric sans
+       that feels unmistakably AI / technology, holds crystal-clear
+       strokes at every dot density, and lands much heavier on screen. */
     var STATES = [
-      { text: 'HelveX',                font: '800 PXpx "Inter", system-ui, sans-serif' },
-      { text: 'AI Agents',             font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
-      { text: 'Smart Automation',      font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
-      { text: 'AI Infrastructure',     font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
-      { text: 'Enterprise AI',         font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
-      { text: 'Intelligent Workflows', font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
-      { text: 'Advanced Reasoning',    font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
-      { text: 'Autonomous Systems',    font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
-      { text: 'AI Execution',          font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' },
-      { text: 'AI Platform',           font: 'italic 400 PXpx "Instrument Serif", Georgia, serif' }
+      { text: 'HelveX',                font: '900 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'AI Agents',             font: '800 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'Smart Automation',      font: '800 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'AI Infrastructure',     font: '800 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'Enterprise AI',         font: '800 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'Intelligent Workflows', font: '800 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'Advanced Reasoning',    font: '800 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'Autonomous Systems',    font: '800 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'AI Execution',          font: '800 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'AI Platform',           font: '800 PXpx "Inter", system-ui, sans-serif' }
     ];
 
     var W = 0, H = 0;
@@ -1101,23 +1103,25 @@
       c.fillStyle = '#000';
       c.textBaseline = 'middle';
       c.textAlign = 'left';
-      // Sharper text rendering hints where supported
+      // Sharper text rendering + tight tech tracking. letterSpacing
+      // is widely supported in modern browsers; when it's not, the
+      // assignment no-ops and we render at default tracking.
       if ('textRendering' in c) { c.textRendering = 'geometricPrecision'; }
+      try { c.letterSpacing = '-0.025em'; } catch (e) { /* unsupported */ }
       c.fillText(text, 12, logicalH / 2);
 
       var data = c.getImageData(0, 0, logicalW * SCALE, logicalH * SCALE).data;
       var stride = density * SCALE;
       var rowW = logicalW * SCALE;
       var pts = [];
-      // Alpha threshold 170 — strict. With the 3× supersample, anything
-      // ≥ 67% alpha is solid letter interior; everything below is the
-      // antialiased fringe that was causing the dirty fuzzy outline.
-      // Dropping the fringe is what makes every dot land on a clean
-      // letter core and the result read as crystal-clear typography.
+      // Alpha threshold 130 — keep the full solid stroke (Inter 800 has
+      // thick uniform strokes, so the antialiased fringe is a small
+      // fraction of each glyph; we don't need a punishing threshold to
+      // exclude noise). The 3× supersample handles edge crispness.
       for (var y = 0; y < logicalH * SCALE; y += stride) {
         for (var x = 0; x < logicalW * SCALE; x += stride) {
           var i = (y * rowW + x) * 4;
-          if (data[i + 3] > 170) {
+          if (data[i + 3] > 130) {
             pts.push({
               x: (x / SCALE - logicalW / 2),
               y: (y / SCALE - logicalH / 2)
@@ -1253,13 +1257,13 @@
 
     var running = true;
 
-    /* Uniform dot — 1.05 px radius paired with 2-px sampling spacing.
-       The dots barely touch (~0.1 px overlap) instead of piling on
-       top of each other; that's what turns the result from a fuzzy
-       ink blob into a crisp printed-dot field. With the 3× raster +
-       strict alpha threshold above, every dot also sits on a solid
-       letter core, so the dotted typography reads cleanly. */
-    var DOT = 1.05;
+    /* Uniform dot — 1.5 px radius paired with 2-px sampling spacing.
+       Bold Inter 800 strokes (~18 px wide at 180 px font) hold 6+
+       dots across, so the letterforms read as solid ink-black type
+       while the dotted texture stays visible. Combined with the
+       pure-black fill below, this produces the heavy, high-contrast,
+       AI-platform aesthetic. */
+    var DOT = 1.5;
 
     function render(now) {
       if (!running) return;
@@ -1273,18 +1277,20 @@
       ctx.save();
       ctx.translate(W / 2, H / 2);
 
-      // Subtle alpha dip mid-morph — keeps strong presence (0.78
+      // Subtle alpha dip mid-morph — keeps strong presence (0.85
       // floor) so the in-flight phase still reads as crisp type in
       // motion, never a faded blink. Held states sit at full ink.
       var alpha = 1.0;
       if (isMorph) {
         var dip = 1 - Math.abs(k - 0.5) * 2;  // 0 at edges, 1 at midpoint
-        alpha = 1.0 - 0.22 * dip;
+        alpha = 1.0 - 0.15 * dip;
       }
 
       ctx.shadowBlur  = 0;
       ctx.shadowColor = 'transparent';
-      ctx.fillStyle   = 'rgba(10, 10, 10, ' + alpha + ')';
+      // Pure black — maximum contrast against the cream-blush hero
+      // wash. Reads as a serious, decisive AI brand mark.
+      ctx.fillStyle   = 'rgba(0, 0, 0, ' + alpha + ')';
 
       // Single batched path — every particle joins one Path2D and is
       // filled in a single sub-pixel-accurate stroke. Per-particle
@@ -1330,7 +1336,7 @@
       ctx.clearRect(0, 0, W, H);
       ctx.save();
       ctx.translate(W / 2, H / 2);
-      ctx.fillStyle = 'rgba(10, 10, 10, 0.95)';
+      ctx.fillStyle = 'rgba(0, 0, 0, 1)';
       var pts = statePts[0];
       ctx.beginPath();
       for (var i = 0; i < pts.length; i++) {
