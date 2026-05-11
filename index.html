@@ -1035,23 +1035,20 @@
        Curated list — fewer states, sharper editorial rhythm. The
        Instrument Serif italic is already loaded by the page <head>,
        so renderings stay crisp instead of falling back to Georgia. */
-    /* All states now share a single high-end tech voice: Inter at the
-       heaviest weights we load (800 for the wordmark, 700 for the
-       concepts). The italic serif read as elegant but came out thin
-       and uneven in dotted form — replaced with a bold geometric sans
-       that feels unmistakably AI / technology, holds crystal-clear
-       strokes at every dot density, and lands much heavier on screen. */
+    /* Inter Black (900) across every state — the heaviest weight we
+       load. Combined with the bigger dot radius and tighter sampling
+       below, the strokes read as deep, decisive ink. */
     var STATES = [
       { text: 'HelveX',                font: '900 PXpx "Inter", system-ui, sans-serif' },
-      { text: 'AI Agents',             font: '800 PXpx "Inter", system-ui, sans-serif' },
-      { text: 'Smart Automation',      font: '800 PXpx "Inter", system-ui, sans-serif' },
-      { text: 'AI Infrastructure',     font: '800 PXpx "Inter", system-ui, sans-serif' },
-      { text: 'Enterprise AI',         font: '800 PXpx "Inter", system-ui, sans-serif' },
-      { text: 'Intelligent Workflows', font: '800 PXpx "Inter", system-ui, sans-serif' },
-      { text: 'Advanced Reasoning',    font: '800 PXpx "Inter", system-ui, sans-serif' },
-      { text: 'Autonomous Systems',    font: '800 PXpx "Inter", system-ui, sans-serif' },
-      { text: 'AI Execution',          font: '800 PXpx "Inter", system-ui, sans-serif' },
-      { text: 'AI Platform',           font: '800 PXpx "Inter", system-ui, sans-serif' }
+      { text: 'AI Agents',             font: '900 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'Smart Automation',      font: '900 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'AI Infrastructure',     font: '900 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'Enterprise AI',         font: '900 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'Intelligent Workflows', font: '900 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'Advanced Reasoning',    font: '900 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'Autonomous Systems',    font: '900 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'AI Execution',          font: '900 PXpx "Inter", system-ui, sans-serif' },
+      { text: 'AI Platform',           font: '900 PXpx "Inter", system-ui, sans-serif' }
     ];
 
     var W = 0, H = 0;
@@ -1076,12 +1073,12 @@
       var off = document.createElement('canvas');
       var oc  = off.getContext('2d');
 
-      // Auto-fit. Smaller cap (180 px) gives more uniform italic
-      // stroke widths than the previous 220 — at 220 the thin strokes
-      // varied so much that the dotted result looked uneven.
-      var maxW = Math.max(W * 0.94, 220);
-      var maxH = Math.max(H * 0.88, 140);
-      var fs = Math.floor(Math.min(maxH * 0.86, 180));
+      // Auto-fit. Inter 900 holds its shape at large sizes — push the
+      // cap up to 210 so the wordmark fills the canvas with serious
+      // mass.
+      var maxW = Math.max(W * 0.95, 220);
+      var maxH = Math.max(H * 0.90, 140);
+      var fs = Math.floor(Math.min(maxH * 0.92, 210));
       var spec = fontTemplate.replace('PX', String(fs));
       oc.font = spec;
       var textW = oc.measureText(text).width;
@@ -1107,21 +1104,21 @@
       // is widely supported in modern browsers; when it's not, the
       // assignment no-ops and we render at default tracking.
       if ('textRendering' in c) { c.textRendering = 'geometricPrecision'; }
-      try { c.letterSpacing = '-0.025em'; } catch (e) { /* unsupported */ }
+      try { c.letterSpacing = '-0.02em'; } catch (e) { /* unsupported */ }
       c.fillText(text, 12, logicalH / 2);
 
       var data = c.getImageData(0, 0, logicalW * SCALE, logicalH * SCALE).data;
       var stride = density * SCALE;
       var rowW = logicalW * SCALE;
       var pts = [];
-      // Alpha threshold 130 — keep the full solid stroke (Inter 800 has
-      // thick uniform strokes, so the antialiased fringe is a small
-      // fraction of each glyph; we don't need a punishing threshold to
-      // exclude noise). The 3× supersample handles edge crispness.
+      // Alpha threshold 100 — Inter Black has thick uniform strokes,
+      // and we want to capture every solid pixel of them. The 3× raster
+      // keeps edges crisp even at this looser threshold; the result is
+      // maximum stroke fill with no perceptible AA fringe noise.
       for (var y = 0; y < logicalH * SCALE; y += stride) {
         for (var x = 0; x < logicalW * SCALE; x += stride) {
           var i = (y * rowW + x) * 4;
-          if (data[i + 3] > 130) {
+          if (data[i + 3] > 100) {
             pts.push({
               x: (x / SCALE - logicalW / 2),
               y: (y / SCALE - logicalH / 2)
@@ -1257,13 +1254,13 @@
 
     var running = true;
 
-    /* Uniform dot — 1.5 px radius paired with 2-px sampling spacing.
-       Bold Inter 800 strokes (~18 px wide at 180 px font) hold 6+
-       dots across, so the letterforms read as solid ink-black type
-       while the dotted texture stays visible. Combined with the
-       pure-black fill below, this produces the heavy, high-contrast,
-       AI-platform aesthetic. */
-    var DOT = 1.5;
+    /* Uniform dot — 1.85 px radius paired with 2-px sampling spacing.
+       Inter Black (900) strokes are ~22 px wide at 210 px font; with
+       this dot size and density, each stroke holds 10+ overlapping
+       dots and renders as deep, unbroken ink-black mass. The dotted
+       texture is still visible around the contours but the body of
+       every letter is solid black. */
+    var DOT = 1.85;
 
     function render(now) {
       if (!running) return;
@@ -1277,13 +1274,13 @@
       ctx.save();
       ctx.translate(W / 2, H / 2);
 
-      // Subtle alpha dip mid-morph — keeps strong presence (0.85
-      // floor) so the in-flight phase still reads as crisp type in
-      // motion, never a faded blink. Held states sit at full ink.
+      // Hold-phase ink stays at full 1.0; mid-morph dip is barely
+      // perceptible (0.92 floor) so the type never visibly fades even
+      // during the transition. Maximum darkness, maximum contrast.
       var alpha = 1.0;
       if (isMorph) {
         var dip = 1 - Math.abs(k - 0.5) * 2;  // 0 at edges, 1 at midpoint
-        alpha = 1.0 - 0.15 * dip;
+        alpha = 1.0 - 0.08 * dip;
       }
 
       ctx.shadowBlur  = 0;
