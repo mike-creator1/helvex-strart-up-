@@ -1266,10 +1266,11 @@
 
     var running = true;
 
-    /* Uniform dot — 1.4 px radius on a 3 px grid. Dots almost touch
-       (~0.2 px gap) so the letterforms read with more visual mass
-       while the dotted halftone texture stays clearly visible. */
-    var DOT = 1.4;
+    /* Uniform dot — 1.7 px radius on a 3 px grid. Dots overlap by
+       ~0.4 px each side, so the strokes read as bold ink-black mass
+       while the halftone texture remains visible at the letter
+       contours. */
+    var DOT = 1.7;
 
     function render(now) {
       if (!running) return;
