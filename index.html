@@ -1068,6 +1068,36 @@
        letterforms have crisp anti-aliased edges, then maps back to
        logical coordinates — the dotted texture reads as clean type,
        not jagged pixels. */
+    /* Compute a single universal font size that makes every state fit
+       inside the canvas. Without this, short words like "AI Agents"
+       would auto-fit to a giant 210 px font while long words like
+       "Intelligent Workflows" would shrink to ~130 px — and the dot
+       grid is uniform, so the same dots inside a thicker stroke read
+       as halftone-textured, while the same dots inside a thinner
+       stroke read as bold/solid. Locking the size to one value makes
+       every word render at the same visual weight. */
+    function findUniversalFontSize() {
+      var maxW = Math.max(W * 0.95, 220);
+      var maxH = Math.max(H * 0.90, 140);
+      var maxFs = Math.floor(Math.min(maxH * 0.92, 210));
+
+      var off = document.createElement('canvas');
+      var oc  = off.getContext('2d');
+      try { oc.letterSpacing = '-0.02em'; } catch (e) { /* unsupported */ }
+
+      var widest = 0;
+      for (var s = 0; s < STATES.length; s++) {
+        var spec = STATES[s].font.replace('PX', String(maxFs));
+        oc.font = spec;
+        var w = oc.measureText(STATES[s].text).width;
+        if (w > widest) widest = w;
+      }
+      if (widest <= maxW) return maxFs;
+      return Math.max(20, Math.floor(maxFs * maxW / widest));
+    }
+
+    var UNIVERSAL_FS = 0;
+
     function buildPointsFor(text, fontTemplate, density) {
       /* 3× internal raster — supersampling at 3× then sampling the
          alpha map at our logical density gives ultra-crisp glyph
@@ -1079,21 +1109,12 @@
       var off = document.createElement('canvas');
       var oc  = off.getContext('2d');
 
-      // Auto-fit. Inter 900 holds its shape at large sizes — push the
-      // cap up to 210 so the wordmark fills the canvas with serious
-      // mass.
-      var maxW = Math.max(W * 0.95, 220);
-      var maxH = Math.max(H * 0.90, 140);
-      var fs = Math.floor(Math.min(maxH * 0.92, 210));
+      // Universal font size — every state shares the same fs so the
+      // dot-grid-to-stroke ratio is constant. No per-word auto-fit.
+      var fs = UNIVERSAL_FS;
       var spec = fontTemplate.replace('PX', String(fs));
       oc.font = spec;
       var textW = oc.measureText(text).width;
-      while (textW > maxW && fs > 20) {
-        fs -= 2;
-        spec = fontTemplate.replace('PX', String(fs));
-        oc.font = spec;
-        textW = oc.measureText(text).width;
-      }
 
       var logicalW = Math.max(Math.ceil(textW) + 24, 32);
       var logicalH = Math.max(Math.ceil(fs * 1.3),   32);
@@ -1160,6 +1181,11 @@
       canvas.height       = H * dpr;
       canvas.style.width  = W + 'px';
       canvas.style.height = H + 'px';
+
+      // Lock the font size once per build — every state will be sampled
+      // at this exact pixel size, so the dot-grid-to-stroke ratio is
+      // identical across short words and long words.
+      UNIVERSAL_FS = findUniversalFontSize();
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       // Sample every state's points. Density 3 → 3 px between dot
