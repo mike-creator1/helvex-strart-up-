@@ -736,6 +736,57 @@ body {
     var(--hx-surface) !important;
 }
 
+/* ── SINGLE-PANEL LAYOUT — minimal centred card ──────────── */
+.auth-shell.single {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 32px;
+  position: relative;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 0%,   rgba(252, 211, 77, 0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 60% at 50% 100%, rgba(220, 38, 38, 0.04) 0%, transparent 60%),
+    var(--hx-surface);
+}
+.auth-shell.single::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.045) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 30%, transparent 80%);
+  pointer-events: none;
+  opacity: 0.7;
+}
+.auth-shell.single .auth-main {
+  width: 100%;
+  max-width: 460px;
+  padding: 0;
+}
+.auth-shell.single .auth-card {
+  width: 100%;
+  max-width: 460px;
+}
+.auth-shell.single .auth-card .brand {
+  display: inline-flex !important;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 28px !important;
+}
+.auth-shell.single .auth-card .brand img {
+  height: 40px !important;
+}
+@media (max-width: 920px) {
+  .auth-shell.single { padding: 24px 16px; }
+  .auth-shell.single .auth-card {
+    border: 1px solid var(--hx-line);
+    background: var(--hx-surface);
+    box-shadow: var(--hx-elev-card);
+  }
+}
+
 /* ── LEFT PANEL — quieter ambient, tighter rhythm ─────────── */
 .auth-side {
   padding-block: 64px 48px;
