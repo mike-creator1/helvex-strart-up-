@@ -181,6 +181,67 @@
     </div>
   </section>
 
+  <!-- ════════ WHERE YOUR DATA LIVES ════════ -->
+  <section class="py-20 sm:py-28 border-t border-line">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-14 sm:mb-16">
+        <p class="section-mark mb-5">Where your data lives</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Three deployment postures.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Prompts and responses stay where you choose. Three postures cover almost every customer — default tenant for the standard plans, your cloud for enterprise, zero-retention for the cases where the data should not stay anywhere at all.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-5 sm:gap-6">
+        <div class="reveal rounded-2xl border border-line bg-white p-7">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Posture 01</p>
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Default tenant · EU-Central.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed">The standard deployment for Pro and Team plans. Your workspace lives in HelveX-managed infrastructure in EU-Central, pinned to that region for both storage and inference. No cross-region traffic without an explicit setting change.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-7">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-red mb-3">Posture 02</p>
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Your AWS or GCP region.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed">For Enterprise plans, the models and the workspace deploy into your AWS or GCP account, in the region you choose. Prompts and responses do not leave your tenant. The HelveX team operates the stack inside your account under a Bring-Your-Own-Cloud agreement.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-7">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-ink mb-3">Posture 03</p>
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Zero-retention mode.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed">Available on Enterprise plans for workflows that should leave no trace. Prompts and responses pass through the model and are not persisted. Audit logs still record the metadata of the call — actor, timestamp, surface — but never the content itself.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ AUDIT PATHWAY ════════ -->
+  <section class="bg-cream/40 border-y border-line py-20 sm:py-28">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 grid lg:grid-cols-12 gap-10 lg:gap-16">
+      <div class="lg:col-span-5">
+        <p class="reveal section-mark mb-5">Audit pathway</p>
+        <h2 class="reveal h-section text-3xl sm:text-5xl mb-5 balance">Logs that go to your SIEM.</h2>
+        <p class="reveal pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Every prompt, response, tool call, and approval gate leaves a structured event in the audit log. The events ship to your SIEM via standard export — Splunk, Elastic, Datadog, an S3 bucket, whatever your security team runs. The retention window is yours to set.
+        </p>
+      </div>
+      <div class="lg:col-span-7 space-y-5">
+        <div class="reveal rounded-2xl border border-line bg-white p-6">
+          <p class="h-eyebrow text-ink-light mb-3">What we log</p>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">Every event carries five fields: the <span class="font-semibold text-ink">prompt</span> (or its hash, in zero-retention mode), the <span class="font-semibold text-ink">response</span>, the <span class="font-semibold text-ink">tool call</span> if one fired, the <span class="font-semibold text-ink">actor</span> — user, agent, or service — and the <span class="font-semibold text-ink">timestamp</span>. Same schema across all three models and every workspace surface.</p>
+          <p class="text-xs font-mono text-ink-light">Schema: JSON · stable across versions · documented in the workspace</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-6">
+          <p class="h-eyebrow text-ink-light mb-3">Where it goes</p>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">Audit events stream out to your SIEM by standard export. Native integrations cover Splunk, Elastic, Datadog, and any S3-compatible bucket; everything else lands via a webhook with HMAC-signed payloads. Backfills supported for the full retention window on request.</p>
+          <p class="text-xs font-mono text-ink-light">Latency: events visible in your SIEM under 30 seconds at the 95th percentile</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-6">
+          <p class="h-eyebrow text-ink-light mb-3">Retention window</p>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">Retention defaults sit at <span class="font-semibold text-ink">30 days</span> on Pro, <span class="font-semibold text-ink">90 days</span> on Team, and <span class="font-semibold text-ink">customer-configurable</span> on Enterprise — typically 365 days or longer for regulated industries. Once a record ages out, it is purged from primary storage and from every replica.</p>
+          <p class="text-xs font-mono text-ink-light">Hold orders supported for legal and compliance investigations</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ════════ CTA ════════ -->
   <section class="border-t border-line py-16 sm:py-20 bg-cream/40">
     <div class="max-w-3xl mx-auto px-6 sm:px-8 text-center">

@@ -182,6 +182,94 @@
     </div>
   </section>
 
+  <!-- ════════ TUTORIAL FORMAT ════════ -->
+  <section class="py-20 sm:py-28 border-t border-line">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-14 sm:mb-16">
+        <p class="section-mark mb-5">Tutorial format</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Every tutorial follows the same shape.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Four sections, in this order, every time. The structure is on purpose — by the time you have read three tutorials, the next one is faster, and you know where to skim if you only need one part.
+        </p>
+      </div>
+
+      <ol class="space-y-px border-y border-line">
+        <li class="reveal flex flex-col sm:flex-row gap-5 sm:gap-10 py-7 sm:py-8 border-b border-line">
+          <div class="sm:w-44 flex-shrink-0">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Section 01</span>
+            <p class="text-2xl sm:text-3xl font-extrabold tracking-tightest mt-1">Problem</p>
+          </div>
+          <div class="flex-1">
+            <p class="text-base text-ink-mid leading-relaxed pretty">
+              The work the tutorial is for. A specific job — not a category. "Reply to inbound support tickets with the right runbook" is a problem. "Customer service" is not. The constraints, the data, the success bar are all on the page.
+            </p>
+          </div>
+        </li>
+        <li class="reveal flex flex-col sm:flex-row gap-5 sm:gap-10 py-7 sm:py-8 border-b border-line">
+          <div class="sm:w-44 flex-shrink-0">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Section 02</span>
+            <p class="text-2xl sm:text-3xl font-extrabold tracking-tightest mt-1">Model choice</p>
+          </div>
+          <div class="flex-1">
+            <p class="text-base text-ink-mid leading-relaxed pretty">
+              Which of the three we picked — Ether, Nexus, or Prometheus — and why. The reasoning is in the open: latency budget, depth required, tools needed, cost ceiling. If we changed our mind during the work, that change is in the write-up too.
+            </p>
+          </div>
+        </li>
+        <li class="reveal flex flex-col sm:flex-row gap-5 sm:gap-10 py-7 sm:py-8 border-b border-line">
+          <div class="sm:w-44 flex-shrink-0">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Section 03</span>
+            <p class="text-2xl sm:text-3xl font-extrabold tracking-tightest mt-1">Workflow</p>
+          </div>
+          <div class="flex-1">
+            <p class="text-base text-ink-mid leading-relaxed pretty">
+              The system prompt, the tools, the gates, the eval set. Copy-and-pasteable. The point is that you can have the same result in your own workspace by following along — not that you watch a demo and trust it.
+            </p>
+          </div>
+        </li>
+        <li class="reveal flex flex-col sm:flex-row gap-5 sm:gap-10 py-7 sm:py-8">
+          <div class="sm:w-44 flex-shrink-0">
+            <span class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Section 04</span>
+            <p class="text-2xl sm:text-3xl font-extrabold tracking-tightest mt-1">Debug</p>
+          </div>
+          <div class="flex-1">
+            <p class="text-base text-ink-mid leading-relaxed pretty">
+              What went wrong on the way. Hallucinations, refusal mis-calibration, tools that timed out, prompts that drifted. The fixes that worked, the fixes that didn't, and the places we left rough edges for the next person to improve.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ════════ WHERE TO START ════════ -->
+  <section class="bg-cream/40 border-y border-line py-20 sm:py-28">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-14 sm:mb-16">
+        <p class="section-mark mb-5">Where to start</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Two paths through this page.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Tutorials are good once you have the workspace open. If you are still working out how the pieces fit, start with Quickstart. If you have shipped before and want patterns to clone, go straight to the Workflow library.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-5 sm:gap-6">
+        <a href="/quickstart" class="reveal block rounded-2xl border border-line bg-white p-7 hover:border-ink/20 transition-all">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">New here</p>
+          <h3 class="text-xl font-bold tracking-tight mb-2.5">Start with Quickstart.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-4">Stand up a workspace, pick a region, connect knowledge, run a thread against each of the three models. About thirty minutes, no prior context required.</p>
+          <span class="text-sm font-semibold text-ink inline-flex items-center gap-1">Open Quickstart <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></span>
+        </a>
+        <a href="/workflows" class="reveal block rounded-2xl border border-line bg-white p-7 hover:border-ink/20 transition-all">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-red mb-3">Already shipped before</p>
+          <h3 class="text-xl font-bold tracking-tight mb-2.5">Go to the Workflow library.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-4">If you already know the shape of agent work, the library has the patterns we ship most often — triage, RAG, enrichment, scheduled runs — ready to clone into your own workspace.</p>
+          <span class="text-sm font-semibold text-ink inline-flex items-center gap-1">Open the library <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- ════════ CTA ════════ -->
   <section class="border-t border-line py-16 sm:py-20 bg-cream/40">
     <div class="max-w-3xl mx-auto px-6 sm:px-8 text-center">

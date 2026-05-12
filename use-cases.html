@@ -164,6 +164,89 @@
     </div>
   </section>
 
+  <!-- ════════ COMMON PATTERNS ════════ -->
+  <section class="py-20 sm:py-28 border-t border-line bg-cream/40">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-14 sm:mb-16">
+        <p class="section-mark mb-5">Common patterns</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">The shapes we ship most often.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          Below the work category sits the actual shape of the workflow — the trigger, the tools, the gates. These six patterns account for the majority of the agents and workspaces we stand up in a first engagement.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        <div class="reveal rounded-2xl border border-line bg-white p-7">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Pattern 01</p>
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Customer support agents.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">Inbound ticket comes in, the agent classifies the intent, drafts a reply grounded in the runbook, and hands off to a human on anything unfamiliar. Approval gate before any outbound message.</p>
+          <p class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Best paired with: Ether</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-7">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-red mb-3">Pattern 02</p>
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">RAG over company knowledge.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">A search and answer surface across the wiki, the drive, the ticket archive — permissions follow the source. Every claim cites the page it came from. The kind of thing every team builds eventually.</p>
+          <p class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Best paired with: Nexus</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-7">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-ink mb-3">Pattern 03</p>
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Sales / CRM enrichment.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">A new lead lands in the CRM, the agent fills in firmographics, finds the latest funding round, drafts the first reply, and writes the account brief. The rep starts from a populated record.</p>
+          <p class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Best paired with: Prometheus</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-7">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-red-deep mb-3">Pattern 04</p>
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Internal assistants.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">A Slack-or-Teams-resident assistant that the whole team uses. Connected to the docs, the calendar, the policies. Knows the difference between a question it can answer and one it should escalate.</p>
+          <p class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Best paired with: Nexus</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-7">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Pattern 05</p>
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Document Q&amp;A.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">A reader for a long, structured document — a contract, a filing, a report. Asks return passages, not paraphrase. The citation is the answer; the paraphrase is the helper.</p>
+          <p class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Best paired with: Nexus</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-7">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-ink mb-3">Pattern 06</p>
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Scheduled agent runs.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed mb-3">An agent that wakes on a cron, reads its queue, plans the work, executes inside the approval gates, and writes a summary post for the morning. Replayable trace on every run.</p>
+          <p class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Best paired with: Prometheus</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ WHAT GOOD LOOKS LIKE ════════ -->
+  <section class="py-20 sm:py-28 bg-white border-t border-line">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8">
+      <div class="reveal max-w-3xl mb-14 sm:mb-16">
+        <p class="section-mark mb-5">What good looks like</p>
+        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Three properties of a use case that lasted.</h2>
+        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
+          The patterns above can ship in a week. The ones that are still running a year later share three properties. If a workflow does not have all three by the end of the build cycle, we send it back for another pass before we hand it over.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-5 sm:gap-6">
+        <div class="reveal rounded-2xl border border-line bg-white p-7">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-red mb-3">Property 01</p>
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Production-grade.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed">Failure modes are catalogued, retries are bounded, and irreversible steps have approval gates. The agent runs without supervision because it knows when to stop.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-7">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Property 02</p>
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Replayable.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed">Every run leaves a trace someone can scroll through six months later. The prompt, the tool calls, the inputs and outputs, the decisions at each gate — all on record, all explorable.</p>
+        </div>
+        <div class="reveal rounded-2xl border border-line bg-white p-7">
+          <p class="font-mono text-[11px] tracking-widest uppercase text-ink mb-3">Property 03</p>
+          <h3 class="text-lg font-bold tracking-tight mb-2.5">Owned by the client.</h3>
+          <p class="text-sm text-ink-mid leading-relaxed">The prompt, the eval set, the runbook, and the code live in your repo. No lock-in, no DSL we hold the keys to. When the model changes, your team can rerun the eval and make the call.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ════════ CTA ════════ -->
   <section class="border-t border-line py-16 sm:py-20 bg-cream/40">
     <div class="max-w-3xl mx-auto px-6 sm:px-8 text-center">
