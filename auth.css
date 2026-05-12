@@ -2065,3 +2065,251 @@ body {
   .auth-shell.split .auth-main { overflow-y: auto; }
   .auth-shell.split .auth-side { overflow-y: auto; }
 }
+
+/* ════════════════════════════════════════════════════════════
+   ULTRA-PREMIUM v4 — vh-aware fit + cinematic micro-details
+   The v3 layer used vw clamps for vertical spacing, so on
+   short-but-wide laptop viewports content still overflowed.
+   v4 switches every vertical metric to vh-based clamps so the
+   whole experience always lands inside 100vh, plus pushes the
+   visual fidelity further: gradient card borders, refined
+   focus glow, micro-typography, signature accents.
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 921px) {
+
+  /* ──── Layout: distribute left-panel content across the full
+     height with logo top, content middle, footer bottom ──── */
+  .auth-shell.split .auth-side {
+    padding: clamp(28px, 4.5vh, 56px) clamp(36px, 4vw, 64px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+  .auth-shell.split .side-brand { margin-bottom: 0 !important; }
+  .auth-shell.split .side-brand img {
+    height: clamp(48px, 7vh, 72px) !important;
+  }
+  .auth-shell.split .side-content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(16px, 2.5vh, 32px) 0;
+  }
+
+  /* ──── Left-panel vertical rhythm — all vh-clamped ──── */
+  .auth-shell.split .side-eyebrow {
+    margin-bottom: clamp(14px, 2vh, 24px) !important;
+    font-size: clamp(10px, 1.2vh, 10.5px) !important;
+    padding: clamp(5px, 0.8vh, 7px) clamp(11px, 1.4vh, 14px) clamp(5px, 0.8vh, 7px) clamp(10px, 1.2vh, 12px) !important;
+  }
+  .auth-shell.split .side-headline {
+    font-size: clamp(36px, 6.4vh, 64px) !important;
+    line-height: 0.94 !important;
+    margin-bottom: clamp(10px, 1.6vh, 18px) !important;
+    letter-spacing: -0.045em !important;
+  }
+  .auth-shell.split .side-headline em {
+    margin-top: clamp(0px, 0.4vh, 4px) !important;
+  }
+  .auth-shell.split .side-sub {
+    font-size: clamp(13px, 1.6vh, 15px) !important;
+    line-height: 1.55 !important;
+    margin-bottom: clamp(16px, 2.6vh, 32px) !important;
+    max-width: 42ch !important;
+  }
+  .auth-shell.split .side-features {
+    gap: clamp(10px, 1.6vh, 18px) !important;
+  }
+  .auth-shell.split .feat-icon {
+    width: clamp(34px, 4.4vh, 42px) !important;
+    height: clamp(34px, 4.4vh, 42px) !important;
+  }
+  .auth-shell.split .feat-icon svg {
+    width: clamp(14px, 1.8vh, 19px) !important;
+    height: clamp(14px, 1.8vh, 19px) !important;
+  }
+  .auth-shell.split .feat-body strong {
+    font-size: clamp(12.5px, 1.6vh, 14.5px) !important;
+    letter-spacing: -0.012em !important;
+  }
+  .auth-shell.split .feat-body span {
+    font-size: clamp(11.5px, 1.5vh, 13.5px) !important;
+    line-height: 1.5 !important;
+  }
+  .auth-shell.split .side-foot {
+    padding-top: clamp(12px, 1.8vh, 22px) !important;
+    font-size: clamp(9.5px, 1.1vh, 11px) !important;
+    letter-spacing: 0.22em !important;
+  }
+
+  /* ──── Right panel — premium card, vh-scaled ──── */
+  .auth-shell.split .auth-main {
+    padding: clamp(20px, 3.5vh, 48px) clamp(28px, 3.5vw, 56px) !important;
+  }
+  .auth-shell.split .auth-card {
+    padding: clamp(22px, 3.6vh, 40px) clamp(26px, 3vw, 44px) !important;
+    max-height: calc(100vh - clamp(40px, 7vh, 96px)) !important;
+    max-width: 460px !important;
+    width: 100% !important;
+    border-radius: clamp(18px, 2vh, 22px) !important;
+  }
+  .auth-shell.split .tabs {
+    margin-bottom: clamp(14px, 2.4vh, 24px) !important;
+    padding: 4px !important;
+    border-radius: clamp(10px, 1.3vh, 12px) !important;
+  }
+  .auth-shell.split .tab {
+    padding: clamp(6px, 1.1vh, 10px) 16px !important;
+    font-size: clamp(12.5px, 1.5vh, 13px) !important;
+    border-radius: clamp(7px, 1vh, 9px) !important;
+  }
+  .auth-shell.split .auth-card h1 {
+    font-size: clamp(22px, 3.2vh, 32px) !important;
+    line-height: 1.1 !important;
+    margin-bottom: clamp(5px, 0.8vh, 10px) !important;
+  }
+  .auth-shell.split .auth-card .muted {
+    font-size: clamp(12.5px, 1.6vh, 14px) !important;
+    line-height: 1.55 !important;
+    margin-bottom: clamp(14px, 2.4vh, 24px) !important;
+  }
+  .auth-shell.split .field {
+    margin-bottom: clamp(9px, 1.5vh, 16px) !important;
+  }
+  .auth-shell.split .field label {
+    font-size: clamp(11.5px, 1.4vh, 12.5px) !important;
+    margin-bottom: clamp(5px, 0.7vh, 8px) !important;
+  }
+  .auth-shell.split .field input {
+    height: clamp(38px, 5vh, 46px) !important;
+    padding: clamp(8px, 1.2vh, 14px) clamp(13px, 1.6vh, 16px) !important;
+    font-size: clamp(13px, 1.6vh, 14px) !important;
+    border-radius: clamp(9px, 1.2vh, 11px) !important;
+  }
+  .auth-shell.split .row {
+    margin: clamp(2px, 0.5vh, 4px) 0 clamp(12px, 2vh, 20px) !important;
+    font-size: clamp(12px, 1.4vh, 13px) !important;
+  }
+  .auth-shell.split .checkbox input {
+    width: clamp(13px, 1.6vh, 15px) !important;
+    height: clamp(13px, 1.6vh, 15px) !important;
+  }
+  .auth-shell.split .btn-primary {
+    height: clamp(40px, 5.4vh, 50px) !important;
+    font-size: clamp(13px, 1.6vh, 14px) !important;
+    border-radius: 999px !important;
+  }
+  .auth-shell.split .btn-primary svg {
+    width: clamp(12px, 1.4vh, 14px) !important;
+    height: clamp(12px, 1.4vh, 14px) !important;
+  }
+  .auth-shell.split .switch {
+    margin-top: clamp(12px, 2vh, 22px) !important;
+    padding-top: clamp(8px, 1.4vh, 16px) !important;
+    font-size: clamp(12px, 1.4vh, 13px) !important;
+  }
+  .auth-shell.split .alert {
+    padding: clamp(8px, 1.2vh, 12px) clamp(12px, 1.5vh, 16px) !important;
+    font-size: clamp(12px, 1.4vh, 13px) !important;
+    margin-bottom: clamp(10px, 1.6vh, 18px) !important;
+    border-radius: clamp(9px, 1.2vh, 11px) !important;
+  }
+
+  /* ──── PREMIUM v4 micro-details ──── */
+
+  /* Card — multi-stop gradient border + softer outer glow */
+  .auth-shell.split .auth-card {
+    background:
+      linear-gradient(180deg, #FFFFFF 0%, #FCFCFB 100%) !important;
+    border: 1px solid rgba(10, 10, 10, 0.05) !important;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 1) inset,
+      0 0 0 1px rgba(10, 10, 10, 0.02),
+      0 1px 2px rgba(15, 15, 16, 0.04),
+      0 14px 36px -14px rgba(15, 15, 16, 0.10),
+      0 40px 80px -28px rgba(220, 38, 38, 0.08) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+  }
+
+  /* Tabs container — subtle inset for depth */
+  .auth-shell.split .tabs {
+    background: rgba(10, 10, 10, 0.04) !important;
+    border: 1px solid rgba(10, 10, 10, 0.04) !important;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset !important;
+  }
+  .auth-shell.split .tab.active {
+    background: linear-gradient(180deg, #FFFFFF 0%, #F8F8F6 100%) !important;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 1) inset,
+      0 1px 2px rgba(15, 15, 16, 0.06),
+      0 6px 14px -6px rgba(15, 15, 16, 0.10) !important;
+  }
+
+  /* Input focus — split-color glow (red + amber wash) for a premium AI-product feel */
+  .auth-shell.split .field input:focus {
+    border-color: rgba(220, 38, 38, 0.50) !important;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 1) inset,
+      0 0 0 3px rgba(220, 38, 38, 0.06),
+      0 0 0 6px rgba(245, 158, 11, 0.04),
+      0 6px 14px -6px rgba(220, 38, 38, 0.14) !important;
+  }
+
+  /* CTA button — refined ambient red glow + smoother shimmer */
+  .auth-shell.split .btn-primary {
+    background:
+      linear-gradient(180deg, #2F2F33 0%, #121214 55%, #050508 100%) !important;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+      0 1px 0 rgba(255, 255, 255, 0.24) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.45) inset,
+      0 8px 18px -6px rgba(10, 10, 10, 0.45),
+      0 18px 38px -10px rgba(220, 38, 38, 0.28) !important;
+  }
+  .auth-shell.split .btn-primary:hover:not(:disabled) {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+      0 1px 0 rgba(255, 255, 255, 0.26) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.45) inset,
+      0 12px 24px -6px rgba(10, 10, 10, 0.52),
+      0 24px 48px -10px rgba(220, 38, 38, 0.46) !important;
+  }
+
+  /* Side-eyebrow — refined glass with denser inset highlight */
+  .auth-shell.split .side-eyebrow {
+    background: rgba(255, 255, 255, 0.82) !important;
+    border-color: rgba(10, 10, 10, 0.07) !important;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 1) inset,
+      0 4px 14px -6px rgba(10, 10, 10, 0.10) !important;
+  }
+
+  /* Headline italic — deeper shimmer gradient with more contrast */
+  .auth-shell.split .side-headline em {
+    background: linear-gradient(120deg, #92400E 0%, #B45309 22%, #F0B852 48%, #DC2626 72%, #991B1B 100%) !important;
+    background-size: 240% 240% !important;
+    -webkit-background-clip: text !important;
+            background-clip: text !important;
+    filter: drop-shadow(0 4px 22px rgba(220, 38, 38, 0.18)) !important;
+  }
+
+  /* Feature icon — slightly tighter, richer surface */
+  .auth-shell.split .feat-icon {
+    background: linear-gradient(160deg, #FFFFFF 0%, #FAF6EA 100%) !important;
+    border-color: rgba(10, 10, 10, 0.07) !important;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 1) inset,
+      0 4px 12px -6px rgba(10, 10, 10, 0.10) !important;
+  }
+}
+
+/* Very short viewports (rare laptops, browser dev panes) — allow
+   internal panel scroll instead of clipping. The page never scrolls. */
+@media (min-width: 921px) and (max-height: 680px) {
+  .auth-shell.split .auth-main { overflow-y: auto !important; }
+  .auth-shell.split .auth-side { overflow-y: auto !important; }
+  .auth-shell.split .side-headline { font-size: 34px !important; }
+  .auth-shell.split .side-sub { display: none !important; }
+}
