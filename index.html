@@ -181,11 +181,11 @@
     }
 
     .hx-header > nav {
-      height: 76px;
+      height: 84px;
       position: relative; z-index: 1;
     }
-    @media (min-width: 640px)  { .hx-header > nav { height: 84px; } }
-    @media (min-width: 1024px) { .hx-header > nav { height: 88px; } }
+    @media (min-width: 640px)  { .hx-header > nav { height: 92px; } }
+    @media (min-width: 1024px) { .hx-header > nav { height: 100px; } }
 
     /* ─── Brand — with soft ambient halo behind logo ─────────── */
     .hx-header .brand-mark {
@@ -205,10 +205,11 @@
     }
     .hx-header .brand-mark:hover::before { opacity: 1; }
     .hx-header .brand-logo img {
-      height: 46px;
+      height: 60px;
       transition: transform .5s cubic-bezier(.22,1,.36,1);
     }
-    @media (min-width: 640px) { .hx-header .brand-logo img { height: 54px; } }
+    @media (min-width: 640px)  { .hx-header .brand-logo img { height: 68px; } }
+    @media (min-width: 1024px) { .hx-header .brand-logo img { height: 76px; } }
     .hx-header .brand-mark:hover .brand-logo img { transform: scale(1.02); }
 
     /* ─── Live status pill — multi-ring with breathing glow ──── */
@@ -409,7 +410,7 @@
   </style>
 
   <header class="hx-header">
-    <nav class="w-full pl-4 pr-5 sm:pl-6 sm:pr-8 flex items-center justify-between gap-4">
+    <nav class="max-w-[1520px] mx-auto pl-4 pr-5 sm:pl-6 sm:pr-8 flex items-center justify-between gap-4">
       <div class="flex items-center gap-5 lg:gap-8">
         <a href="/" class="brand-mark flex items-center flex-shrink-0">
           <span class="brand-logo"><img src="/helvex-logo.png" alt="HelveX" class="w-auto" /></span>
@@ -458,7 +459,7 @@
       <div class="flex items-center gap-2">
         <a href="/signup.html" class="hx-signin hidden sm:inline-flex">Sign in</a>
         <a href="/signup.html" class="btn-primary">
-          <span>Enter Platform</span>
+          <span>Try HelveX</span>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
@@ -498,7 +499,7 @@
       </nav>
       <div class="mobile-menu-cta">
         <a href="/signup.html" class="primary">
-          Enter Platform
+          Try HelveX
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </a>
         <a href="/signup.html" class="secondary">Sign in</a>
@@ -1998,7 +1999,7 @@
             <li><a href="/workspace" class="hover:text-red transition-colors">Workspace</a></li>
             <li><a href="/updates" class="hover:text-red transition-colors">Updates</a></li>
             <li><a href="/trust-center" class="hover:text-red transition-colors">Trust</a></li>
-            <li><a href="/signup.html" class="hover:text-red transition-colors">Enter Platform</a></li>
+            <li><a href="/signup.html" class="hover:text-red transition-colors">Try HelveX</a></li>
           </ul>
         </div>
         <div>
