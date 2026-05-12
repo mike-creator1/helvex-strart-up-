@@ -2570,9 +2570,6 @@ body {
 
 /* ════════════════════════════════════════════════════════════
    v11 — push logo to the top-left corner + lift the content
-   The user wants the logo anchored tightly in the top-left and
-   the editorial block to sit immediately under it (no big gap).
-   Tightens the outer padding and drops the inner gap to a hair.
    ════════════════════════════════════════════════════════════ */
 @media (min-width: 921px) {
   /* Outer padding — pull tighter to the top-left corner */
@@ -2596,6 +2593,22 @@ body {
   /* Footer — span full width, normal flow */
   .auth-shell.split .side-foot {
     align-self: stretch !important;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   v12 — lift the whole composition further up
+   Tighter outer padding-top, hair-thin gap under the logo.
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 921px) {
+  .auth-shell.split .auth-side {
+    padding-top: clamp(8px, 1.4vh, 20px) !important;
+  }
+  .auth-shell.split .side-content {
+    padding-top: clamp(2px, 0.6vh, 10px) !important;
+  }
+  .auth-shell.split .side-brand img {
+    margin-top: 0 !important;
   }
 }
 
