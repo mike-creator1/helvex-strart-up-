@@ -545,186 +545,660 @@
     </div>
   </section>
 
-  <!-- ════════ MODELS — preview that funnels to /models ════════ -->
-  <section id="models-preview" class="relative py-24 sm:py-32 tech-wash-pink overflow-hidden">
-    <div class="tech-aurora"><div class="blob"></div></div>
+  <!-- ════════════════════════════════════════════════════════════
+       MODELS PREVIEW — luxe obsidian edition
+       Three frontier models presented as premium dark glass panels.
+       Self-contained block: scoped styles live immediately above the
+       <section>, so deleting the section also removes its CSS.
+       ════════════════════════════════════════════════════════════ -->
+  <style>
+    /* ─── Section frame ───────────────────────────────────────── */
+    .models-luxe {
+      background:
+        radial-gradient(ellipse 90% 60% at 50% 0%,    rgba(245,200,99,0.07), transparent 60%),
+        radial-gradient(ellipse 70% 55% at 85% 35%,   rgba(233,75,90,0.06),  transparent 65%),
+        radial-gradient(ellipse 60% 55% at 10% 70%,   rgba(120,140,220,0.05), transparent 65%),
+        linear-gradient(180deg, #08080C 0%, #0B0B12 35%, #08080C 100%);
+      color: #ECECEE;
+      isolation: isolate;
+    }
+    .models-luxe::before,
+    .models-luxe::after {
+      content: "";
+      position: absolute; left: 0; right: 0; height: 1px;
+      z-index: 5; pointer-events: none;
+    }
+    .models-luxe::before { top: 0;    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent); }
+    .models-luxe::after  { bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent); }
+
+    .luxe-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .luxe-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 56px 56px;
+      -webkit-mask-image: radial-gradient(ellipse 80% 65% at 50% 50%, #000 30%, transparent 85%);
+              mask-image: radial-gradient(ellipse 80% 65% at 50% 50%, #000 30%, transparent 85%);
+    }
+    .luxe-glow {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); opacity: .55;
+      will-change: transform;
+    }
+    .luxe-glow-1 { width: 480px; height: 480px; top: -140px; left: -120px;  background: radial-gradient(circle, rgba(245,200,99,.22), transparent 60%); animation: luxeFloat 14s ease-in-out infinite; }
+    .luxe-glow-2 { width: 520px; height: 520px; top:  35%;   right: -160px; background: radial-gradient(circle, rgba(233,75,90,.18),  transparent 60%); animation: luxeFloat 18s ease-in-out infinite reverse; }
+    .luxe-glow-3 { width: 460px; height: 460px; bottom:-180px; left: 32%;   background: radial-gradient(circle, rgba(120,140,220,.14), transparent 60%); animation: luxeFloat 22s ease-in-out infinite; }
+    @keyframes luxeFloat {
+      0%,100% { transform: translate3d(0,0,0) scale(1); }
+      50%     { transform: translate3d(40px,-30px,0) scale(1.08); }
+    }
+    .luxe-vignette {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 110% 110% at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%);
+    }
+
+    /* ─── Hero ────────────────────────────────────────────────── */
+    .luxe-eyebrow {
+      display: inline-flex; align-items: center; gap: 18px;
+      font-family: 'Inter', ui-monospace, monospace;
+      font-size: 11px; letter-spacing: 0.32em; font-weight: 600;
+      text-transform: uppercase;
+      color: rgba(236,236,238,0.55);
+      margin: 0 0 32px;
+    }
+    .luxe-eyebrow-line {
+      width: 42px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245,200,99,0.6), transparent);
+    }
+    .luxe-headline {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: clamp(48px, 8vw, 104px);
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      color: #F5F5F7;
+      margin: 0 0 28px;
+    }
+    .luxe-headline-serif {
+      display: block;
+      margin-top: 6px;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -0.025em;
+      background: linear-gradient(120deg, #F5C863 0%, #F0B852 25%, #FFFFFF 50%, #E94B5A 78%, #C0111E 100%);
+      background-size: 220% 220%;
+      -webkit-background-clip: text;
+              background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: luxeShimmer 9s ease-in-out infinite;
+      filter: drop-shadow(0 6px 28px rgba(245,200,99,0.18));
+    }
+    @keyframes luxeShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+    .luxe-subtitle {
+      max-width: 640px; margin: 0 auto;
+      font-size: clamp(15px, 1.4vw, 18px);
+      line-height: 1.7;
+      color: rgba(236,236,238,0.62);
+      font-weight: 400;
+    }
+
+    /* ─── Card grid ───────────────────────────────────────────── */
+    .luxe-cards {
+      display: grid; grid-template-columns: 1fr; gap: 20px;
+      margin-bottom: 64px;
+    }
+    @media (min-width: 768px)  { .luxe-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; } }
+    @media (min-width: 1280px) { .luxe-cards { gap: 26px; } }
+
+    /* ─── Card surface ───────────────────────────────────────── */
+    .luxe-card {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.012) 50%, rgba(255,255,255,0.025) 100%),
+        rgba(14,14,20,0.62);
+      backdrop-filter: blur(24px) saturate(140%);
+      -webkit-backdrop-filter: blur(24px) saturate(140%);
+      border: 1px solid rgba(255,255,255,0.07);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.04) inset,
+        0 -1px 0 rgba(0,0,0,0.6) inset,
+        0 24px 60px -22px rgba(0,0,0,0.65),
+        0 0 0 1px rgba(255,255,255,0.02);
+      transition:
+        transform .55s cubic-bezier(.2,.7,.2,1),
+        box-shadow .55s cubic-bezier(.2,.7,.2,1),
+        border-color .55s ease;
+      display: flex; flex-direction: column;
+    }
+    .luxe-card::before { /* top hairline rim */
+      content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent, rgba(255,255,255,0.4)), transparent);
+      opacity: .65; z-index: 3;
+    }
+    .luxe-card::after { /* inner top highlight halo */
+      content: ""; position: absolute; inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(ellipse 70% 42% at 50% 0%, var(--accent-soft, rgba(255,255,255,0.06)), transparent 65%);
+      pointer-events: none; opacity: .9; z-index: 1;
+    }
+    .luxe-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.13);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.06) inset,
+        0 -1px 0 rgba(0,0,0,0.6) inset,
+        0 40px 90px -30px rgba(0,0,0,0.75),
+        0 0 80px -10px var(--accent-glow, rgba(255,255,255,0.05));
+    }
+
+    /* Per-card accent tokens */
+    .luxe-card--ether    { --accent:#F5C863; --accent-soft:rgba(245,200,99,0.10); --accent-glow:rgba(245,200,99,0.22); --accent-text:#F5C863; }
+    .luxe-card--nexus    { --accent:#E94B5A; --accent-soft:rgba(233,75,90,0.10);  --accent-glow:rgba(233,75,90,0.24);  --accent-text:#FF7884; }
+    .luxe-card--flagship { --accent:#F0B852; --accent-soft:rgba(240,184,82,0.13); --accent-glow:rgba(240,184,82,0.26); --accent-text:#F5C863; }
+
+    .luxe-card-inner {
+      position: relative; z-index: 2;
+      padding: 30px 26px;
+      display: flex; flex-direction: column;
+      flex: 1 1 auto;
+    }
+    @media (min-width: 1024px) { .luxe-card-inner { padding: 36px 32px; } }
+
+    /* ─── Card header ────────────────────────────────────────── */
+    .luxe-card-head {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 12px; margin-bottom: 26px;
+    }
+    .luxe-card-head-l { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .luxe-card-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(160deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.02) inset,
+        0 10px 30px -8px var(--accent-glow);
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .luxe-card-meta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .luxe-card-kicker {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; letter-spacing: 0.22em;
+      text-transform: uppercase; font-weight: 700;
+      color: var(--accent-text);
+    }
+    .luxe-card-path {
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      font-size: 10px; letter-spacing: 0.04em;
+      color: rgba(236,236,238,0.40);
+    }
+    .luxe-card-badge {
+      align-self: flex-start;
+      padding: 6px 10px; border-radius: 999px;
+      font-family: 'Inter', sans-serif;
+      font-size: 9.5px; letter-spacing: 0.20em;
+      text-transform: uppercase; font-weight: 700;
+      background: var(--accent-soft);
+      border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+      color: var(--accent-text);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ─── Title + tagline ────────────────────────────────────── */
+    .luxe-card-title {
+      font-size: 48px; line-height: 1; font-weight: 600;
+      letter-spacing: -0.045em;
+      color: #FAFAFA;
+      margin: 0 0 14px;
+    }
+    .luxe-card-desc {
+      font-size: 13.5px; line-height: 1.65;
+      color: rgba(236,236,238,0.62);
+      margin: 0 0 26px;
+    }
+
+    /* ─── Strength bars ──────────────────────────────────────── */
+    .luxe-card-bars { list-style: none; padding: 0; margin: 0 0 24px; display: flex; flex-direction: column; gap: 10px; }
+    .luxe-card-bars li { display: flex; align-items: center; gap: 12px; }
+    .luxe-bar-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(236,236,238,0.42);
+      width: 74px; flex-shrink: 0; font-weight: 500;
+    }
+    .luxe-bar {
+      flex: 1; height: 3px; border-radius: 2px;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden; position: relative;
+    }
+    .luxe-bar i {
+      display: block; height: 100%;
+      width: var(--w, 50%);
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 60%, white));
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+    .luxe-bar.is-soft i { background: rgba(255,255,255,0.22); box-shadow: none; }
+    .luxe-bar-val {
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      font-size: 10px; letter-spacing: 0.04em;
+      width: 64px; flex-shrink: 0; text-align: right;
+      color: #ECECEE; font-weight: 600;
+    }
+    .luxe-bar-val.is-soft { color: rgba(236,236,238,0.5); font-weight: 500; }
+
+    /* ─── Spec rows ──────────────────────────────────────────── */
+    .luxe-card-specs {
+      margin: 0 0 22px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; flex-direction: column; gap: 11px;
+    }
+    .luxe-card-specs > div { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+    .luxe-card-specs dt {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(236,236,238,0.42);
+      font-weight: 500;
+    }
+    .luxe-card-specs dd {
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      font-size: 12px;
+      color: rgba(236,236,238,0.82);
+      font-weight: 500;
+      text-align: right;
+      margin: 0;
+    }
+    .luxe-card-specs dd.is-strong { color: #FAFAFA; font-weight: 700; }
+
+    /* ─── Callout strip ──────────────────────────────────────── */
+    .luxe-card-callout {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 12px 14px; border-radius: 12px;
+      background: linear-gradient(120deg, var(--accent-soft), transparent 70%);
+      border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+      margin-bottom: 22px;
+    }
+    .luxe-callout-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 9.5px; letter-spacing: 0.20em;
+      text-transform: uppercase; font-weight: 700;
+      color: var(--accent-text);
+    }
+    .luxe-callout-val {
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      font-size: 12px; font-weight: 700;
+      color: var(--accent-text);
+      letter-spacing: 0.02em;
+    }
+
+    /* ─── Bottom feature row ─────────────────────────────────── */
+    .luxe-card-features {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; padding: 14px 0; margin-bottom: 22px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .luxe-card-features span {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; letter-spacing: 0.08em;
+      color: rgba(236,236,238,0.6);
+      text-transform: lowercase;
+      font-weight: 500;
+    }
+    .luxe-card-features svg { width: 12px; height: 12px; color: var(--accent); flex-shrink: 0; }
+
+    /* ─── CTA row ────────────────────────────────────────────── */
+    .luxe-card-foot {
+      margin-top: auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .luxe-card-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; letter-spacing: 0.18em;
+      text-transform: uppercase; font-weight: 700;
+      color: #ECECEE;
+      padding-bottom: 3px;
+      border-bottom: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+      transition: border-color .3s, gap .3s, color .3s;
+    }
+    .luxe-card-link:hover { gap: 12px; border-bottom-color: var(--accent); color: var(--accent-text); }
+    .luxe-card-link svg { width: 11px; height: 11px; transition: transform .3s; }
+    .luxe-card-link:hover svg { transform: translateX(2px); }
+
+    .luxe-card-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; letter-spacing: 0.14em;
+      text-transform: uppercase; font-weight: 700;
+      color: #0A0A0A;
+      background: linear-gradient(180deg, #FFFFFF, #ECECEE);
+      padding: 10px 16px; border-radius: 999px;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.6) inset,
+        0 -1px 0 rgba(0,0,0,0.08) inset,
+        0 8px 24px -10px rgba(0,0,0,0.5);
+      transition: transform .3s, box-shadow .3s;
+      white-space: nowrap;
+    }
+    .luxe-card-cta:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.6) inset,
+        0 -1px 0 rgba(0,0,0,0.08) inset,
+        0 14px 32px -10px var(--accent-glow);
+    }
+    .luxe-card-cta svg { width: 11px; height: 11px; transition: transform .3s; }
+    .luxe-card-cta:hover svg { transform: translateX(2px); }
+
+    /* ─── Flagship treatment ─────────────────────────────────── */
+    .luxe-card--flagship {
+      background:
+        linear-gradient(180deg, rgba(245,200,99,0.06) 0%, rgba(255,255,255,0.012) 50%, rgba(245,200,99,0.04) 100%),
+        rgba(14,14,20,0.7);
+    }
+    .luxe-card--flagship::before {
+      background: linear-gradient(90deg, transparent, #F5C863 30%, #FFFFFF 50%, #F5C863 70%, transparent);
+      animation: luxeRim 7s ease-in-out infinite;
+    }
+    @keyframes luxeRim {
+      0%, 100% { opacity: .55; }
+      50%      { opacity: .95; }
+    }
+    .luxe-flagship-tag {
+      position: absolute; top: 16px; right: 16px;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 11px; border-radius: 999px;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px; letter-spacing: 0.22em;
+      text-transform: uppercase; font-weight: 700;
+      background: linear-gradient(120deg, rgba(245,200,99,0.20), rgba(245,200,99,0.04));
+      border: 1px solid rgba(245,200,99,0.40);
+      color: #F5C863;
+      z-index: 4;
+      backdrop-filter: blur(8px);
+    }
+    .luxe-flagship-tag::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: #F5C863;
+      box-shadow: 0 0 8px #F5C863;
+    }
+    /* On flagship, hide the regular header badge to make room for the flagship pill */
+    .luxe-card--flagship .luxe-card-head { padding-right: 86px; }
+
+    /* ─── Compare CTA strip ──────────────────────────────────── */
+    .luxe-compare {
+      position: relative;
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012)),
+        rgba(14,14,20,0.7);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      padding: 26px 26px;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.04) inset,
+        0 24px 60px -22px rgba(0,0,0,0.6);
+      display: flex; flex-direction: column; gap: 18px;
+      overflow: hidden;
+    }
+    @media (min-width: 768px) { .luxe-compare { flex-direction: row; align-items: center; justify-content: space-between; padding: 30px 36px; } }
+    .luxe-compare::before {
+      content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245,200,99,0.45), rgba(233,75,90,0.35), transparent);
+    }
+    .luxe-compare-text { flex: 1; min-width: 0; }
+    .luxe-compare-title {
+      font-size: 18px; line-height: 1.3; font-weight: 600;
+      color: #FAFAFA; margin: 0 0 6px;
+      letter-spacing: -0.015em;
+    }
+    .luxe-compare-sub {
+      font-size: 13.5px; line-height: 1.65;
+      color: rgba(236,236,238,0.6); margin: 0;
+    }
+    .luxe-compare-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 22px; border-radius: 999px;
+      background: linear-gradient(180deg, #FFFFFF, #ECECEE);
+      color: #0A0A0A;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 0.01em;
+      transition: transform .3s, box-shadow .3s;
+      white-space: nowrap;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.6) inset,
+        0 12px 30px -10px rgba(245,200,99,0.25);
+    }
+    .luxe-compare-cta:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.6) inset,
+        0 18px 40px -12px rgba(245,200,99,0.45);
+    }
+    .luxe-compare-cta svg { width: 14px; height: 14px; transition: transform .3s; }
+    .luxe-compare-cta:hover svg { transform: translateX(3px); }
+
+    /* ─── Accessibility / motion ─────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .luxe-glow,
+      .luxe-headline-serif,
+      .luxe-card--flagship::before { animation: none !important; }
+      .luxe-card { transition: none; }
+    }
+  </style>
+
+  <section id="models-preview" class="models-luxe relative py-28 sm:py-40 overflow-hidden">
+    <div class="luxe-bg">
+      <div class="luxe-grid"></div>
+      <div class="luxe-glow luxe-glow-1"></div>
+      <div class="luxe-glow luxe-glow-2"></div>
+      <div class="luxe-glow luxe-glow-3"></div>
+      <div class="luxe-vignette"></div>
+    </div>
+
     <div class="relative max-w-7xl mx-auto px-6 sm:px-8">
 
-      <div class="text-center mb-14 sm:mb-20">
-        <p class="reveal tech-eyebrow justify-center mb-6">Three minds · one frontier</p>
-        <h2 class="reveal h-section balance text-5xl sm:text-7xl mb-6 leading-[1.02]">Pick the mind<br/><span class="italic font-serif font-normal tech-gradient-text">for the moment.</span></h2>
-        <p class="reveal pretty text-base sm:text-xl text-ink-mid leading-relaxed max-w-2xl mx-auto">
+      <!-- Hero -->
+      <div class="text-center mb-20 sm:mb-28">
+        <p class="reveal luxe-eyebrow">
+          <span class="luxe-eyebrow-line"></span>
+          Three minds · one frontier
+          <span class="luxe-eyebrow-line"></span>
+        </p>
+        <h2 class="reveal luxe-headline balance">
+          Pick the mind
+          <span class="luxe-headline-serif">for the moment.</span>
+        </h2>
+        <p class="reveal luxe-subtitle pretty">
           Three frontier models, each tuned for a different shape of work. Live benchmarks, full specs, and the routing logic that picks for you when you don't.
         </p>
       </div>
 
       <!-- 3 model preview cards — premium spec sheets -->
-      <div class="reveal grid md:grid-cols-3 gap-5 sm:gap-6 mb-10 sm:mb-12">
+      <div class="reveal luxe-cards">
 
-        <!-- ═════════ ETHER ═════════ -->
-        <div class="tech-card group relative overflow-hidden flex flex-col">
-          <span class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-yellow/0 via-yellow to-yellow/0 group-hover:via-yellow-deep transition-all z-[5]"></span>
-          <div class="absolute -top-20 -right-20 w-44 h-44 bg-yellow/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div class="relative p-7 sm:p-8 flex-1 flex flex-col">
-            <!-- Header -->
-            <div class="flex items-start justify-between mb-5">
-              <div class="flex items-center gap-3">
-                <div class="relative w-12 h-12 rounded-xl bg-yellow flex items-center justify-center shadow-lg shadow-yellow/40">
-                  <svg class="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none"><g><ellipse cx="12" cy="12" rx="10" ry="3.5" stroke="currentColor" stroke-width="1.4" stroke-opacity=".95"/><ellipse cx="12" cy="12" rx="10" ry="3.5" stroke="currentColor" stroke-width="1.4" stroke-opacity=".75" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.5" stroke="currentColor" stroke-width="1.4" stroke-opacity=".55" transform="rotate(120 12 12)"/><circle cx="22" cy="12" r="0.9" fill="currentColor"/><circle cx="6.5" cy="20.6" r="0.7" fill="currentColor" fill-opacity=".75"/><circle cx="6.5" cy="3.4" r="0.6" fill="currentColor" fill-opacity=".6"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/></g></svg>
+        <!-- ═════════ ETHER — real-time, lowest cost ═════════ -->
+        <article class="luxe-card luxe-card--ether">
+          <div class="luxe-card-inner">
+            <header class="luxe-card-head">
+              <div class="luxe-card-head-l">
+                <div class="luxe-card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><g><ellipse cx="12" cy="12" rx="10" ry="3.5" stroke="currentColor" stroke-width="1.3" stroke-opacity=".95"/><ellipse cx="12" cy="12" rx="10" ry="3.5" stroke="currentColor" stroke-width="1.3" stroke-opacity=".7" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.5" stroke="currentColor" stroke-width="1.3" stroke-opacity=".5" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/></g></svg>
                 </div>
-                <div>
-                  <span class="text-[10px] font-mono uppercase tracking-[0.18em] text-yellow-deep block font-bold">Real-time</span>
-                  <span class="text-[10px] font-mono text-ink-light">/ ether · fast</span>
+                <div class="luxe-card-meta">
+                  <span class="luxe-card-kicker">Real-time</span>
+                  <span class="luxe-card-path">/ ether · fast</span>
                 </div>
               </div>
-              <span class="tech-tag" style="background:rgba(254,243,199,.6);border-color:rgba(245,158,11,.25);color:#92400E;">low latency</span>
+              <span class="luxe-card-badge">low&nbsp;latency</span>
+            </header>
+
+            <h3 class="luxe-card-title">Ether</h3>
+            <p class="luxe-card-desc">HelveX's fastest, lowest-cost model. Streaming-first text and vision input — built for high-throughput workloads where every millisecond matters.</p>
+
+            <ul class="luxe-card-bars">
+              <li><span class="luxe-bar-label">Speed</span><div class="luxe-bar"><i style="--w:96%"></i></div><span class="luxe-bar-val">highest</span></li>
+              <li><span class="luxe-bar-label">Cost</span><div class="luxe-bar"><i style="--w:96%"></i></div><span class="luxe-bar-val">lowest</span></li>
+              <li><span class="luxe-bar-label">Reasoning</span><div class="luxe-bar is-soft"><i style="--w:55%"></i></div><span class="luxe-bar-val is-soft">solid</span></li>
+            </ul>
+
+            <dl class="luxe-card-specs">
+              <div><dt>Context</dt><dd class="is-strong">200K tokens</dd></div>
+              <div><dt>Inputs</dt><dd>Text + image</dd></div>
+              <div><dt>Streaming</dt><dd>Server-sent events</dd></div>
+              <div><dt>Tool use</dt><dd>Function calling</dd></div>
+              <div><dt>Caching</dt><dd>Prompt caching</dd></div>
+              <div><dt>Best for</dt><dd>Real-time · batch</dd></div>
+            </dl>
+
+            <div class="luxe-card-callout">
+              <span class="luxe-callout-label">Lowest cost in family</span>
+              <span class="luxe-callout-val">$ tier</span>
             </div>
 
-            <!-- Title + tagline -->
-            <h3 class="text-[44px] font-semibold tracking-tightest mb-2.5 leading-none" style="letter-spacing:-0.05em;">Ether</h3>
-            <p class="text-sm text-ink-mid leading-relaxed mb-6 pretty">HelveX's fastest, lowest-cost model. Streaming-first text and vision input — built for high-throughput workloads where every millisecond matters.</p>
-
-            <!-- Relative strengths (directional, not absolute benchmarks) -->
-            <div class="mb-6 space-y-2">
-              <div class="flex items-center gap-3"><span class="text-[10px] font-mono uppercase tracking-wider text-ink-light w-20">Speed</span><div class="flex-1 h-1 bg-line rounded-full overflow-hidden"><div class="h-full bg-yellow-deep rounded-full" style="width:96%"></div></div><span class="text-[10px] font-mono text-ink font-bold w-14 text-right">highest</span></div>
-              <div class="flex items-center gap-3"><span class="text-[10px] font-mono uppercase tracking-wider text-ink-light w-20">Cost</span><div class="flex-1 h-1 bg-line rounded-full overflow-hidden"><div class="h-full bg-yellow-deep rounded-full" style="width:96%"></div></div><span class="text-[10px] font-mono text-ink font-bold w-14 text-right">lowest</span></div>
-              <div class="flex items-center gap-3"><span class="text-[10px] font-mono uppercase tracking-wider text-ink-light w-20">Reasoning</span><div class="flex-1 h-1 bg-line rounded-full overflow-hidden"><div class="h-full bg-ink/40 rounded-full" style="width:55%"></div></div><span class="text-[10px] font-mono text-ink-mid w-14 text-right">solid</span></div>
+            <div class="luxe-card-features">
+              <span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>streaming</span>
+              <span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>200K&nbsp;ctx</span>
+              <span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 7h5v5M19 7l-9 9-4-4-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>tools</span>
             </div>
 
-            <!-- Real HelveX API spec -->
-            <div class="border-t border-line-soft pt-5 space-y-2.5 text-[12.5px] mb-6">
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Context</span><span class="font-mono font-bold text-ink">200K tokens</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Inputs</span><span class="font-mono text-ink-soft">Text + image</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Streaming</span><span class="font-mono text-ink-soft">Server-sent events</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Tool use</span><span class="font-mono text-ink-soft">Function calling</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Caching</span><span class="font-mono text-ink-soft">Prompt caching</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Best for</span><span class="font-mono text-ink-soft">Real-time · batch · classify</span></div>
-            </div>
-
-            <!-- Pricing positioning callout -->
-            <div class="mb-6 rounded-lg bg-yellow-soft/40 border border-yellow/25 px-3.5 py-2.5 flex items-center justify-between">
-              <span class="text-[10px] font-mono uppercase tracking-widest text-yellow-deep font-bold">Lowest cost in the family</span>
-              <span class="font-mono font-bold text-ink text-sm">$ <span class="text-yellow-deep">tier</span></span>
-            </div>
-
-            <!-- CTA row -->
-            <div class="mt-auto flex items-center justify-between gap-3 pt-1">
-              <a href="/models#ether" class="inline-flex items-center gap-1.5 text-ink font-semibold text-[12px] uppercase tracking-widest border-b border-yellow pb-0.5 group-hover:gap-2.5 group-hover:border-yellow-deep transition-all" style="letter-spacing:0.16em;">Full spec<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
-              <a href="/signup.html" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-ink hover:bg-ink-soft text-white text-[11px] font-bold uppercase tracking-widest transition-colors" style="letter-spacing:0.14em;">Try Ether<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
-            </div>
+            <footer class="luxe-card-foot">
+              <a href="/models#ether" class="luxe-card-link">Full spec<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
+              <a href="/signup.html" class="luxe-card-cta">Try Ether<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
+            </footer>
           </div>
-        </div>
+        </article>
 
-        <!-- ═════════ NEXUS ═════════ -->
-        <div class="tech-card group relative overflow-hidden flex flex-col">
-          <span class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-red/0 via-red to-red/0 z-[5]"></span>
-          <div class="absolute -top-20 -right-20 w-44 h-44 bg-red/15 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div class="relative p-7 sm:p-8 flex-1 flex flex-col">
-            <div class="flex items-start justify-between mb-5">
-              <div class="flex items-center gap-3">
-                <div class="relative w-12 h-12 rounded-xl bg-red flex items-center justify-center shadow-lg shadow-red/40">
-                  <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none"><g><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="0.6" stroke-opacity=".25"/><line x1="12" y1="12" x2="12" y2="3.5"  stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/><line x1="12" y1="12" x2="19.4" y2="7.5"  stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/><line x1="12" y1="12" x2="19.4" y2="16.5" stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/><line x1="12" y1="12" x2="12" y2="20.5" stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/><line x1="12" y1="12" x2="4.6"  y2="16.5" stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/><line x1="12" y1="12" x2="4.6"  y2="7.5"  stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/><circle cx="12"  cy="3.5"  r="1.6" fill="currentColor"/><circle cx="19.4" cy="7.5"  r="1.4" fill="currentColor" fill-opacity=".9"/><circle cx="19.4" cy="16.5" r="1.4" fill="currentColor" fill-opacity=".75"/><circle cx="12"  cy="20.5" r="1.4" fill="currentColor" fill-opacity=".6"/><circle cx="4.6"  cy="16.5" r="1.4" fill="currentColor" fill-opacity=".75"/><circle cx="4.6"  cy="7.5"  r="1.4" fill="currentColor" fill-opacity=".9"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/></g></svg>
+        <!-- ═════════ NEXUS — balanced reasoning workhorse ═════════ -->
+        <article class="luxe-card luxe-card--nexus">
+          <div class="luxe-card-inner">
+            <header class="luxe-card-head">
+              <div class="luxe-card-head-l">
+                <div class="luxe-card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><g><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="0.6" stroke-opacity=".30"/><line x1="12" y1="12" x2="12"  y2="3.5"  stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/><line x1="12" y1="12" x2="19.4" y2="7.5"  stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/><line x1="12" y1="12" x2="19.4" y2="16.5" stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/><line x1="12" y1="12" x2="12"  y2="20.5" stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/><line x1="12" y1="12" x2="4.6"  y2="16.5" stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/><line x1="12" y1="12" x2="4.6"  y2="7.5"  stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/><circle cx="12"   cy="3.5"  r="1.6" fill="currentColor"/><circle cx="19.4" cy="7.5"  r="1.4" fill="currentColor" fill-opacity=".9"/><circle cx="19.4" cy="16.5" r="1.4" fill="currentColor" fill-opacity=".75"/><circle cx="12"   cy="20.5" r="1.4" fill="currentColor" fill-opacity=".6"/><circle cx="4.6"  cy="16.5" r="1.4" fill="currentColor" fill-opacity=".75"/><circle cx="4.6"  cy="7.5"  r="1.4" fill="currentColor" fill-opacity=".9"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/></g></svg>
                 </div>
-                <div>
-                  <span class="text-[10px] font-mono uppercase tracking-[0.18em] text-red block font-bold">Reasoning</span>
-                  <span class="text-[10px] font-mono text-ink-light">/ nexus · balanced</span>
+                <div class="luxe-card-meta">
+                  <span class="luxe-card-kicker">Reasoning</span>
+                  <span class="luxe-card-path">/ nexus · balanced</span>
                 </div>
               </div>
-              <span class="tech-tag" style="background:rgba(254,226,226,.5);border-color:rgba(220,38,38,0.25);color:#991B1B;">deep think</span>
+              <span class="luxe-card-badge">deep&nbsp;think</span>
+            </header>
+
+            <h3 class="luxe-card-title">Nexus</h3>
+            <p class="luxe-card-desc">HelveX's balanced workhorse. Strong reasoning, fast enough for production, with the longest context window in the family — extended thinking and Citations on demand.</p>
+
+            <ul class="luxe-card-bars">
+              <li><span class="luxe-bar-label">Reasoning</span><div class="luxe-bar"><i style="--w:88%"></i></div><span class="luxe-bar-val">strong</span></li>
+              <li><span class="luxe-bar-label">Context</span><div class="luxe-bar"><i style="--w:98%"></i></div><span class="luxe-bar-val">longest</span></li>
+              <li><span class="luxe-bar-label">Speed</span><div class="luxe-bar is-soft"><i style="--w:62%"></i></div><span class="luxe-bar-val is-soft">balanced</span></li>
+            </ul>
+
+            <dl class="luxe-card-specs">
+              <div><dt>Context</dt><dd class="is-strong">200K · 1M (beta)</dd></div>
+              <div><dt>Thinking</dt><dd class="is-strong">Extended (visible)</dd></div>
+              <div><dt>Citations</dt><dd>HelveX engine</dd></div>
+              <div><dt>Inputs</dt><dd>Text + image</dd></div>
+              <div><dt>Tool use</dt><dd>Parallel · structured</dd></div>
+              <div><dt>Best for</dt><dd>Most production work</dd></div>
+            </dl>
+
+            <div class="luxe-card-callout">
+              <span class="luxe-callout-label">Default workhorse</span>
+              <span class="luxe-callout-val">recommended</span>
             </div>
 
-            <h3 class="text-[44px] font-semibold tracking-tightest mb-2.5 leading-none" style="letter-spacing:-0.05em;">Nexus</h3>
-            <p class="text-sm text-ink-mid leading-relaxed mb-6 pretty">HelveX's balanced workhorse. Strong reasoning, fast enough for production, with the longest context window in the family — extended thinking and Citations on demand.</p>
-
-            <div class="mb-6 space-y-2">
-              <div class="flex items-center gap-3"><span class="text-[10px] font-mono uppercase tracking-wider text-ink-light w-20">Reasoning</span><div class="flex-1 h-1 bg-line rounded-full overflow-hidden"><div class="h-full bg-red rounded-full" style="width:88%"></div></div><span class="text-[10px] font-mono text-ink font-bold w-14 text-right">strong</span></div>
-              <div class="flex items-center gap-3"><span class="text-[10px] font-mono uppercase tracking-wider text-ink-light w-20">Context</span><div class="flex-1 h-1 bg-line rounded-full overflow-hidden"><div class="h-full bg-red rounded-full" style="width:98%"></div></div><span class="text-[10px] font-mono text-ink font-bold w-14 text-right">longest</span></div>
-              <div class="flex items-center gap-3"><span class="text-[10px] font-mono uppercase tracking-wider text-ink-light w-20">Speed</span><div class="flex-1 h-1 bg-line rounded-full overflow-hidden"><div class="h-full bg-ink/40 rounded-full" style="width:62%"></div></div><span class="text-[10px] font-mono text-ink-mid w-14 text-right">balanced</span></div>
+            <div class="luxe-card-features">
+              <span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>thinking</span>
+              <span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z" stroke="currentColor" stroke-width="2"/></svg>citations</span>
+              <span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h6M9 17h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>1M&nbsp;ctx</span>
             </div>
 
-            <div class="border-t border-line-soft pt-5 space-y-2.5 text-[12.5px] mb-6">
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Context</span><span class="font-mono font-bold text-ink">200K · 1M (beta)</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Thinking</span><span class="font-mono font-bold text-ink">Extended (visible)</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Citations</span><span class="font-mono text-ink-soft">HelveX Citations engine</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Inputs</span><span class="font-mono text-ink-soft">Text + image</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Tool use</span><span class="font-mono text-ink-soft">Parallel · structured</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Best for</span><span class="font-mono text-ink-soft">Most production work</span></div>
-            </div>
-
-            <div class="mb-6 rounded-lg bg-red-soft/40 border border-red/25 px-3.5 py-2.5 flex items-center justify-between">
-              <span class="text-[10px] font-mono uppercase tracking-widest text-red font-bold">Default workhorse</span>
-              <span class="font-mono font-bold text-ink text-sm"><span class="text-red">recommended</span></span>
-            </div>
-
-            <div class="mt-auto flex items-center justify-between gap-3 pt-1">
-              <a href="/models#nexus" class="inline-flex items-center gap-1.5 text-ink font-semibold text-[12px] uppercase tracking-widest border-b border-red pb-0.5 group-hover:gap-2.5 transition-all" style="letter-spacing:0.16em;">Full spec<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
-              <a href="/signup.html" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-ink hover:bg-ink-soft text-white text-[11px] font-bold uppercase tracking-widest transition-colors" style="letter-spacing:0.14em;">Try Nexus<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
-            </div>
+            <footer class="luxe-card-foot">
+              <a href="/models#nexus" class="luxe-card-link">Full spec<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
+              <a href="/signup.html" class="luxe-card-cta">Try Nexus<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
+            </footer>
           </div>
-        </div>
+        </article>
 
-        <!-- ═════════ PROMETHEUS ═════════ -->
-        <div class="tech-card group relative overflow-hidden flex flex-col">
-          <span class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-ink/0 via-ink to-ink/0 z-[5]"></span>
-          <div class="absolute -top-20 -right-20 w-44 h-44 bg-ink/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div class="relative p-7 sm:p-8 flex-1 flex flex-col">
-            <div class="flex items-start justify-between mb-5">
-              <div class="flex items-center gap-3">
-                <div class="relative w-12 h-12 rounded-xl bg-ink flex items-center justify-center shadow-lg shadow-ink/30">
-                  <svg class="w-6 h-6 text-yellow" viewBox="0 0 24 24" fill="none"><g><path d="M12 2.5 C 13.5 5 15 6.5 15 9 C 15 10.5 14 11 13 11.5 C 14.5 9 13.5 6.5 12 2.5 Z" fill="currentColor" fill-opacity=".55"/><path d="M12 2.5 C 9 6 7 9.5 8 13.5 C 8 18 11 21 12 21 C 13 21 16 18 16 13.5 C 16 11.5 14.5 10 14 7.5 C 13.5 9.5 13 10.5 12 11.5 C 11.5 10 11 8 12 2.5 Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="currentColor" fill-opacity=".22"/><path d="M12 12.5 C 10.5 14.5 10 16 11.5 18 C 12 19 13 18 13 17 C 13 16 12.5 14.5 12 12.5 Z" fill="currentColor"/></g></svg>
+        <!-- ═════════ PROMETHEUS — flagship, agentic frontier ═════════ -->
+        <article class="luxe-card luxe-card--flagship">
+          <span class="luxe-flagship-tag">Flagship</span>
+          <div class="luxe-card-inner">
+            <header class="luxe-card-head">
+              <div class="luxe-card-head-l">
+                <div class="luxe-card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><g><path d="M12 2.5 C 13.5 5 15 6.5 15 9 C 15 10.5 14 11 13 11.5 C 14.5 9 13.5 6.5 12 2.5 Z" fill="currentColor" fill-opacity=".6"/><path d="M12 2.5 C 9 6 7 9.5 8 13.5 C 8 18 11 21 12 21 C 13 21 16 18 16 13.5 C 16 11.5 14.5 10 14 7.5 C 13.5 9.5 13 10.5 12 11.5 C 11.5 10 11 8 12 2.5 Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="currentColor" fill-opacity=".25"/><path d="M12 12.5 C 10.5 14.5 10 16 11.5 18 C 12 19 13 18 13 17 C 13 16 12.5 14.5 12 12.5 Z" fill="currentColor"/></g></svg>
                 </div>
-                <div>
-                  <span class="text-[10px] font-mono uppercase tracking-[0.18em] text-ink block font-bold">Agentic</span>
-                  <span class="text-[10px] font-mono text-ink-light">/ prometheus · deep</span>
+                <div class="luxe-card-meta">
+                  <span class="luxe-card-kicker">Agentic</span>
+                  <span class="luxe-card-path">/ prometheus · deep</span>
                 </div>
               </div>
-              <span class="tech-tag" style="background:rgba(10,10,10,.05);border-color:rgba(10,10,10,.15);color:#171717;">agentic</span>
+            </header>
+
+            <h3 class="luxe-card-title">Prometheus</h3>
+            <p class="luxe-card-desc">HelveX's strongest model for complex reasoning and agentic work. Extended thinking, computer use, and chained tool calls — for the work where depth matters more than latency.</p>
+
+            <ul class="luxe-card-bars">
+              <li><span class="luxe-bar-label">Reasoning</span><div class="luxe-bar"><i style="--w:98%"></i></div><span class="luxe-bar-val">deepest</span></li>
+              <li><span class="luxe-bar-label">Tool use</span><div class="luxe-bar"><i style="--w:92%"></i></div><span class="luxe-bar-val">advanced</span></li>
+              <li><span class="luxe-bar-label">Speed</span><div class="luxe-bar is-soft"><i style="--w:48%"></i></div><span class="luxe-bar-val is-soft">slower</span></li>
+            </ul>
+
+            <dl class="luxe-card-specs">
+              <div><dt>Context</dt><dd class="is-strong">200K tokens</dd></div>
+              <div><dt>Thinking</dt><dd class="is-strong">Extended · visible</dd></div>
+              <div><dt>Tool use</dt><dd>Parallel · chained</dd></div>
+              <div><dt>Computer use</dt><dd>Screen · kb · mouse</dd></div>
+              <div><dt>Web search</dt><dd>Native tool</dd></div>
+              <div><dt>Best for</dt><dd>Agents · analysis · code</dd></div>
+            </dl>
+
+            <div class="luxe-card-callout">
+              <span class="luxe-callout-label">Strongest reasoning</span>
+              <span class="luxe-callout-val">in family</span>
             </div>
 
-            <h3 class="text-[44px] font-semibold tracking-tightest mb-2.5 leading-none" style="letter-spacing:-0.05em;">Prometheus</h3>
-            <p class="text-sm text-ink-mid leading-relaxed mb-6 pretty">HelveX's strongest model for complex reasoning and agentic work. Extended thinking, computer use, and chained tool calls — for the work where depth matters more than latency.</p>
-
-            <div class="mb-6 space-y-2">
-              <div class="flex items-center gap-3"><span class="text-[10px] font-mono uppercase tracking-wider text-ink-light w-20">Reasoning</span><div class="flex-1 h-1 bg-line rounded-full overflow-hidden"><div class="h-full bg-ink rounded-full" style="width:98%"></div></div><span class="text-[10px] font-mono text-ink font-bold w-14 text-right">deepest</span></div>
-              <div class="flex items-center gap-3"><span class="text-[10px] font-mono uppercase tracking-wider text-ink-light w-20">Tool use</span><div class="flex-1 h-1 bg-line rounded-full overflow-hidden"><div class="h-full bg-ink rounded-full" style="width:92%"></div></div><span class="text-[10px] font-mono text-ink font-bold w-14 text-right">advanced</span></div>
-              <div class="flex items-center gap-3"><span class="text-[10px] font-mono uppercase tracking-wider text-ink-light w-20">Speed</span><div class="flex-1 h-1 bg-line rounded-full overflow-hidden"><div class="h-full bg-ink/40 rounded-full" style="width:48%"></div></div><span class="text-[10px] font-mono text-ink-mid w-14 text-right">slower</span></div>
+            <div class="luxe-card-features">
+              <span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>computer&nbsp;use</span>
+              <span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>web&nbsp;search</span>
+              <span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>chained</span>
             </div>
 
-            <div class="border-t border-line-soft pt-5 space-y-2.5 text-[12.5px] mb-6">
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Context</span><span class="font-mono font-bold text-ink">200K tokens</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Thinking</span><span class="font-mono font-bold text-ink">Extended · visible</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Tool use</span><span class="font-mono text-ink-soft">Parallel · chained</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Computer use</span><span class="font-mono text-ink-soft">Screen · keyboard · mouse</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Web search</span><span class="font-mono text-ink-soft">Native tool</span></div>
-              <div class="flex items-center justify-between"><span class="font-mono text-[10px] uppercase tracking-wider text-ink-light">Best for</span><span class="font-mono text-ink-soft">Agents · analysis · code</span></div>
-            </div>
-
-            <div class="mb-6 rounded-lg bg-cream border border-line px-3.5 py-2.5 flex items-center justify-between">
-              <span class="text-[10px] font-mono uppercase tracking-widest text-ink font-bold">Strongest reasoning</span>
-              <span class="font-mono font-bold text-ink text-sm"><span class="text-yellow-deep">in the family</span></span>
-            </div>
-
-            <div class="mt-auto flex items-center justify-between gap-3 pt-1">
-              <a href="/models#prometheus" class="inline-flex items-center gap-1.5 text-ink font-semibold text-[12px] uppercase tracking-widest border-b border-ink pb-0.5 group-hover:gap-2.5 transition-all" style="letter-spacing:0.16em;">Full spec<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
-              <a href="/signup.html" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-ink hover:bg-ink-soft text-white text-[11px] font-bold uppercase tracking-widest transition-colors" style="letter-spacing:0.14em;">Try Prometheus<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
-            </div>
+            <footer class="luxe-card-foot">
+              <a href="/models#prometheus" class="luxe-card-link">Full spec<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
+              <a href="/signup.html" class="luxe-card-cta">Try Prometheus<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></a>
+            </footer>
           </div>
-        </div>
+        </article>
       </div>
 
       <!-- Funnel CTA → dedicated /models page -->
-      <div class="reveal relative">
-        <div class="absolute -inset-1 bg-gradient-to-r from-white/0 via-white/85 to-cream/40 rounded-2xl blur-2xl opacity-70"></div>
-        <div class="metallic-shine relative flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-6 rounded-2xl border border-line bg-white/90 backdrop-blur-xl px-6 sm:px-8 py-6 sm:py-7 shadow-xl shadow-ink/5">
-          <div class="flex-1">
-            <p class="text-base sm:text-lg font-semibold text-ink mb-1 tracking-tight">Compare all three on one page.</p>
-            <p class="text-sm text-ink-mid leading-relaxed pretty">Decision matrix, internal benchmarks, architecture specs, and the routing logic — everything in one place.</p>
-          </div>
-          <a href="/models" class="tech-cta-glow inline-flex items-center justify-center gap-2 bg-ink hover:bg-ink-soft text-white font-semibold px-6 py-3.5 rounded-full text-sm transition-all whitespace-nowrap">
-            See the Models page
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg>
-          </a>
+      <div class="reveal luxe-compare">
+        <div class="luxe-compare-text">
+          <p class="luxe-compare-title">Compare all three on one page.</p>
+          <p class="luxe-compare-sub">Decision matrix, internal benchmarks, architecture specs, and the routing logic — everything in one place.</p>
         </div>
+        <a href="/models" class="luxe-compare-cta">
+          See the Models page
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg>
+        </a>
       </div>
 
     </div>
