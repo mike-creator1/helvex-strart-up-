@@ -2547,6 +2547,28 @@ body {
 }
 
 /* ════════════════════════════════════════════════════════════
+   v10 — anchor the left-panel content to the top
+   v9 used flex-column + space-between, which pushed the content
+   to the visual centre between logo and footer. The user wants
+   the editorial block to sit closer to the logo, so we switch
+   to a top-anchored layout: logo, then content immediately, then
+   footer pushed to the bottom with margin-top: auto.
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 921px) {
+  .auth-shell.split .auth-side {
+    justify-content: flex-start !important;
+  }
+  .auth-shell.split .side-content {
+    flex: 0 0 auto !important;
+    justify-content: flex-start !important;
+    padding: clamp(20px, 3vh, 36px) 0 0 !important;
+  }
+  .auth-shell.split .side-foot {
+    margin-top: auto !important;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
    v8 — scale up the right-panel auth card
    Bigger surface + larger inputs + bigger button + bumped
    typography. Stays inside 100vh.
