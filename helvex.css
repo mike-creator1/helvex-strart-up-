@@ -365,27 +365,41 @@
     }
     .hx-footer-form input::placeholder { color: rgba(236,236,238,0.32); }
 
-    /* Kill ALL native focus rings + Firefox :invalid red box-shadow on the
-       footer subscribe input. The visual focus state belongs to the
-       wrapper .hx-footer-form-row, not the input itself. Without these
-       overrides Firefox paints a red box-shadow on the required type=email
-       input the moment it's focused while empty, which reads as a broken
-       red rectangle inside the dark glass pill. */
-    .hx-footer-form input,
-    .hx-footer-form input:focus,
-    .hx-footer-form input:focus-visible,
-    .hx-footer-form input:invalid,
-    .hx-footer-form input:-moz-ui-invalid,
-    .hx-footer-form input:required {
-      outline: none !important;
+    /* Nuclear reset on the footer subscribe input — kills every native
+       focus ring and every :invalid / :user-invalid / :-moz-ui-invalid
+       paint. The visual focus state belongs to the wrapper
+       .hx-footer-form-row, not the input itself. Maximum specificity +
+       every pseudo-class variant to guarantee the override wins against
+       any browser default OR any leaked rule from auth.css. */
+    footer.hx-footer .hx-footer-form input[type="email"],
+    footer.hx-footer .hx-footer-form input[type="email"]:focus,
+    footer.hx-footer .hx-footer-form input[type="email"]:focus-visible,
+    footer.hx-footer .hx-footer-form input[type="email"]:invalid,
+    footer.hx-footer .hx-footer-form input[type="email"]:-moz-ui-invalid,
+    footer.hx-footer .hx-footer-form input[type="email"]:user-invalid,
+    footer.hx-footer .hx-footer-form input[type="email"]:required,
+    footer.hx-footer .hx-footer-form input[type="email"]:focus:invalid,
+    footer.hx-footer .hx-footer-form input[type="email"]:focus:required,
+    footer.hx-footer .hx-footer-form input[type="email"]:focus:placeholder-shown {
+      outline: 0 !important;
+      outline-style: none !important;
+      outline-color: transparent !important;
+      outline-width: 0 !important;
       box-shadow: none !important;
       -webkit-box-shadow: none !important;
+      border: 0 !important;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
     }
-    .hx-footer-form-row,
-    .hx-footer-form-row:focus-within {
-      outline: none !important;
+    /* Also kill any wrapper focus ring */
+    footer.hx-footer .hx-footer-form .hx-footer-form-row,
+    footer.hx-footer .hx-footer-form .hx-footer-form-row:focus-within,
+    footer.hx-footer .hx-footer-form *:focus,
+    footer.hx-footer .hx-footer-form *:focus-visible {
+      outline: 0 !important;
+      outline-style: none !important;
     }
-    .hx-footer-form *:focus-visible { outline: none !important; }
     .hx-footer-form button {
       position: relative;
       display: inline-flex; align-items: center; gap: 7px;

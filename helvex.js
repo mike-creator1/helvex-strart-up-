@@ -1,3 +1,19 @@
+    /* Disable HTML5 validation on the premium footer subscribe form so the
+       browser never paints :invalid / :-moz-ui-invalid red ring while the
+       user is typing an email. The form has an onsubmit preventDefault
+       handler and just flips a class — no real validation is needed. */
+    (function () {
+      var forms = document.querySelectorAll('form.hx-footer-form');
+      forms.forEach(function (f) {
+        f.setAttribute('novalidate', '');
+        var inp = f.querySelector('input[type="email"]');
+        if (inp) {
+          inp.removeAttribute('required');
+          inp.removeAttribute('pattern');
+        }
+      });
+    })();
+
     (function () {
       var reveals = document.querySelectorAll('.reveal');
       if (!('IntersectionObserver' in window)) {
