@@ -1991,3 +1991,77 @@ body {
     transition: none !important;
   }
 }
+
+/* ════════════════════════════════════════════════════════════
+   NO-SCROLL DESKTOP — fit the entire experience in 100vh
+   Body / html / shell pinned to 100vh and overflow:hidden so
+   the page is a fixed cinematic frame, not a scrollable form.
+   Internal panel scroll only kicks in below 720 px viewport
+   height (laptop edge cases) so we never trap content.
+   Mobile (<= 920 px) reverts to natural scrolling.
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 921px) {
+  html, body {
+    height: 100vh;
+    overflow: hidden;
+  }
+  .auth-shell.split {
+    height: 100vh;
+    min-height: 0;
+    max-height: 100vh;
+  }
+  .auth-shell.split .auth-side,
+  .auth-shell.split .auth-main {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Tighten left-panel spacing to keep the footer above the fold */
+  .auth-shell.split .auth-side {
+    padding: clamp(40px, 4vw, 56px);
+  }
+  .auth-shell.split .side-brand { margin-bottom: clamp(28px, 3vw, 44px); }
+  .auth-shell.split .side-brand img { height: clamp(54px, 5vw, 72px); }
+  .auth-shell.split .side-eyebrow { margin-bottom: clamp(20px, 2.4vw, 28px); }
+  .auth-shell.split .side-headline {
+    font-size: clamp(40px, 4.4vw, 64px);
+    margin-bottom: clamp(14px, 1.6vw, 20px);
+  }
+  .auth-shell.split .side-sub {
+    font-size: 14.5px;
+    margin-bottom: clamp(20px, 2.8vw, 36px);
+  }
+  .auth-shell.split .side-features { gap: clamp(12px, 1.5vw, 18px); }
+  .auth-shell.split .side-foot { padding-top: clamp(16px, 1.8vw, 22px); }
+
+  /* Tighten right-panel card so the form + switch fit cleanly */
+  .auth-shell.split .auth-card {
+    padding: clamp(28px, 3vw, 40px);
+    max-height: calc(100vh - 64px);
+  }
+  .auth-shell.split .auth-card h1 {
+    font-size: clamp(24px, 2.6vw, 32px);
+    margin-bottom: 8px;
+  }
+  .auth-shell.split .auth-card .muted {
+    margin-bottom: 22px;
+  }
+  .auth-shell.split .tabs { margin-bottom: 24px; }
+  .auth-shell.split .field { margin-bottom: 14px; }
+  .auth-shell.split .field input { height: 44px; }
+  .auth-shell.split .row { margin: 4px 0 18px; }
+  .auth-shell.split .btn-primary { height: 46px; }
+  .auth-shell.split .switch {
+    margin-top: 22px;
+    padding-top: 16px;
+  }
+}
+
+/* Laptop edge case — very short viewports (≤ 720 px height) get an
+   internal scroll on the form panel instead of overflow-cut. The page
+   itself still doesn't scroll. */
+@media (min-width: 921px) and (max-height: 720px) {
+  .auth-shell.split .auth-main { overflow-y: auto; }
+  .auth-shell.split .auth-side { overflow-y: auto; }
+}
