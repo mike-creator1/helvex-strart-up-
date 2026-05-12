@@ -2031,11 +2031,27 @@
         else                        pad(statePts[k], N);
       }
 
+      /* Precompute the max absolute X across every state — this is the
+         reference for the spatial-wave stagger in render(). Particles
+         whose target X sits further to one side use this to determine
+         their "phase" in the morph wave, producing a coherent
+         left-to-right sweep into each new state instead of a random
+         scatter arrival. Computed once per build, cached on the outer
+         scope, costs zero per frame. */
+      globalMaxAbsX = 1;
+      for (var sIdx = 0; sIdx < statePts.length; sIdx++) {
+        for (var pIdx = 0; pIdx < statePts[sIdx].length; pIdx++) {
+          var absX = statePts[sIdx][pIdx].x;
+          if (absX < 0) absX = -absX;
+          if (absX > globalMaxAbsX) globalMaxAbsX = absX;
+        }
+      }
+      invMaxAbsX2 = 1 / (globalMaxAbsX * 2);
+
       // Initialize / resize particle pool. Particles start at the
       // logo state so the first frame already shows the brand.
-      // Uniform 1.5px dot — eliminates the random-size flicker that
-      // made the old morph feel rough. `seed` drives the per-particle
-      // morph stagger so the transition reads as a choreographed wave.
+      // `seed` drives per-particle stagger variance + signs the
+      // perpendicular curve offset on long travels.
       if (particles.length === 0) {
         for (var p = 0; p < N; p++) {
           particles.push({
@@ -2057,25 +2073,29 @@
       }
     }
 
-    /* Animation phases per state cycle (ms):
-       hold (state stable, readable) → morph (transition to next) → ...
-       Longer hold (1800 ms) + slower morph (1100 ms) ≈ 2.9 s/state —
-       gives the eye time to land on each word, and the transition
-       feels cinematic instead of strobing. */
-    /* Longer hold + shorter morph = each word reads cleanly before
-       the next transition begins. Net cycle ≈ 3.2 s per state. */
-    var HOLD_LOGO  = 2500;
-    var HOLD_WORD  = 2500;
-    var MORPH_DUR  = 900;
+    /* Spatial-wave reference — populated by build(). Used by render()
+       to map a particle's target X position into a 0..1 phase that
+       drives the asymmetric stagger. */
+    var globalMaxAbsX = 1;
+    var invMaxAbsX2 = 0.5;
 
-    /* Apple-style ease — out-quint-ish. Smooth at start, deliberate
-       at the end, no perceptible kick. */
+    /* Animation phases per state cycle (ms):
+       Slightly shorter hold + longer morph than before — gives the
+       wave more time to land, the eye still has enough to read the
+       word, and the per-state rhythm stays at ~3.4 s. */
+    var HOLD_LOGO  = 2200;
+    var HOLD_WORD  = 2200;
+    var MORPH_DUR  = 1200;
+
+    /* Quintic smootherstep — Ken Perlin's improved smoothstep.
+       Zero first AND second derivative at both endpoints, so the
+       motion accelerates and decelerates silkily. Reads as a single
+       continuous gesture rather than a cubic curve that's perceptibly
+       fastest at the centre. */
     function easeInOut(t) {
       if (t <= 0) return 0;
       if (t >= 1) return 1;
-      return t < 0.5
-        ? 4 * t * t * t
-        : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      return t * t * t * (t * (t * 6 - 15) + 10);
     }
 
     var cycleStart = performance.now();
@@ -2170,44 +2190,93 @@
       // by dot scale, so the dot stays a constant 1.7 px throughout.
       var DOT = DOT_BY_STATE[st.from] || 1.7;
 
+      /* Hot-path constants — declared once per frame, not per particle.
+         STAGGER_AMOUNT is how wide the per-particle delay window is,
+         as a fraction of the morph duration. CURVE_THRESHOLD_SQ is
+         the squared travel distance above which a particle gets a
+         subtle quadratic-bezier arc instead of a straight lerp. */
+      var STAGGER_AMOUNT = 0.22;
+      var CURVE_THRESHOLD_SQ = 100;
+      var CURVE_AMOUNT = 0.08;
+      var TAU = 6.2831853;
+
       ctx.beginPath();
       for (var i = 0; i < N; i++) {
         var p  = particles[i];
         var fp = fromArr[i], tp = toArr[i];
+        var ax, ay;
 
         if (isMorph) {
-          /* Asymmetric per-particle stagger.
-             Each particle has its own start time in [0, STAGGER] but
-             EVERY particle ends at exactly k = 1. This means:
-              - no exponential-lerp "drift" past the morph window
-              - no transient overshoot between morph and hold
-              - the wave reads as a coordinated arrival, not a smear */
-          var STAGGER = 0.15;
-          var startK = p.seed * STAGGER;
-          var localK = (k - startK) / (1 - startK);
-          if (localK < 0) localK = 0;
-          else if (localK > 1) localK = 1;
-          else localK = easeInOut(localK);
+          /* Spatial-wave stagger.
+             A particle's start time = 60% target-X-phase + 40% random.
+             Target-X-phase = (tp.x + globalMaxAbsX) / (2 * globalMaxAbsX),
+             clamped to [0, 1]. Particles whose target sits on the left
+             of the canvas have phase ≈ 0 → start immediately; particles
+             on the right have phase ≈ 1 → start latest. Random seed adds
+             organic texture so the wave doesn't look rigidly columnar.
+             EVERY particle finishes at k = 1 exactly. */
+          var phase = (tp.x + globalMaxAbsX) * invMaxAbsX2;
+          if (phase < 0) phase = 0;
+          else if (phase > 1) phase = 1;
+          var stagger = phase * 0.6 + p.seed * 0.4;
+          var startK = stagger * STAGGER_AMOUNT;
 
-          // Direct positional interpolation — particle sits exactly on
-          // the lerp between source and target every frame. No chasing
-          // a moving target with a damped follow.
-          p.x = fp.x + (tp.x - fp.x) * localK;
-          p.y = fp.y + (tp.y - fp.y) * localK;
+          var localK = (k - startK) / (1 - startK);
+          if (localK <= 0) {
+            p.x = fp.x;
+            p.y = fp.y;
+          } else if (localK >= 1) {
+            p.x = tp.x;
+            p.y = tp.y;
+          } else {
+            /* Inline quintic smootherstep — same curve as easeInOut()
+               but inlined to avoid 5500 function calls per frame. */
+            localK = localK * localK * localK * (localK * (localK * 6 - 15) + 10);
+
+            var dx = tp.x - fp.x;
+            var dy = tp.y - fp.y;
+            var distSq = dx * dx + dy * dy;
+
+            if (distSq < CURVE_THRESHOLD_SQ) {
+              /* Short travel — straight linear lerp. Below ~10 px the
+                 difference between a line and a curve is invisible, and
+                 the extra bezier math would just be wasted cycles. */
+              p.x = fp.x + dx * localK;
+              p.y = fp.y + dy * localK;
+            } else {
+              /* Long travel — quadratic bezier with a perpendicular
+                 offset on the midpoint. The offset direction is signed
+                 by seed so roughly half curve "above" the straight line
+                 and half curve "below" — organic arrival, not parallel
+                 lines all moving the same way. */
+              var perp = CURVE_AMOUNT * (p.seed - 0.5);
+              var midX = (fp.x + tp.x) * 0.5 - dy * perp;
+              var midY = (fp.y + tp.y) * 0.5 + dx * perp;
+              var omk  = 1 - localK;
+              var omk2 = omk * omk;
+              var k2   = localK * localK;
+              var two  = 2 * omk * localK;
+              p.x = omk2 * fp.x + two * midX + k2 * tp.x;
+              p.y = omk2 * fp.y + two * midY + k2 * tp.y;
+            }
+          }
+          /* Fractional positions during morph — half-pixel snapping
+             would visibly "click" particles into discrete grid cells
+             as they slide. Smooth motion needs fractional pixel
+             coordinates; the browser handles sub-pixel anti-aliasing. */
+          ax = p.x;
+          ay = p.y;
         } else {
-          // HOLD — snap every particle to its exact target. No lerping,
-          // no transient drift, no half-pixel doubling. The letter
-          // renders pixel-locked on the sampled grid every frame.
+          /* HOLD — pixel-locked at target with half-pixel snap for
+             maximally crisp dots on non-retina screens. */
           p.x = fp.x;
           p.y = fp.y;
+          ax = Math.round(p.x * 2) / 2;
+          ay = Math.round(p.y * 2) / 2;
         }
 
-        // Sub-pixel-snap to half-pixel grid for crisper arcs on
-        // non-retina screens.
-        var ax = Math.round(p.x * 2) / 2;
-        var ay = Math.round(p.y * 2) / 2;
         ctx.moveTo(ax + DOT, ay);
-        ctx.arc(ax, ay, DOT, 0, 6.2832);
+        ctx.arc(ax, ay, DOT, 0, TAU);
       }
       ctx.fill();
 
