@@ -237,7 +237,142 @@
   </div>
 
   <!-- ════════ HERO — futuristic tech ════════ -->
-  <section class="relative pt-14 sm:pt-24 pb-4 sm:pb-6 overflow-hidden tech-wash-blush">
+  <style>
+    /* ─── Hero supporting copy — anchors the morph with context ─ */
+    .hx-hero-copy { margin-top: 32px; }
+    @media (min-width: 640px) { .hx-hero-copy { margin-top: 48px; } }
+
+    .hx-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px; letter-spacing: 0.32em; font-weight: 600;
+      text-transform: uppercase;
+      color: rgba(10,10,10,0.55);
+      margin: 0 0 18px;
+      padding: 6px 14px 6px 12px; border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(10,10,10,0.06);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 18px -8px rgba(10,10,10,0.08);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .hx-hero-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #DC2626;
+      box-shadow: 0 0 8px rgba(220,38,38,0.6);
+      animation: hxHeroPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes hxHeroPulse {
+      0%, 100% { opacity: 1;   transform: scale(1); }
+      50%      { opacity: .55; transform: scale(0.85); }
+    }
+
+    .hx-hero-tagline {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: clamp(28px, 3.6vw, 44px);
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      color: #0A0A0A;
+      margin: 0 0 18px;
+    }
+    .hx-hero-tagline-italic {
+      display: inline-block;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      background: linear-gradient(120deg, #B45309 0%, #F0B852 30%, #DC2626 65%, #991B1B 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+              background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: hxHeroShimmer 9s ease-in-out infinite;
+    }
+    @keyframes hxHeroShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+
+    .hx-hero-sub {
+      max-width: 580px; margin: 0 auto 28px;
+      font-size: clamp(14px, 1.1vw, 16px);
+      line-height: 1.65;
+      color: rgba(10,10,10,0.62);
+    }
+
+    /* Pillar trio — Ether / Nexus / Prometheus */
+    .hx-hero-pillars {
+      display: inline-flex; align-items: center; gap: 14px;
+      padding: 10px 18px; border-radius: 999px;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(10,10,10,0.06);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.9) inset,
+        0 6px 24px -8px rgba(10,10,10,0.08);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      flex-wrap: wrap; justify-content: center;
+    }
+    .hx-hero-pillar {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px; font-weight: 600;
+      color: #0A0A0A;
+      letter-spacing: -0.01em;
+    }
+    .hx-hero-pillar-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--c, #0A0A0A);
+      box-shadow: 0 0 6px var(--c, #0A0A0A);
+      flex-shrink: 0;
+    }
+    .hx-hero-pillar em {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 10.5px;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: rgba(10,10,10,0.45);
+      margin-left: 2px;
+    }
+    .hx-hero-pillar-sep {
+      width: 1px; height: 14px;
+      background: rgba(10,10,10,0.12);
+    }
+
+    /* Bottom hairline meta strip */
+    .hx-hero-meta {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .hx-hero-meta-line {
+      flex: 1; max-width: 100px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(10,10,10,0.18), transparent);
+    }
+    .hx-hero-meta-text {
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      font-size: 10.5px; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(10,10,10,0.4);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    @media (max-width: 640px) {
+      .hx-hero-meta-text { white-space: normal; font-size: 9.5px; letter-spacing: 0.14em; line-height: 1.6; }
+      .hx-hero-meta-line { max-width: 40px; }
+      .hx-hero-pillar em { display: none; }
+      .hx-hero-pillars { gap: 10px; padding: 8px 14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hx-hero-dot, .hx-hero-tagline-italic { animation: none !important; }
+    }
+  </style>
+
+  <section class="relative pt-14 sm:pt-24 pb-16 sm:pb-24 overflow-hidden tech-wash-blush">
     <div class="tech-aurora"><div class="blob"></div></div>
     <div class="tech-grid"></div>
 
@@ -247,6 +382,50 @@
       <div class="reveal relative mx-auto hx-morph-stage" aria-label="HelveX transforming into AI">
         <canvas id="hx-morph-canvas" aria-hidden="true"></canvas>
         <div class="hx-morph-glow" aria-hidden="true"></div>
+      </div>
+
+      <!-- Supporting copy — gives the morph context and grounds the page -->
+      <div class="reveal text-center mx-auto max-w-3xl hx-hero-copy">
+
+        <p class="hx-hero-eyebrow">
+          <span class="hx-hero-dot"></span>
+          The HelveX AI ecosystem
+        </p>
+
+        <h1 class="hx-hero-tagline balance">
+          The AI platform serious<br />
+          <span class="hx-hero-tagline-italic">businesses run on.</span>
+        </h1>
+
+        <p class="hx-hero-sub pretty">
+          Three frontier models, one unified runtime, senior engineers who own every engagement — designed, built, and operated on the HelveX AI ecosystem and the modern cloud stack.
+        </p>
+
+        <!-- Pillar chips — the three models powering the platform -->
+        <div class="hx-hero-pillars" role="list">
+          <span class="hx-hero-pillar" role="listitem">
+            <span class="hx-hero-pillar-dot" style="--c:#F59E0B"></span>
+            Ether <em>real-time</em>
+          </span>
+          <span class="hx-hero-pillar-sep" aria-hidden="true"></span>
+          <span class="hx-hero-pillar" role="listitem">
+            <span class="hx-hero-pillar-dot" style="--c:#DC2626"></span>
+            Nexus <em>reasoning</em>
+          </span>
+          <span class="hx-hero-pillar-sep" aria-hidden="true"></span>
+          <span class="hx-hero-pillar" role="listitem">
+            <span class="hx-hero-pillar-dot" style="--c:#0A0A0A"></span>
+            Prometheus <em>agentic</em>
+          </span>
+        </div>
+
+        <!-- Bottom hairline caption -->
+        <div class="hx-hero-meta" aria-hidden="true">
+          <span class="hx-hero-meta-line"></span>
+          <span class="hx-hero-meta-text">Built in Switzerland · Operated globally</span>
+          <span class="hx-hero-meta-line"></span>
+        </div>
+
       </div>
 
     </div>
