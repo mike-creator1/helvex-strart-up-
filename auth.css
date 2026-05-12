@@ -2490,3 +2490,87 @@ body {
   .auth-shell.split .side-sub { margin-bottom: clamp(14px, 2.2vh, 28px) !important; }
   .auth-shell.split .side-features { gap: clamp(9px, 1.4vh, 16px) !important; }
 }
+
+/* ════════════════════════════════════════════════════════════
+   v8 — scale up the right-panel auth card
+   Bigger surface + larger inputs + bigger button + bumped
+   typography. Stays inside 100vh.
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 921px) {
+  .auth-shell.split .auth-card {
+    max-width: 520px !important;
+    padding: clamp(28px, 4vh, 48px) clamp(32px, 3.5vw, 52px) !important;
+    border-radius: clamp(20px, 2.2vh, 24px) !important;
+  }
+
+  /* Tabs — bigger pill switcher */
+  .auth-shell.split .tabs {
+    margin-bottom: clamp(18px, 2.8vh, 28px) !important;
+    padding: 5px !important;
+    border-radius: clamp(12px, 1.5vh, 14px) !important;
+  }
+  .auth-shell.split .tab {
+    padding: clamp(9px, 1.4vh, 12px) 18px !important;
+    font-size: clamp(13.5px, 1.7vh, 14.5px) !important;
+    border-radius: clamp(8px, 1.1vh, 10px) !important;
+  }
+
+  /* Welcome heading + lede */
+  .auth-shell.split .auth-card h1 {
+    font-size: clamp(26px, 3.6vh, 38px) !important;
+    line-height: 1.08 !important;
+    margin-bottom: clamp(7px, 1vh, 12px) !important;
+  }
+  .auth-shell.split .auth-card .muted {
+    font-size: clamp(13.5px, 1.75vh, 15.5px) !important;
+    line-height: 1.55 !important;
+    margin-bottom: clamp(18px, 2.8vh, 28px) !important;
+  }
+
+  /* Form fields */
+  .auth-shell.split .field {
+    margin-bottom: clamp(11px, 1.8vh, 18px) !important;
+  }
+  .auth-shell.split .field label {
+    font-size: clamp(12.5px, 1.55vh, 13.5px) !important;
+    margin-bottom: clamp(6px, 0.8vh, 9px) !important;
+  }
+  .auth-shell.split .field input {
+    height: clamp(44px, 5.6vh, 52px) !important;
+    padding: clamp(11px, 1.5vh, 15px) clamp(14px, 1.7vh, 18px) !important;
+    font-size: clamp(13.5px, 1.75vh, 15px) !important;
+    border-radius: clamp(10px, 1.3vh, 12px) !important;
+  }
+
+  /* Row (Keep me signed in / Forgot password) */
+  .auth-shell.split .row {
+    margin: clamp(3px, 0.6vh, 6px) 0 clamp(16px, 2.4vh, 24px) !important;
+    font-size: clamp(12.5px, 1.55vh, 13.5px) !important;
+  }
+  .auth-shell.split .checkbox input {
+    width: clamp(14px, 1.7vh, 16px) !important;
+    height: clamp(14px, 1.7vh, 16px) !important;
+  }
+
+  /* CTA button — bigger pill */
+  .auth-shell.split .btn-primary {
+    height: clamp(46px, 6vh, 56px) !important;
+    font-size: clamp(14px, 1.75vh, 15px) !important;
+  }
+  .auth-shell.split .btn-primary svg {
+    width: clamp(13px, 1.6vh, 16px) !important;
+    height: clamp(13px, 1.6vh, 16px) !important;
+  }
+
+  /* Support link */
+  .auth-shell.split .switch {
+    margin-top: clamp(16px, 2.4vh, 26px) !important;
+    padding-top: clamp(12px, 1.8vh, 20px) !important;
+    font-size: clamp(12.5px, 1.55vh, 13.5px) !important;
+  }
+
+  /* Right-panel padding — slightly more breathing around the bigger card */
+  .auth-shell.split .auth-main {
+    padding: clamp(24px, 4vh, 56px) clamp(28px, 3.5vw, 56px) !important;
+  }
+}
