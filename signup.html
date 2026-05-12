@@ -25,17 +25,63 @@
 </head>
 <body>
 
-  <div class="auth-shell single">
+  <div class="auth-shell split">
 
-    <header class="auth-topbar">
-      <a href="/" class="topbar-brand" aria-label="HelveX">
+    <aside class="auth-side">
+      <div class="side-veil" aria-hidden="true"></div>
+      <div class="side-glow side-glow-a" aria-hidden="true"></div>
+      <div class="side-glow side-glow-b" aria-hidden="true"></div>
+
+      <a href="/" class="side-brand" aria-label="HelveX">
         <img src="/helvex-logo.png" alt="HelveX" />
       </a>
-      <a href="/" class="topbar-back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        <span>Back to helvex.tech</span>
-      </a>
-    </header>
+
+      <div class="side-content">
+        <span class="side-eyebrow"><span class="dot"></span>HelveX · client portal</span>
+        <h2 class="side-headline">
+          Intelligence,<br />
+          <em>infrastructured.</em>
+        </h2>
+        <p class="side-sub">
+          The dedicated workspace where HelveX clients run their AI services, manage credits and billing, and stay in sync with the senior engineer assigned to their engagement.
+        </p>
+
+        <ul class="side-features">
+          <li>
+            <span class="feat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+            </span>
+            <span class="feat-body">
+              <strong>Built in Switzerland.</strong>
+              <span>Sovereign hosting in zurich-1, with auditable controls from day one.</span>
+            </span>
+          </li>
+          <li>
+            <span class="feat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+            </span>
+            <span class="feat-body">
+              <strong>Encrypted by default.</strong>
+              <span>TLS in flight, AES-256 at rest, key rotation handled for you.</span>
+            </span>
+          </li>
+          <li>
+            <span class="feat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11a4 4 0 10-8 0v2a4 4 0 008 0z"/><path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2"/></svg>
+            </span>
+            <span class="feat-body">
+              <strong>One senior engineer.</strong>
+              <span>The same person scopes, builds, and operates your engagement end-to-end.</span>
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="side-foot">
+        <span>© HelveX AG 2026</span>
+        <a href="/legal">Trust center</a>
+      </div>
+    </aside>
 
     <main class="auth-main">
       <div class="auth-card">
@@ -120,22 +166,6 @@
         </p>
       </div>
     </main>
-
-    <footer class="auth-bottombar">
-      <div class="bottombar-marks">
-        <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 5v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V5l-8-3z"/><path d="M9 12l2 2 4-4"/></svg>Built in Switzerland</span>
-        <span class="dot">·</span>
-        <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>Encrypted in flight &amp; at rest</span>
-        <span class="dot">·</span>
-        <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>99.99% uptime SLA</span>
-      </div>
-      <div class="bottombar-meta">
-        <span>© HelveX AG 2026</span>
-        <a href="/legal">Trust center</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/terms">Terms</a>
-      </div>
-    </footer>
 
   </div>
 
