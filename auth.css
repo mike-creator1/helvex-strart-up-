@@ -1182,12 +1182,13 @@ body {
   .auth-shell.split { grid-template-columns: 1fr; }
 }
 
-/* ── LEFT — premium brand panel ───────────────────────────── */
+/* ── LEFT — premium brand panel, content centered ────────── */
 .auth-shell.split .auth-side {
   position: relative;
   display: flex !important;
   flex-direction: column;
-  padding: 56px 64px 44px;
+  align-items: center;
+  padding: 56px 48px 44px;
   background:
     linear-gradient(180deg, #FBFAF7 0%, #F6F3EC 100%);
   border-right: 1px solid var(--hx-line);
@@ -1195,10 +1196,19 @@ body {
   isolation: isolate;
 }
 @media (max-width: 1180px) {
-  .auth-shell.split .auth-side { padding: 48px 48px 36px; }
+  .auth-shell.split .auth-side { padding: 48px 36px 36px; }
 }
 @media (max-width: 920px) {
   .auth-shell.split .auth-side { display: none !important; }
+}
+
+/* Every direct content block sits inside one centered 520 px column. */
+.auth-shell.split .side-brand,
+.auth-shell.split .side-content,
+.auth-shell.split .side-foot {
+  width: 100%;
+  max-width: 520px;
+  margin-inline: auto;
 }
 
 /* Subtle dot mesh, masked to fade out at edges. */
