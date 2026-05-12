@@ -383,118 +383,157 @@
          All models · 28 languages           Explore →   ← footer
        Hover: subtle pink/cream wash + lift + top-edge accent + arrow slide.
        ──────────────────────────────────────────────────────────────────── */
+    /* ────────────────────────────────────────────────────────────
+       Premium standalone workspace cards (light edition)
+       Was: full-width cells separated by 1 px hairlines on a bg-line
+       container. The result felt like a spreadsheet of feature boxes.
+       Now: independent rounded panels with their own border, layered
+       shadow, accent top rim, and an inner halo that lights up on
+       hover. Padding is tighter and the title is smaller so each card
+       reads as a single deliberate object instead of a padded cell. */
+    .ws-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media (min-width: 640px)  { .ws-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } }
+    @media (min-width: 1024px) { .ws-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; } }
+
     .ws-card {
       position: relative;
       text-align: left;
       width: 100%;
       cursor: pointer;
-      background: #ffffff;
-      padding: 36px 32px 32px;
+      background: #FFFFFF;
+      border: 1px solid #ECECEC;
+      border-radius: 18px;
+      padding: 22px 22px;
       display: flex;
       flex-direction: column;
-      min-height: 290px;
+      overflow: hidden;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.9) inset,
+        0 1px 2px rgba(10,10,10,0.02),
+        0 6px 20px -10px rgba(10,10,10,0.08);
       transition:
-        background 0.45s cubic-bezier(0.22,1,0.36,1),
-        transform 0.45s cubic-bezier(0.22,1,0.36,1);
+        transform .45s cubic-bezier(.22,1,.36,1),
+        box-shadow .45s cubic-bezier(.22,1,.36,1),
+        border-color .45s ease,
+        background .45s ease;
       isolation: isolate;
     }
-    @media (min-width: 640px) {
-      .ws-card { padding: 44px 40px 36px; min-height: 320px; }
+    @media (min-width: 1024px) { .ws-card { padding: 26px 24px; } }
+
+    /* Accent rim along the top — silver at rest, red on hover */
+    .ws-card::before {
+      content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(10,10,10,0.16), transparent);
+      opacity: .65;
+      transition: background .45s ease, opacity .45s ease, height .45s ease;
+      z-index: 2;
     }
+    /* Inner halo — invisible at rest, blooms in faintly on hover */
+    .ws-card::after {
+      content: ""; position: absolute; inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(ellipse 70% 38% at 50% 0%, rgba(220,38,38,0), transparent 65%);
+      pointer-events: none;
+      transition: background .45s ease;
+      z-index: 0;
+    }
+
     .ws-card:hover {
-      background:
-        radial-gradient(600px 200px at 0% 0%, rgba(254, 226, 226, 0.45), transparent 65%),
-        linear-gradient(180deg, #FFFCFB, #FFFAF6);
+      transform: translateY(-3px);
+      border-color: rgba(220,38,38,0.18);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.9) inset,
+        0 1px 2px rgba(10,10,10,0.02),
+        0 22px 44px -16px rgba(10,10,10,0.12),
+        0 0 56px -10px rgba(220,38,38,0.10);
+    }
+    .ws-card:hover::before {
+      background: linear-gradient(90deg, transparent, rgba(220,38,38,0.7), transparent);
+      opacity: 1; height: 2px;
+    }
+    .ws-card:hover::after {
+      background: radial-gradient(ellipse 70% 38% at 50% 0%, rgba(220,38,38,0.06), transparent 65%);
     }
     .ws-card:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 2px rgba(10,10,10,0.18);
+      box-shadow:
+        0 0 0 2px rgba(220,38,38,0.35),
+        0 22px 44px -16px rgba(10,10,10,0.12);
     }
 
-    /* Top hairline accent — silver thread that lights up red on hover */
-    .ws-edge {
-      position: absolute;
-      top: 0; left: 14%; right: 14%;
-      height: 1px;
-      background: linear-gradient(to right, transparent, rgba(10,10,10,0.18), transparent);
-      transition: background .5s ease, opacity .5s ease;
-      opacity: .55;
-      pointer-events: none;
-    }
-    .ws-card:hover .ws-edge {
-      background: linear-gradient(to right, transparent, rgba(220,38,38,0.65), transparent);
-      opacity: 1;
-    }
+    /* Legacy .ws-edge from old markup is replaced by ::before */
+    .ws-edge { display: none; }
 
     /* Top row: icon + index */
     .ws-card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: space-between;
       gap: 12px;
-      margin-bottom: 28px;
+      margin-bottom: 18px;
     }
     .ws-icon-frame {
-      width: 48px;
-      height: 48px;
+      width: 44px; height: 44px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #FFFFFF, #FAFAF7);
-      border: 1px solid rgba(10,10,10,0.08);
-      box-shadow:
-        0 1px 0 rgba(255,255,255,0.9) inset,
-        0 1px 2px rgba(10,10,10,0.04);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #0A0A0A;
-      flex-shrink: 0;
-      transition: border-color .35s ease, box-shadow .35s ease, transform .35s ease, background .35s ease;
-    }
-    .ws-icon-frame svg { width: 22px; height: 22px; }
-    .ws-card:hover .ws-icon-frame {
-      border-color: rgba(220,38,38,0.35);
-      background: linear-gradient(135deg, #FFFFFF, #FFF5F5);
+      background: linear-gradient(160deg, #FAFAF7, #FFFFFF);
+      border: 1px solid #ECECEC;
       box-shadow:
         0 1px 0 rgba(255,255,255,0.95) inset,
-        0 8px 18px -8px rgba(220,38,38,0.18);
+        0 1px 2px rgba(10,10,10,0.03);
+      display: flex; align-items: center; justify-content: center;
+      color: #0A0A0A;
+      flex-shrink: 0;
+      transition: border-color .35s ease, box-shadow .35s ease, transform .35s ease, color .35s ease, background .35s ease;
+    }
+    .ws-icon-frame svg { width: 20px; height: 20px; }
+    .ws-card:hover .ws-icon-frame {
+      border-color: rgba(220,38,38,0.30);
+      background: linear-gradient(160deg, #FFF5F5, #FFFFFF);
+      color: #DC2626;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.95) inset,
+        0 8px 20px -8px rgba(220,38,38,0.20);
       transform: translateY(-1px);
     }
     .ws-index {
       font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.06em;
       color: #A3A3A3;
       text-transform: lowercase;
-      padding-top: 4px;
       transition: color .35s ease;
     }
     .ws-card:hover .ws-index { color: #525252; }
 
     /* Title + description */
     .ws-title {
-      font-size: 26px;
+      position: relative; z-index: 1;
+      font-size: 21px;
       font-weight: 600;
       letter-spacing: -0.025em;
-      line-height: 1.05;
+      line-height: 1.1;
       color: #0A0A0A;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .ws-desc {
-      font-size: 14px;
-      line-height: 1.65;
+      position: relative; z-index: 1;
+      font-size: 13px;
+      line-height: 1.6;
       color: #525252;
       margin-bottom: auto;
-      padding-bottom: 24px;
+      padding-bottom: 18px;
     }
 
-    /* Footer row: meta + arrow CTA */
+    /* Footer: meta + arrow CTA */
     .ws-foot {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: space-between;
       gap: 12px;
-      padding-top: 20px;
+      padding-top: 14px;
       border-top: 1px solid rgba(10,10,10,0.06);
       transition: border-color .35s ease;
     }
@@ -502,7 +541,7 @@
 
     .ws-meta {
       font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.04em;
       color: #A3A3A3;
@@ -511,28 +550,19 @@
     .ws-card:hover .ws-meta { color: #525252; }
 
     .ws-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font: 700 11px/1 'Inter', sans-serif;
-      letter-spacing: 0.16em;
+      display: inline-flex; align-items: center; gap: 6px;
+      font: 700 10.5px/1 'Inter', sans-serif;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: #0A0A0A;
       transition: color .35s ease, gap .35s cubic-bezier(.22,1,.36,1);
     }
-    .ws-cta svg {
-      width: 12px;
-      height: 12px;
-      transition: transform .35s cubic-bezier(.22,1,.36,1);
-    }
-    .ws-card:hover .ws-cta {
-      color: #DC2626;
-      gap: 9px;
-    }
+    .ws-cta svg { width: 11px; height: 11px; transition: transform .35s cubic-bezier(.22,1,.36,1); }
+    .ws-card:hover .ws-cta { color: #DC2626; gap: 10px; }
     .ws-card:hover .ws-cta svg { transform: translateX(3px); }
 
     @media (prefers-reduced-motion: reduce) {
-      .ws-card, .ws-icon-frame, .ws-cta, .ws-cta svg, .ws-edge {
+      .ws-card, .ws-icon-frame, .ws-cta, .ws-cta svg {
         transition: none !important;
         animation: none !important;
       }
