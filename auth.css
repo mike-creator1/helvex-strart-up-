@@ -2628,9 +2628,6 @@ body {
 
 /* ════════════════════════════════════════════════════════════
    v14 — absolute-top anchor + tighter logo footprint
-   Zeroes the remaining top spacing AND shrinks the logo so
-   the content stack moves up significantly. The logo stays
-   visible but with less vertical footprint.
    ════════════════════════════════════════════════════════════ */
 @media (min-width: 921px) {
   .auth-shell.split .auth-side {
@@ -2651,6 +2648,21 @@ body {
   }
   .auth-shell.split .side-eyebrow {
     margin-top: 0 !important;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   v15 — bigger logo + a touch of breathing above it
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 921px) {
+  .auth-shell.split .auth-side {
+    padding-top: clamp(12px, 2vh, 28px) !important;
+  }
+  .auth-shell.split .side-brand img {
+    height: clamp(76px, 9vh, 104px) !important;
+  }
+  .auth-shell.split .side-content {
+    padding-top: clamp(4px, 0.8vh, 12px) !important;
   }
 }
 
