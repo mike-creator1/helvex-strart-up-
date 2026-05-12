@@ -252,199 +252,521 @@
     </div>
   </section>
 
-  <!-- ════════ SERVICES — five practices, one platform ════════ -->
-  <section id="services" class="relative py-24 sm:py-32 scroll-mt-24 overflow-hidden">
-    <div class="tech-aurora"><div class="blob"></div></div>
+  <!-- ════════════════════════════════════════════════════════════
+       SERVICES — luxe obsidian edition
+       Five practice areas presented as premium dark glass panels.
+       Layout is fully symmetric: a featured full-width card on top,
+       then a 2 × 2 grid of four equally-sized cards below.
+       Scoped CSS lives directly above the <section>.
+       ════════════════════════════════════════════════════════════ -->
+  <style>
+    /* ─── Section frame ───────────────────────────────────────── */
+    .svc-luxe {
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%,    rgba(245,200,99,0.06), transparent 60%),
+        radial-gradient(ellipse 70% 55% at 20% 45%,   rgba(233,75,90,0.05),  transparent 65%),
+        radial-gradient(ellipse 60% 55% at 90% 80%,   rgba(120,140,220,0.04), transparent 65%),
+        linear-gradient(180deg, #08080C 0%, #0A0A10 50%, #08080C 100%);
+      color: #ECECEE;
+      isolation: isolate;
+    }
+    .svc-luxe::before,
+    .svc-luxe::after {
+      content: ""; position: absolute; left: 0; right: 0; height: 1px;
+      z-index: 5; pointer-events: none;
+    }
+    .svc-luxe::before { top: 0;    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent); }
+    .svc-luxe::after  { bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent); }
+
+    .svc-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .svc-grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 56px 56px;
+      -webkit-mask-image: radial-gradient(ellipse 80% 65% at 50% 50%, #000 30%, transparent 85%);
+              mask-image: radial-gradient(ellipse 80% 65% at 50% 50%, #000 30%, transparent 85%);
+    }
+    .svc-glow {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); opacity: .50;
+    }
+    .svc-glow-1 { width: 500px; height: 500px; top:  -160px; right: -160px; background: radial-gradient(circle, rgba(245,200,99,.18), transparent 60%); animation: svcFloat 16s ease-in-out infinite; }
+    .svc-glow-2 { width: 520px; height: 520px; top:   45%;   left:  -180px; background: radial-gradient(circle, rgba(233,75,90,.16),  transparent 60%); animation: svcFloat 20s ease-in-out infinite reverse; }
+    .svc-glow-3 { width: 460px; height: 460px; bottom:-160px; right:  20%;  background: radial-gradient(circle, rgba(120,140,220,.12), transparent 60%); animation: svcFloat 24s ease-in-out infinite; }
+    @keyframes svcFloat {
+      0%,100% { transform: translate3d(0,0,0) scale(1); }
+      50%     { transform: translate3d(35px,-25px,0) scale(1.06); }
+    }
+    .svc-vignette {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 110% 110% at 50% 50%, transparent 55%, rgba(0,0,0,0.5) 100%);
+    }
+
+    /* ─── Hero ────────────────────────────────────────────────── */
+    .svc-eyebrow {
+      display: inline-flex; align-items: center; gap: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; letter-spacing: 0.32em; font-weight: 600;
+      text-transform: uppercase;
+      color: rgba(236,236,238,0.55);
+      margin: 0 0 18px;
+    }
+    .svc-eyebrow-line {
+      width: 38px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245,200,99,0.55), transparent);
+    }
+    .svc-headline {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: clamp(38px, 5.8vw, 76px);
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      color: #F5F5F7;
+      margin: 0 0 18px;
+    }
+    .svc-headline-serif {
+      display: block;
+      margin-top: 2px;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -0.025em;
+      background: linear-gradient(120deg, #F5C863 0%, #F0B852 25%, #FFFFFF 50%, #E94B5A 78%, #C0111E 100%);
+      background-size: 220% 220%;
+      -webkit-background-clip: text;
+              background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: svcShimmer 9s ease-in-out infinite;
+      filter: drop-shadow(0 6px 28px rgba(245,200,99,0.18));
+    }
+    @keyframes svcShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+    .svc-subtitle {
+      max-width: 640px; margin: 0 auto;
+      font-size: clamp(14px, 1.2vw, 16px);
+      line-height: 1.65;
+      color: rgba(236,236,238,0.6);
+      font-weight: 400;
+    }
+
+    /* ─── Symmetric grid: featured (full width) + 2×2 below ──── */
+    .svc-deck {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+    @media (min-width: 768px) {
+      .svc-deck {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+      .svc-card--featured { grid-column: span 2; }
+    }
+    @media (min-width: 1280px) {
+      .svc-deck { gap: 24px; }
+    }
+
+    /* ─── Card surface ───────────────────────────────────────── */
+    .svc-card {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.012) 50%, rgba(255,255,255,0.025) 100%),
+        rgba(14,14,20,0.62);
+      backdrop-filter: blur(24px) saturate(140%);
+      -webkit-backdrop-filter: blur(24px) saturate(140%);
+      border: 1px solid rgba(255,255,255,0.07);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.04) inset,
+        0 -1px 0 rgba(0,0,0,0.6) inset,
+        0 24px 60px -22px rgba(0,0,0,0.65),
+        0 0 0 1px rgba(255,255,255,0.02);
+      display: flex; flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      transition:
+        transform .55s cubic-bezier(.2,.7,.2,1),
+        box-shadow .55s cubic-bezier(.2,.7,.2,1),
+        border-color .55s ease;
+    }
+    .svc-card::before {
+      content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent, rgba(255,255,255,0.4)), transparent);
+      opacity: .7; z-index: 3;
+    }
+    .svc-card::after {
+      content: ""; position: absolute; inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(ellipse 70% 42% at 50% 0%, var(--accent-soft, rgba(255,255,255,0.06)), transparent 65%);
+      pointer-events: none; opacity: .85; z-index: 1;
+    }
+    .svc-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.13);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.06) inset,
+        0 -1px 0 rgba(0,0,0,0.6) inset,
+        0 40px 90px -30px rgba(0,0,0,0.75),
+        0 0 80px -10px var(--accent-glow, rgba(255,255,255,0.05));
+    }
+
+    /* Per-card accent tokens — each practice has its own identity */
+    .svc-card--automation { --accent:#F5C863; --accent-soft:rgba(245,200,99,0.11); --accent-glow:rgba(245,200,99,0.24); --accent-text:#F5C863; }
+    .svc-card--consulting { --accent:#E94B5A; --accent-soft:rgba(233,75,90,0.10);  --accent-glow:rgba(233,75,90,0.24);  --accent-text:#FF7884; }
+    .svc-card--digital    { --accent:#D4D4D8; --accent-soft:rgba(244,244,245,0.07); --accent-glow:rgba(244,244,245,0.18); --accent-text:#E5E5E7; }
+    .svc-card--growth     { --accent:#F0B852; --accent-soft:rgba(240,184,82,0.11); --accent-glow:rgba(240,184,82,0.22); --accent-text:#F5C863; }
+    .svc-card--enterprise { --accent:#C0111E; --accent-soft:rgba(192,17,30,0.10);  --accent-glow:rgba(192,17,30,0.22);  --accent-text:#FF7884; }
+
+    /* ─── Card inner ─────────────────────────────────────────── */
+    .svc-card-inner {
+      position: relative; z-index: 2;
+      padding: 28px 24px;
+      display: flex; flex-direction: column;
+      flex: 1 1 auto;
+    }
+    @media (min-width: 1024px) { .svc-card-inner { padding: 32px 28px; } }
+
+    .svc-card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 22px;
+    }
+    .svc-card-icon {
+      width: 52px; height: 52px; border-radius: 15px;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(160deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.02) inset,
+        0 10px 30px -8px var(--accent-glow);
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .svc-card-num {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; letter-spacing: 0.30em;
+      text-transform: uppercase; font-weight: 700;
+      color: rgba(236,236,238,0.35);
+    }
+
+    .svc-card-kicker {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; letter-spacing: 0.24em;
+      text-transform: uppercase; font-weight: 700;
+      color: var(--accent-text);
+      margin: 0 0 12px;
+    }
+    .svc-card-title {
+      font-size: 26px; line-height: 1.18; font-weight: 600;
+      letter-spacing: -0.025em;
+      color: #FAFAFA;
+      margin: 0 0 14px;
+    }
+    .svc-card-desc {
+      font-size: 13.5px; line-height: 1.65;
+      color: rgba(236,236,238,0.62);
+      margin: 0 0 22px;
+    }
+    .svc-card-list {
+      list-style: none; padding: 0; margin: 0;
+      display: flex; flex-direction: column; gap: 9px;
+    }
+    .svc-card-list li {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 13px; line-height: 1.5;
+      color: rgba(236,236,238,0.7);
+    }
+    .svc-card-list li::before {
+      content: ""; flex-shrink: 0;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+      margin-top: 7px;
+    }
+    .svc-card-link {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px; letter-spacing: 0.22em;
+      text-transform: uppercase; font-weight: 700;
+      color: #ECECEE;
+      transition: color .3s ease, gap .3s ease;
+    }
+    .svc-card:hover .svc-card-link {
+      color: var(--accent-text);
+      gap: 14px;
+    }
+    .svc-card-link svg {
+      width: 11px; height: 11px;
+      transition: transform .3s ease;
+    }
+    .svc-card:hover .svc-card-link svg { transform: translateX(3px); }
+
+    /* ─── Featured card (full-width, two-column inner) ────────── */
+    .svc-card--featured .svc-card-inner {
+      padding: 30px 26px;
+    }
+    @media (min-width: 1024px) {
+      .svc-card--featured .svc-card-inner {
+        padding: 40px 44px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+        gap: 56px;
+        align-items: start;
+      }
+      .svc-card--featured .svc-card-list {
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px 28px;
+        margin-top: 4px;
+      }
+      .svc-card--featured .svc-card-link {
+        grid-column: 1 / -1;
+      }
+    }
+    .svc-card--featured .svc-card-title {
+      font-size: clamp(28px, 3vw, 36px);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .svc-card--featured .svc-card-desc {
+      font-size: 14.5px;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    /* ─── Bottom CTA strip ───────────────────────────────────── */
+    .svc-cta {
+      position: relative;
+      border-radius: 20px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012)),
+        rgba(14,14,20,0.7);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      padding: 22px 22px;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.04) inset,
+        0 24px 60px -22px rgba(0,0,0,0.6);
+      display: flex; flex-direction: column; gap: 16px;
+      overflow: hidden;
+      margin-top: 40px;
+    }
+    @media (min-width: 768px) { .svc-cta { flex-direction: row; align-items: center; justify-content: space-between; padding: 24px 32px; } }
+    .svc-cta::before {
+      content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245,200,99,0.4), rgba(233,75,90,0.3), transparent);
+    }
+    .svc-cta-text { flex: 1; min-width: 0; }
+    .svc-cta-title {
+      font-size: 16px; line-height: 1.4; font-weight: 600;
+      color: #FAFAFA; margin: 0 0 4px;
+      letter-spacing: -0.012em;
+    }
+    .svc-cta-sub {
+      font-size: 13px; line-height: 1.6;
+      color: rgba(236,236,238,0.6); margin: 0;
+    }
+    .svc-cta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 13px 22px; border-radius: 999px;
+      background: linear-gradient(180deg, #FFFFFF, #ECECEE);
+      color: #0A0A0A;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px; font-weight: 700; letter-spacing: 0.02em;
+      transition: transform .3s, box-shadow .3s;
+      white-space: nowrap;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.6) inset,
+        0 12px 30px -10px rgba(245,200,99,0.22);
+    }
+    .svc-cta-btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.6) inset,
+        0 18px 40px -12px rgba(245,200,99,0.40);
+    }
+    .svc-cta-btn svg { width: 13px; height: 13px; transition: transform .3s; }
+    .svc-cta-btn:hover svg { transform: translateX(3px); }
+
+    /* ─── Reduced motion ─────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .svc-glow,
+      .svc-headline-serif { animation: none !important; }
+      .svc-card { transition: none; }
+    }
+  </style>
+
+  <section id="services" class="svc-luxe relative py-20 sm:py-28 scroll-mt-24 overflow-hidden">
+    <div class="svc-bg">
+      <div class="svc-grid-bg"></div>
+      <div class="svc-glow svc-glow-1"></div>
+      <div class="svc-glow svc-glow-2"></div>
+      <div class="svc-glow svc-glow-3"></div>
+      <div class="svc-vignette"></div>
+    </div>
+
     <div class="relative max-w-7xl mx-auto px-6 sm:px-8">
 
       <!-- Header -->
-      <div class="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 sm:mb-20">
-        <div class="lg:col-span-7">
-          <p class="reveal section-mark mb-6">Services</p>
-          <h2 class="reveal h-section text-3xl sm:text-5xl lg:text-6xl balance leading-[1.04]">
-            Five practice areas.<br />
-            <span class="italic font-serif font-normal tech-gradient-text">Built for serious businesses.</span>
-          </h2>
-        </div>
-        <div class="lg:col-span-5">
-          <p class="reveal pretty text-base sm:text-lg text-ink-mid leading-relaxed">
-            HelveX delivers AI services, automation, consulting, and digital infrastructure as a single coordinated practice. Real engagements, written outcomes, owned by a senior engineer end-to-end.
-          </p>
-        </div>
+      <div class="text-center mb-12 sm:mb-16">
+        <p class="reveal svc-eyebrow">
+          <span class="svc-eyebrow-line"></span>
+          Services · five practices
+          <span class="svc-eyebrow-line"></span>
+        </p>
+        <h2 class="reveal svc-headline balance">
+          Five practice areas.
+          <span class="svc-headline-serif">Built for serious businesses.</span>
+        </h2>
+        <p class="reveal svc-subtitle pretty">
+          AI services, automation, consulting, and digital infrastructure as a single coordinated practice. Real engagements, written outcomes, owned by a senior engineer end-to-end.
+        </p>
       </div>
 
-      <!-- Section divider — meta strip above the cards -->
-      <div class="reveal flex flex-wrap items-center gap-4 mb-10 sm:mb-12 pb-6 sm:pb-8 border-b border-line">
-        <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-light font-bold">Five practice areas</span>
-        <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-ink-faint"></span>
-        <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-light">Senior engineer per engagement</span>
-        <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-ink-faint"></span>
-        <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-light">Written brief at every stage</span>
-        <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-ink-faint"></span>
-        <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-light">No lock-in</span>
-      </div>
+      <!-- Symmetric deck: featured + 2×2 -->
+      <div class="reveal svc-deck">
 
-      <!-- 5 service category cards -->
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-
-        <!-- 01 · AI AUTOMATION -->
-        <a href="/ai-automation.html" class="tech-card group relative overflow-hidden flex flex-col block hover:border-yellow-deep/30 transition-all">
-          <span class="absolute top-0 left-0 right-0 h-[2px] bg-yellow z-[5]"></span>
-          <div class="absolute -top-24 -right-24 w-52 h-52 bg-yellow/15 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div class="relative p-8 sm:p-9 flex-1 flex flex-col">
-            <div class="flex items-center justify-between mb-8">
-              <div class="w-14 h-14 rounded-2xl bg-yellow flex items-center justify-center shadow-md shadow-yellow/40 group-hover:shadow-yellow/60 transition-shadow">
-                <svg class="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="4" y="7" width="16" height="13" rx="3" />
-                  <path d="M9 11h.01M15 11h.01" />
-                  <path d="M12 7V3M9 3h6" />
-                  <path d="M9 16h6" />
-                </svg>
+        <!-- 01 · AI AUTOMATION (featured, full width) -->
+        <a href="/ai-automation.html" class="svc-card svc-card--automation svc-card--featured">
+          <div class="svc-card-inner">
+            <div>
+              <div class="svc-card-head">
+                <div class="svc-card-icon">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 11h.01M15 11h.01"/><path d="M12 7V3M9 3h6"/><path d="M9 16h6"/></svg>
+                </div>
+                <span class="svc-card-num">01 / 05</span>
               </div>
-              <span class="font-mono text-[11px] uppercase tracking-[0.24em] text-ink-light font-bold">01</span>
+              <span class="svc-card-kicker">AI Automation</span>
+              <h3 class="svc-card-title">Agents that handle the work itself.</h3>
+              <p class="svc-card-desc">From inbox triage to scheduling to the long tail of internal ops — we design, deploy, and operate AI agents that do the work, not just describe it.</p>
             </div>
-            <p class="font-mono text-[10.5px] uppercase tracking-[0.24em] text-yellow-deep mb-3 font-bold">AI Automation</p>
-            <h3 class="text-[26px] sm:text-[28px] font-semibold tracking-tight mb-4 leading-[1.15]" style="letter-spacing:-0.022em;">Agents that handle the work itself.</h3>
-            <p class="text-[14.5px] text-ink-mid leading-relaxed mb-7 pretty">From inbox triage to scheduling to the long tail of internal ops — we design, deploy, and operate AI agents that do the work, not just describe it.</p>
-            <ul class="space-y-2.5 text-[13px] text-ink-soft pb-7 border-b border-line-soft">
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-yellow-deep mt-[8px]"></span><span>AI customer support agents</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-yellow-deep mt-[8px]"></span><span>AI appointment &amp; booking systems</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-yellow-deep mt-[8px]"></span><span>AI workflow automation</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-yellow-deep mt-[8px]"></span><span>AI email triage &amp; reply systems</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-yellow-deep mt-[8px]"></span><span>AI sales assistants</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-yellow-deep mt-[8px]"></span><span>AI business agents &amp; operations</span></li>
-            </ul>
-            <span class="inline-flex items-center gap-1.5 mt-5 text-[11px] font-mono uppercase tracking-[0.18em] text-ink font-bold group-hover:gap-2.5 transition-all">Explore practice <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4"/></svg></span>
+            <div>
+              <ul class="svc-card-list">
+                <li>AI customer support agents</li>
+                <li>AI appointment &amp; booking systems</li>
+                <li>AI workflow automation</li>
+                <li>AI email triage &amp; reply systems</li>
+                <li>AI sales assistants</li>
+                <li>AI business agents &amp; operations</li>
+              </ul>
+            </div>
+            <span class="svc-card-link">Explore practice<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></span>
           </div>
         </a>
 
         <!-- 02 · BUSINESS CONSULTING -->
-        <a href="/business-consulting.html" class="tech-card group relative overflow-hidden flex flex-col block hover:border-red/30 transition-all">
-          <span class="absolute top-0 left-0 right-0 h-[2px] bg-red z-[5]"></span>
-          <div class="absolute -top-24 -right-24 w-52 h-52 bg-red/15 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div class="relative p-8 sm:p-9 flex-1 flex flex-col">
-            <div class="flex items-center justify-between mb-8">
-              <div class="w-14 h-14 rounded-2xl bg-red flex items-center justify-center shadow-md shadow-red/40 group-hover:shadow-red/60 transition-shadow">
-                <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 21h18" />
-                  <path d="M6 17V11" />
-                  <path d="M11 17V7" />
-                  <path d="M16 17v-9" />
-                  <path d="M21 17v-5" />
-                </svg>
+        <a href="/business-consulting.html" class="svc-card svc-card--consulting">
+          <div class="svc-card-inner">
+            <div class="svc-card-head">
+              <div class="svc-card-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M6 17V11"/><path d="M11 17V7"/><path d="M16 17v-9"/><path d="M21 17v-5"/></svg>
               </div>
-              <span class="font-mono text-[11px] uppercase tracking-[0.24em] text-ink-light font-bold">02</span>
+              <span class="svc-card-num">02 / 05</span>
             </div>
-            <p class="font-mono text-[10.5px] uppercase tracking-[0.24em] text-red mb-3 font-bold">Business Consulting</p>
-            <h3 class="text-[26px] sm:text-[28px] font-semibold tracking-tight mb-4 leading-[1.15]" style="letter-spacing:-0.022em;">A clear plan before anything is built.</h3>
-            <p class="text-[14.5px] text-ink-mid leading-relaxed mb-7 pretty">We audit how your business actually runs, identify the highest-leverage AI opportunities, and write the integration plan you can execute — with us or without us.</p>
-            <ul class="space-y-2.5 text-[13px] text-ink-soft pb-7 border-b border-line-soft">
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-red mt-[8px]"></span><span>AI integration consulting</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-red mt-[8px]"></span><span>Workflow optimization audits</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-red mt-[8px]"></span><span>Business productivity systems</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-red mt-[8px]"></span><span>Digital transformation roadmaps</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-red mt-[8px]"></span><span>AI strategy consulting</span></li>
+            <span class="svc-card-kicker">Business Consulting</span>
+            <h3 class="svc-card-title">A clear plan before anything is built.</h3>
+            <p class="svc-card-desc">We audit how your business actually runs, identify the highest-leverage AI opportunities, and write the integration plan you can execute — with us or without us.</p>
+            <ul class="svc-card-list">
+              <li>AI integration consulting</li>
+              <li>Workflow optimization audits</li>
+              <li>Business productivity systems</li>
+              <li>Digital transformation roadmaps</li>
+              <li>AI strategy consulting</li>
             </ul>
-            <span class="inline-flex items-center gap-1.5 mt-5 text-[11px] font-mono uppercase tracking-[0.18em] text-ink font-bold group-hover:gap-2.5 transition-all">Explore practice <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4"/></svg></span>
+            <span class="svc-card-link">Explore practice<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></span>
           </div>
         </a>
 
         <!-- 03 · DIGITAL SERVICES -->
-        <a href="/digital-services.html" class="tech-card group relative overflow-hidden flex flex-col block hover:border-ink/30 transition-all">
-          <span class="absolute top-0 left-0 right-0 h-[2px] bg-ink z-[5]"></span>
-          <div class="absolute -top-24 -right-24 w-52 h-52 bg-ink/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div class="relative p-8 sm:p-9 flex-1 flex flex-col">
-            <div class="flex items-center justify-between mb-8">
-              <div class="w-14 h-14 rounded-2xl bg-ink flex items-center justify-center shadow-md shadow-ink/30 group-hover:shadow-ink/40 transition-shadow">
-                <svg class="w-6 h-6 text-yellow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="16 18 22 12 16 6" />
-                  <polyline points="8 6 2 12 8 18" />
-                  <line x1="14" y1="4" x2="10" y2="20" />
-                </svg>
+        <a href="/digital-services.html" class="svc-card svc-card--digital">
+          <div class="svc-card-inner">
+            <div class="svc-card-head">
+              <div class="svc-card-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
               </div>
-              <span class="font-mono text-[11px] uppercase tracking-[0.24em] text-ink-light font-bold">03</span>
+              <span class="svc-card-num">03 / 05</span>
             </div>
-            <p class="font-mono text-[10.5px] uppercase tracking-[0.24em] text-ink mb-3 font-bold">Digital Services</p>
-            <h3 class="text-[26px] sm:text-[28px] font-semibold tracking-tight mb-4 leading-[1.15]" style="letter-spacing:-0.022em;">The systems your business runs on.</h3>
-            <p class="text-[14.5px] text-ink-mid leading-relaxed mb-7 pretty">Websites, dashboards, CRMs, APIs — built modern, integrated cleanly, and instrumented from day one for the AI layers we add on top.</p>
-            <ul class="space-y-2.5 text-[13px] text-ink-soft pb-7 border-b border-line-soft">
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-ink mt-[8px]"></span><span>Website &amp; web app development</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-ink mt-[8px]"></span><span>AI integrations into existing tools</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-ink mt-[8px]"></span><span>SaaS infrastructure setup</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-ink mt-[8px]"></span><span>CRM setup &amp; data architecture</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-ink mt-[8px]"></span><span>API integrations &amp; webhooks</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-ink mt-[8px]"></span><span>Cloud systems on AWS / GCP</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-ink mt-[8px]"></span><span>Business dashboards &amp; reporting</span></li>
+            <span class="svc-card-kicker">Digital Services</span>
+            <h3 class="svc-card-title">The systems your business runs on.</h3>
+            <p class="svc-card-desc">Websites, dashboards, CRMs, APIs — built modern, integrated cleanly, and instrumented from day one for the AI layers we add on top.</p>
+            <ul class="svc-card-list">
+              <li>Website &amp; web app development</li>
+              <li>AI integrations into existing tools</li>
+              <li>CRM setup &amp; data architecture</li>
+              <li>API integrations &amp; webhooks</li>
+              <li>Cloud systems on AWS / GCP</li>
             </ul>
-            <span class="inline-flex items-center gap-1.5 mt-5 text-[11px] font-mono uppercase tracking-[0.18em] text-ink font-bold group-hover:gap-2.5 transition-all">Explore practice <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4"/></svg></span>
+            <span class="svc-card-link">Explore practice<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></span>
           </div>
         </a>
 
         <!-- 04 · GROWTH MARKETING -->
-        <a href="/growth-marketing.html" class="tech-card group relative overflow-hidden flex flex-col block hover:border-yellow-deep/30 transition-all">
-          <span class="absolute top-0 left-0 right-0 h-[2px] bg-yellow z-[5]"></span>
-          <div class="absolute -top-24 -right-24 w-52 h-52 bg-yellow/15 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div class="relative p-8 sm:p-9 flex-1 flex flex-col">
-            <div class="flex items-center justify-between mb-8">
-              <div class="w-14 h-14 rounded-2xl bg-yellow flex items-center justify-center shadow-md shadow-yellow/40 group-hover:shadow-yellow/60 transition-shadow">
-                <svg class="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg>
+        <a href="/growth-marketing.html" class="svc-card svc-card--growth">
+          <div class="svc-card-inner">
+            <div class="svc-card-head">
+              <div class="svc-card-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
               </div>
-              <span class="font-mono text-[11px] uppercase tracking-[0.24em] text-ink-light font-bold">04</span>
+              <span class="svc-card-num">04 / 05</span>
             </div>
-            <p class="font-mono text-[10.5px] uppercase tracking-[0.24em] text-yellow-deep mb-3 font-bold">Growth Marketing</p>
-            <h3 class="text-[26px] sm:text-[28px] font-semibold tracking-tight mb-4 leading-[1.15]" style="letter-spacing:-0.022em;">Systems that compound, not campaigns that decay.</h3>
-            <p class="text-[14.5px] text-ink-mid leading-relaxed mb-7 pretty">We build the AI-driven growth stack — lead capture, qualification, nurture, content, conversion — so attention turns into pipeline without rebuilding it every quarter.</p>
-            <ul class="space-y-2.5 text-[13px] text-ink-soft pb-7 border-b border-line-soft">
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-yellow-deep mt-[8px]"></span><span>AI marketing systems</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-yellow-deep mt-[8px]"></span><span>Lead generation &amp; qualification</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-yellow-deep mt-[8px]"></span><span>Funnel optimization</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-yellow-deep mt-[8px]"></span><span>Content automation pipelines</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-yellow-deep mt-[8px]"></span><span>Email &amp; outreach systems</span></li>
+            <span class="svc-card-kicker">Growth Marketing</span>
+            <h3 class="svc-card-title">Systems that compound, not campaigns that decay.</h3>
+            <p class="svc-card-desc">We build the AI-driven growth stack — lead capture, qualification, nurture, content, conversion — so attention turns into pipeline without rebuilding it every quarter.</p>
+            <ul class="svc-card-list">
+              <li>AI marketing systems</li>
+              <li>Lead generation &amp; qualification</li>
+              <li>Funnel optimization</li>
+              <li>Content automation pipelines</li>
+              <li>Email &amp; outreach systems</li>
             </ul>
-            <span class="inline-flex items-center gap-1.5 mt-5 text-[11px] font-mono uppercase tracking-[0.18em] text-ink font-bold group-hover:gap-2.5 transition-all">Explore practice <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4"/></svg></span>
+            <span class="svc-card-link">Explore practice<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></span>
           </div>
         </a>
 
         <!-- 05 · ENTERPRISE -->
-        <a href="/enterprise.html" class="tech-card group relative overflow-hidden flex flex-col sm:col-span-2 lg:col-span-1 block hover:border-red/30 transition-all">
-          <span class="absolute top-0 left-0 right-0 h-[2px] bg-red z-[5]"></span>
-          <div class="absolute -top-24 -right-24 w-52 h-52 bg-red/15 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div class="relative p-8 sm:p-9 flex-1 flex flex-col">
-            <div class="flex items-center justify-between mb-8">
-              <div class="w-14 h-14 rounded-2xl bg-red flex items-center justify-center shadow-md shadow-red/40 group-hover:shadow-red/60 transition-shadow">
-                <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z" />
-                  <path d="M9 12l2 2 4-4" />
-                </svg>
+        <a href="/enterprise.html" class="svc-card svc-card--enterprise">
+          <div class="svc-card-inner">
+            <div class="svc-card-head">
+              <div class="svc-card-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
               </div>
-              <span class="font-mono text-[11px] uppercase tracking-[0.24em] text-ink-light font-bold">05</span>
+              <span class="svc-card-num">05 / 05</span>
             </div>
-            <p class="font-mono text-[10.5px] uppercase tracking-[0.24em] text-red mb-3 font-bold">Enterprise</p>
-            <h3 class="text-[26px] sm:text-[28px] font-semibold tracking-tight mb-4 leading-[1.15]" style="letter-spacing:-0.022em;">Internal AI your security team signs off on.</h3>
-            <p class="text-[14.5px] text-ink-mid leading-relaxed mb-7 pretty">For larger organizations: internal assistants, secure RAG over company knowledge, role-aware access, and audit trails — deployed inside your own AWS or Google Cloud account.</p>
-            <ul class="space-y-2.5 text-[13px] text-ink-soft pb-7 border-b border-line-soft">
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-red mt-[8px]"></span><span>Enterprise AI systems</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-red mt-[8px]"></span><span>Internal AI assistants</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-red mt-[8px]"></span><span>Team productivity AI</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-red mt-[8px]"></span><span>Secure AI workflows</span></li>
-              <li class="flex items-start gap-3"><span class="flex-shrink-0 w-1 h-1 rounded-full bg-red mt-[8px]"></span><span>Company knowledge systems (RAG)</span></li>
+            <span class="svc-card-kicker">Enterprise</span>
+            <h3 class="svc-card-title">Internal AI your security team signs off on.</h3>
+            <p class="svc-card-desc">For larger organizations: internal assistants, secure RAG over company knowledge, role-aware access, and audit trails — deployed inside your own AWS or Google Cloud account.</p>
+            <ul class="svc-card-list">
+              <li>Enterprise AI systems</li>
+              <li>Internal AI assistants</li>
+              <li>Secure AI workflows</li>
+              <li>Company knowledge systems (RAG)</li>
+              <li>Audit trails &amp; role-aware access</li>
             </ul>
-            <span class="inline-flex items-center gap-1.5 mt-5 text-[11px] font-mono uppercase tracking-[0.18em] text-ink font-bold group-hover:gap-2.5 transition-all">Explore practice <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4"/></svg></span>
+            <span class="svc-card-link">Explore practice<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></span>
           </div>
         </a>
 
       </div>
 
-      <!-- Sub-CTA strip -->
-      <div class="reveal mt-14 sm:mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 px-6 sm:px-8 py-7 rounded-2xl border border-line bg-cream/50 backdrop-blur">
-        <p class="text-sm sm:text-base text-ink-mid leading-relaxed">
-          Not sure which practice fits? <span class="text-ink font-medium">Start with a 30-minute scoping call.</span> We'll map the highest-leverage move and tell you honestly if AI is even the right answer.
-        </p>
-        <a href="/signup.html" class="tech-cta-glow inline-flex items-center gap-2 bg-ink hover:bg-ink-soft text-white font-semibold px-6 py-3 rounded-full text-sm transition-all whitespace-nowrap">
-          Start Your Strategy
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg>
+      <!-- Bottom CTA strip -->
+      <div class="reveal svc-cta">
+        <div class="svc-cta-text">
+          <p class="svc-cta-title">Not sure which practice fits?</p>
+          <p class="svc-cta-sub">Start with a 30-minute scoping call. We'll map the highest-leverage move and tell you honestly if AI is even the right answer.</p>
+        </div>
+        <a href="/signup.html" class="svc-cta-btn">
+          Start your strategy
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg>
         </a>
       </div>
 
