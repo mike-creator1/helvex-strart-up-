@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
-  <title>Quickstart — HelveX</title>
-  <meta name="description" content="From sign-up to shipped, in five minutes. The five steps that take a fresh HelveX workspace to live agents." />
-  <meta property="og:title" content="Quickstart — HelveX" />
-  <meta property="og:description" content="From sign-up to shipped, in five minutes. The five steps that take a fresh HelveX workspace to live agents." />
+  <title>Prometheus — HelveX</title>
+  <meta name="description" content="Prometheus is HelveX's frontier model — deepest reasoning, agentic, with computer use, web search, and chained tool calls. For the work where depth matters more than latency." />
+  <meta property="og:title" content="Prometheus — HelveX" />
+  <meta property="og:description" content="Deepest reasoning. Agentic. Computer use, web search, chained tool calls." />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="HelveX" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="theme-color" content="#FFFFFF" />
+  <meta name="theme-color" content="#07070C" />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -19,25 +19,24 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ink: '#0A0A0A', 'ink-soft': '#171717', 'ink-mid': '#525252', 'ink-light': '#A3A3A3', 'ink-faint': '#D4D4D4',
-            line: '#E5E5E5', 'line-soft': '#F0EFEC', cream: '#FAFAF7', beige: '#F4EFE6', 'beige-warm': '#EDE5D6',
-            red: '#DC2626', 'red-deep': '#991B1B', 'red-soft': '#FEE2E2',
-            yellow: '#FCD34D', 'yellow-deep': '#F59E0B', 'yellow-soft': '#FEF3C7',
-          },
-          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'], serif: ['"Instrument Serif"', 'Georgia', 'serif'] },
-        },
-      },
-    };
+    tailwind.config = { theme: { extend: { colors: { ink: '#0A0A0A', 'ink-soft': '#171717', 'ink-mid': '#525252', 'ink-light': '#A3A3A3', 'ink-faint': '#D4D4D4', line: '#E5E5E5', 'line-soft': '#F0EFEC', cream: '#FAFAF7', beige: '#F4EFE6', red: '#DC2626', 'red-deep': '#991B1B', 'red-soft': '#FEE2E2', yellow: '#FCD34D', 'yellow-deep': '#F59E0B', 'yellow-soft': '#FEF3C7' }, fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'], serif: ['"Instrument Serif"', 'Georgia', 'serif'] } } } };
   </script>
 
   <link rel="stylesheet" href="/helvex.css" />
 
+  <!-- Per-page accent: Prometheus is the frontier tier -->
+  <style>
+    .hx-doc-page {
+      --accent: #D4D4D8;
+      --accent-text: #E5E5E7;
+      --accent-glow: rgba(244,244,245,0.20);
+      --accent-shadow: rgba(244,244,245,0.16);
+      --accent-from: #FFFFFF;
+      --accent-to: #D4D4D8;
+    }
+  </style>
 </head>
-<body class="bg-white text-ink antialiased">
+<body class="hx-doc-page antialiased">
 
   <!-- Premium .hx-header styles live in /helvex.css so every page that loads the shared stylesheet gets them automatically. -->
   <header class="hx-header">
@@ -100,158 +99,235 @@
     </nav>
   </header>
 
-  <!-- ════════ MOBILE MENU DRAWER ════════ -->
-  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Site navigation">
-    <div class="mobile-menu-backdrop" data-close></div>
-    <div class="mobile-menu-panel">
-      <div class="mobile-menu-header">
-        <a href="/" class="brand-mark text-xl flex items-center gap-2">
-          <span class="brand-logo"><img src="/helvex-logo.png" alt="HelveX" class="h-16 w-auto" /></span>
-        </a>
-        <button type="button" class="mobile-menu-close" data-close aria-label="Close menu">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button>
-      </div>
-      <nav class="mobile-menu-nav" aria-label="Main">
-        <a href="/" class="mobile-menu-link">Home</a>
-        <details class="mobile-menu-services">
-          <summary class="mobile-menu-link" style="list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
-            <span>Services</span>
-            <svg class="w-4 h-4 text-ink-light transition-transform" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </summary>
-          <div class="pl-4 mt-1 mb-2 space-y-0.5 border-l border-line">
-            <a href="/ai-automation.html" class="mobile-menu-link">AI &amp; Automation</a>
-            <a href="/business-consulting.html" class="mobile-menu-link">Business Consulting</a>
-            <a href="/digital-services.html" class="mobile-menu-link">Digital Services</a>
-            <a href="/growth-marketing.html" class="mobile-menu-link">Growth &amp; Marketing</a>
-            <a href="/enterprise.html" class="mobile-menu-link">Enterprise</a>
-          </div>
-        </details>
-        <a href="/models" class="mobile-menu-link">Models</a>
-        <a href="/workspace" class="mobile-menu-link">Workspace</a>
-        <a href="/research" class="mobile-menu-link">Research</a>
-        <a href="/updates" class="mobile-menu-link">Updates</a>
-        <a href="/customer-stories" class="mobile-menu-link">Customers</a>
-        <a href="/resources" class="mobile-menu-link">Resources</a>
-      </nav>
-      <div class="mobile-menu-cta">
-        <a href="/signup.html" class="primary">
-          Try HeliX
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </a>
-        <a href="/signup.html" class="secondary">Sign in</a>
-      </div>
-      <div class="mobile-menu-meta">Built in Switzerland</div>
-    </div>
+  <!-- Ambient backdrop (sits behind all content) -->
+  <div class="hx-doc-bg" aria-hidden="true">
+    <div class="hx-doc-bg-grid"></div>
+    <div class="hx-doc-bg-glow hx-doc-bg-glow-1"></div>
+    <div class="hx-doc-bg-glow hx-doc-bg-glow-2"></div>
   </div>
 
-  <!-- ════════ HERO ════════ -->
-  <section class="relative pt-14 sm:pt-24 pb-12 sm:pb-16 overflow-hidden">
-    <div class="hero-orb hero-orb-2" style="opacity: 0.3;"></div>
-    <div class="relative max-w-5xl mx-auto px-6 sm:px-8">
-      <p class="reveal section-mark mb-7">Quickstart</p>
-      <h1 class="reveal h-display balance text-[44px] sm:text-7xl mb-6">
-        Sign-up to shipped,<br />
-        <span class="italic font-serif font-normal tech-gradient-text">in five minutes.</span>
-      </h1>
-      <p class="reveal pretty text-base sm:text-xl text-ink-mid max-w-2xl leading-relaxed">Five steps cover the work most teams do in the first week. Each one takes a minute or two. The full path is documented inside the workspace once you sign in.</p>
-    </div>
-  </section>
+  <main class="hx-doc-wrap">
 
-  <section class="py-16 sm:py-24">
-    <div class="max-w-7xl mx-auto px-6 sm:px-8">
-      <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
-        <div class="reveal rounded-2xl border border-line bg-white p-6"><p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 01</p><h3 class="text-base font-bold tracking-tight mb-2">Create a workspace</h3><p class="text-sm text-ink-mid leading-relaxed">Pick a region (EU, US, APAC), invite teammates, choose your default model.</p></div><div class="reveal rounded-2xl border border-line bg-white p-6"><p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 02</p><h3 class="text-base font-bold tracking-tight mb-2">Connect knowledge</h3><p class="text-sm text-ink-mid leading-relaxed">Drive, Notion, SharePoint, Slack — or upload directly. Permissions follow the source.</p></div><div class="reveal rounded-2xl border border-line bg-white p-6"><p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 03</p><h3 class="text-base font-bold tracking-tight mb-2">Open a project</h3><p class="text-sm text-ink-mid leading-relaxed">Pin the documents, sources, and prompts every conversation should start from.</p></div><div class="reveal rounded-2xl border border-line bg-white p-6"><p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 04</p><h3 class="text-base font-bold tracking-tight mb-2">Try the three models</h3><p class="text-sm text-ink-mid leading-relaxed">Ask the same question to Ether, Nexus, and Prometheus. Notice the difference.</p></div><div class="reveal rounded-2xl border border-line bg-white p-6"><p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 05</p><h3 class="text-base font-bold tracking-tight mb-2">Run an agent</h3><p class="text-sm text-ink-mid leading-relaxed">Pick a workflow from the library, watch it run, replay any step.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="relative tech-wash-soft border-y border-line py-16 sm:py-24 overflow-hidden">
-    <div class="max-w-4xl mx-auto px-6 sm:px-8">
-      <div class="reveal mb-10"><p class="section-mark mb-5">Tips</p><h2 class="text-2xl sm:text-4xl font-extrabold tracking-tightest mb-5 balance">Three things that save people the most time.</h2></div>
-      <ol class="space-y-px border-y border-line">
-        <li class="reveal flex gap-5 py-5 "><span class="font-mono text-[11px] tracking-widest uppercase text-ink-light pt-1 flex-shrink-0 w-12">01</span><div><h3 class="text-base font-bold text-ink mb-1.5">Use Projects, not loose chats.</h3><p class="text-sm text-ink-mid leading-relaxed">Pinning the brief, the sources, and the prompt once means every conversation starts in the right place. Most retention savings come from this single habit.</p></div></li><li class="reveal flex gap-5 py-5 border-t border-line-soft"><span class="font-mono text-[11px] tracking-widest uppercase text-ink-light pt-1 flex-shrink-0 w-12">02</span><div><h3 class="text-base font-bold text-ink mb-1.5">Pin the model when latency or depth matters.</h3><p class="text-sm text-ink-mid leading-relaxed">The router is good, not psychic. If you need sub-100 ms or 1 M-token reasoning, pin the model on the chat or Project.</p></div></li><li class="reveal flex gap-5 py-5 border-t border-line-soft"><span class="font-mono text-[11px] tracking-widest uppercase text-ink-light pt-1 flex-shrink-0 w-12">03</span><div><h3 class="text-base font-bold text-ink mb-1.5">Click citations before you act.</h3><p class="text-sm text-ink-mid leading-relaxed">Every Nexus claim links to its source. One click is the difference between trusting an answer and verifying it.</p></div></li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- ════════ WHAT YOU'LL HAVE IN 30 MINUTES ════════ -->
-  <section class="py-20 sm:py-28">
-    <div class="max-w-6xl mx-auto px-6 sm:px-8">
-      <div class="reveal max-w-3xl mb-14 sm:mb-16">
-        <p class="section-mark mb-5">What you'll have in 30 minutes</p>
-        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Three surfaces, ready to use.</h2>
-        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
-          A short setup is enough to stand up the three surfaces most teams reach for first. Each one is real — not a sandbox — and each one can stay in your workspace as the place that work happens.
+    <!-- ════════ HERO ════════ -->
+    <section class="hx-doc-hero">
+      <div class="hx-doc-hero-inner">
+        <p class="hx-doc-eyebrow">
+          <span class="hx-doc-eyebrow-dot"></span>
+          Model · 03 / 03 · Frontier tier
         </p>
-      </div>
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-        <div class="reveal rounded-2xl border border-line bg-white p-7">
-          <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Surface 01</p>
-          <h3 class="text-lg font-bold tracking-tight mb-2.5">A Chat thread with a pinned model.</h3>
-          <p class="text-sm text-ink-mid leading-relaxed mb-3">Open Chat, pin Ether for speed or Nexus for depth, and start asking. The thread keeps the model choice, the system prompt, and the context window from drifting on you.</p>
-          <p class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Best for: drafting, summarising, quick decisions</p>
-        </div>
-        <div class="reveal rounded-2xl border border-line bg-white p-7">
-          <p class="font-mono text-[11px] tracking-widest uppercase text-red mb-3">Surface 02</p>
-          <h3 class="text-lg font-bold tracking-tight mb-2.5">A Project with seeded context.</h3>
-          <p class="text-sm text-ink-mid leading-relaxed mb-3">Pin a brief, a handful of source documents, and the prompt every conversation should start from. Every chat that opens inside the Project inherits the setup — no copy-paste, no drift.</p>
-          <p class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Best for: a recurring task, a single account, a long doc</p>
-        </div>
-        <div class="reveal rounded-2xl border border-line bg-white p-7">
-          <p class="font-mono text-[11px] tracking-widest uppercase text-ink mb-3">Surface 03</p>
-          <h3 class="text-lg font-bold tracking-tight mb-2.5">An Agent with one approval gate.</h3>
-          <p class="text-sm text-ink-mid leading-relaxed mb-3">Pick a workflow from the library, mark the irreversible step (send, post, write, pay), and run it. The agent pauses at the gate, you approve, and the replay trace records the whole run.</p>
-          <p class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Best for: triage, enrichment, scheduled work</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════ COMMON FIRST INTEGRATIONS ════════ -->
-  <section class="bg-cream/40 border-y border-line py-20 sm:py-28">
-    <div class="max-w-6xl mx-auto px-6 sm:px-8">
-      <div class="reveal max-w-3xl mb-14 sm:mb-16">
-        <p class="section-mark mb-5">Common first integrations</p>
-        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Day-one connections most teams turn on.</h2>
-        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
-          Standard integrations, available to anyone on the platform. The point is not which logos you can collect — it is how quickly the work you already do becomes context the model can use.
+        <h1 class="hx-doc-title">
+          Prometheus
+          <span class="hx-doc-title-italic">Deepest reasoning. Agentic.</span>
+        </h1>
+        <p class="hx-doc-lede">
+          Prometheus is HelveX's strongest model. Built for the kind of work where depth matters more than latency — complex reasoning, long-running agents, computer use, web search, chained tool calls. The model you reach for when the question can't be answered in one shot.
         </p>
-      </div>
-
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-px bg-line border border-line rounded-2xl overflow-hidden">
-        <div class="bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-ink mb-1.5">Slack</p>
-          <p class="text-xs text-ink-mid leading-snug">Threads as a knowledge source · agents that post replies</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-ink mb-1.5">Notion</p>
-          <p class="text-xs text-ink-mid leading-snug">Pages indexed with permissions intact · RAG on the wiki</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-ink mb-1.5">Google Drive</p>
-          <p class="text-xs text-ink-mid leading-snug">Docs, sheets, PDFs · live updates as files change</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-ink mb-1.5">GitHub</p>
-          <p class="text-xs text-ink-mid leading-snug">Repos as context · pull-request review agents</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-ink mb-1.5">Linear</p>
-          <p class="text-xs text-ink-mid leading-snug">Issues as work queue · agent triage and enrichment</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-ink mb-1.5">SSO</p>
-          <p class="text-xs text-ink-mid leading-snug">Okta · Azure AD · Google · SAML and OIDC</p>
+        <div class="hx-doc-chips">
+          <span class="hx-doc-chip"><span class="hx-doc-chip-dot"></span>Extended thinking</span>
+          <span class="hx-doc-chip"><span class="hx-doc-chip-dot"></span>Computer use</span>
+          <span class="hx-doc-chip"><span class="hx-doc-chip-dot"></span>Web search</span>
+          <span class="hx-doc-chip"><span class="hx-doc-chip-dot"></span>Chained tools</span>
         </div>
       </div>
+    </section>
 
-      <p class="reveal text-sm text-ink-mid leading-relaxed mt-6 max-w-3xl">
-        Plus the rest of the catalogue — calendars, CRMs, ticketing, data warehouses, object storage. Permissions follow the source on every connection, and the workspace never sees data the user could not already see in the original tool.
-      </p>
-    </div>
-  </section>
+    <!-- ════════ AT A GLANCE ════════ -->
+    <section class="hx-doc-section">
+      <div class="hx-doc-section-inner">
+        <p class="hx-doc-section-eyebrow">At a glance</p>
+        <h2 class="hx-doc-section-title">The model when the work can't be one-shotted.</h2>
+        <p class="hx-doc-section-desc">Four directional readings, no numbers — Prometheus is calibrated for depth, planning, and chained action. Pair it with approval gates and senior review.</p>
+
+        <div class="hx-doc-grid hx-doc-grid-4">
+          <div class="hx-doc-card">
+            <span class="hx-doc-card-kicker">Reasoning</span>
+            <h3 class="hx-doc-card-title">Deepest in family</h3>
+            <p class="hx-doc-card-body">The model that plans, branches, retries, and revises. Multi-step problems land here.</p>
+          </div>
+          <div class="hx-doc-card">
+            <span class="hx-doc-card-kicker">Tool use</span>
+            <h3 class="hx-doc-card-title">Advanced</h3>
+            <p class="hx-doc-card-body">Chained tool calls, conditional dispatch, recursive plans. Tools as a first-class layer of the response.</p>
+          </div>
+          <div class="hx-doc-card">
+            <span class="hx-doc-card-kicker">Speed</span>
+            <h3 class="hx-doc-card-title">Slower</h3>
+            <p class="hx-doc-card-body">Optimised for getting the answer right, not for getting it back fast. Expect work, not a stream.</p>
+          </div>
+          <div class="hx-doc-card">
+            <span class="hx-doc-card-kicker">Cost</span>
+            <h3 class="hx-doc-card-title">Frontier tier</h3>
+            <p class="hx-doc-card-body">Priced for depth. Pair it with Ether and Nexus in a routing layer so it only runs when the work warrants it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ WHAT PROMETHEUS DOES ════════ -->
+    <section class="hx-doc-section">
+      <div class="hx-doc-section-inner">
+        <p class="hx-doc-section-eyebrow">Capabilities</p>
+        <h2 class="hx-doc-section-title">What Prometheus does well.</h2>
+        <p class="hx-doc-section-desc">Four capabilities matter most when you're picking Prometheus on purpose.</p>
+
+        <div class="hx-doc-grid hx-doc-grid-4">
+          <div class="hx-doc-card">
+            <div class="hx-doc-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2z"/></svg>
+            </div>
+            <h3 class="hx-doc-card-title">Extended thinking, visible</h3>
+            <p class="hx-doc-card-body">Prometheus reasons in a visible trace. Every step is replayable, editable, auditable.</p>
+          </div>
+          <div class="hx-doc-card">
+            <div class="hx-doc-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <h3 class="hx-doc-card-title">Computer use</h3>
+            <p class="hx-doc-card-body">Screen, keyboard, mouse. Prometheus can drive a virtual machine — open apps, fill forms, click through screens — under supervision.</p>
+          </div>
+          <div class="hx-doc-card">
+            <div class="hx-doc-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <h3 class="hx-doc-card-title">Web search</h3>
+            <p class="hx-doc-card-body">Native web search as a tool. Reads, cites, and integrates live information into the working answer.</p>
+          </div>
+          <div class="hx-doc-card">
+            <div class="hx-doc-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </div>
+            <h3 class="hx-doc-card-title">Chained tool calls</h3>
+            <p class="hx-doc-card-body">Tools call tools. Prometheus plans a sequence of tool invocations, executes them, and reasons over the outputs.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ WHERE PROMETHEUS FITS ════════ -->
+    <section class="hx-doc-section">
+      <div class="hx-doc-section-inner">
+        <p class="hx-doc-section-eyebrow">Where it fits</p>
+        <h2 class="hx-doc-section-title">Built for depth, planning, <span class="hx-doc-section-italic">and chained action.</span></h2>
+        <p class="hx-doc-section-desc">Common shapes of work where Prometheus is the right pick. For latency-bound or volume work, route to Ether or Nexus first.</p>
+
+        <ol class="hx-doc-list">
+          <li>
+            <span class="hx-doc-list-num">01</span>
+            <div class="hx-doc-list-body">
+              <h3 class="hx-doc-list-title">Agentic engagements</h3>
+              <p class="hx-doc-list-desc">Multi-step tasks where the agent decides what to do next. Inbox triage to action, research to summary, plan to execution.</p>
+            </div>
+          </li>
+          <li>
+            <span class="hx-doc-list-num">02</span>
+            <div class="hx-doc-list-body">
+              <h3 class="hx-doc-list-title">Complex analysis</h3>
+              <p class="hx-doc-list-desc">Investment memos, market scans, technical due diligence — work that reads a lot, synthesises across sources, and produces a defended position.</p>
+            </div>
+          </li>
+          <li>
+            <span class="hx-doc-list-num">03</span>
+            <div class="hx-doc-list-body">
+              <h3 class="hx-doc-list-title">Code at depth</h3>
+              <p class="hx-doc-list-desc">Cross-file refactors, architecture reviews, bug hunts that need to read the whole repo before suggesting a change.</p>
+            </div>
+          </li>
+          <li>
+            <span class="hx-doc-list-num">04</span>
+            <div class="hx-doc-list-body">
+              <h3 class="hx-doc-list-title">Computer-use automations</h3>
+              <p class="hx-doc-list-desc">Driving legacy apps that don't have an API. The agent runs in a sandboxed VM, with every step logged and replayable.</p>
+            </div>
+          </li>
+          <li>
+            <span class="hx-doc-list-num">05</span>
+            <div class="hx-doc-list-body">
+              <h3 class="hx-doc-list-title">Research with sources</h3>
+              <p class="hx-doc-list-desc">Web search + extended thinking + citations. The pattern for analyst-grade write-ups.</p>
+            </div>
+          </li>
+          <li>
+            <span class="hx-doc-list-num">06</span>
+            <div class="hx-doc-list-body">
+              <h3 class="hx-doc-list-title">Overnight runs</h3>
+              <p class="hx-doc-list-desc">Long-running engagements you start at end-of-day and review in the morning. Trace is fully replayable.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ════════ TECHNICAL POSTURE ════════ -->
+    <section class="hx-doc-section">
+      <div class="hx-doc-section-inner">
+        <p class="hx-doc-section-eyebrow">Technical posture</p>
+        <h2 class="hx-doc-section-title">How Prometheus behaves in production.</h2>
+        <p class="hx-doc-section-desc">The operational posture you can plan around when you wire Prometheus into a real system.</p>
+
+        <ul class="hx-doc-specs">
+          <li>
+            <span class="hx-doc-specs-key">Thinking</span>
+            <span class="hx-doc-specs-val"><em>Extended (visible).</em> The whole reasoning path is visible. Pause, edit a step, resume.</span>
+          </li>
+          <li>
+            <span class="hx-doc-specs-key">Tool use</span>
+            <span class="hx-doc-specs-val"><em>Parallel · chained.</em> Independent tools run in parallel. Dependent tools chain. Plans branch and retry.</span>
+          </li>
+          <li>
+            <span class="hx-doc-specs-key">Computer use</span>
+            <span class="hx-doc-specs-val"><em>Screen · keyboard · mouse.</em> Operates a sandboxed VM. Approval gates enforced for irreversible actions.</span>
+          </li>
+          <li>
+            <span class="hx-doc-specs-key">Web search</span>
+            <span class="hx-doc-specs-val"><em>Native tool.</em> Search, fetch, read, cite — all inside the same call.</span>
+          </li>
+          <li>
+            <span class="hx-doc-specs-key">Replayability</span>
+            <span class="hx-doc-specs-val">Every run leaves a step-by-step trace. Replay from any step with edits.</span>
+          </li>
+          <li>
+            <span class="hx-doc-specs-key">Best paired with</span>
+            <span class="hx-doc-specs-val">Approval gates on writes / sends / payments. <em>Ether</em> as the front door, <em>Nexus</em> for retrieval-grounded analysis.</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ════════ IN THE FAMILY ════════ -->
+    <section class="hx-doc-section">
+      <div class="hx-doc-section-inner">
+        <p class="hx-doc-section-eyebrow">Three minds · one frontier</p>
+        <h2 class="hx-doc-section-title">Where Prometheus sits.</h2>
+        <p class="hx-doc-section-desc">Ether is the front door. Nexus is the workhorse. Prometheus is the depth tier. One workspace runs all three with a single set of credentials.</p>
+
+        <div class="hx-doc-family">
+          <a href="/ether" class="hx-doc-family-card block" style="--c:#F5C863; --c-text:rgba(236,236,238,0.55); text-decoration:none;">
+            <p class="hx-doc-family-mark"><span class="hx-doc-family-mark-dot"></span>Real-time tier</p>
+            <h3 class="hx-doc-family-name">Ether</h3>
+            <p class="hx-doc-family-tagline">Streaming-first. Lowest cost. The model for volume and latency-bound workloads.</p>
+          </a>
+          <a href="/nexus" class="hx-doc-family-card block" style="--c:#DC2626; --c-text:rgba(236,236,238,0.55); text-decoration:none;">
+            <p class="hx-doc-family-mark"><span class="hx-doc-family-mark-dot"></span>Reasoning tier</p>
+            <h3 class="hx-doc-family-name">Nexus</h3>
+            <p class="hx-doc-family-tagline">Balanced workhorse. Longest context, strongest production reasoning, Citations on demand.</p>
+          </a>
+          <div class="hx-doc-family-card" data-active style="--c:#D4D4D8; --c-text:#E5E5E7; --c-bg:rgba(244,244,245,0.10); --c-border:rgba(244,244,245,0.25);">
+            <span class="hx-doc-family-active-tag"><span class="hx-doc-family-active-tag-dot"></span>You are here</span>
+            <p class="hx-doc-family-mark"><span class="hx-doc-family-mark-dot"></span>Frontier tier</p>
+            <h3 class="hx-doc-family-name">Prometheus</h3>
+            <p class="hx-doc-family-tagline">Deepest reasoning, agentic, computer use, chained tools. The depth model for complex work.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ CLOSING NOTE ════════ -->
+    <section class="hx-doc-closing">
+      <span class="hx-doc-closing-mark">End of overview</span>
+      <p>Prometheus is the answer when the work can't be one-shotted. Pair it with approval gates, replayable traces, and senior engineers reviewing the runs. Frontier intelligence is a tool — operate it on purpose.</p>
+    </section>
+
+  </main>
 
   <!-- ════════════════════════════════════════════════════════════
        PREMIUM FOOTER — luxe obsidian edition
@@ -347,7 +423,7 @@
 
       </div>
 
-      <!-- Trust ribbon: signature → certifications → live status -->
+      <!-- Trust ribbon -->
       <div class="hx-footer-trust">
         <span class="hx-footer-trust-item">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="hx-footer-trust-flag"><rect width="24" height="24" rx="3" fill="#DC2626"/><rect x="10" y="5" width="4" height="14" fill="#FFFFFF"/><rect x="5" y="10" width="14" height="4" fill="#FFFFFF"/></svg>
@@ -364,7 +440,7 @@
         <span class="hx-footer-trust-item hx-footer-trust-mono">v 2.4 · Cycle 12</span>
       </div>
 
-      <!-- Bottom row: copyright + socials -->
+      <!-- Bottom row -->
       <div class="hx-footer-bottom">
         <p class="hx-footer-copy">© 2026 HelveX AG · Zurich, Switzerland · All rights reserved.</p>
         <div class="hx-footer-social">

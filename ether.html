@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
-  <title>Quickstart — HelveX</title>
-  <meta name="description" content="From sign-up to shipped, in five minutes. The five steps that take a fresh HelveX workspace to live agents." />
-  <meta property="og:title" content="Quickstart — HelveX" />
-  <meta property="og:description" content="From sign-up to shipped, in five minutes. The five steps that take a fresh HelveX workspace to live agents." />
+  <title>Ether — HelveX</title>
+  <meta name="description" content="Ether is HelveX's real-time, lowest-cost model. Streaming-first, vision-enabled, built for high-throughput workloads where every millisecond matters." />
+  <meta property="og:title" content="Ether — HelveX" />
+  <meta property="og:description" content="Real-time intelligence. Lowest cost. Streaming-first text + vision input." />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="HelveX" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="theme-color" content="#FFFFFF" />
+  <meta name="theme-color" content="#07070C" />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -19,25 +19,24 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ink: '#0A0A0A', 'ink-soft': '#171717', 'ink-mid': '#525252', 'ink-light': '#A3A3A3', 'ink-faint': '#D4D4D4',
-            line: '#E5E5E5', 'line-soft': '#F0EFEC', cream: '#FAFAF7', beige: '#F4EFE6', 'beige-warm': '#EDE5D6',
-            red: '#DC2626', 'red-deep': '#991B1B', 'red-soft': '#FEE2E2',
-            yellow: '#FCD34D', 'yellow-deep': '#F59E0B', 'yellow-soft': '#FEF3C7',
-          },
-          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'], serif: ['"Instrument Serif"', 'Georgia', 'serif'] },
-        },
-      },
-    };
+    tailwind.config = { theme: { extend: { colors: { ink: '#0A0A0A', 'ink-soft': '#171717', 'ink-mid': '#525252', 'ink-light': '#A3A3A3', 'ink-faint': '#D4D4D4', line: '#E5E5E5', 'line-soft': '#F0EFEC', cream: '#FAFAF7', beige: '#F4EFE6', red: '#DC2626', 'red-deep': '#991B1B', 'red-soft': '#FEE2E2', yellow: '#FCD34D', 'yellow-deep': '#F59E0B', 'yellow-soft': '#FEF3C7' }, fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'], serif: ['"Instrument Serif"', 'Georgia', 'serif'] } } } };
   </script>
 
   <link rel="stylesheet" href="/helvex.css" />
 
+  <!-- Per-page accent: Ether is the gold tier -->
+  <style>
+    .hx-doc-page {
+      --accent: #F5C863;
+      --accent-text: #F5C863;
+      --accent-glow: rgba(245,200,99,0.24);
+      --accent-shadow: rgba(245,200,99,0.22);
+      --accent-from: #F5C863;
+      --accent-to: #F0B852;
+    }
+  </style>
 </head>
-<body class="bg-white text-ink antialiased">
+<body class="hx-doc-page antialiased">
 
   <!-- Premium .hx-header styles live in /helvex.css so every page that loads the shared stylesheet gets them automatically. -->
   <header class="hx-header">
@@ -100,158 +99,235 @@
     </nav>
   </header>
 
-  <!-- ════════ MOBILE MENU DRAWER ════════ -->
-  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Site navigation">
-    <div class="mobile-menu-backdrop" data-close></div>
-    <div class="mobile-menu-panel">
-      <div class="mobile-menu-header">
-        <a href="/" class="brand-mark text-xl flex items-center gap-2">
-          <span class="brand-logo"><img src="/helvex-logo.png" alt="HelveX" class="h-16 w-auto" /></span>
-        </a>
-        <button type="button" class="mobile-menu-close" data-close aria-label="Close menu">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button>
-      </div>
-      <nav class="mobile-menu-nav" aria-label="Main">
-        <a href="/" class="mobile-menu-link">Home</a>
-        <details class="mobile-menu-services">
-          <summary class="mobile-menu-link" style="list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
-            <span>Services</span>
-            <svg class="w-4 h-4 text-ink-light transition-transform" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </summary>
-          <div class="pl-4 mt-1 mb-2 space-y-0.5 border-l border-line">
-            <a href="/ai-automation.html" class="mobile-menu-link">AI &amp; Automation</a>
-            <a href="/business-consulting.html" class="mobile-menu-link">Business Consulting</a>
-            <a href="/digital-services.html" class="mobile-menu-link">Digital Services</a>
-            <a href="/growth-marketing.html" class="mobile-menu-link">Growth &amp; Marketing</a>
-            <a href="/enterprise.html" class="mobile-menu-link">Enterprise</a>
-          </div>
-        </details>
-        <a href="/models" class="mobile-menu-link">Models</a>
-        <a href="/workspace" class="mobile-menu-link">Workspace</a>
-        <a href="/research" class="mobile-menu-link">Research</a>
-        <a href="/updates" class="mobile-menu-link">Updates</a>
-        <a href="/customer-stories" class="mobile-menu-link">Customers</a>
-        <a href="/resources" class="mobile-menu-link">Resources</a>
-      </nav>
-      <div class="mobile-menu-cta">
-        <a href="/signup.html" class="primary">
-          Try HeliX
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </a>
-        <a href="/signup.html" class="secondary">Sign in</a>
-      </div>
-      <div class="mobile-menu-meta">Built in Switzerland</div>
-    </div>
+  <!-- Ambient backdrop (sits behind all content) -->
+  <div class="hx-doc-bg" aria-hidden="true">
+    <div class="hx-doc-bg-grid"></div>
+    <div class="hx-doc-bg-glow hx-doc-bg-glow-1"></div>
+    <div class="hx-doc-bg-glow hx-doc-bg-glow-2"></div>
   </div>
 
-  <!-- ════════ HERO ════════ -->
-  <section class="relative pt-14 sm:pt-24 pb-12 sm:pb-16 overflow-hidden">
-    <div class="hero-orb hero-orb-2" style="opacity: 0.3;"></div>
-    <div class="relative max-w-5xl mx-auto px-6 sm:px-8">
-      <p class="reveal section-mark mb-7">Quickstart</p>
-      <h1 class="reveal h-display balance text-[44px] sm:text-7xl mb-6">
-        Sign-up to shipped,<br />
-        <span class="italic font-serif font-normal tech-gradient-text">in five minutes.</span>
-      </h1>
-      <p class="reveal pretty text-base sm:text-xl text-ink-mid max-w-2xl leading-relaxed">Five steps cover the work most teams do in the first week. Each one takes a minute or two. The full path is documented inside the workspace once you sign in.</p>
-    </div>
-  </section>
+  <main class="hx-doc-wrap">
 
-  <section class="py-16 sm:py-24">
-    <div class="max-w-7xl mx-auto px-6 sm:px-8">
-      <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
-        <div class="reveal rounded-2xl border border-line bg-white p-6"><p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 01</p><h3 class="text-base font-bold tracking-tight mb-2">Create a workspace</h3><p class="text-sm text-ink-mid leading-relaxed">Pick a region (EU, US, APAC), invite teammates, choose your default model.</p></div><div class="reveal rounded-2xl border border-line bg-white p-6"><p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 02</p><h3 class="text-base font-bold tracking-tight mb-2">Connect knowledge</h3><p class="text-sm text-ink-mid leading-relaxed">Drive, Notion, SharePoint, Slack — or upload directly. Permissions follow the source.</p></div><div class="reveal rounded-2xl border border-line bg-white p-6"><p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 03</p><h3 class="text-base font-bold tracking-tight mb-2">Open a project</h3><p class="text-sm text-ink-mid leading-relaxed">Pin the documents, sources, and prompts every conversation should start from.</p></div><div class="reveal rounded-2xl border border-line bg-white p-6"><p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 04</p><h3 class="text-base font-bold tracking-tight mb-2">Try the three models</h3><p class="text-sm text-ink-mid leading-relaxed">Ask the same question to Ether, Nexus, and Prometheus. Notice the difference.</p></div><div class="reveal rounded-2xl border border-line bg-white p-6"><p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Step 05</p><h3 class="text-base font-bold tracking-tight mb-2">Run an agent</h3><p class="text-sm text-ink-mid leading-relaxed">Pick a workflow from the library, watch it run, replay any step.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="relative tech-wash-soft border-y border-line py-16 sm:py-24 overflow-hidden">
-    <div class="max-w-4xl mx-auto px-6 sm:px-8">
-      <div class="reveal mb-10"><p class="section-mark mb-5">Tips</p><h2 class="text-2xl sm:text-4xl font-extrabold tracking-tightest mb-5 balance">Three things that save people the most time.</h2></div>
-      <ol class="space-y-px border-y border-line">
-        <li class="reveal flex gap-5 py-5 "><span class="font-mono text-[11px] tracking-widest uppercase text-ink-light pt-1 flex-shrink-0 w-12">01</span><div><h3 class="text-base font-bold text-ink mb-1.5">Use Projects, not loose chats.</h3><p class="text-sm text-ink-mid leading-relaxed">Pinning the brief, the sources, and the prompt once means every conversation starts in the right place. Most retention savings come from this single habit.</p></div></li><li class="reveal flex gap-5 py-5 border-t border-line-soft"><span class="font-mono text-[11px] tracking-widest uppercase text-ink-light pt-1 flex-shrink-0 w-12">02</span><div><h3 class="text-base font-bold text-ink mb-1.5">Pin the model when latency or depth matters.</h3><p class="text-sm text-ink-mid leading-relaxed">The router is good, not psychic. If you need sub-100 ms or 1 M-token reasoning, pin the model on the chat or Project.</p></div></li><li class="reveal flex gap-5 py-5 border-t border-line-soft"><span class="font-mono text-[11px] tracking-widest uppercase text-ink-light pt-1 flex-shrink-0 w-12">03</span><div><h3 class="text-base font-bold text-ink mb-1.5">Click citations before you act.</h3><p class="text-sm text-ink-mid leading-relaxed">Every Nexus claim links to its source. One click is the difference between trusting an answer and verifying it.</p></div></li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- ════════ WHAT YOU'LL HAVE IN 30 MINUTES ════════ -->
-  <section class="py-20 sm:py-28">
-    <div class="max-w-6xl mx-auto px-6 sm:px-8">
-      <div class="reveal max-w-3xl mb-14 sm:mb-16">
-        <p class="section-mark mb-5">What you'll have in 30 minutes</p>
-        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Three surfaces, ready to use.</h2>
-        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
-          A short setup is enough to stand up the three surfaces most teams reach for first. Each one is real — not a sandbox — and each one can stay in your workspace as the place that work happens.
+    <!-- ════════ HERO ════════ -->
+    <section class="hx-doc-hero">
+      <div class="hx-doc-hero-inner">
+        <p class="hx-doc-eyebrow">
+          <span class="hx-doc-eyebrow-dot"></span>
+          Model · 01 / 03 · Real-time tier
         </p>
-      </div>
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-        <div class="reveal rounded-2xl border border-line bg-white p-7">
-          <p class="font-mono text-[11px] tracking-widest uppercase text-yellow-deep mb-3">Surface 01</p>
-          <h3 class="text-lg font-bold tracking-tight mb-2.5">A Chat thread with a pinned model.</h3>
-          <p class="text-sm text-ink-mid leading-relaxed mb-3">Open Chat, pin Ether for speed or Nexus for depth, and start asking. The thread keeps the model choice, the system prompt, and the context window from drifting on you.</p>
-          <p class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Best for: drafting, summarising, quick decisions</p>
-        </div>
-        <div class="reveal rounded-2xl border border-line bg-white p-7">
-          <p class="font-mono text-[11px] tracking-widest uppercase text-red mb-3">Surface 02</p>
-          <h3 class="text-lg font-bold tracking-tight mb-2.5">A Project with seeded context.</h3>
-          <p class="text-sm text-ink-mid leading-relaxed mb-3">Pin a brief, a handful of source documents, and the prompt every conversation should start from. Every chat that opens inside the Project inherits the setup — no copy-paste, no drift.</p>
-          <p class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Best for: a recurring task, a single account, a long doc</p>
-        </div>
-        <div class="reveal rounded-2xl border border-line bg-white p-7">
-          <p class="font-mono text-[11px] tracking-widest uppercase text-ink mb-3">Surface 03</p>
-          <h3 class="text-lg font-bold tracking-tight mb-2.5">An Agent with one approval gate.</h3>
-          <p class="text-sm text-ink-mid leading-relaxed mb-3">Pick a workflow from the library, mark the irreversible step (send, post, write, pay), and run it. The agent pauses at the gate, you approve, and the replay trace records the whole run.</p>
-          <p class="font-mono text-[11px] tracking-widest uppercase text-ink-light">Best for: triage, enrichment, scheduled work</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════ COMMON FIRST INTEGRATIONS ════════ -->
-  <section class="bg-cream/40 border-y border-line py-20 sm:py-28">
-    <div class="max-w-6xl mx-auto px-6 sm:px-8">
-      <div class="reveal max-w-3xl mb-14 sm:mb-16">
-        <p class="section-mark mb-5">Common first integrations</p>
-        <h2 class="h-section text-3xl sm:text-5xl mb-5 balance">Day-one connections most teams turn on.</h2>
-        <p class="pretty text-base sm:text-lg text-ink-mid leading-relaxed">
-          Standard integrations, available to anyone on the platform. The point is not which logos you can collect — it is how quickly the work you already do becomes context the model can use.
+        <h1 class="hx-doc-title">
+          Ether
+          <span class="hx-doc-title-italic">Real-time. Lowest cost.</span>
+        </h1>
+        <p class="hx-doc-lede">
+          Ether is HelveX's fastest, lightest model. Streaming-first text and vision input, built for high-throughput workloads where every millisecond matters and the answer needs to land before the user has finished reading the question.
         </p>
-      </div>
-
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-px bg-line border border-line rounded-2xl overflow-hidden">
-        <div class="bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-ink mb-1.5">Slack</p>
-          <p class="text-xs text-ink-mid leading-snug">Threads as a knowledge source · agents that post replies</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-ink mb-1.5">Notion</p>
-          <p class="text-xs text-ink-mid leading-snug">Pages indexed with permissions intact · RAG on the wiki</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-ink mb-1.5">Google Drive</p>
-          <p class="text-xs text-ink-mid leading-snug">Docs, sheets, PDFs · live updates as files change</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-ink mb-1.5">GitHub</p>
-          <p class="text-xs text-ink-mid leading-snug">Repos as context · pull-request review agents</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-ink mb-1.5">Linear</p>
-          <p class="text-xs text-ink-mid leading-snug">Issues as work queue · agent triage and enrichment</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-ink mb-1.5">SSO</p>
-          <p class="text-xs text-ink-mid leading-snug">Okta · Azure AD · Google · SAML and OIDC</p>
+        <div class="hx-doc-chips">
+          <span class="hx-doc-chip"><span class="hx-doc-chip-dot"></span>Streaming-first</span>
+          <span class="hx-doc-chip"><span class="hx-doc-chip-dot"></span>Vision input</span>
+          <span class="hx-doc-chip"><span class="hx-doc-chip-dot"></span>Prompt caching</span>
+          <span class="hx-doc-chip"><span class="hx-doc-chip-dot"></span>Function calling</span>
         </div>
       </div>
+    </section>
 
-      <p class="reveal text-sm text-ink-mid leading-relaxed mt-6 max-w-3xl">
-        Plus the rest of the catalogue — calendars, CRMs, ticketing, data warehouses, object storage. Permissions follow the source on every connection, and the workspace never sees data the user could not already see in the original tool.
-      </p>
-    </div>
-  </section>
+    <!-- ════════ AT A GLANCE ════════ -->
+    <section class="hx-doc-section">
+      <div class="hx-doc-section-inner">
+        <p class="hx-doc-section-eyebrow">At a glance</p>
+        <h2 class="hx-doc-section-title">The model when latency is the budget.</h2>
+        <p class="hx-doc-section-desc">Four directional readings, no numbers — Ether is calibrated for moments where the user is waiting and the workload is volume. Reasoning is solid, not deepest; depth lives in Nexus and Prometheus.</p>
+
+        <div class="hx-doc-grid hx-doc-grid-4">
+          <div class="hx-doc-card">
+            <span class="hx-doc-card-kicker">Speed</span>
+            <h3 class="hx-doc-card-title">Highest in family</h3>
+            <p class="hx-doc-card-body">Sub-second time-to-first-token at typical context. Streaming tokens to the surface the moment they're produced.</p>
+          </div>
+          <div class="hx-doc-card">
+            <span class="hx-doc-card-kicker">Cost</span>
+            <h3 class="hx-doc-card-title">Lowest tier</h3>
+            <p class="hx-doc-card-body">Designed for volume. Batch-friendly. Prompt caching makes repeated prefixes effectively free.</p>
+          </div>
+          <div class="hx-doc-card">
+            <span class="hx-doc-card-kicker">Reasoning</span>
+            <h3 class="hx-doc-card-title">Solid</h3>
+            <p class="hx-doc-card-body">Good for triage, classification, drafting, light Q&amp;A. For multi-step planning, route to Nexus or Prometheus.</p>
+          </div>
+          <div class="hx-doc-card">
+            <span class="hx-doc-card-kicker">Context</span>
+            <h3 class="hx-doc-card-title">Standard window</h3>
+            <p class="hx-doc-card-body">Long enough for chat threads, support tickets, single documents, and tool-call chains of typical depth.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ WHAT ETHER DOES ════════ -->
+    <section class="hx-doc-section">
+      <div class="hx-doc-section-inner">
+        <p class="hx-doc-section-eyebrow">Capabilities</p>
+        <h2 class="hx-doc-section-title">What Ether does well.</h2>
+        <p class="hx-doc-section-desc">Four capabilities matter most when you're picking Ether on purpose.</p>
+
+        <div class="hx-doc-grid hx-doc-grid-4">
+          <div class="hx-doc-card">
+            <div class="hx-doc-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>
+            </div>
+            <h3 class="hx-doc-card-title">Streaming-first</h3>
+            <p class="hx-doc-card-body">Server-sent events deliver tokens as they arrive. The user sees the reply forming in real time — no waiting for a complete response.</p>
+          </div>
+          <div class="hx-doc-card">
+            <div class="hx-doc-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+            </div>
+            <h3 class="hx-doc-card-title">Vision input</h3>
+            <p class="hx-doc-card-body">Screenshots, diagrams, photos, PDFs as images — accepted at the same speed as text. Useful for support, moderation, document triage.</p>
+          </div>
+          <div class="hx-doc-card">
+            <div class="hx-doc-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 7h5v5M19 7l-9 9-4-4-5 5"/></svg>
+            </div>
+            <h3 class="hx-doc-card-title">Function calling</h3>
+            <p class="hx-doc-card-body">Tool definitions are first-class. Ether routes between text generation and structured tool invocation deterministically when the schema says so.</p>
+          </div>
+          <div class="hx-doc-card">
+            <div class="hx-doc-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>
+            </div>
+            <h3 class="hx-doc-card-title">Prompt caching</h3>
+            <p class="hx-doc-card-body">Long shared prefixes — system prompts, knowledge bundles, instructions — are cached. Identical follow-up calls run at a fraction of the cost.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ WHERE ETHER FITS ════════ -->
+    <section class="hx-doc-section">
+      <div class="hx-doc-section-inner">
+        <p class="hx-doc-section-eyebrow">Where it fits</p>
+        <h2 class="hx-doc-section-title">Built for volume and latency, <span class="hx-doc-section-italic">not depth.</span></h2>
+        <p class="hx-doc-section-desc">Common shapes of work where Ether is the right pick. For depth-bound or action-bound work, route to Nexus or Prometheus.</p>
+
+        <ol class="hx-doc-list">
+          <li>
+            <span class="hx-doc-list-num">01</span>
+            <div class="hx-doc-list-body">
+              <h3 class="hx-doc-list-title">Real-time chat surfaces</h3>
+              <p class="hx-doc-list-desc">Customer-facing assistants where the user is watching the reply form. Voice replies, in-app helpers, support widgets, sales chat.</p>
+            </div>
+          </li>
+          <li>
+            <span class="hx-doc-list-num">02</span>
+            <div class="hx-doc-list-body">
+              <h3 class="hx-doc-list-title">Batch classification</h3>
+              <p class="hx-doc-list-desc">Tagging large volumes of tickets, transcripts, leads, or documents on a schedule. Stream-first means the queue drains fast.</p>
+            </div>
+          </li>
+          <li>
+            <span class="hx-doc-list-num">03</span>
+            <div class="hx-doc-list-body">
+              <h3 class="hx-doc-list-title">Support triage and routing</h3>
+              <p class="hx-doc-list-desc">First-line responses, intent detection, smart routing to the right human or the right deeper model. Ether handles the front door, Nexus handles the hard ones.</p>
+            </div>
+          </li>
+          <li>
+            <span class="hx-doc-list-num">04</span>
+            <div class="hx-doc-list-body">
+              <h3 class="hx-doc-list-title">Drafts, rewrites, and summaries</h3>
+              <p class="hx-doc-list-desc">Quick editorial passes — punching up an email, condensing a meeting note, rewriting a paragraph to a target tone.</p>
+            </div>
+          </li>
+          <li>
+            <span class="hx-doc-list-num">05</span>
+            <div class="hx-doc-list-body">
+              <h3 class="hx-doc-list-title">Vision triage</h3>
+              <p class="hx-doc-list-desc">Screenshots from a bug report, photos from a moderation queue, scans of a paper form. First-pass description and routing without waiting on a heavier model.</p>
+            </div>
+          </li>
+          <li>
+            <span class="hx-doc-list-num">06</span>
+            <div class="hx-doc-list-body">
+              <h3 class="hx-doc-list-title">Tool-call orchestration at speed</h3>
+              <p class="hx-doc-list-desc">Short agent loops where each step is a tool call and the planning is light. Ether keeps the loop fast; Prometheus takes over when the plan gets recursive.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ════════ TECHNICAL POSTURE ════════ -->
+    <section class="hx-doc-section">
+      <div class="hx-doc-section-inner">
+        <p class="hx-doc-section-eyebrow">Technical posture</p>
+        <h2 class="hx-doc-section-title">How Ether behaves in production.</h2>
+        <p class="hx-doc-section-desc">The operational posture you can plan around when you wire Ether into a real system.</p>
+
+        <ul class="hx-doc-specs">
+          <li>
+            <span class="hx-doc-specs-key">Inputs</span>
+            <span class="hx-doc-specs-val">Text and image. Single-prompt and multi-turn chat. Tool definitions accepted alongside content.</span>
+          </li>
+          <li>
+            <span class="hx-doc-specs-key">Output mode</span>
+            <span class="hx-doc-specs-val"><em>Streaming server-sent events by default.</em> Tokens delivered as they're produced. Batch / non-streaming mode is opt-in.</span>
+          </li>
+          <li>
+            <span class="hx-doc-specs-key">Tool use</span>
+            <span class="hx-doc-specs-val">Function calling with strict JSON schema enforcement. Parallel tool calls supported for independent tools.</span>
+          </li>
+          <li>
+            <span class="hx-doc-specs-key">Caching</span>
+            <span class="hx-doc-specs-val">Prompt caching for repeated prefixes. System prompts and pinned context bundles cost a fraction after the first call.</span>
+          </li>
+          <li>
+            <span class="hx-doc-specs-key">Region</span>
+            <span class="hx-doc-specs-val">Available in every HelveX region. On enterprise plans, runs inside your AWS or GCP tenant.</span>
+          </li>
+          <li>
+            <span class="hx-doc-specs-key">Best paired with</span>
+            <span class="hx-doc-specs-val">A routing layer that escalates depth-bound questions to <em>Nexus</em>, and action-bound questions to <em>Prometheus</em>.</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ════════ IN THE FAMILY ════════ -->
+    <section class="hx-doc-section">
+      <div class="hx-doc-section-inner">
+        <p class="hx-doc-section-eyebrow">Three minds · one frontier</p>
+        <h2 class="hx-doc-section-title">Where Ether sits.</h2>
+        <p class="hx-doc-section-desc">Ether is the front door. Nexus is the workhorse. Prometheus is the depth tier. One workspace runs all three with a single set of credentials.</p>
+
+        <div class="hx-doc-family">
+          <div class="hx-doc-family-card" data-active style="--c:#F5C863; --c-text:#F5C863; --c-bg:rgba(245,200,99,0.15); --c-border:rgba(245,200,99,0.35);">
+            <span class="hx-doc-family-active-tag"><span class="hx-doc-family-active-tag-dot"></span>You are here</span>
+            <p class="hx-doc-family-mark"><span class="hx-doc-family-mark-dot"></span>Real-time tier</p>
+            <h3 class="hx-doc-family-name">Ether</h3>
+            <p class="hx-doc-family-tagline">Streaming-first. Lowest cost. The model for volume and latency-bound workloads.</p>
+          </div>
+          <a href="/nexus" class="hx-doc-family-card block" style="--c:#DC2626; --c-text:rgba(236,236,238,0.55); text-decoration:none;">
+            <p class="hx-doc-family-mark"><span class="hx-doc-family-mark-dot"></span>Reasoning tier</p>
+            <h3 class="hx-doc-family-name">Nexus</h3>
+            <p class="hx-doc-family-tagline">Balanced workhorse. Longest context, strongest production reasoning, Citations on demand.</p>
+          </a>
+          <a href="/prometheus" class="hx-doc-family-card block" style="--c:#D4D4D8; --c-text:rgba(236,236,238,0.55); text-decoration:none;">
+            <p class="hx-doc-family-mark"><span class="hx-doc-family-mark-dot"></span>Frontier tier</p>
+            <h3 class="hx-doc-family-name">Prometheus</h3>
+            <p class="hx-doc-family-tagline">Deepest reasoning, agentic, computer use, chained tools. The depth model for complex work.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ CLOSING NOTE ════════ -->
+    <section class="hx-doc-closing">
+      <span class="hx-doc-closing-mark">End of overview</span>
+      <p>Pick Ether on purpose. When latency is the budget and the work is volume, this is the model. When the work bends toward depth or action — route.</p>
+    </section>
+
+  </main>
 
   <!-- ════════════════════════════════════════════════════════════
        PREMIUM FOOTER — luxe obsidian edition
@@ -347,7 +423,7 @@
 
       </div>
 
-      <!-- Trust ribbon: signature → certifications → live status -->
+      <!-- Trust ribbon -->
       <div class="hx-footer-trust">
         <span class="hx-footer-trust-item">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="hx-footer-trust-flag"><rect width="24" height="24" rx="3" fill="#DC2626"/><rect x="10" y="5" width="4" height="14" fill="#FFFFFF"/><rect x="5" y="10" width="14" height="4" fill="#FFFFFF"/></svg>
@@ -364,7 +440,7 @@
         <span class="hx-footer-trust-item hx-footer-trust-mono">v 2.4 · Cycle 12</span>
       </div>
 
-      <!-- Bottom row: copyright + socials -->
+      <!-- Bottom row -->
       <div class="hx-footer-bottom">
         <p class="hx-footer-copy">© 2026 HelveX AG · Zurich, Switzerland · All rights reserved.</p>
         <div class="hx-footer-social">

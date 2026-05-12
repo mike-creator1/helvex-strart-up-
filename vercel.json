@@ -5,6 +5,9 @@
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/models", "destination": "/models.html" },
+    { "source": "/ether",       "destination": "/ether.html" },
+    { "source": "/nexus",       "destination": "/nexus.html" },
+    { "source": "/prometheus",  "destination": "/prometheus.html" },
     { "source": "/workspace", "destination": "/workspace.html" },
     { "source": "/research", "destination": "/research.html" },
     { "source": "/updates", "destination": "/updates.html" },
