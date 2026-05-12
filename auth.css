@@ -2377,3 +2377,47 @@ body {
   }
   .auth-shell.split .side-features { display: flex; }
 }
+
+/* ════════════════════════════════════════════════════════════
+   v6 — slightly larger type on the left panel
+   Bumps every editorial size up ~10–15% so the reading rhythm
+   feels more confident without breaking the 100vh fit.
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 921px) {
+  .auth-shell.split .side-eyebrow {
+    font-size: clamp(11px, 1.4vh, 12px) !important;
+    letter-spacing: 0.30em !important;
+  }
+  .auth-shell.split .side-headline {
+    font-size: clamp(42px, 7.2vh, 72px) !important;
+  }
+  .auth-shell.split .side-sub {
+    font-size: clamp(14.5px, 1.85vh, 17px) !important;
+    line-height: 1.6 !important;
+    max-width: 46ch !important;
+  }
+  .auth-shell.split .feat-body strong {
+    font-size: clamp(14px, 1.8vh, 16px) !important;
+  }
+  .auth-shell.split .feat-body span {
+    font-size: clamp(13px, 1.65vh, 15px) !important;
+    line-height: 1.55 !important;
+  }
+  .auth-shell.split .feat-icon {
+    width: clamp(38px, 4.8vh, 46px) !important;
+    height: clamp(38px, 4.8vh, 46px) !important;
+  }
+  .auth-shell.split .feat-icon svg {
+    width: clamp(16px, 2vh, 21px) !important;
+    height: clamp(16px, 2vh, 21px) !important;
+  }
+  .auth-shell.split .side-foot {
+    font-size: clamp(10.5px, 1.25vh, 12px) !important;
+  }
+}
+
+/* Mobile: same bump so the stacked layout reads with confident type. */
+@media (max-width: 920px) {
+  .auth-shell.split .side-headline { font-size: clamp(38px, 9vw, 48px) !important; }
+  .auth-shell.split .side-sub { font-size: 15.5px !important; line-height: 1.6 !important; }
+}
