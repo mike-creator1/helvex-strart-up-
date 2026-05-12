@@ -736,13 +736,11 @@ body {
     var(--hx-surface) !important;
 }
 
-/* ── SINGLE-PANEL LAYOUT — minimal centred card ──────────── */
+/* ── SINGLE-PANEL LAYOUT — top bar · centred card · bottom bar */
 .auth-shell.single {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
   min-height: 100vh;
-  padding: 32px;
   position: relative;
   background:
     radial-gradient(ellipse 60% 50% at 50% 0%,   rgba(252, 211, 77, 0.06) 0%, transparent 65%),
@@ -763,7 +761,13 @@ body {
 .auth-shell.single .auth-main {
   width: 100%;
   max-width: 460px;
-  padding: 0;
+  padding: 32px 24px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
 }
 .auth-shell.single .auth-card {
   width: 100%;
@@ -778,8 +782,135 @@ body {
 .auth-shell.single .auth-card .brand img {
   height: 40px !important;
 }
+
+/* ── TOP BAR — minimal nav: brand + back-to-site ─────────── */
+.auth-topbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 36px;
+}
+@media (max-width: 720px) {
+  .auth-topbar { padding: 18px 20px; }
+}
+.auth-topbar .topbar-brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+.auth-topbar .topbar-brand img {
+  height: 26px;
+  width: auto;
+  display: block;
+}
+.auth-topbar .topbar-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--hx-text-mid);
+  background: var(--hx-surface);
+  border: 1px solid var(--hx-line);
+  border-radius: 999px;
+  text-decoration: none;
+  letter-spacing: -0.005em;
+  box-shadow: 0 1px 1px rgba(15, 15, 16, 0.03);
+  transition:
+    color 0.2s var(--hx-ease),
+    border-color 0.2s var(--hx-ease),
+    background 0.2s var(--hx-ease),
+    transform 0.2s var(--hx-ease);
+}
+.auth-topbar .topbar-back:hover {
+  color: var(--hx-text);
+  border-color: var(--hx-line-strong);
+  background: #FCFCFC;
+  transform: translateX(-2px);
+}
+.auth-topbar .topbar-back svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s var(--hx-ease);
+}
+.auth-topbar .topbar-back:hover svg { transform: translateX(-2px); }
+@media (max-width: 480px) {
+  .auth-topbar .topbar-back span { display: none; }
+  .auth-topbar .topbar-back {
+    padding: 8px 10px;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+  }
+}
+
+/* ── BOTTOM BAR — trust signals + meta links ──────────────── */
+.auth-bottombar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 24px 36px 28px;
+  border-top: 1px solid var(--hx-line-soft);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+@media (max-width: 720px) {
+  .auth-bottombar {
+    padding: 20px 20px 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+}
+.auth-bottombar .bottombar-marks {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--hx-text-mid);
+  letter-spacing: -0.005em;
+}
+.auth-bottombar .bottombar-marks .mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 500;
+}
+.auth-bottombar .bottombar-marks .mark svg {
+  width: 14px;
+  height: 14px;
+  color: var(--hx-text-dim);
+}
+.auth-bottombar .bottombar-marks .dot {
+  color: var(--hx-text-faint);
+  font-weight: 400;
+}
+.auth-bottombar .bottombar-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 12px;
+  color: var(--hx-text-dim);
+}
+.auth-bottombar .bottombar-meta a {
+  color: var(--hx-text-mid);
+  font-weight: 500;
+  transition: color 0.2s var(--hx-ease);
+}
+.auth-bottombar .bottombar-meta a:hover { color: var(--hx-text); }
+
 @media (max-width: 920px) {
-  .auth-shell.single { padding: 24px 16px; }
+  .auth-shell.single .auth-main { padding: 24px 16px; }
   .auth-shell.single .auth-card {
     border: 1px solid var(--hx-line);
     background: var(--hx-surface);
