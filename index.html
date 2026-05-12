@@ -134,281 +134,7 @@
 <body class="bg-white text-ink antialiased">
 
   <!-- ════════ NAV ════════ -->
-  <!-- ════════════════════════════════════════════════════════════
-       PREMIUM HEADER v2 — Apple/OpenAI/Linear class polish
-       Multi-layer glass with ambient mesh, refined hairlines,
-       chip-style nav links, multi-ring status pill, brand halo,
-       persistent-glow gradient CTA, bottom aurora signature line.
-       ════════════════════════════════════════════════════════════ -->
-  <style>
-    /* ─── Container: 4-layer glass + ambient mesh ─────────────── */
-    .hx-header {
-      position: sticky; top: 0; z-index: 50;
-      background:
-        /* warm horizontal aurora behind everything */
-        radial-gradient(ellipse 60% 100% at 18% 50%, rgba(245,158,11,0.05), transparent 70%),
-        radial-gradient(ellipse 60% 100% at 82% 50%, rgba(220,38,38,0.05), transparent 70%),
-        linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.94) 100%);
-      backdrop-filter: blur(28px) saturate(190%);
-      -webkit-backdrop-filter: blur(28px) saturate(190%);
-      border-bottom: none;
-      box-shadow:
-        0 1px 0 rgba(255,255,255,0.85) inset,
-        0 1px 2px rgba(10,10,10,0.02),
-        0 10px 32px -18px rgba(10,10,10,0.10);
-      isolation: isolate;
-    }
-    /* Top hairline — refined warm thread */
-    .hx-header::before {
-      content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
-      background:
-        linear-gradient(90deg, transparent, rgba(220,38,38,0.20), rgba(245,158,11,0.20), rgba(220,38,38,0.18), transparent);
-      z-index: 4; pointer-events: none;
-    }
-    /* Bottom signature aurora — gold→red→gold sweep */
-    .hx-header::after {
-      content: ""; position: absolute; inset: auto 0 0 0; height: 1px;
-      background:
-        linear-gradient(90deg,
-          transparent 0%,
-          rgba(10,10,10,0.06) 15%,
-          rgba(245,158,11,0.32) 35%,
-          rgba(220,38,38,0.42) 50%,
-          rgba(245,158,11,0.32) 65%,
-          rgba(10,10,10,0.06) 85%,
-          transparent 100%);
-      z-index: 4; pointer-events: none;
-    }
-
-    .hx-header > nav {
-      height: 84px;
-      position: relative; z-index: 1;
-    }
-    @media (min-width: 640px)  { .hx-header > nav { height: 92px; } }
-    @media (min-width: 1024px) { .hx-header > nav { height: 100px; } }
-
-    /* ─── Brand — with soft ambient halo behind logo ─────────── */
-    .hx-header .brand-mark {
-      position: relative;
-      isolation: isolate;
-    }
-    .hx-header .brand-mark::before {
-      content: ""; position: absolute;
-      inset: -10px -16px;
-      background:
-        radial-gradient(ellipse at 30% 50%, rgba(220,38,38,0.10), transparent 65%),
-        radial-gradient(ellipse at 70% 50%, rgba(245,158,11,0.08), transparent 65%);
-      filter: blur(10px);
-      z-index: -1;
-      opacity: 0;
-      transition: opacity .6s ease;
-    }
-    .hx-header .brand-mark:hover::before { opacity: 1; }
-    .hx-header .brand-logo img {
-      height: 60px;
-      transition: transform .5s cubic-bezier(.22,1,.36,1);
-    }
-    @media (min-width: 640px)  { .hx-header .brand-logo img { height: 68px; } }
-    @media (min-width: 1024px) { .hx-header .brand-logo img { height: 76px; } }
-    .hx-header .brand-mark:hover .brand-logo img { transform: scale(1.02); }
-
-    /* ─── Live status pill — multi-ring with breathing glow ──── */
-    .hx-status-pill {
-      display: none;
-      position: relative;
-      align-items: center; gap: 8px;
-      padding: 5px 12px 5px 11px;
-      border-radius: 999px;
-      background:
-        linear-gradient(180deg, rgba(254,226,226,0.55) 0%, rgba(254,226,226,0.25) 100%);
-      border: 1px solid rgba(220,38,38,0.22);
-      font-family: 'Inter', sans-serif;
-      font-size: 9.5px; line-height: 1;
-      font-weight: 700; letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: #991B1B;
-      box-shadow:
-        0 1px 0 rgba(255,255,255,0.7) inset,
-        0 4px 12px -4px rgba(220,38,38,0.16);
-    }
-    .hx-status-pill-dot {
-      position: relative;
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #DC2626;
-      box-shadow:
-        0 0 0 1px rgba(220,38,38,0.30),
-        0 0 8px rgba(220,38,38,0.65);
-      animation: hxHeaderPulse 2.4s ease-in-out infinite;
-    }
-    .hx-status-pill-dot::after {
-      content: ""; position: absolute;
-      inset: -4px;
-      border-radius: 50%;
-      border: 1.2px solid rgba(220,38,38,0.30);
-      animation: hxRingPulse 2.4s ease-in-out infinite;
-    }
-    @keyframes hxHeaderPulse {
-      0%, 100% { opacity: 1;   transform: scale(1); }
-      50%      { opacity: .55; transform: scale(0.82); }
-    }
-    @keyframes hxRingPulse {
-      0%   { transform: scale(0.9); opacity: .85; }
-      80%  { transform: scale(1.6); opacity: 0; }
-      100% { transform: scale(1.6); opacity: 0; }
-    }
-    @media (min-width: 1024px) { .hx-status-pill { display: inline-flex; } }
-
-    /* ─── Nav links — glass chips with animated underline ────── */
-    .hx-header .nav-link {
-      position: relative;
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 10px 15px;
-      border-radius: 10px;
-      font-family: 'Inter', sans-serif;
-      font-size: 13.5px; font-weight: 500;
-      letter-spacing: -0.005em;
-      color: #525252;
-      background: transparent;
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: color .3s ease, background .3s ease, border-color .3s ease;
-    }
-    .hx-header .nav-link::after {
-      content: ""; position: absolute;
-      bottom: 3px; left: 15px; right: 15px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, #DC2626 30%, rgba(245,158,11,0.7) 50%, #DC2626 70%, transparent);
-      opacity: 0;
-      transform: scaleX(0.3);
-      transform-origin: center;
-      transition: opacity .35s ease, transform .35s cubic-bezier(.22,1,.36,1);
-    }
-    .hx-header .nav-link:hover {
-      color: #0A0A0A;
-      background: rgba(10,10,10,0.03);
-      border-color: rgba(10,10,10,0.04);
-    }
-    .hx-header .nav-link:hover::after,
-    .hx-header .nav-link.is-active::after { opacity: 1; transform: scaleX(1); }
-    .hx-header .nav-link.is-active {
-      color: #0A0A0A; font-weight: 600;
-      background:
-        linear-gradient(180deg, rgba(254,226,226,0.4), rgba(254,226,226,0.15));
-      border-color: rgba(220,38,38,0.12);
-    }
-    .hx-header .nav-link svg { transition: transform .35s ease; }
-    .hx-header .nav-dropdown.group:hover .nav-link-dropdown svg,
-    .hx-header .nav-link-dropdown:focus svg { transform: rotate(180deg); }
-
-    /* ─── Dropdown menu — premium glass panel ────────────────── */
-    .hx-header .nav-dropdown-menu > div {
-      border-radius: 18px;
-      border: 1px solid rgba(10,10,10,0.06);
-      background: rgba(255,255,255,0.96);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      box-shadow:
-        0 1px 0 rgba(255,255,255,0.9) inset,
-        0 32px 80px -16px rgba(10,10,10,0.22),
-        0 0 0 1px rgba(10,10,10,0.03);
-    }
-
-    /* ─── Sign in — refined ghost pill ───────────────────────── */
-    .hx-header .hx-signin {
-      font-family: 'Inter', sans-serif;
-      font-size: 13.5px; font-weight: 500;
-      color: #525252;
-      padding: 10px 16px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      transition: color .3s ease, background .3s ease, border-color .3s ease;
-    }
-    .hx-header .hx-signin:hover {
-      color: #0A0A0A;
-      background: rgba(10,10,10,0.04);
-      border-color: rgba(10,10,10,0.06);
-    }
-
-    /* ─── Enter Platform — flagship CTA ──────────────────────── */
-    .hx-header .btn-primary {
-      position: relative;
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 11px 20px;
-      border-radius: 999px;
-      background:
-        linear-gradient(180deg, #2A2A2E 0%, #0F0F12 55%, #05050A 100%);
-      color: #FFFFFF !important;
-      font-family: 'Inter', sans-serif;
-      font-size: 13px; font-weight: 600; letter-spacing: 0.01em;
-      border: 1px solid rgba(255,255,255,0.06);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.05) inset,
-        0 1px 0 rgba(255,255,255,0.22) inset,
-        0 -1px 0 rgba(0,0,0,0.4) inset,
-        0 4px 12px -4px rgba(10,10,10,0.45),
-        0 10px 28px -10px rgba(220,38,38,0.22);
-      overflow: hidden;
-      isolation: isolate;
-      transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease;
-    }
-    /* Persistent inner highlight at the top */
-    .hx-header .btn-primary::after {
-      content: ""; position: absolute;
-      top: 1px; left: 8%; right: 8%; height: 40%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent);
-      border-radius: 999px;
-      pointer-events: none;
-      z-index: 1;
-    }
-    /* Shimmer sweep on hover */
-    .hx-header .btn-primary::before {
-      content: ""; position: absolute; inset: 0;
-      background: linear-gradient(120deg, transparent 25%, rgba(255,255,255,0.20) 50%, transparent 75%);
-      transform: translateX(-130%);
-      transition: transform .9s cubic-bezier(.22,1,.36,1);
-      z-index: 1;
-    }
-    .hx-header .btn-primary > * { position: relative; z-index: 2; }
-    .hx-header .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.06) inset,
-        0 1px 0 rgba(255,255,255,0.22) inset,
-        0 -1px 0 rgba(0,0,0,0.4) inset,
-        0 6px 18px -4px rgba(10,10,10,0.50),
-        0 18px 40px -10px rgba(220,38,38,0.42);
-    }
-    .hx-header .btn-primary:hover::before { transform: translateX(130%); }
-    .hx-header .btn-primary svg { width: 13px; height: 13px; transition: transform .35s ease; }
-    .hx-header .btn-primary:hover svg { transform: translateX(3px); }
-
-    /* ─── Mobile menu trigger ────────────────────────────────── */
-    .hx-header .mobile-menu-trigger {
-      width: 42px; height: 42px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 11px;
-      background: transparent;
-      border: 1px solid transparent;
-      color: #0A0A0A;
-      transition: background .25s ease, border-color .25s ease, transform .25s ease;
-    }
-    .hx-header .mobile-menu-trigger:hover {
-      background: rgba(10,10,10,0.04);
-      border-color: rgba(10,10,10,0.06);
-      transform: translateY(-1px);
-    }
-    .hx-header .mobile-menu-trigger svg { width: 18px; height: 18px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .hx-status-pill-dot,
-      .hx-status-pill-dot::after,
-      .hx-header .brand-mark::before,
-      .hx-header .nav-link::after,
-      .hx-header .btn-primary,
-      .hx-header .btn-primary::before { animation: none !important; transition: none !important; }
-    }
-  </style>
-
+  <!-- Premium .hx-header styles live in /helvex.css so every page that loads the shared stylesheet gets them automatically. -->
   <header class="hx-header">
     <nav class="max-w-[1520px] mx-auto pl-4 pr-5 sm:pl-6 sm:pr-8 flex items-center justify-between gap-4">
       <div class="flex items-center gap-5 lg:gap-8">
@@ -416,7 +142,7 @@
           <span class="brand-logo"><img src="/helvex-logo.png" alt="HelveX" class="w-auto" /></span>
         </a>
         <div class="hidden lg:flex items-center gap-1" id="nav-main">
-          <a href="/" class="nav-link is-active">Home</a>
+          <a href="/" class="nav-link">Home</a>
           <div class="nav-dropdown relative group">
             <button type="button" class="nav-link nav-link-dropdown" aria-haspopup="true" aria-expanded="false">
               Services
@@ -454,7 +180,6 @@
           <a href="/workspace" class="nav-link">Workspace</a>
           <a href="/research" class="nav-link">Research</a>
           <a href="/updates" class="nav-link">Updates</a>
-          <a href="/pricing" class="nav-link">Pricing</a>
           <a href="/customer-stories" class="nav-link">Customers</a>
           <a href="/resources" class="nav-link">Resources</a>
         </div>
@@ -481,7 +206,7 @@
         </button>
       </div>
       <nav class="mobile-menu-nav" aria-label="Main">
-        <a href="/" class="mobile-menu-link is-active">Home</a>
+        <a href="/" class="mobile-menu-link">Home</a>
         <details class="mobile-menu-services">
           <summary class="mobile-menu-link" style="list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
             <span>Services</span>
@@ -499,7 +224,6 @@
         <a href="/workspace" class="mobile-menu-link">Workspace</a>
         <a href="/research" class="mobile-menu-link">Research</a>
         <a href="/updates" class="mobile-menu-link">Updates</a>
-        <a href="/pricing" class="mobile-menu-link">Pricing</a>
         <a href="/customer-stories" class="mobile-menu-link">Customers</a>
         <a href="/resources" class="mobile-menu-link">Resources</a>
       </nav>
