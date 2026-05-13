@@ -11,83 +11,181 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
   <style>
-    /* Service cards — clean catalog rows, no pricing chrome */
-    .hx-svc-card {
+    /* ─────────────────────────────────────────────────────────────
+       SERVICES PAGE — clear, single-pass scan layout.
+       Each category is a self-contained block (header + grid of
+       services). No abstract overview tiles, no scattered cards.
+       The visitor sees AT A GLANCE which services live in which
+       practice, with duration + outcome on every card.
+       ───────────────────────────────────────────────────────────── */
+
+    /* Quick-nav pills above the blocks — anchor to each category */
+    .hx-cat-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 4px 0 18px;
+    }
+    .hx-cat-nav a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--hx-text-mid);
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: color 0.12s, border-color 0.12s, background 0.12s;
+    }
+    .hx-cat-nav a:hover { color: var(--hx-text); border-color: var(--hx-line-strong); background: var(--hx-surface); }
+    .hx-cat-nav a .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .hx-cat-nav a .dot.yellow  { background: var(--hx-yellow-deep); }
+    .hx-cat-nav a .dot.red     { background: var(--hx-red); }
+    .hx-cat-nav a .dot.emerald { background: var(--hx-emerald); }
+    .hx-cat-nav a .count {
+      font-family: var(--hx-mono);
+      font-size: 10.5px;
+      color: var(--hx-text-dim);
+      letter-spacing: 0;
+    }
+
+    /* Category block — one per practice */
+    .hx-cat-block {
       background: var(--hx-surface);
       border: 1px solid var(--hx-line);
       border-radius: var(--hx-r-lg);
-      padding: 18px 18px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      transition: border-color 0.12s, box-shadow 0.15s, transform 0.12s;
-      position: relative;
+      overflow: hidden;
+      scroll-margin-top: 24px;
     }
-    .hx-svc-card:hover { border-color: var(--hx-line-strong); box-shadow: var(--hx-shadow-xs); }
-    .hx-svc-head {
+    .hx-cat-block + .hx-cat-block { margin-top: 16px; }
+
+    .hx-cat-block-head {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .hx-svc-name {
-      font-size: 14.5px;
-      font-weight: 600;
-      letter-spacing: -0.012em;
-      color: var(--hx-text);
-      margin: 0;
-    }
-    .hx-svc-tag {
-      font-family: var(--hx-mono);
-      font-size: 10.5px;
-      font-weight: 500;
-      padding: 2px 8px;
-      border-radius: 9999px;
+      gap: 14px;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--hx-line);
       background: var(--hx-bg-2);
-      border: 1px solid var(--hx-line);
-      color: var(--hx-text-mid);
-      letter-spacing: 0;
-      white-space: nowrap;
     }
-    .hx-svc-outcome {
+    .hx-cat-block-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--hx-r);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+    }
+    .hx-cat-block-icon.yellow  { background: var(--hx-yellow-soft); color: var(--hx-yellow-deep); border-color: rgba(252, 211, 77, 0.4); }
+    .hx-cat-block-icon.red     { background: var(--hx-red-soft);    color: var(--hx-red);          border-color: rgba(220, 38, 38, 0.22); }
+    .hx-cat-block-icon.emerald { background: var(--hx-emerald-soft); color: var(--hx-emerald);     border-color: rgba(16, 185, 129, 0.22); }
+
+    .hx-cat-block-text { flex: 1; min-width: 0; }
+    .hx-cat-block-text h2 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.014em;
+      color: var(--hx-text);
+      margin: 0 0 3px;
+    }
+    .hx-cat-block-text p {
       font-size: 13px;
       line-height: 1.55;
       color: var(--hx-text-mid);
       margin: 0;
     }
-    .hx-svc-meta {
+    .hx-cat-block-count {
+      font-family: var(--hx-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--hx-text-dim);
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      padding: 5px 10px;
+      border-radius: 9999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Service grid inside a category block — 3 cols → 2 → 1 */
+    .hx-cat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--hx-line);
+    }
+    @media (max-width: 980px) { .hx-cat-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) { .hx-cat-grid { grid-template-columns: 1fr; } }
+
+    .hx-cat-svc {
+      background: var(--hx-surface);
+      padding: 16px 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 140px;
+      transition: background 0.12s;
+    }
+    .hx-cat-svc:hover { background: var(--hx-bg-2); }
+    .hx-cat-svc-head {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      color: var(--hx-text-dim);
-      margin-top: 2px;
-      padding-top: 10px;
-      border-top: 1px solid var(--hx-line);
+      justify-content: space-between;
+      gap: 10px;
     }
-    .hx-svc-meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--hx-text-faint); display: inline-block; }
-    .hx-svc-link {
+    .hx-cat-svc-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.012em;
+      color: var(--hx-text);
+      margin: 0;
+    }
+    .hx-cat-svc-tag {
+      font-family: var(--hx-mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      color: var(--hx-text-mid);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .hx-cat-svc-outcome {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--hx-text-mid);
+      margin: 0;
+      flex: 1;
+    }
+    .hx-cat-svc-link {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 500;
       color: var(--hx-text);
-      margin-left: auto;
+      margin-top: 2px;
+      align-self: flex-start;
       border-bottom: 1px solid transparent;
       padding-bottom: 1px;
       transition: border-color 0.12s, gap 0.12s;
     }
-    .hx-svc-link:hover { border-color: var(--hx-text); gap: 6px; }
-    .hx-svc-link::after { content: '→'; font-weight: 400; }
-
-    /* Category overview tile — visible service count only, no pricing */
-    .hx-cat-tile { cursor: pointer; }
-    .hx-cat-tile .meta {
-      font-family: var(--hx-mono);
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
+    .hx-cat-svc-link:hover { border-color: var(--hx-text); gap: 6px; }
+    .hx-cat-svc-link::after { content: '→'; font-weight: 400; }
   </style>
 </head>
 <body data-active="services">
@@ -101,7 +199,7 @@
         <div class="hx-page-head">
           <div>
             <h1>Services.</h1>
-            <p class="sub">Three practices, one delivery team. Browse what's available, then open a brief — every project is scoped and quoted by a senior engineer before any work starts.</p>
+            <p class="sub">Three practices, one delivery team. Every service below ships with a fixed delivery window — scoped and quoted by a senior engineer before any work starts.</p>
           </div>
           <div class="hx-page-actions">
             <a href="/support.html" class="hx-btn hx-btn-secondary">Talk to a strategist</a>
@@ -109,171 +207,237 @@
           </div>
         </div>
 
-        <!-- Category overview tiles -->
-        <div class="hx-grid hx-grid-3">
-          <a href="#ai" class="hx-service-tile hx-cat-tile">
-            <div class="hx-service-tile-icon yellow">
+        <!-- Quick anchor nav -->
+        <nav class="hx-cat-nav" aria-label="Service categories">
+          <a href="#ai">         <span class="dot yellow"></span>  AI &amp; Automation  <span class="count">7</span></a>
+          <a href="#digital">    <span class="dot red"></span>     Digital Services    <span class="count">7</span></a>
+          <a href="#consulting"> <span class="dot emerald"></span> Consulting          <span class="count">5</span></a>
+        </nav>
+
+        <!-- ═════════════════════════════════════════════════════════
+             AI & AUTOMATION
+             ═════════════════════════════════════════════════════════ -->
+        <section id="ai" class="hx-cat-block" aria-labelledby="ai-h">
+          <header class="hx-cat-block-head">
+            <div class="hx-cat-block-icon yellow" aria-hidden="true">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 11h.01M15 11h.01"/><path d="M12 7V3"/></svg>
             </div>
-            <h3>AI &amp; Automation</h3>
-            <p>Custom agents, workflow automation, document &amp; inbox triage, internal copilots, and AI-driven data tooling.</p>
-            <div class="meta"><span>7 services</span></div>
-          </a>
-          <a href="#digital" class="hx-service-tile hx-cat-tile">
-            <div class="hx-service-tile-icon red">
+            <div class="hx-cat-block-text">
+              <h2 id="ai-h">AI &amp; Automation</h2>
+              <p>Custom agents, workflow automation, document &amp; inbox triage, internal copilots, and AI-driven data tooling.</p>
+            </div>
+            <span class="hx-cat-block-count">7 services</span>
+          </header>
+          <div class="hx-cat-grid">
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Custom AI Agent</h3>
+                <span class="hx-cat-svc-tag">3–4 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Replace a manual workflow with a measurable agent — domain-trained, evals included, monitored from day one.</p>
+              <a href="/projects.html?new=1&amp;service=custom-ai-agent" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Inbox / Triage Automation</h3>
+                <span class="hx-cat-svc-tag">2 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Cut response times and routing errors on email, ticketing, or form pipelines with a classifier-plus-router stack.</p>
+              <a href="/projects.html?new=1&amp;service=inbox-triage" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Document Processing Pipeline</h3>
+                <span class="hx-cat-svc-tag">2–3 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Extract structured data from PDFs, scans, and contracts. Confidence scoring with human-in-the-loop on edge cases.</p>
+              <a href="/projects.html?new=1&amp;service=document-pipeline" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Internal Copilot</h3>
+                <span class="hx-cat-svc-tag">3 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Knowledge assistant grounded in your private docs, with citations, per-team access controls, and audit trail.</p>
+              <a href="/projects.html?new=1&amp;service=internal-copilot" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Workflow Automation</h3>
+                <span class="hx-cat-svc-tag">1–2 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Connect tools and eliminate manual handoffs. Built on durable queues — retries, idempotency, and observability included.</p>
+              <a href="/projects.html?new=1&amp;service=workflow-automation" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">RAG &amp; Search</h3>
+                <span class="hx-cat-svc-tag">2 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Search across your private knowledge base — embeddings tuned to your domain, hybrid keyword + vector ranking.</p>
+              <a href="/projects.html?new=1&amp;service=rag-search" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Evaluation &amp; Hardening</h3>
+                <span class="hx-cat-svc-tag">2 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Make an existing model production-grade — eval harness, regression suite, latency budgets, and rollback plan.</p>
+              <a href="/projects.html?new=1&amp;service=eval-hardening" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+          </div>
+        </section>
+
+        <!-- ═════════════════════════════════════════════════════════
+             DIGITAL SERVICES
+             ═════════════════════════════════════════════════════════ -->
+        <section id="digital" class="hx-cat-block" aria-labelledby="digital-h">
+          <header class="hx-cat-block-head">
+            <div class="hx-cat-block-icon red" aria-hidden="true">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
             </div>
-            <h3>Digital Services</h3>
-            <p>Web apps, dashboards, CRM rebuilds, e-commerce, integrations, and internal tools — built and shipped by senior engineers.</p>
-            <div class="meta"><span>7 services</span></div>
-          </a>
-          <a href="#consulting" class="hx-service-tile hx-cat-tile">
-            <div class="hx-service-tile-icon emerald">
+            <div class="hx-cat-block-text">
+              <h2 id="digital-h">Digital Services</h2>
+              <p>Web apps, dashboards, CRM rebuilds, e-commerce, integrations, and internal tools — built and shipped by senior engineers.</p>
+            </div>
+            <span class="hx-cat-block-count">7 services</span>
+          </header>
+          <div class="hx-cat-grid">
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Web Application</h3>
+                <span class="hx-cat-svc-tag">4–6 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Production app from spec to deploy. Typed end-to-end, observable in production, documented for the next engineer.</p>
+              <a href="/projects.html?new=1&amp;service=web-app" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Internal Dashboard</h3>
+                <span class="hx-cat-svc-tag">3 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Single source of truth for ops, finance, or leadership — live data, role-based access, exportable everywhere.</p>
+              <a href="/projects.html?new=1&amp;service=dashboard" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">CRM Rebuild / Migration</h3>
+                <span class="hx-cat-svc-tag">4 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Modern CRM tailored to your sales motion. Migrate from a legacy stack without losing history or breaking integrations.</p>
+              <a href="/projects.html?new=1&amp;service=crm-rebuild" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">E-commerce Build</h3>
+                <span class="hx-cat-svc-tag">3–5 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Storefront, payments, fulfillment — clean checkout, inventory sync, and the analytics you need to actually grow.</p>
+              <a href="/projects.html?new=1&amp;service=ecommerce" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">System Integration</h3>
+                <span class="hx-cat-svc-tag">1–2 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Wire two SaaS tools together cleanly — webhooks, retries, dead-letter queue, and a runbook your ops team can read.</p>
+              <a href="/projects.html?new=1&amp;service=integration" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Marketing Site</h3>
+                <span class="hx-cat-svc-tag">2–3 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Brand-aligned, fast, SEO-ready. Editable by your team without re-deploys, A/B-test ready out of the box.</p>
+              <a href="/projects.html?new=1&amp;service=marketing-site" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">API / Backend Service</h3>
+                <span class="hx-cat-svc-tag">2–4 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Typed, observable, documented. Versioned API with contract tests, OpenAPI schema, and SDK generation.</p>
+              <a href="/projects.html?new=1&amp;service=backend-api" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+          </div>
+        </section>
+
+        <!-- ═════════════════════════════════════════════════════════
+             CONSULTING
+             ═════════════════════════════════════════════════════════ -->
+        <section id="consulting" class="hx-cat-block" aria-labelledby="consulting-h">
+          <header class="hx-cat-block-head">
+            <div class="hx-cat-block-icon emerald" aria-hidden="true">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 17V11M11 17V7M16 17v-9M21 17v-5"/></svg>
             </div>
-            <h3>Consulting</h3>
-            <p>AI strategy roadmaps, technical due diligence, architecture reviews, and senior fractional engineering leadership.</p>
-            <div class="meta"><span>5 services</span></div>
-          </a>
-        </div>
+            <div class="hx-cat-block-text">
+              <h2 id="consulting-h">Consulting</h2>
+              <p>AI strategy roadmaps, technical due diligence, architecture reviews, and senior fractional engineering leadership.</p>
+            </div>
+            <span class="hx-cat-block-count">5 services</span>
+          </header>
+          <div class="hx-cat-grid">
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">AI Strategy Roadmap</h3>
+                <span class="hx-cat-svc-tag">2 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">12-month plan with scored use cases, build / buy / partner calls, and a sequencing recommendation your CFO can read.</p>
+              <a href="/projects.html?new=1&amp;service=ai-strategy" class="hx-cat-svc-link">Open a brief</a>
+            </article>
 
-        <!-- AI & Automation -->
-        <div id="ai" class="hx-section-head">
-          <h2>AI &amp; Automation</h2>
-          <span class="meta">7 services</span>
-        </div>
-        <div class="hx-grid hx-grid-2">
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Custom AI Agent</h3><span class="hx-svc-tag">3–4 weeks</span></div>
-            <p class="hx-svc-outcome">Replace a manual workflow with a measurable agent — domain-trained, evals included, monitored from day one.</p>
-            <div class="hx-svc-meta"><span>Domain-trained</span><span class="dot"></span><span>Evals included</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Technical Due Diligence</h3>
+                <span class="hx-cat-svc-tag">1–2 weeks</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Independent read for investors or boards — codebase, infra, team, dependencies, and a risk register.</p>
+              <a href="/projects.html?new=1&amp;service=tech-dd" class="hx-cat-svc-link">Open a brief</a>
+            </article>
 
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Inbox / Triage Automation</h3><span class="hx-svc-tag">2 weeks</span></div>
-            <p class="hx-svc-outcome">Cut response times and routing errors on email, ticketing, or form pipelines with a classifier-plus-router stack.</p>
-            <div class="hx-svc-meta"><span>Email · Tickets</span><span class="dot"></span><span>Forms</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Architecture Review</h3>
+                <span class="hx-cat-svc-tag">1 week</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Find risk, cost, and scaling issues early — independent assessment with a prioritised remediation plan.</p>
+              <a href="/projects.html?new=1&amp;service=arch-review" class="hx-cat-svc-link">Open a brief</a>
+            </article>
 
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Document Processing Pipeline</h3><span class="hx-svc-tag">2–3 weeks</span></div>
-            <p class="hx-svc-outcome">Extract structured data from PDFs, scans, and contracts. Confidence scoring with human-in-the-loop on edge cases.</p>
-            <div class="hx-svc-meta"><span>Typed output</span><span class="dot"></span><span>HITL review</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Fractional Engineering Lead</h3>
+                <span class="hx-cat-svc-tag">Ongoing</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Senior leadership, part-time, hands-on. Embedded with your team for sprint planning, hiring loops, and architecture calls.</p>
+              <a href="/projects.html?new=1&amp;service=fractional-lead" class="hx-cat-svc-link">Open a brief</a>
+            </article>
 
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Internal Copilot</h3><span class="hx-svc-tag">3 weeks</span></div>
-            <p class="hx-svc-outcome">Knowledge assistant grounded in your private docs, with citations, per-team access controls, and audit trail.</p>
-            <div class="hx-svc-meta"><span>RAG-grounded</span><span class="dot"></span><span>Cited answers</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Workflow Automation</h3><span class="hx-svc-tag">1–2 weeks</span></div>
-            <p class="hx-svc-outcome">Connect tools and eliminate manual handoffs. Built on durable queues — retries, idempotency, and observability included.</p>
-            <div class="hx-svc-meta"><span>Durable queues</span><span class="dot"></span><span>Retries</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">RAG &amp; Search</h3><span class="hx-svc-tag">2 weeks</span></div>
-            <p class="hx-svc-outcome">Search across your private knowledge base — embeddings tuned to your domain, hybrid keyword + vector ranking.</p>
-            <div class="hx-svc-meta"><span>Hybrid search</span><span class="dot"></span><span>Per-team ACL</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Evaluation &amp; Hardening</h3><span class="hx-svc-tag">2 weeks</span></div>
-            <p class="hx-svc-outcome">Make an existing model production-grade — eval harness, regression suite, latency budgets, and rollback plan.</p>
-            <div class="hx-svc-meta"><span>Eval harness</span><span class="dot"></span><span>Rollback plan</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-        </div>
-
-        <!-- Digital Services -->
-        <div id="digital" class="hx-section-head">
-          <h2>Digital Services</h2>
-          <span class="meta">7 services</span>
-        </div>
-        <div class="hx-grid hx-grid-2">
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Web Application</h3><span class="hx-svc-tag">4–6 weeks</span></div>
-            <p class="hx-svc-outcome">Production app from spec to deploy. Typed end-to-end, observable in production, documented for the next engineer.</p>
-            <div class="hx-svc-meta"><span>Typed stack</span><span class="dot"></span><span>Observable</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Internal Dashboard</h3><span class="hx-svc-tag">3 weeks</span></div>
-            <p class="hx-svc-outcome">Single source of truth for ops, finance, or leadership — live data, role-based access, exportable everywhere.</p>
-            <div class="hx-svc-meta"><span>Live data</span><span class="dot"></span><span>RBAC</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">CRM Rebuild / Migration</h3><span class="hx-svc-tag">4 weeks</span></div>
-            <p class="hx-svc-outcome">Modern CRM tailored to your sales motion. Migrate from a legacy stack without losing history or breaking integrations.</p>
-            <div class="hx-svc-meta"><span>Custom workflows</span><span class="dot"></span><span>Zero-downtime</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">E-commerce Build</h3><span class="hx-svc-tag">3–5 weeks</span></div>
-            <p class="hx-svc-outcome">Storefront, payments, fulfillment — clean checkout, inventory sync, and the analytics you need to actually grow.</p>
-            <div class="hx-svc-meta"><span>Stripe / SCA</span><span class="dot"></span><span>Inventory sync</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">System Integration</h3><span class="hx-svc-tag">1–2 weeks</span></div>
-            <p class="hx-svc-outcome">Wire two SaaS tools together cleanly — webhooks, retries, dead-letter queue, and a runbook your ops team can read.</p>
-            <div class="hx-svc-meta"><span>Webhooks</span><span class="dot"></span><span>DLQ</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Marketing Site</h3><span class="hx-svc-tag">2–3 weeks</span></div>
-            <p class="hx-svc-outcome">Brand-aligned, fast, SEO-ready. Editable by your team without re-deploys, A/B-test ready out of the box.</p>
-            <div class="hx-svc-meta"><span>CMS-driven</span><span class="dot"></span><span>A/B ready</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">API / Backend Service</h3><span class="hx-svc-tag">2–4 weeks</span></div>
-            <p class="hx-svc-outcome">Typed, observable, documented. Versioned API with contract tests, OpenAPI schema, and SDK generation.</p>
-            <div class="hx-svc-meta"><span>OpenAPI</span><span class="dot"></span><span>Contract tests</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-        </div>
-
-        <!-- Consulting -->
-        <div id="consulting" class="hx-section-head">
-          <h2>Consulting</h2>
-          <span class="meta">5 services</span>
-        </div>
-        <div class="hx-grid hx-grid-2">
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">AI Strategy Roadmap</h3><span class="hx-svc-tag">2 weeks</span></div>
-            <p class="hx-svc-outcome">12-month plan with scored use cases, build / buy / partner calls, and a sequencing recommendation your CFO can read.</p>
-            <div class="hx-svc-meta"><span>Use-case scoring</span><span class="dot"></span><span>Build / buy</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Technical Due Diligence</h3><span class="hx-svc-tag">1–2 weeks</span></div>
-            <p class="hx-svc-outcome">Independent read for investors or boards — codebase, infra, team, dependencies, and a risk register.</p>
-            <div class="hx-svc-meta"><span>Code &amp; infra</span><span class="dot"></span><span>Risk register</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Architecture Review</h3><span class="hx-svc-tag">1 week</span></div>
-            <p class="hx-svc-outcome">Find risk, cost, and scaling issues early — independent assessment with a prioritised remediation plan.</p>
-            <div class="hx-svc-meta"><span>Independent</span><span class="dot"></span><span>Prioritised</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Fractional Engineering Lead</h3><span class="hx-svc-tag">Ongoing</span></div>
-            <p class="hx-svc-outcome">Senior leadership, part-time, hands-on. Embedded with your team for sprint planning, hiring loops, and architecture calls.</p>
-            <div class="hx-svc-meta"><span>Embedded</span><span class="dot"></span><span>Senior</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-
-          <article class="hx-svc-card">
-            <div class="hx-svc-head"><h3 class="hx-svc-name">Vendor / Model Selection</h3><span class="hx-svc-tag">1 week</span></div>
-            <p class="hx-svc-outcome">Cut through hype. Independent shortlist with proof-of-concept budgets and exit-cost analysis for each vendor.</p>
-            <div class="hx-svc-meta"><span>Independent</span><span class="dot"></span><span>Exit cost</span><a href="/projects.html?new=1" class="hx-svc-link">Open a brief</a></div>
-          </article>
-        </div>
+            <article class="hx-cat-svc">
+              <div class="hx-cat-svc-head">
+                <h3 class="hx-cat-svc-name">Vendor / Model Selection</h3>
+                <span class="hx-cat-svc-tag">1 week</span>
+              </div>
+              <p class="hx-cat-svc-outcome">Cut through hype. Independent shortlist with proof-of-concept budgets and exit-cost analysis for each vendor.</p>
+              <a href="/projects.html?new=1&amp;service=vendor-selection" class="hx-cat-svc-link">Open a brief</a>
+            </article>
+          </div>
+        </section>
 
         <!-- Closing -->
-        <div class="hx-card" style="margin-top:32px;">
+        <div class="hx-card" style="margin-top:24px;">
           <div class="hx-card-head">
             <div>
               <p class="hx-card-eyebrow">Not sure where to start?</p>
