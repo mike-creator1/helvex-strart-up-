@@ -2749,3 +2749,14 @@ body {
     padding: clamp(24px, 4vh, 56px) clamp(28px, 3.5vw, 56px) !important;
   }
 }
+
+/* ════════════════════════════════════════════════════════════
+   v16 — float the side-foot up off the bottom edge so the
+   "© HelveX AG 2026 · Trust center" strip breathes a bit
+   instead of kissing the panel's lower edge.
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 921px) {
+  .auth-shell.split .side-foot {
+    margin-bottom: clamp(28px, 5vh, 64px) !important;
+  }
+}
