@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM — HelveX</title>
+  <meta name="description" content="HelveX CRM — clients, leads, pipeline, follow-ups on one surface." />
+  <link rel="icon" type="image/png" href="/helvex-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
+  <style>
+    .hx-pipeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+    @media (max-width: 1100px) { .hx-pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 640px)  { .hx-pipeline { grid-template-columns: 1fr; } }
+    .hx-pipe-col { background: var(--hx-cream); border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 12px; min-height: 320px; display: flex; flex-direction: column; gap: 10px; }
+    .hx-pipe-head { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 4px; border-bottom: 1px solid var(--hx-line); }
+    .hx-pipe-name { font-size: 12px; font-weight: 600; color: var(--hx-text); letter-spacing: -0.005em; }
+    .hx-pipe-count { font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; color: var(--hx-text-mid); background: rgba(0,0,0,0.05); padding: 2px 7px; border-radius: 9999px; }
+    .hx-pipe-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+    .hx-dot-blue   { background: #3B82F6; }
+    .hx-dot-yellow { background: var(--hx-yellow-deep); }
+    .hx-dot-orange { background: #F97316; }
+    .hx-dot-green  { background: #10B981; }
+    .hx-deal { background: white; border: 1px solid var(--hx-line); border-radius: 10px; padding: 12px; cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s; }
+    .hx-deal:hover { border-color: rgba(220, 38, 38, 0.4); box-shadow: 0 4px 12px -4px rgba(15, 15, 16, 0.08); }
+    .hx-deal-top { display: flex; align-items: start; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+    .hx-deal-name { font-size: 13.5px; font-weight: 600; color: var(--hx-text); line-height: 1.3; }
+    .hx-deal-value { font-family: var(--hx-mono); font-size: 11.5px; font-weight: 600; color: var(--hx-text); white-space: nowrap; }
+    .hx-deal-company { font-size: 12px; color: var(--hx-text-mid); margin-bottom: 8px; }
+    .hx-deal-meta { display: flex; align-items: center; gap: 8px; font-family: var(--hx-mono); font-size: 10px; color: var(--hx-text-mid); }
+    .hx-deal-channel { display: inline-flex; align-items: center; gap: 3px; padding: 1px 6px; border-radius: 4px; background: rgba(0,0,0,0.04); }
+    .hx-deal-channel.email { color: #3B82F6; }
+    .hx-deal-channel.whatsapp { color: #10B981; }
+    .hx-deal-channel.call { color: var(--hx-yellow-deep); }
+    .hx-insights { margin-top: 22px; }
+    .hx-insight-card { background: white; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px; display: flex; gap: 14px; align-items: start; }
+    .hx-insight-icon { flex-shrink: 0; width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; background: var(--hx-yellow-soft); }
+    .hx-insight-icon svg { width: 18px; height: 18px; color: var(--hx-yellow-deep); }
+    .hx-insight-body { flex: 1; }
+    .hx-insight-kicker { font-family: var(--hx-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; color: var(--hx-text-mid); margin-bottom: 4px; }
+    .hx-insight-text { font-size: 13.5px; color: var(--hx-text); line-height: 1.5; }
+    .hx-insight-text strong { font-weight: 600; }
+    .hx-insight-action { margin-left: auto; align-self: center; font-size: 12px; font-weight: 500; color: var(--hx-text-mid); padding: 4px 10px; border-radius: 6px; background: transparent; border: 1px solid var(--hx-line); cursor: pointer; transition: color 0.12s, border-color 0.12s; }
+    .hx-insight-action:hover { color: var(--hx-text); border-color: var(--hx-text-mid); }
+  </style>
+</head>
+<body data-active="app-crm">
+
+  <div class="hx-app">
+    <aside class="hx-sidebar"></aside>
+    <div>
+      <div class="hx-topbar"></div>
+      <main class="hx-main">
+
+        <div class="hx-page-head">
+          <div>
+            <h1>CRM.</h1>
+            <p class="sub">Every client, every lead, every conversation on one surface. AI surfaces what needs you today.</p>
+          </div>
+          <div class="hx-page-actions">
+            <a href="/crm" class="hx-btn hx-btn-secondary">About CRM</a>
+            <button class="hx-btn hx-btn-primary">+ New lead</button>
+          </div>
+        </div>
+
+        <div class="hx-grid hx-grid-4">
+          <div class="hx-stat">
+            <p class="hx-stat-label">Active leads</p>
+            <p class="hx-stat-value hx-mono">47</p>
+            <p class="hx-stat-meta">+8 this week</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Hot now</p>
+            <p class="hx-stat-value hx-mono">12</p>
+            <p class="hx-stat-meta">Scored above 80</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Closed this month</p>
+            <p class="hx-stat-value hx-mono">6</p>
+            <p class="hx-stat-meta">CHF 31,400 booked</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Pipeline value</p>
+            <p class="hx-stat-value hx-mono">CHF 184k</p>
+            <p class="hx-stat-meta">Weighted by stage</p>
+          </div>
+        </div>
+
+        <div class="hx-section-head">
+          <h2>Pipeline</h2>
+          <span class="meta">Drag to move · double-click to open</span>
+        </div>
+
+        <div class="hx-pipeline">
+          <div class="hx-pipe-col">
+            <div class="hx-pipe-head"><span class="hx-pipe-name"><span class="hx-pipe-dot hx-dot-blue"></span>New</span><span class="hx-pipe-count">14</span></div>
+            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Zurich relocation enquiry</span><span class="hx-deal-value">—</span></div><p class="hx-deal-company">Inbound · contact form</p><div class="hx-deal-meta"><span class="hx-deal-channel email">Email</span><span>2h ago</span></div></div>
+            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">CV revision request</span><span class="hx-deal-value">—</span></div><p class="hx-deal-company">Anna M.</p><div class="hx-deal-meta"><span class="hx-deal-channel whatsapp">WhatsApp</span><span>5h ago</span></div></div>
+            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Permit B consultation</span><span class="hx-deal-value">—</span></div><p class="hx-deal-company">Referral · LinkedIn</p><div class="hx-deal-meta"><span class="hx-deal-channel email">Email</span><span>Yesterday</span></div></div>
+          </div>
+          <div class="hx-pipe-col">
+            <div class="hx-pipe-head"><span class="hx-pipe-name"><span class="hx-pipe-dot hx-dot-yellow"></span>Qualified</span><span class="hx-pipe-count">18</span></div>
+            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Marco L. — Geneva move</span><span class="hx-deal-value">CHF 680</span></div><p class="hx-deal-company">Full relocation package</p><div class="hx-deal-meta"><span class="hx-deal-channel call">Call</span><span>Tomorrow 14:00</span></div></div>
+            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Sofia D. — startup setup</span><span class="hx-deal-value">CHF 1,200</span></div><p class="hx-deal-company">Business consulting</p><div class="hx-deal-meta"><span class="hx-deal-channel email">Email</span><span>Sent proposal</span></div></div>
+            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Niko K. — work permit</span><span class="hx-deal-value">CHF 340</span></div><p class="hx-deal-company">Focused advisory</p><div class="hx-deal-meta"><span class="hx-deal-channel whatsapp">WhatsApp</span><span>Awaiting reply</span></div></div>
+          </div>
+          <div class="hx-pipe-col">
+            <div class="hx-pipe-head"><span class="hx-pipe-name"><span class="hx-pipe-dot hx-dot-orange"></span>Proposal</span><span class="hx-pipe-count">9</span></div>
+            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Helena B. — annual retainer</span><span class="hx-deal-value">CHF 4,200</span></div><p class="hx-deal-company">Quarterly advisory</p><div class="hx-deal-meta"><span class="hx-deal-channel email">Email</span><span>Sent Tuesday</span></div></div>
+            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Alex P. — branding pkg</span><span class="hx-deal-value">CHF 2,800</span></div><p class="hx-deal-company">Marketing toolkit</p><div class="hx-deal-meta"><span class="hx-deal-channel call">Call</span><span>Follow-up Mon</span></div></div>
+          </div>
+          <div class="hx-pipe-col">
+            <div class="hx-pipe-head"><span class="hx-pipe-name"><span class="hx-pipe-dot hx-dot-green"></span>Closed</span><span class="hx-pipe-count">6</span></div>
+            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Riccardo T. — relocation</span><span class="hx-deal-value">CHF 680</span></div><p class="hx-deal-company">Full package · paid</p><div class="hx-deal-meta"><span class="hx-deal-channel email">Email</span><span>Closed Friday</span></div></div>
+            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Lena S. — CV</span><span class="hx-deal-value">CHF 280</span></div><p class="hx-deal-company">CV package · paid</p><div class="hx-deal-meta"><span class="hx-deal-channel whatsapp">WhatsApp</span><span>Closed Wed</span></div></div>
+          </div>
+        </div>
+
+        <div class="hx-insights">
+          <div class="hx-section-head">
+            <h2>AI insights</h2>
+            <span class="meta">Surfaced this morning · 7:00</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div class="hx-insight-card">
+              <span class="hx-insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></span>
+              <div class="hx-insight-body">
+                <p class="hx-insight-kicker">Reach out today</p>
+                <p class="hx-insight-text"><strong>Marco L.</strong> opened the proposal twice yesterday but hasn't replied. Last contact 4 days ago. A short WhatsApp nudge tends to convert these within 24h.</p>
+              </div>
+              <button class="hx-insight-action">Draft reply</button>
+            </div>
+            <div class="hx-insight-card">
+              <span class="hx-insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+              <div class="hx-insight-body">
+                <p class="hx-insight-kicker">Going cold</p>
+                <p class="hx-insight-text"><strong>Three deals</strong> in Qualified haven't moved in 9+ days. Score dropped 18% on average. Worth checking if they're still active or move to Archive.</p>
+              </div>
+              <button class="hx-insight-action">Review</button>
+            </div>
+            <div class="hx-insight-card">
+              <span class="hx-insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+              <div class="hx-insight-body">
+                <p class="hx-insight-kicker">Pattern</p>
+                <p class="hx-insight-text"><strong>WhatsApp leads close 2.3x faster</strong> than email leads this month. Three of your last six wins came from WhatsApp Business — worth pushing that channel.</p>
+              </div>
+              <button class="hx-insight-action">See data</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/platform.js"></script>
+</body>
+</html>

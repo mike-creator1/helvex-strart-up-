@@ -38,6 +38,12 @@
     { "source": "/business-assistant", "destination": "/business-assistant.html" },
     { "source": "/marketplace", "destination": "/marketplace.html" },
 
+    { "source": "/app/crm", "destination": "/app-crm.html" },
+    { "source": "/app/marketing-tools", "destination": "/app-marketing.html" },
+    { "source": "/app/automation", "destination": "/app-automation.html" },
+    { "source": "/app/business-assistant", "destination": "/app-assistant.html" },
+    { "source": "/app/marketplace", "destination": "/app-marketplace.html" },
+
     { "source": "/signup", "destination": "/signup.html" },
     { "source": "/login", "destination": "/signup.html" },
     { "source": "/sign-in", "destination": "/signup.html" },

@@ -18,6 +18,16 @@
       ]
     },
     {
+      label: 'Toolkit',
+      items: [
+        { id: 'app-crm',         href: '/app/crm',                label: 'CRM',                icon: 'contacts' },
+        { id: 'app-marketing',   href: '/app/marketing-tools',    label: 'Marketing Tools',    icon: 'megaphone' },
+        { id: 'app-automation',  href: '/app/automation',         label: 'Automation',         icon: 'flow' },
+        { id: 'app-assistant',   href: '/app/business-assistant', label: 'Business Assistant', icon: 'sparkle' },
+        { id: 'app-marketplace', href: '/app/marketplace',        label: 'Marketplace',        icon: 'bag' }
+      ]
+    },
+    {
       label: 'AI',
       items: [
         { id: 'models',      href: '/models.html',      label: 'Models',      icon: 'cpu' },
@@ -92,7 +102,12 @@
     help:     '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
     logout:   '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
     chev:     '<polyline points="6 9 12 15 18 9"/>',
-    search:   '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>'
+    search:   '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+    contacts: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    megaphone:'<path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>',
+    flow:     '<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6h7M6 8.5v7M18 8.5v7M8.5 18h7"/>',
+    sparkle:  '<path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/><path d="M19 17l.6 2 2 .6-2 .6L19 22l-.6-1.8-2-.6 2-.6z"/>',
+    bag:      '<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 1 1-8 0"/>'
   };
 
   function svg(name, opts) {

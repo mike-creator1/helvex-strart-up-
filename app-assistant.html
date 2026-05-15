@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Assistant — HelveX</title>
+  <meta name="description" content="HelveX Business Assistant — plans, contracts, invoices, pitch decks, multilingual drafts." />
+  <link rel="icon" type="image/png" href="/helvex-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
+  <style>
+    .hx-doc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+    @media (max-width: 900px) { .hx-doc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px) { .hx-doc-grid { grid-template-columns: 1fr; } }
+    .hx-doc { background: white; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 18px; cursor: pointer; transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s; display: flex; flex-direction: column; gap: 10px; text-align: left; }
+    .hx-doc:hover { border-color: rgba(220, 38, 38, 0.4); transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(15,15,16,0.12); }
+    .hx-doc-icon { width: 38px; height: 38px; border-radius: 10px; background: rgba(220, 38, 38, 0.08); display: flex; align-items: center; justify-content: center; color: var(--hx-red); }
+    .hx-doc-icon svg { width: 19px; height: 19px; }
+    .hx-doc h3 { font-size: 14.5px; font-weight: 600; color: var(--hx-text); margin: 0; letter-spacing: -0.005em; }
+    .hx-doc p  { font-size: 12.5px; color: var(--hx-text-mid); margin: 0; line-height: 1.5; }
+    .hx-doc-meta { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 8px; }
+    .hx-doc-tag { font-family: var(--hx-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hx-text-mid); }
+    .hx-doc-cta { font-size: 11.5px; font-weight: 600; color: var(--hx-red); }
+    .hx-profile-card { background: linear-gradient(135deg, rgba(220, 38, 38, 0.06) 0%, var(--hx-cream) 60%); border: 1px solid rgba(220, 38, 38, 0.18); border-radius: var(--hx-r); padding: 18px 20px; display: flex; gap: 16px; align-items: center; margin-bottom: 14px; }
+    .hx-profile-icon { width: 38px; height: 38px; border-radius: 9px; background: white; border: 1px solid var(--hx-line); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .hx-profile-icon svg { width: 18px; height: 18px; color: var(--hx-red); }
+    .hx-profile-info { flex: 1; }
+    .hx-profile-kicker { font-family: var(--hx-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--hx-red); margin-bottom: 4px; }
+    .hx-profile-name { font-size: 14px; font-weight: 600; color: var(--hx-text); }
+    .hx-profile-meta { font-size: 12px; color: var(--hx-text-mid); margin-top: 2px; }
+    .hx-profile-edit { font-size: 12px; font-weight: 500; color: var(--hx-text-mid); padding: 6px 12px; border-radius: 7px; background: white; border: 1px solid var(--hx-line); cursor: pointer; }
+    .hx-profile-edit:hover { color: var(--hx-text); }
+    .hx-recent-row { display: grid; grid-template-columns: 22px minmax(0, 1fr) 130px 90px 80px; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--hx-line); align-items: center; font-size: 13px; }
+    .hx-recent-row:last-child { border-bottom: 0; }
+    .hx-recent-row.head { font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hx-text-mid); background: var(--hx-cream); }
+    .hx-recent-icon { width: 20px; height: 20px; border-radius: 5px; background: rgba(220, 38, 38, 0.08); display: flex; align-items: center; justify-content: center; }
+    .hx-recent-icon svg { width: 11px; height: 11px; color: var(--hx-red); }
+    .hx-recent-title { font-weight: 500; color: var(--hx-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hx-recent-type { font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; color: var(--hx-text-mid); }
+    @media (max-width: 800px) { .hx-recent-row { grid-template-columns: 22px 1fr 80px; } .hx-recent-row > :nth-child(n+4) { display: none; } }
+  </style>
+</head>
+<body data-active="app-assistant">
+
+  <div class="hx-app">
+    <aside class="hx-sidebar"></aside>
+    <div>
+      <div class="hx-topbar"></div>
+      <main class="hx-main">
+
+        <div class="hx-page-head">
+          <div>
+            <h1>Business assistant.</h1>
+            <p class="sub">Plans, contracts, invoices, pitch decks — drafted from a one-line brief, in your tone, in any language.</p>
+          </div>
+          <div class="hx-page-actions">
+            <a href="/business-assistant" class="hx-btn hx-btn-secondary">About assistant</a>
+            <button class="hx-btn hx-btn-primary">+ New draft</button>
+          </div>
+        </div>
+
+        <div class="hx-grid hx-grid-4">
+          <div class="hx-stat"><p class="hx-stat-label">This month</p><p class="hx-stat-value hx-mono">34</p><p class="hx-stat-meta">Drafts created</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Sent</p><p class="hx-stat-value hx-mono">21</p><p class="hx-stat-meta">Contracts &amp; invoices</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Avg draft time</p><p class="hx-stat-value hx-mono">2:14</p><p class="hx-stat-meta">From brief to draft</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Languages</p><p class="hx-stat-value hx-mono">4</p><p class="hx-stat-meta">EN · DE · FR · EL</p></div>
+        </div>
+
+        <div class="hx-profile-card">
+          <span class="hx-profile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 17V11M11 17V7M16 17v-9M21 17v-5"/></svg></span>
+          <div class="hx-profile-info">
+            <p class="hx-profile-kicker">Business profile</p>
+            <p class="hx-profile-name">HelveX AG · Zurich, Switzerland · AI integration consulting</p>
+            <p class="hx-profile-meta">VAT CHE-123.456.789 · jurisdictions: CH / EU · senior advisory tone</p>
+          </div>
+          <button class="hx-profile-edit">Edit profile</button>
+        </div>
+
+        <div class="hx-section-head">
+          <h2>Generators</h2>
+          <span class="meta">Pick a document type · brief in one paragraph · review the draft</span>
+        </div>
+
+        <div class="hx-doc-grid">
+          <button class="hx-doc"><span class="hx-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><h3>Business plan</h3><p>Executive summary, market, model, financials, milestones. Investor-ready.</p><div class="hx-doc-meta"><span class="hx-doc-tag">Plan</span><span class="hx-doc-cta">Generate →</span></div></button>
+          <button class="hx-doc"><span class="hx-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></span><h3>Contract / NDA</h3><p>NDAs, SOWs, terms of service. Jurisdiction-aware templates.</p><div class="hx-doc-meta"><span class="hx-doc-tag">Legal</span><span class="hx-doc-cta">Generate →</span></div></button>
+          <button class="hx-doc"><span class="hx-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span><h3>Invoice</h3><p>Branded PDF, VAT settings, payment link, sent + tracked.</p><div class="hx-doc-meta"><span class="hx-doc-tag">Billing</span><span class="hx-doc-cta">Generate →</span></div></button>
+          <button class="hx-doc"><span class="hx-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><h3>Pitch deck outline</h3><p>Slide-by-slide structure with the right narrative + read-aloud script.</p><div class="hx-doc-meta"><span class="hx-doc-tag">Pitch</span><span class="hx-doc-cta">Generate →</span></div></button>
+          <button class="hx-doc"><span class="hx-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><h3>Letter / email</h3><p>Cold outreach, refusals, payment chasers, partnerships.</p><div class="hx-doc-meta"><span class="hx-doc-tag">Comms</span><span class="hx-doc-cta">Generate →</span></div></button>
+          <button class="hx-doc"><span class="hx-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></span><h3>Translate &amp; localise</h3><p>Any draft → any language. Native quality, tone-matched.</p><div class="hx-doc-meta"><span class="hx-doc-tag">Multi</span><span class="hx-doc-cta">Generate →</span></div></button>
+        </div>
+
+        <div class="hx-section-head" style="margin-top:24px;">
+          <h2>Recent drafts</h2>
+          <span class="meta">Last 30 days</span>
+        </div>
+
+        <div class="hx-card" style="padding:0; overflow:hidden;">
+          <div class="hx-recent-row head"><span></span><span>Title</span><span>Type</span><span>Language</span><span></span></div>
+          <div class="hx-recent-row"><span class="hx-recent-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span><span class="hx-recent-title">Invoice · Marco L. · CHF 680 · relocation package</span><span class="hx-recent-type">Invoice</span><span class="hx-recent-type">EN</span><a href="#" class="hx-doc-cta">Open →</a></div>
+          <div class="hx-recent-row"><span class="hx-recent-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></span><span class="hx-recent-title">NDA · Helena B. · annual retainer agreement</span><span class="hx-recent-type">Legal</span><span class="hx-recent-type">EN · DE</span><a href="#" class="hx-doc-cta">Open →</a></div>
+          <div class="hx-recent-row"><span class="hx-recent-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="hx-recent-title">Business plan — Series A pitch · 12 sections</span><span class="hx-recent-type">Plan</span><span class="hx-recent-type">EN</span><a href="#" class="hx-doc-cta">Open →</a></div>
+          <div class="hx-recent-row"><span class="hx-recent-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><span class="hx-recent-title">Cold outreach · Q4 partnership · 8 prospects</span><span class="hx-recent-type">Comms</span><span class="hx-recent-type">EN · FR</span><a href="#" class="hx-doc-cta">Open →</a></div>
+          <div class="hx-recent-row"><span class="hx-recent-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg></span><span class="hx-recent-title">Investor deck outline · seed round positioning</span><span class="hx-recent-type">Pitch</span><span class="hx-recent-type">EN</span><a href="#" class="hx-doc-cta">Open →</a></div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/platform.js"></script>
+</body>
+</html>
