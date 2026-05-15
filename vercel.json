@@ -63,5 +63,8 @@
     { "source": "/domains", "destination": "/domains.html" },
     { "source": "/team", "destination": "/team.html" },
     { "source": "/security", "destination": "/security.html" }
+  ],
+  "redirects": [
+    { "source": "/checkout/sync-plan", "destination": "/checkout/strategy-call", "permanent": true }
   ]
 }
