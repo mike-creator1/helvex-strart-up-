@@ -31,6 +31,13 @@
     { "source": "/security-page", "destination": "/security-page.html" },
     { "source": "/dpa", "destination": "/dpa.html" },
 
+    { "source": "/toolkit", "destination": "/toolkit.html" },
+    { "source": "/crm", "destination": "/crm.html" },
+    { "source": "/marketing-tools", "destination": "/marketing-tools.html" },
+    { "source": "/automation", "destination": "/automation.html" },
+    { "source": "/business-assistant", "destination": "/business-assistant.html" },
+    { "source": "/marketplace", "destination": "/marketplace.html" },
+
     { "source": "/signup", "destination": "/signup.html" },
     { "source": "/login", "destination": "/signup.html" },
     { "source": "/sign-in", "destination": "/signup.html" },
