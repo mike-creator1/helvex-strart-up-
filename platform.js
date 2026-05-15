@@ -20,11 +20,11 @@
     {
       label: 'Toolkit',
       items: [
-        { id: 'app-crm',         href: '/app/crm',                label: 'CRM',                icon: 'contacts' },
-        { id: 'app-marketing',   href: '/app/marketing-tools',    label: 'Marketing Tools',    icon: 'megaphone' },
-        { id: 'app-automation',  href: '/app/automation',         label: 'Automation',         icon: 'flow' },
-        { id: 'app-assistant',   href: '/app/business-assistant', label: 'Business Assistant', icon: 'sparkle' },
-        { id: 'app-marketplace', href: '/app/marketplace',        label: 'Marketplace',        icon: 'bag' }
+        { id: 'app-crm',         href: '/app-crm',         label: 'CRM',                icon: 'contacts' },
+        { id: 'app-marketing',   href: '/app-marketing',   label: 'Marketing Tools',    icon: 'megaphone' },
+        { id: 'app-automation',  href: '/app-automation',  label: 'Automation',         icon: 'flow' },
+        { id: 'app-assistant',   href: '/app-assistant',   label: 'Business Assistant', icon: 'sparkle' },
+        { id: 'app-marketplace', href: '/app-marketplace', label: 'Marketplace',        icon: 'bag' }
       ]
     },
     {
