@@ -278,17 +278,55 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
   margin-bottom: 4px;
   display: flex;
   flex-direction: column;
+
+  /* Scroll-reveal: each section starts hidden, slides in when in view */
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.hx-nav-section + .hx-nav-section { margin-top: 8px; }
+.hx-nav-section.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+.hx-nav-section + .hx-nav-section { margin-top: 10px; }
+
+/* Premium section label — gradient text + accent dot + fade-out line */
 .hx-nav-label {
-  font-size: 10.5px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--hx-text-faint);
-  font-weight: 500;
-  padding: 6px 10px 4px;
+  padding: 12px 10px 8px;
   margin: 0;
+  color: var(--hx-text-mid);
+  background: linear-gradient(110deg, var(--hx-text-mid) 0%, var(--hx-text) 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
+.hx-nav-label::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--hx-yellow-deep);
+  box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.14);
+  flex-shrink: 0;
+  -webkit-text-fill-color: initial;
+}
+.hx-nav-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--hx-line) 0%, transparent 100%);
+  -webkit-text-fill-color: initial;
+}
+
+/* Nav item — premium hover with shimmer sweep + icon slide */
 .hx-nav-item {
   display: flex;
   align-items: center;
@@ -298,39 +336,91 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
   font-weight: 500;
   color: var(--hx-text-mid);
   border-radius: var(--hx-r-sm);
-  transition: background 0.12s, color 0.12s;
+  transition: background 0.18s, color 0.18s;
   cursor: pointer;
   position: relative;
   line-height: 18px;
+  overflow: hidden;
+
+  /* Items inherit reveal from parent .hx-nav-section.is-revealed */
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    background 0.18s,
+    color 0.18s,
+    opacity 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
+.hx-nav-section.is-revealed .hx-nav-item { opacity: 1; transform: none; }
+.hx-nav-section.is-revealed .hx-nav-item:nth-child(2) { transition-delay: 0.04s; }
+.hx-nav-section.is-revealed .hx-nav-item:nth-child(3) { transition-delay: 0.08s; }
+.hx-nav-section.is-revealed .hx-nav-item:nth-child(4) { transition-delay: 0.12s; }
+.hx-nav-section.is-revealed .hx-nav-item:nth-child(5) { transition-delay: 0.16s; }
+.hx-nav-section.is-revealed .hx-nav-item:nth-child(6) { transition-delay: 0.20s; }
+.hx-nav-section.is-revealed .hx-nav-item:nth-child(7) { transition-delay: 0.24s; }
+
+/* Diagonal shimmer sweep on hover */
+.hx-nav-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 0%, rgba(252, 211, 77, 0.08) 50%, transparent 100%);
+  transform: translateX(-110%);
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+  border-radius: inherit;
+}
+.hx-nav-item:hover::after { transform: translateX(110%); }
+
 .hx-nav-item svg {
   width: 14px;
   height: 14px;
   flex-shrink: 0;
   opacity: 0.85;
   stroke-width: 1.55;
+  transition: opacity 0.18s, transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .hx-nav-item:hover {
   background: var(--hx-bg-2);
   color: var(--hx-text);
 }
-.hx-nav-item:hover svg { opacity: 1; }
+.hx-nav-item:hover svg { opacity: 1; transform: translateX(2px); }
 .hx-nav-item.active {
   background: var(--hx-bg-2);
   color: var(--hx-text);
   font-weight: 600;
 }
 .hx-nav-item.active svg { color: var(--hx-text); opacity: 1; }
-/* HelveX-signature: tiny yellow stripe on active item — sharp, 2px, clipped */
+
+/* Active item — premium glowing pulse stripe (3px gradient, breathing) */
 .hx-nav-item.active::before {
   content: '';
   position: absolute;
   left: -10px;
-  top: 7px;
-  bottom: 7px;
-  width: 2px;
-  background: var(--hx-yellow);
-  border-radius: 0 2px 2px 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  background: linear-gradient(180deg, var(--hx-yellow-deep) 0%, var(--hx-yellow) 50%, var(--hx-yellow-deep) 100%);
+  border-radius: 0 3px 3px 0;
+  box-shadow: 0 0 8px rgba(252, 211, 77, 0.55), 0 0 16px rgba(252, 211, 77, 0.18);
+  animation: hxNavPulse 2.6s ease-in-out infinite;
+}
+@keyframes hxNavPulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(252, 211, 77, 0.55), 0 0 16px rgba(252, 211, 77, 0.18);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(252, 211, 77, 0.85), 0 0 26px rgba(252, 211, 77, 0.30);
+    opacity: 0.92;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-nav-section,
+  .hx-nav-item { opacity: 1; transform: none; transition: none; }
+  .hx-nav-item.active::before { animation: none; }
+  .hx-nav-item::after { display: none; }
 }
 .hx-nav-badge {
   margin-left: auto;

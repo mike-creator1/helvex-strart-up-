@@ -235,6 +235,39 @@
     });
   }
 
+  /* ─── Premium sidebar reveal — staggered fade-in as sections enter
+         the sidebar viewport on scroll. Reduced-motion users get an
+         instant reveal (matches the CSS @media query). ─── */
+  function setupSidebarReveal(sidebar) {
+    var sections = sidebar.querySelectorAll('.hx-nav-section');
+    if (!sections.length) return;
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced || !('IntersectionObserver' in window)) {
+      sections.forEach(function (s) { s.classList.add('is-revealed'); });
+      return;
+    }
+    // Stagger only when revealing on initial mount; once user scrolls,
+    // sections appear as soon as they enter view.
+    var firstWave = true;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !entry.target.classList.contains('is-revealed')) {
+          if (firstWave) {
+            var idx = Array.prototype.indexOf.call(sections, entry.target);
+            setTimeout(function () { entry.target.classList.add('is-revealed'); }, Math.min(idx * 70, 420));
+          } else {
+            entry.target.classList.add('is-revealed');
+          }
+          io.unobserve(entry.target);
+        }
+      });
+    }, { root: sidebar, threshold: 0.10, rootMargin: '0px 0px -20px 0px' });
+    sections.forEach(function (s) { io.observe(s); });
+    // Flip firstWave off after the initial cascade window so later
+    // reveals (from user scrolling) don't get artificially delayed.
+    setTimeout(function () { firstWave = false; }, 600);
+  }
+
   function injectShell() {
     var body = document.body;
     if (!body) return;
@@ -242,7 +275,10 @@
     var activeItem = findActive(activeId);
 
     var sidebar = document.querySelector('.hx-sidebar');
-    if (sidebar) sidebar.innerHTML = buildSidebar(activeId);
+    if (sidebar) {
+      sidebar.innerHTML = buildSidebar(activeId);
+      setupSidebarReveal(sidebar);
+    }
 
     var topbar = document.querySelector('.hx-topbar');
     if (topbar) topbar.innerHTML = buildTopbar(activeItem);
