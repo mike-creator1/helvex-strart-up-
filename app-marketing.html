@@ -14,8 +14,8 @@
     .hx-gen-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
     @media (max-width: 900px) { .hx-gen-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 560px) { .hx-gen-grid { grid-template-columns: 1fr; } }
-    .hx-gen { background: white; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 18px; cursor: pointer; transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s; display: flex; flex-direction: column; gap: 10px; text-align: left; }
-    .hx-gen:hover { border-color: var(--hx-yellow-deep); transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(15,15,16,0.12); }
+    .hx-gen { background: white; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 18px; cursor: pointer; transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s; display: flex; flex-direction: column; gap: 10px; text-align: left; opacity: 0.85; }
+    .hx-gen:hover { border-color: var(--hx-yellow-deep); transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(15,15,16,0.12); opacity: 1; }
     .hx-gen-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--hx-yellow-soft); display: flex; align-items: center; justify-content: center; color: var(--hx-yellow-deep); }
     .hx-gen-icon svg { width: 19px; height: 19px; }
     .hx-gen h3 { font-size: 14.5px; font-weight: 600; color: var(--hx-text); margin: 0; letter-spacing: -0.005em; }
@@ -23,24 +23,15 @@
     .hx-gen-meta { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 8px; }
     .hx-gen-tag { font-family: var(--hx-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hx-text-mid); }
     .hx-gen-cta { font-size: 11.5px; font-weight: 600; color: var(--hx-yellow-deep); }
-    .hx-voice-card { background: linear-gradient(135deg, var(--hx-yellow-soft) 0%, var(--hx-cream) 60%); border: 1px solid rgba(252,211,77,0.45); border-radius: var(--hx-r); padding: 18px 20px; display: flex; gap: 16px; align-items: center; margin-bottom: 14px; }
-    .hx-voice-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--hx-yellow-deep); box-shadow: 0 0 0 4px rgba(252,211,77,0.28); flex-shrink: 0; }
-    .hx-voice-info { flex: 1; }
-    .hx-voice-kicker { font-family: var(--hx-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--hx-yellow-deep); margin-bottom: 4px; }
-    .hx-voice-name { font-size: 14px; font-weight: 600; color: var(--hx-text); }
-    .hx-voice-meta { font-size: 12px; color: var(--hx-text-mid); margin-top: 2px; }
-    .hx-voice-edit { font-size: 12px; font-weight: 500; color: var(--hx-text-mid); padding: 6px 12px; border-radius: 7px; background: white; border: 1px solid var(--hx-line); cursor: pointer; transition: color 0.12s; }
-    .hx-voice-edit:hover { color: var(--hx-text); }
-    .hx-draft-row { display: grid; grid-template-columns: minmax(0, 1fr) 110px 110px 100px 80px; gap: 14px; padding: 12px 14px; border-bottom: 1px solid var(--hx-line); align-items: center; font-size: 13px; }
-    .hx-draft-row:last-child { border-bottom: 0; }
-    .hx-draft-row.head { font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hx-text-mid); background: var(--hx-cream); }
-    .hx-draft-title { font-weight: 500; color: var(--hx-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .hx-draft-channel { font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; color: var(--hx-text-mid); }
-    .hx-draft-pill { display: inline-flex; padding: 2px 8px; border-radius: 9999px; font-size: 10.5px; font-weight: 600; }
-    .hx-pill-draft     { background: rgba(0,0,0,0.05); color: var(--hx-text-mid); }
-    .hx-pill-scheduled { background: rgba(59,130,246,0.10); color: #2563EB; }
-    .hx-pill-published { background: rgba(16,185,129,0.10); color: #059669; }
-    @media (max-width: 800px) { .hx-draft-row { grid-template-columns: 1fr 80px; } .hx-draft-row > :nth-child(n+3) { display: none; } }
+    .hx-empty-state { background: white; border: 1px dashed var(--hx-line); border-radius: var(--hx-r); padding: 48px 24px; text-align: center; margin-top: 14px; }
+    .hx-empty-state .hx-empty-icon { width: 44px; height: 44px; border-radius: 11px; background: var(--hx-cream); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .hx-empty-state .hx-empty-icon svg { width: 22px; height: 22px; color: var(--hx-text-mid); }
+    .hx-empty-state h3 { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
+    .hx-empty-state p { font-size: 13.5px; color: var(--hx-text-mid); margin: 0 0 18px; max-width: 420px; margin-inline: auto; line-height: 1.5; }
+    .hx-beta-strip { background: linear-gradient(90deg, rgba(252,211,77,0.15), rgba(252,211,77,0.04)); border: 1px solid rgba(252,211,77,0.45); border-radius: var(--hx-r); padding: 12px 16px; display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+    .hx-beta-strip svg { width: 18px; height: 18px; color: var(--hx-yellow-deep); flex-shrink: 0; }
+    .hx-beta-strip p { font-size: 13px; color: var(--hx-text); margin: 0; line-height: 1.5; flex: 1; }
+    .hx-beta-strip strong { font-weight: 600; }
   </style>
 </head>
 <body data-active="app-marketing">
@@ -58,54 +49,47 @@
           </div>
           <div class="hx-page-actions">
             <a href="/marketing-tools" class="hx-btn hx-btn-secondary">About marketing</a>
-            <button class="hx-btn hx-btn-primary">+ New brief</button>
+            <button class="hx-btn hx-btn-primary" disabled title="Coming soon">+ New brief</button>
           </div>
+        </div>
+
+        <div class="hx-beta-strip" role="note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <p><strong>Marketing tools — under construction.</strong> The generator surface is ready, AI generation wiring is the next milestone. Brand voice calibration and draft persistence land first; scheduling integrations land second.</p>
         </div>
 
         <div class="hx-grid hx-grid-4">
-          <div class="hx-stat"><p class="hx-stat-label">This month</p><p class="hx-stat-value hx-mono">128</p><p class="hx-stat-meta">Generations</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Scheduled</p><p class="hx-stat-value hx-mono">14</p><p class="hx-stat-meta">Across channels</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Engagement</p><p class="hx-stat-value hx-mono">+34%</p><p class="hx-stat-meta">vs last month</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Languages</p><p class="hx-stat-value hx-mono">5</p><p class="hx-stat-meta">EN · DE · FR · IT · EL</p></div>
-        </div>
-
-        <div class="hx-voice-card">
-          <span class="hx-voice-dot" aria-hidden="true"></span>
-          <div class="hx-voice-info">
-            <p class="hx-voice-kicker">Brand voice</p>
-            <p class="hx-voice-name">HelveX · senior, precise, no fluff</p>
-            <p class="hx-voice-meta">Calibrated from 7 reference texts · 2 weeks ago</p>
-          </div>
-          <button class="hx-voice-edit">Recalibrate</button>
+          <div class="hx-stat"><p class="hx-stat-label">Drafts created</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">No drafts yet</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Scheduled</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">Across channels</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Brand voice</p><p class="hx-stat-value hx-mono">—</p><p class="hx-stat-meta">Not yet calibrated</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Languages</p><p class="hx-stat-value hx-mono">—</p><p class="hx-stat-meta">Pick on first run</p></div>
         </div>
 
         <div class="hx-section-head">
           <h2>Generators</h2>
-          <span class="meta">Pick a surface · brief in one line · three variants by default</span>
+          <span class="meta">Pick a surface · brief in one line · three variants per generation</span>
         </div>
 
         <div class="hx-gen-grid">
-          <button class="hx-gen"><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></span><h3>Social posts</h3><p>Instagram · LinkedIn · X · Facebook. Sized, hashtagged, on-brand.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Posts</span><span class="hx-gen-cta">Generate →</span></div></button>
-          <button class="hx-gen"><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg></span><h3>Ad copy</h3><p>Meta · Google · TikTok. Headlines, body, CTAs, A/B variants.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Ads</span><span class="hx-gen-cta">Generate →</span></div></button>
-          <button class="hx-gen"><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span><h3>TikTok &amp; Reels scripts</h3><p>Hook, beats, captions, on-screen text. Short-form rhythm.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Video</span><span class="hx-gen-cta">Generate →</span></div></button>
-          <button class="hx-gen"><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><h3>SEO articles</h3><p>Topic → outline → article. Headings, links, meta description.</p><div class="hx-gen-meta"><span class="hx-gen-tag">SEO</span><span class="hx-gen-cta">Generate →</span></div></button>
-          <button class="hx-gen"><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><h3>Email campaigns</h3><p>Newsletters, drips, broadcasts. Subjects that earn the open.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Email</span><span class="hx-gen-cta">Generate →</span></div></button>
-          <button class="hx-gen"><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg></span><h3>Landing pages</h3><p>Hero, features, social proof, FAQ, CTA. Ship-ready copy.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Pages</span><span class="hx-gen-cta">Generate →</span></div></button>
+          <button class="hx-gen" disabled><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></span><h3>Social posts</h3><p>Instagram · LinkedIn · X · Facebook. Sized, hashtagged, on-brand.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Posts</span><span class="hx-gen-cta">Soon →</span></div></button>
+          <button class="hx-gen" disabled><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg></span><h3>Ad copy</h3><p>Meta · Google · TikTok. Headlines, body, CTAs, A/B variants.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Ads</span><span class="hx-gen-cta">Soon →</span></div></button>
+          <button class="hx-gen" disabled><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span><h3>TikTok &amp; Reels scripts</h3><p>Hook, beats, captions, on-screen text. Short-form rhythm.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Video</span><span class="hx-gen-cta">Soon →</span></div></button>
+          <button class="hx-gen" disabled><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><h3>SEO articles</h3><p>Topic → outline → article. Headings, links, meta description.</p><div class="hx-gen-meta"><span class="hx-gen-tag">SEO</span><span class="hx-gen-cta">Soon →</span></div></button>
+          <button class="hx-gen" disabled><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><h3>Email campaigns</h3><p>Newsletters, drips, broadcasts. Subjects that earn the open.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Email</span><span class="hx-gen-cta">Soon →</span></div></button>
+          <button class="hx-gen" disabled><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg></span><h3>Landing pages</h3><p>Hero, features, social proof, FAQ, CTA. Ship-ready copy.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Pages</span><span class="hx-gen-cta">Soon →</span></div></button>
         </div>
 
         <div class="hx-section-head" style="margin-top:24px;">
           <h2>Recent drafts</h2>
-          <span class="meta">12 in the queue</span>
+          <span class="meta">Your generations will appear here once the generators go live</span>
         </div>
 
-        <div class="hx-card" style="padding:0; overflow:hidden;">
-          <div class="hx-draft-row head"><span>Title</span><span>Channel</span><span>Language</span><span>Status</span><span></span></div>
-          <div class="hx-draft-row"><span class="hx-draft-title">Autumn relocation sale · 30% off Focused Advisory</span><span class="hx-draft-channel">LinkedIn</span><span class="hx-draft-channel">EN · DE</span><span class="hx-draft-pill hx-pill-scheduled">Scheduled</span><a href="#" class="hx-gen-cta">Open →</a></div>
-          <div class="hx-draft-row"><span class="hx-draft-title">Permit B explained — 90s reel script</span><span class="hx-draft-channel">TikTok</span><span class="hx-draft-channel">EN</span><span class="hx-draft-pill hx-pill-draft">Draft</span><a href="#" class="hx-gen-cta">Open →</a></div>
-          <div class="hx-draft-row"><span class="hx-draft-title">October newsletter — "The Swiss tax window"</span><span class="hx-draft-channel">Email</span><span class="hx-draft-channel">EN</span><span class="hx-draft-pill hx-pill-published">Sent</span><a href="#" class="hx-gen-cta">Open →</a></div>
-          <div class="hx-draft-row"><span class="hx-draft-title">Why founders pick Zurich over Lisbon (article)</span><span class="hx-draft-channel">Blog</span><span class="hx-draft-channel">EN</span><span class="hx-draft-pill hx-pill-draft">Draft</span><a href="#" class="hx-gen-cta">Open →</a></div>
-          <div class="hx-draft-row"><span class="hx-draft-title">Meta ad set — Focused Advisory · 4 variants</span><span class="hx-draft-channel">Meta</span><span class="hx-draft-channel">DE</span><span class="hx-draft-pill hx-pill-scheduled">Scheduled</span><a href="#" class="hx-gen-cta">Open →</a></div>
-          <div class="hx-draft-row"><span class="hx-draft-title">Landing — Business Plan generator</span><span class="hx-draft-channel">Page</span><span class="hx-draft-channel">EN · FR</span><span class="hx-draft-pill hx-pill-published">Live</span><a href="#" class="hx-gen-cta">Open →</a></div>
+        <div class="hx-empty-state">
+          <div class="hx-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+          </div>
+          <h3>No drafts yet</h3>
+          <p>This is where your generated posts, ads, articles, and emails will live. We'll wire the AI generation in the next milestone — your drafts will persist to your HelveX workspace, with full edit history.</p>
         </div>
 
       </main>

@@ -11,38 +11,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
   <style>
-    .hx-wf-row { display: grid; grid-template-columns: 24px minmax(0, 1fr) 130px 120px 110px 90px; gap: 14px; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--hx-line); font-size: 13px; }
-    .hx-wf-row:last-child { border-bottom: 0; }
-    .hx-wf-row.head { font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hx-text-mid); background: var(--hx-cream); }
-    .hx-wf-toggle { width: 28px; height: 16px; border-radius: 9999px; background: rgba(0,0,0,0.10); position: relative; cursor: pointer; transition: background 0.16s; flex-shrink: 0; }
-    .hx-wf-toggle.on { background: #10B981; }
-    .hx-wf-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: left 0.16s; }
-    .hx-wf-toggle.on::after { left: 14px; }
-    .hx-wf-name { font-weight: 600; color: var(--hx-text); }
-    .hx-wf-desc { font-size: 11.5px; color: var(--hx-text-mid); margin-top: 2px; }
-    .hx-wf-trigger { font-family: var(--hx-mono); font-size: 11px; color: var(--hx-text-mid); }
-    .hx-wf-runs { font-family: var(--hx-mono); font-size: 11.5px; font-weight: 600; color: var(--hx-text); }
-    .hx-wf-status { display: inline-flex; align-items: center; gap: 5px; font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; padding: 3px 10px; border-radius: 9999px; }
-    .hx-wf-status::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
-    .hx-status-live::before  { background: #10B981; box-shadow: 0 0 0 2px rgba(16,185,129,0.20); }
-    .hx-status-paused::before{ background: #A3A3A3; }
-    .hx-status-error::before { background: #DC2626; box-shadow: 0 0 0 2px rgba(220,38,38,0.18); }
-    .hx-status-live  { color: #059669; background: rgba(16,185,129,0.08); }
-    .hx-status-paused{ color: var(--hx-text-mid); background: rgba(0,0,0,0.04); }
-    .hx-status-error { color: #B91C1C; background: rgba(220,38,38,0.08); }
-    .hx-wf-actions { display: flex; gap: 4px; }
-    .hx-wf-action  { font-size: 11.5px; font-weight: 500; color: var(--hx-text-mid); padding: 4px 8px; border-radius: 6px; background: transparent; border: 0; cursor: pointer; transition: color 0.12s, background 0.12s; }
-    .hx-wf-action:hover { color: var(--hx-text); background: rgba(0,0,0,0.04); }
-    @media (max-width: 900px) { .hx-wf-row { grid-template-columns: 24px 1fr 90px; } .hx-wf-row > :nth-child(n+4) { display: none; } }
     .hx-templates { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
     @media (max-width: 1100px) { .hx-templates { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 560px)  { .hx-templates { grid-template-columns: 1fr; } }
-    .hx-tpl { background: white; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px; cursor: pointer; transition: border-color 0.14s; }
-    .hx-tpl:hover { border-color: var(--hx-text-mid); }
+    .hx-tpl { background: white; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px; cursor: pointer; transition: border-color 0.14s; opacity: 0.85; }
+    .hx-tpl:hover { border-color: var(--hx-text-mid); opacity: 1; }
     .hx-tpl-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--hx-cream); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
     .hx-tpl-icon svg { width: 16px; height: 16px; color: var(--hx-text); }
     .hx-tpl h3 { font-size: 13.5px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.005em; }
     .hx-tpl p  { font-size: 12px; color: var(--hx-text-mid); margin: 0; line-height: 1.45; }
+    .hx-tpl-tag { font-family: var(--hx-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: var(--hx-text-mid); text-transform: uppercase; margin-top: 8px; display: inline-block; }
+    .hx-empty-state { background: white; border: 1px dashed var(--hx-line); border-radius: var(--hx-r); padding: 48px 24px; text-align: center; margin-top: 14px; }
+    .hx-empty-state .hx-empty-icon { width: 44px; height: 44px; border-radius: 11px; background: var(--hx-cream); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .hx-empty-state .hx-empty-icon svg { width: 22px; height: 22px; color: var(--hx-text-mid); }
+    .hx-empty-state h3 { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
+    .hx-empty-state p { font-size: 13.5px; color: var(--hx-text-mid); margin: 0 0 18px; max-width: 420px; margin-inline: auto; line-height: 1.5; }
+    .hx-beta-strip { background: linear-gradient(90deg, rgba(252,211,77,0.15), rgba(252,211,77,0.04)); border: 1px solid rgba(252,211,77,0.45); border-radius: var(--hx-r); padding: 12px 16px; display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+    .hx-beta-strip svg { width: 18px; height: 18px; color: var(--hx-yellow-deep); flex-shrink: 0; }
+    .hx-beta-strip p { font-size: 13px; color: var(--hx-text); margin: 0; line-height: 1.5; flex: 1; }
+    .hx-beta-strip strong { font-weight: 600; }
   </style>
 </head>
 <body data-active="app-automation">
@@ -60,43 +47,44 @@
           </div>
           <div class="hx-page-actions">
             <a href="/automation" class="hx-btn hx-btn-secondary">About automation</a>
-            <button class="hx-btn hx-btn-primary">+ New workflow</button>
+            <button class="hx-btn hx-btn-primary" disabled title="Coming soon">+ New workflow</button>
           </div>
         </div>
 
+        <div class="hx-beta-strip" role="note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <p><strong>Automation — under construction.</strong> The workflow surface is ready. The execution engine (triggers, conditions, retries, integrations with Gmail, WhatsApp, Stripe) is the next major milestone. Until then, no workflow runs in production.</p>
+        </div>
+
         <div class="hx-grid hx-grid-4">
-          <div class="hx-stat"><p class="hx-stat-label">Live workflows</p><p class="hx-stat-value hx-mono">8</p><p class="hx-stat-meta">2 paused, 1 in error</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Runs today</p><p class="hx-stat-value hx-mono">142</p><p class="hx-stat-meta">98% success</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Time saved</p><p class="hx-stat-value hx-mono">19h</p><p class="hx-stat-meta">This week</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Last error</p><p class="hx-stat-value hx-mono">3h</p><p class="hx-stat-meta">Stripe timeout · auto-retry ok</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Live workflows</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">None active yet</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Runs (30d)</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">—</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Time saved</p><p class="hx-stat-value hx-mono">—</p><p class="hx-stat-meta">Tracked once active</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Errors (30d)</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">Healthy</p></div>
         </div>
 
         <div class="hx-section-head">
           <h2>Your workflows</h2>
-          <span class="meta">11 total · drag to reorder · click to edit</span>
+          <span class="meta">0 workflows · create one to see it here</span>
         </div>
 
-        <div class="hx-card" style="padding:0; overflow:hidden;">
-          <div class="hx-wf-row head"><span></span><span>Workflow</span><span>Trigger</span><span>Runs (30d)</span><span>Status</span><span></span></div>
-          <div class="hx-wf-row"><span class="hx-wf-toggle on" role="switch" aria-checked="true"></span><div><div class="hx-wf-name">Booking confirmation → SMS + email</div><div class="hx-wf-desc">Calendar event created · sends 24h-before reminder</div></div><span class="hx-wf-trigger">calendar.created</span><span class="hx-wf-runs">86</span><span class="hx-wf-status hx-status-live">Live</span><div class="hx-wf-actions"><button class="hx-wf-action">Edit</button></div></div>
-          <div class="hx-wf-row"><span class="hx-wf-toggle on" role="switch" aria-checked="true"></span><div><div class="hx-wf-name">Invoice paid → thank-you + Notion update</div><div class="hx-wf-desc">Stripe webhook · sends receipt, updates project</div></div><span class="hx-wf-trigger">stripe.invoice.paid</span><span class="hx-wf-runs">24</span><span class="hx-wf-status hx-status-live">Live</span><div class="hx-wf-actions"><button class="hx-wf-action">Edit</button></div></div>
-          <div class="hx-wf-row"><span class="hx-wf-toggle on" role="switch" aria-checked="true"></span><div><div class="hx-wf-name">New lead → welcome email + 7-day drip</div><div class="hx-wf-desc">CRM lead created · personalised by source</div></div><span class="hx-wf-trigger">crm.lead.created</span><span class="hx-wf-runs">47</span><span class="hx-wf-status hx-status-live">Live</span><div class="hx-wf-actions"><button class="hx-wf-action">Edit</button></div></div>
-          <div class="hx-wf-row"><span class="hx-wf-toggle on" role="switch" aria-checked="true"></span><div><div class="hx-wf-name">Customer onboarding · 30-day sequence</div><div class="hx-wf-desc">Welcome → intake → kick-off → check-ins</div></div><span class="hx-wf-trigger">customer.activated</span><span class="hx-wf-runs">12</span><span class="hx-wf-status hx-status-live">Live</span><div class="hx-wf-actions"><button class="hx-wf-action">Edit</button></div></div>
-          <div class="hx-wf-row"><span class="hx-wf-toggle on" role="switch" aria-checked="true"></span><div><div class="hx-wf-name">Unpaid invoice reminder ladder</div><div class="hx-wf-desc">Day 3 polite · Day 7 firm · Day 14 escalate</div></div><span class="hx-wf-trigger">invoice.overdue</span><span class="hx-wf-runs">9</span><span class="hx-wf-status hx-status-live">Live</span><div class="hx-wf-actions"><button class="hx-wf-action">Edit</button></div></div>
-          <div class="hx-wf-row"><span class="hx-wf-toggle on" role="switch" aria-checked="true"></span><div><div class="hx-wf-name">WhatsApp lead → auto-acknowledge in 2 min</div><div class="hx-wf-desc">Smart reply with options · books call if asked</div></div><span class="hx-wf-trigger">whatsapp.message</span><span class="hx-wf-runs">31</span><span class="hx-wf-status hx-status-error">Error</span><div class="hx-wf-actions"><button class="hx-wf-action">Fix</button></div></div>
-          <div class="hx-wf-row"><span class="hx-wf-toggle" role="switch" aria-checked="false"></span><div><div class="hx-wf-name">Quarterly client check-in</div><div class="hx-wf-desc">90 days after engagement close · NPS-style</div></div><span class="hx-wf-trigger">cron · quarterly</span><span class="hx-wf-runs">0</span><span class="hx-wf-status hx-status-paused">Paused</span><div class="hx-wf-actions"><button class="hx-wf-action">Edit</button></div></div>
-          <div class="hx-wf-row"><span class="hx-wf-toggle" role="switch" aria-checked="false"></span><div><div class="hx-wf-name">No-show recovery sequence</div><div class="hx-wf-desc">Missed call → WhatsApp follow-up after 2h</div></div><span class="hx-wf-trigger">calendar.no_show</span><span class="hx-wf-runs">3</span><span class="hx-wf-status hx-status-paused">Paused</span><div class="hx-wf-actions"><button class="hx-wf-action">Edit</button></div></div>
+        <div class="hx-empty-state">
+          <div class="hx-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6h7M6 8.5v7M18 8.5v7M8.5 18h7"/></svg>
+          </div>
+          <h3>No workflows yet</h3>
+          <p>Workflows live here once you build one. The builder canvas, trigger catalogue (Gmail, calendar, Stripe, WhatsApp, webhooks), and execution engine are in active development. The integrations land before the first production run.</p>
         </div>
 
         <div class="hx-section-head" style="margin-top:24px;">
-          <h2>Start from a template</h2>
-          <span class="meta">Vetted workflows · deploy in one click</span>
+          <h2>Templates to start from</h2>
+          <span class="meta">Vetted workflows · available once the engine ships</span>
         </div>
         <div class="hx-templates">
-          <button class="hx-tpl"><span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><h3>Inbox triage</h3><p>Auto-label, auto-reply, route to project. Gmail + Outlook.</p></button>
-          <button class="hx-tpl"><span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg></span><h3>Appointment flow</h3><p>Book → confirm → remind → recover no-shows.</p></button>
-          <button class="hx-tpl"><span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span><h3>Invoice cadence</h3><p>Send → polite remind → firm remind → escalate.</p></button>
-          <button class="hx-tpl"><span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 11l-3 3-3-3"/></svg></span><h3>Customer onboarding</h3><p>Welcome, intake, kick-off, day 7 + 30 check-ins.</p></button>
+          <button class="hx-tpl" disabled><span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><h3>Inbox triage</h3><p>Auto-label, auto-reply, route to project. Gmail + Outlook.</p><span class="hx-tpl-tag">Soon</span></button>
+          <button class="hx-tpl" disabled><span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg></span><h3>Appointment flow</h3><p>Book → confirm → remind → recover no-shows.</p><span class="hx-tpl-tag">Soon</span></button>
+          <button class="hx-tpl" disabled><span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span><h3>Invoice cadence</h3><p>Send → polite remind → firm remind → escalate.</p><span class="hx-tpl-tag">Soon</span></button>
+          <button class="hx-tpl" disabled><span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 11l-3 3-3-3"/></svg></span><h3>Customer onboarding</h3><p>Welcome, intake, kick-off, day 7 + 30 check-ins.</p><span class="hx-tpl-tag">Soon</span></button>
         </div>
 
       </main>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CRM — HelveX</title>
-  <meta name="description" content="HelveX CRM — clients, leads, pipeline, follow-ups on one surface." />
+  <meta name="description" content="HelveX CRM — your real client and lead pipeline." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,7 +14,7 @@
     .hx-pipeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
     @media (max-width: 1100px) { .hx-pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 640px)  { .hx-pipeline { grid-template-columns: 1fr; } }
-    .hx-pipe-col { background: var(--hx-cream); border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 12px; min-height: 320px; display: flex; flex-direction: column; gap: 10px; }
+    .hx-pipe-col { background: var(--hx-cream); border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 12px; min-height: 200px; display: flex; flex-direction: column; gap: 10px; }
     .hx-pipe-head { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 4px; border-bottom: 1px solid var(--hx-line); }
     .hx-pipe-name { font-size: 12px; font-weight: 600; color: var(--hx-text); letter-spacing: -0.005em; }
     .hx-pipe-count { font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; color: var(--hx-text-mid); background: rgba(0,0,0,0.05); padding: 2px 7px; border-radius: 9999px; }
@@ -23,27 +23,38 @@
     .hx-dot-yellow { background: var(--hx-yellow-deep); }
     .hx-dot-orange { background: #F97316; }
     .hx-dot-green  { background: #10B981; }
-    .hx-deal { background: white; border: 1px solid var(--hx-line); border-radius: 10px; padding: 12px; cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s; }
+    .hx-pipe-empty { font-size: 12px; color: var(--hx-text-mid); text-align: center; padding: 24px 8px; font-style: italic; }
+    .hx-deal { background: white; border: 1px solid var(--hx-line); border-radius: 10px; padding: 12px; transition: border-color 0.12s, box-shadow 0.12s; }
     .hx-deal:hover { border-color: rgba(220, 38, 38, 0.4); box-shadow: 0 4px 12px -4px rgba(15, 15, 16, 0.08); }
     .hx-deal-top { display: flex; align-items: start; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
-    .hx-deal-name { font-size: 13.5px; font-weight: 600; color: var(--hx-text); line-height: 1.3; }
+    .hx-deal-name { font-size: 13.5px; font-weight: 600; color: var(--hx-text); line-height: 1.3; flex: 1; min-width: 0; word-break: break-word; }
     .hx-deal-value { font-family: var(--hx-mono); font-size: 11.5px; font-weight: 600; color: var(--hx-text); white-space: nowrap; }
-    .hx-deal-company { font-size: 12px; color: var(--hx-text-mid); margin-bottom: 8px; }
-    .hx-deal-meta { display: flex; align-items: center; gap: 8px; font-family: var(--hx-mono); font-size: 10px; color: var(--hx-text-mid); }
-    .hx-deal-channel { display: inline-flex; align-items: center; gap: 3px; padding: 1px 6px; border-radius: 4px; background: rgba(0,0,0,0.04); }
-    .hx-deal-channel.email { color: #3B82F6; }
+    .hx-deal-company { font-size: 12px; color: var(--hx-text-mid); margin-bottom: 8px; min-height: 16px; }
+    .hx-deal-meta { display: flex; align-items: center; gap: 8px; font-family: var(--hx-mono); font-size: 10px; color: var(--hx-text-mid); flex-wrap: wrap; }
+    .hx-deal-channel { display: inline-flex; align-items: center; gap: 3px; padding: 1px 6px; border-radius: 4px; background: rgba(0,0,0,0.04); text-transform: capitalize; }
+    .hx-deal-channel.email    { color: #3B82F6; }
     .hx-deal-channel.whatsapp { color: #10B981; }
-    .hx-deal-channel.call { color: var(--hx-yellow-deep); }
-    .hx-insights { margin-top: 22px; }
-    .hx-insight-card { background: white; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px; display: flex; gap: 14px; align-items: start; }
-    .hx-insight-icon { flex-shrink: 0; width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; background: var(--hx-yellow-soft); }
-    .hx-insight-icon svg { width: 18px; height: 18px; color: var(--hx-yellow-deep); }
-    .hx-insight-body { flex: 1; }
-    .hx-insight-kicker { font-family: var(--hx-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; color: var(--hx-text-mid); margin-bottom: 4px; }
-    .hx-insight-text { font-size: 13.5px; color: var(--hx-text); line-height: 1.5; }
-    .hx-insight-text strong { font-weight: 600; }
-    .hx-insight-action { margin-left: auto; align-self: center; font-size: 12px; font-weight: 500; color: var(--hx-text-mid); padding: 4px 10px; border-radius: 6px; background: transparent; border: 1px solid var(--hx-line); cursor: pointer; transition: color 0.12s, border-color 0.12s; }
-    .hx-insight-action:hover { color: var(--hx-text); border-color: var(--hx-text-mid); }
+    .hx-deal-channel.call     { color: var(--hx-yellow-deep); }
+    .hx-deal-channel.referral { color: #8B5CF6; }
+    .hx-deal-channel.website  { color: #06B6D4; }
+    .hx-deal-channel.event    { color: #F97316; }
+    .hx-deal-channel.other    { color: var(--hx-text-mid); }
+    .hx-deal-actions { display: flex; align-items: center; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.06); }
+    .hx-deal-stage-sel { flex: 1; font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--hx-line); background: white; color: var(--hx-text); cursor: pointer; -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5' fill='none'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%23525252' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; padding-right: 22px; }
+    .hx-deal-del { font-size: 10.5px; font-weight: 500; color: var(--hx-text-mid); padding: 4px 8px; border-radius: 6px; background: transparent; border: 1px solid var(--hx-line); cursor: pointer; transition: color 0.12s, border-color 0.12s; }
+    .hx-deal-del:hover { color: var(--hx-red); border-color: var(--hx-red); }
+    .hx-empty-state { background: white; border: 1px dashed var(--hx-line); border-radius: var(--hx-r); padding: 48px 24px; text-align: center; }
+    .hx-empty-state .hx-empty-icon { width: 44px; height: 44px; border-radius: 11px; background: var(--hx-cream); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .hx-empty-state .hx-empty-icon svg { width: 22px; height: 22px; color: var(--hx-text-mid); }
+    .hx-empty-state h3 { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
+    .hx-empty-state p { font-size: 13.5px; color: var(--hx-text-mid); margin: 0 0 18px; max-width: 380px; margin-inline: auto; line-height: 1.5; }
+    .hx-form-card { background: white; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 20px; margin-top: 14px; }
+    .hx-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    @media (max-width: 640px) { .hx-form-grid { grid-template-columns: 1fr; } }
+    .hx-form-row { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+    .hx-status-msg { margin: 0; font-size: 12.5px; font-weight: 500; }
+    .hx-status-msg.err { color: var(--hx-red); }
+    .hx-status-msg.ok  { color: #059669; }
   </style>
 </head>
 <body data-active="app-crm">
@@ -57,98 +68,92 @@
         <div class="hx-page-head">
           <div>
             <h1>CRM.</h1>
-            <p class="sub">Every client, every lead, every conversation on one surface. AI surfaces what needs you today.</p>
+            <p class="sub">Your real clients, leads, and pipeline. Stored in your HelveX workspace, visible only to you.</p>
           </div>
           <div class="hx-page-actions">
             <a href="/crm" class="hx-btn hx-btn-secondary">About CRM</a>
-            <button class="hx-btn hx-btn-primary">+ New lead</button>
+            <button class="hx-btn hx-btn-primary" id="hx-new-lead-btn">+ New lead</button>
           </div>
         </div>
 
         <div class="hx-grid hx-grid-4">
           <div class="hx-stat">
             <p class="hx-stat-label">Active leads</p>
-            <p class="hx-stat-value hx-mono">47</p>
-            <p class="hx-stat-meta">+8 this week</p>
+            <p class="hx-stat-value hx-mono" id="hx-stat-active">—</p>
+            <p class="hx-stat-meta" id="hx-stat-active-meta">Loading…</p>
           </div>
           <div class="hx-stat">
-            <p class="hx-stat-label">Hot now</p>
-            <p class="hx-stat-value hx-mono">12</p>
-            <p class="hx-stat-meta">Scored above 80</p>
+            <p class="hx-stat-label">Qualified</p>
+            <p class="hx-stat-value hx-mono" id="hx-stat-qualified">—</p>
+            <p class="hx-stat-meta" id="hx-stat-qualified-meta">&nbsp;</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Closed this month</p>
-            <p class="hx-stat-value hx-mono">6</p>
-            <p class="hx-stat-meta">CHF 31,400 booked</p>
+            <p class="hx-stat-value hx-mono" id="hx-stat-closed">—</p>
+            <p class="hx-stat-meta" id="hx-stat-closed-meta">&nbsp;</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Pipeline value</p>
-            <p class="hx-stat-value hx-mono">CHF 184k</p>
-            <p class="hx-stat-meta">Weighted by stage</p>
+            <p class="hx-stat-value hx-mono" id="hx-stat-value">—</p>
+            <p class="hx-stat-meta">All open stages</p>
+          </div>
+        </div>
+
+        <!-- Inline new-lead form (hidden by default) -->
+        <div class="hx-form-card" id="hx-new-form" hidden>
+          <h3 style="margin-top:0;">New lead</h3>
+          <div class="hx-form-grid">
+            <div class="hx-field" style="margin:0;">
+              <label>Name *</label>
+              <input type="text" id="hx-new-name" placeholder="Marco Lazzaro" maxlength="120" />
+            </div>
+            <div class="hx-field" style="margin:0;">
+              <label>Company</label>
+              <input type="text" id="hx-new-company" placeholder="Acme GmbH" maxlength="120" />
+            </div>
+            <div class="hx-field" style="margin:0;">
+              <label>Email</label>
+              <input type="email" id="hx-new-email" placeholder="marco@example.com" maxlength="200" />
+            </div>
+            <div class="hx-field" style="margin:0;">
+              <label>Phone</label>
+              <input type="text" id="hx-new-phone" placeholder="+41 79 ..." maxlength="60" />
+            </div>
+            <div class="hx-field" style="margin:0;">
+              <label>Source</label>
+              <select id="hx-new-source">
+                <option value="email">Email</option>
+                <option value="whatsapp">WhatsApp</option>
+                <option value="website">Website</option>
+                <option value="referral">Referral</option>
+                <option value="call">Call</option>
+                <option value="event">Event</option>
+                <option value="other" selected>Other</option>
+              </select>
+            </div>
+            <div class="hx-field" style="margin:0;">
+              <label>Expected value (CHF)</label>
+              <input type="number" id="hx-new-value" placeholder="0" min="0" step="1" />
+            </div>
+            <div class="hx-field" style="margin:0; grid-column: span 2;">
+              <label>Notes</label>
+              <textarea id="hx-new-notes" rows="2" placeholder="Context, requirements, anything useful for follow-up."></textarea>
+            </div>
+          </div>
+          <div class="hx-form-row">
+            <button class="hx-btn hx-btn-primary" id="hx-new-create">Create lead</button>
+            <button class="hx-btn hx-btn-ghost" id="hx-new-cancel">Cancel</button>
+            <p id="hx-new-status" class="hx-status-msg"></p>
           </div>
         </div>
 
         <div class="hx-section-head">
           <h2>Pipeline</h2>
-          <span class="meta">Drag to move · double-click to open</span>
+          <span class="meta" id="hx-pipeline-meta">—</span>
         </div>
 
-        <div class="hx-pipeline">
-          <div class="hx-pipe-col">
-            <div class="hx-pipe-head"><span class="hx-pipe-name"><span class="hx-pipe-dot hx-dot-blue"></span>New</span><span class="hx-pipe-count">14</span></div>
-            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Zurich relocation enquiry</span><span class="hx-deal-value">—</span></div><p class="hx-deal-company">Inbound · contact form</p><div class="hx-deal-meta"><span class="hx-deal-channel email">Email</span><span>2h ago</span></div></div>
-            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">CV revision request</span><span class="hx-deal-value">—</span></div><p class="hx-deal-company">Anna M.</p><div class="hx-deal-meta"><span class="hx-deal-channel whatsapp">WhatsApp</span><span>5h ago</span></div></div>
-            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Permit B consultation</span><span class="hx-deal-value">—</span></div><p class="hx-deal-company">Referral · LinkedIn</p><div class="hx-deal-meta"><span class="hx-deal-channel email">Email</span><span>Yesterday</span></div></div>
-          </div>
-          <div class="hx-pipe-col">
-            <div class="hx-pipe-head"><span class="hx-pipe-name"><span class="hx-pipe-dot hx-dot-yellow"></span>Qualified</span><span class="hx-pipe-count">18</span></div>
-            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Marco L. — Geneva move</span><span class="hx-deal-value">CHF 680</span></div><p class="hx-deal-company">Full relocation package</p><div class="hx-deal-meta"><span class="hx-deal-channel call">Call</span><span>Tomorrow 14:00</span></div></div>
-            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Sofia D. — startup setup</span><span class="hx-deal-value">CHF 1,200</span></div><p class="hx-deal-company">Business consulting</p><div class="hx-deal-meta"><span class="hx-deal-channel email">Email</span><span>Sent proposal</span></div></div>
-            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Niko K. — work permit</span><span class="hx-deal-value">CHF 340</span></div><p class="hx-deal-company">Focused advisory</p><div class="hx-deal-meta"><span class="hx-deal-channel whatsapp">WhatsApp</span><span>Awaiting reply</span></div></div>
-          </div>
-          <div class="hx-pipe-col">
-            <div class="hx-pipe-head"><span class="hx-pipe-name"><span class="hx-pipe-dot hx-dot-orange"></span>Proposal</span><span class="hx-pipe-count">9</span></div>
-            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Helena B. — annual retainer</span><span class="hx-deal-value">CHF 4,200</span></div><p class="hx-deal-company">Quarterly advisory</p><div class="hx-deal-meta"><span class="hx-deal-channel email">Email</span><span>Sent Tuesday</span></div></div>
-            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Alex P. — branding pkg</span><span class="hx-deal-value">CHF 2,800</span></div><p class="hx-deal-company">Marketing toolkit</p><div class="hx-deal-meta"><span class="hx-deal-channel call">Call</span><span>Follow-up Mon</span></div></div>
-          </div>
-          <div class="hx-pipe-col">
-            <div class="hx-pipe-head"><span class="hx-pipe-name"><span class="hx-pipe-dot hx-dot-green"></span>Closed</span><span class="hx-pipe-count">6</span></div>
-            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Riccardo T. — relocation</span><span class="hx-deal-value">CHF 680</span></div><p class="hx-deal-company">Full package · paid</p><div class="hx-deal-meta"><span class="hx-deal-channel email">Email</span><span>Closed Friday</span></div></div>
-            <div class="hx-deal"><div class="hx-deal-top"><span class="hx-deal-name">Lena S. — CV</span><span class="hx-deal-value">CHF 280</span></div><p class="hx-deal-company">CV package · paid</p><div class="hx-deal-meta"><span class="hx-deal-channel whatsapp">WhatsApp</span><span>Closed Wed</span></div></div>
-          </div>
-        </div>
-
-        <div class="hx-insights">
-          <div class="hx-section-head">
-            <h2>AI insights</h2>
-            <span class="meta">Surfaced this morning · 7:00</span>
-          </div>
-          <div style="display:flex; flex-direction:column; gap:10px;">
-            <div class="hx-insight-card">
-              <span class="hx-insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></span>
-              <div class="hx-insight-body">
-                <p class="hx-insight-kicker">Reach out today</p>
-                <p class="hx-insight-text"><strong>Marco L.</strong> opened the proposal twice yesterday but hasn't replied. Last contact 4 days ago. A short WhatsApp nudge tends to convert these within 24h.</p>
-              </div>
-              <button class="hx-insight-action">Draft reply</button>
-            </div>
-            <div class="hx-insight-card">
-              <span class="hx-insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-              <div class="hx-insight-body">
-                <p class="hx-insight-kicker">Going cold</p>
-                <p class="hx-insight-text"><strong>Three deals</strong> in Qualified haven't moved in 9+ days. Score dropped 18% on average. Worth checking if they're still active or move to Archive.</p>
-              </div>
-              <button class="hx-insight-action">Review</button>
-            </div>
-            <div class="hx-insight-card">
-              <span class="hx-insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
-              <div class="hx-insight-body">
-                <p class="hx-insight-kicker">Pattern</p>
-                <p class="hx-insight-text"><strong>WhatsApp leads close 2.3x faster</strong> than email leads this month. Three of your last six wins came from WhatsApp Business — worth pushing that channel.</p>
-              </div>
-              <button class="hx-insight-action">See data</button>
-            </div>
-          </div>
+        <div id="hx-pipeline-host">
+          <!-- Pipeline renders here; empty state until first lead -->
         </div>
 
       </main>
@@ -156,5 +161,234 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Real CRUD on public.leads via Supabase JS — RLS protects per-user. */
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth && window.HX.supabase) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+
+      function escape(s) {
+        return (s == null ? '' : String(s))
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      function fmtCHF(n) {
+        n = Number(n || 0);
+        return 'CHF ' + n.toLocaleString('en-CH');
+      }
+      function fmtCHFCompact(n) {
+        n = Number(n || 0);
+        if (n >= 1000) return 'CHF ' + (n / 1000).toFixed(n >= 10000 ? 0 : 1) + 'k';
+        return 'CHF ' + n;
+      }
+      function relTime(iso) {
+        if (!iso) return '—';
+        var d = new Date(iso); if (isNaN(d.getTime())) return '—';
+        var diff = (Date.now() - d.getTime()) / 1000;
+        if (diff < 60)    return Math.max(1, Math.round(diff)) + 's ago';
+        if (diff < 3600)  return Math.round(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.round(diff / 3600) + 'h ago';
+        if (diff < 604800)return Math.round(diff / 86400) + 'd ago';
+        return d.toLocaleDateString();
+      }
+
+      var STAGES = [
+        { id: 'new',       label: 'New',       dot: 'hx-dot-blue'   },
+        { id: 'qualified', label: 'Qualified', dot: 'hx-dot-yellow' },
+        { id: 'proposal',  label: 'Proposal',  dot: 'hx-dot-orange' },
+        { id: 'closed',    label: 'Closed',    dot: 'hx-dot-green'  }
+      ];
+
+      function renderStats(leads) {
+        var active = leads.filter(function (l) { return l.stage !== 'closed' && l.stage !== 'lost'; });
+        var qualified = leads.filter(function (l) { return l.stage === 'qualified'; });
+        var monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
+        var closedThisMonth = leads.filter(function (l) {
+          return l.stage === 'closed' && new Date(l.updated_at) >= monthStart;
+        });
+        var pipelineValue = active.reduce(function (sum, l) { return sum + Number(l.value_chf || 0); }, 0);
+        var closedValue   = closedThisMonth.reduce(function (sum, l) { return sum + Number(l.value_chf || 0); }, 0);
+
+        $('hx-stat-active').textContent = String(active.length);
+        $('hx-stat-active-meta').textContent = active.length === 0 ? 'No open leads yet' : 'In pipeline';
+        $('hx-stat-qualified').textContent = String(qualified.length);
+        $('hx-stat-qualified-meta').textContent = qualified.length === 0 ? '—' : 'Above the line';
+        $('hx-stat-closed').textContent = String(closedThisMonth.length);
+        $('hx-stat-closed-meta').textContent = closedThisMonth.length === 0 ? '—' : fmtCHFCompact(closedValue) + ' booked';
+        $('hx-stat-value').textContent = pipelineValue === 0 ? 'CHF 0' : fmtCHFCompact(pipelineValue);
+      }
+
+      function renderEmpty(host) {
+        host.innerHTML =
+          '<div class="hx-empty-state">' +
+            '<div class="hx-empty-icon" aria-hidden="true">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>' +
+            '</div>' +
+            '<h3>No leads yet</h3>' +
+            '<p>Add your first lead to start tracking deals. Everything stays in your HelveX workspace — only you can see it.</p>' +
+            '<button class="hx-btn hx-btn-primary" id="hx-empty-new">+ New lead</button>' +
+          '</div>';
+        var b = $('hx-empty-new'); if (b) b.addEventListener('click', openForm);
+      }
+
+      function leadCard(l) {
+        var stageOptions = STAGES.concat([{ id: 'lost', label: 'Lost' }]).map(function (s) {
+          var sel = s.id === l.stage ? ' selected' : '';
+          return '<option value="' + s.id + '"' + sel + '>' + s.label + '</option>';
+        }).join('');
+        var meta = [];
+        meta.push('<span class="hx-deal-channel ' + escape(l.source || 'other') + '">' + escape((l.source || 'other').replace(/^./, function (c) { return c.toUpperCase(); })) + '</span>');
+        meta.push('<span>' + relTime(l.updated_at || l.created_at) + '</span>');
+        return '<div class="hx-deal" data-id="' + escape(l.id) + '">' +
+          '<div class="hx-deal-top">' +
+            '<span class="hx-deal-name">' + escape(l.name) + '</span>' +
+            '<span class="hx-deal-value">' + (l.value_chf > 0 ? fmtCHFCompact(l.value_chf) : '—') + '</span>' +
+          '</div>' +
+          '<p class="hx-deal-company">' + escape(l.company || (l.email || ' ')) + '</p>' +
+          '<div class="hx-deal-meta">' + meta.join('') + '</div>' +
+          '<div class="hx-deal-actions">' +
+            '<select class="hx-deal-stage-sel" data-act="stage" data-id="' + escape(l.id) + '">' + stageOptions + '</select>' +
+            '<button class="hx-deal-del" data-act="delete" data-id="' + escape(l.id) + '" title="Delete lead">Delete</button>' +
+          '</div>' +
+        '</div>';
+      }
+
+      function renderPipeline(host, leads) {
+        var byStage = { new: [], qualified: [], proposal: [], closed: [] };
+        leads.forEach(function (l) {
+          if (byStage[l.stage]) byStage[l.stage].push(l);
+        });
+        var html = '<div class="hx-pipeline">';
+        STAGES.forEach(function (s) {
+          var col = byStage[s.id] || [];
+          html += '<div class="hx-pipe-col" data-stage="' + s.id + '">' +
+            '<div class="hx-pipe-head">' +
+              '<span class="hx-pipe-name"><span class="hx-pipe-dot ' + s.dot + '"></span>' + s.label + '</span>' +
+              '<span class="hx-pipe-count">' + col.length + '</span>' +
+            '</div>';
+          if (col.length === 0) {
+            html += '<div class="hx-pipe-empty">No leads in ' + s.label.toLowerCase() + '</div>';
+          } else {
+            col.forEach(function (l) { html += leadCard(l); });
+          }
+          html += '</div>';
+        });
+        html += '</div>';
+        host.innerHTML = html;
+      }
+
+      function openForm() {
+        $('hx-new-form').hidden = false;
+        $('hx-new-status').textContent = '';
+        setTimeout(function () { $('hx-new-name').focus(); }, 0);
+      }
+      function closeForm() {
+        $('hx-new-form').hidden = true;
+        ['hx-new-name','hx-new-company','hx-new-email','hx-new-phone','hx-new-value','hx-new-notes'].forEach(function (k) { $(k).value = ''; });
+        $('hx-new-source').value = 'other';
+        $('hx-new-status').textContent = '';
+      }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        var host = $('hx-pipeline-host');
+        var meta = $('hx-pipeline-meta');
+        var cache = [];
+
+        async function refresh() {
+          meta.textContent = 'Loading…';
+          var res = await sb.from('leads').select('*').order('created_at', { ascending: false });
+          if (res.error) {
+            meta.textContent = 'Failed to load: ' + res.error.message;
+            renderEmpty(host);
+            return;
+          }
+          cache = res.data || [];
+          renderStats(cache);
+          if (cache.length === 0) {
+            renderEmpty(host);
+            meta.textContent = '0 leads';
+          } else {
+            renderPipeline(host, cache);
+            meta.textContent = cache.length + ' lead' + (cache.length === 1 ? '' : 's') + ' total';
+          }
+        }
+
+        async function createLead() {
+          var status = $('hx-new-status');
+          var name = $('hx-new-name').value.trim();
+          if (!name) { status.textContent = 'Name is required.'; status.className = 'hx-status-msg err'; $('hx-new-name').focus(); return; }
+          var btn = $('hx-new-create');
+          btn.disabled = true;
+          status.textContent = 'Saving…'; status.className = 'hx-status-msg';
+          var u = (window.HX.user && window.HX.user.id) ? window.HX.user.id : null;
+          if (!u) {
+            var sess = await sb.auth.getUser();
+            u = sess && sess.data && sess.data.user && sess.data.user.id;
+          }
+          if (!u) { status.textContent = 'Not signed in.'; status.className = 'hx-status-msg err'; btn.disabled = false; return; }
+          var payload = {
+            owner_id: u,
+            name: name,
+            company: $('hx-new-company').value.trim() || null,
+            email:   $('hx-new-email').value.trim() || null,
+            phone:   $('hx-new-phone').value.trim() || null,
+            source:  $('hx-new-source').value || 'other',
+            value_chf: parseInt($('hx-new-value').value, 10) || 0,
+            notes:   $('hx-new-notes').value.trim() || null,
+            stage:   'new',
+            last_contact_at: new Date().toISOString()
+          };
+          var res = await sb.from('leads').insert(payload).select().single();
+          btn.disabled = false;
+          if (res.error) { status.textContent = 'Save failed: ' + res.error.message; status.className = 'hx-status-msg err'; return; }
+          status.textContent = 'Created.'; status.className = 'hx-status-msg ok';
+          setTimeout(closeForm, 400);
+          await refresh();
+        }
+
+        async function updateStage(id, stage) {
+          var res = await sb.from('leads').update({ stage: stage }).eq('id', id).select().single();
+          if (res.error) { alert('Could not update stage: ' + res.error.message); return; }
+          await refresh();
+        }
+
+        async function deleteLead(id) {
+          if (!confirm('Delete this lead? This cannot be undone.')) return;
+          var res = await sb.from('leads').delete().eq('id', id);
+          if (res.error) { alert('Could not delete: ' + res.error.message); return; }
+          await refresh();
+        }
+
+        // Wire static buttons
+        $('hx-new-lead-btn').addEventListener('click', openForm);
+        $('hx-new-create').addEventListener('click', createLead);
+        $('hx-new-cancel').addEventListener('click', closeForm);
+        $('hx-new-name').addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); createLead(); }
+        });
+
+        // Delegated handlers on pipeline host
+        host.addEventListener('change', function (e) {
+          var t = e.target;
+          if (t.matches('select[data-act="stage"]')) {
+            updateStage(t.getAttribute('data-id'), t.value);
+          }
+        });
+        host.addEventListener('click', function (e) {
+          var t = e.target;
+          if (t.matches('button[data-act="delete"]')) {
+            deleteLead(t.getAttribute('data-id'));
+          }
+        });
+
+        refresh();
+      });
+    })();
+  </script>
 </body>
 </html>
