@@ -107,6 +107,12 @@
         </div>
 
         <div class="hx-section-head" style="margin-top:24px;">
+          <h2>Recent triages</h2>
+          <span class="meta" id="hx-triage-history-meta">0 saved · stored in your browser</span>
+        </div>
+        <div id="hx-triage-history-host"></div>
+
+        <div class="hx-section-head" style="margin-top:24px;">
           <h2>Templates</h2>
           <span class="meta">More AI-powered workflows shipping in the next milestones</span>
         </div>
@@ -191,6 +197,51 @@
         if (copyBtn) copyBtn.addEventListener('click', (e) => HXAI.copyToClipboard(copyText, e.target));
       }
 
+      function renderTriageHistory() {
+        const host = document.getElementById('hx-triage-history-host');
+        const metaEl = document.getElementById('hx-triage-history-meta');
+        const items = HXAI.store.get('automation', 'triage_history', []) || [];
+        metaEl.textContent = `${items.length} saved · stored in your browser`;
+        if (items.length === 0) {
+          host.innerHTML = `<div style="background:#fff;border:1px dashed var(--hx-line);border-radius:var(--hx-r);padding:36px 20px;text-align:center;color:var(--hx-text-mid);font-size:13.5px;"><p style="margin:0 0 4px;font-size:14px;color:var(--hx-text);font-weight:600;">No triages yet</p><p style="margin:0;">Run a triage above — every result is saved here for later review.</p></div>`;
+          return;
+        }
+        const intentColor = { spam: '#dc2626', complaint: '#dc2626', sales_lead: '#15803d', support: '#1d4ed8', scheduling: '#f59e0b', thanks: '#15803d', newsletter: '#6b7280', internal: '#6b7280', partnership: '#1d4ed8', other: '#6b7280' };
+        host.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">' + items.map(it => {
+          const intent = it.triage?.intent || 'other';
+          const summary = it.triage?.summary || '(no summary)';
+          const dot = intentColor[intent] || '#6b7280';
+          return `
+            <div style="background:#fff;border:1px solid var(--hx-line);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:14px;">
+              <span style="width:8px;height:8px;border-radius:50%;background:${dot};flex-shrink:0;"></span>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:13px;font-weight:600;color:var(--hx-text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${HXAI.esc(summary)}</div>
+                <div style="font-size:11.5px;color:var(--hx-text-mid);font-family:var(--hx-mono);">${HXAI.esc(intent)} · ${HXAI.esc(it.triage?.urgency || '')} · ${HXAI.esc(it.triage?.recommendation || '')}</div>
+              </div>
+              <div style="font-family:var(--hx-mono);font-size:11px;color:var(--hx-text-mid);flex-shrink:0;">${HXAI.timeAgo(it.createdAt)}</div>
+              <button class="hxai-copy" data-copy-triage="${it.id}" style="flex-shrink:0;">Copy reply</button>
+              <button data-del-triage="${it.id}" style="background:transparent;border:0;color:var(--hx-text-mid);cursor:pointer;font-size:14px;padding:0 4px;" title="Delete">×</button>
+            </div>
+          `;
+        }).join('') + '</div>';
+        host.querySelectorAll('[data-copy-triage]').forEach(b => b.addEventListener('click', (e) => {
+          const id = b.dataset.copyTriage;
+          const it = (HXAI.store.get('automation', 'triage_history', []) || []).find(x => x.id === id);
+          if (it?.triage?.draft_reply) {
+            const r = it.triage.draft_reply;
+            const text = (r.subject ? `Subject: ${r.subject}\n\n` : '') + (r.body || '');
+            HXAI.copyToClipboard(text, e.target);
+          }
+        }));
+        host.querySelectorAll('[data-del-triage]').forEach(b => b.addEventListener('click', () => {
+          const id = b.dataset.delTriage;
+          const items = (HXAI.store.get('automation', 'triage_history', []) || []).filter(x => x.id !== id);
+          HXAI.store.set('automation', 'triage_history', items);
+          renderTriageHistory();
+        }));
+      }
+      renderTriageHistory();
+
       btn.addEventListener('click', async () => {
         const email = emailEl.value.trim();
         if (email.length < 20) { setStatus('Paste the full incoming email (at least 20 chars).', true); return; }
@@ -212,6 +263,16 @@
           const parsed = HXAI.extractJson(raw);
           render(parsed);
           setStatus('');
+          // Save to triage history
+          const hist = HXAI.store.get('automation', 'triage_history', []) || [];
+          hist.unshift({
+            id: HXAI.store.id(),
+            email: email.slice(0, 200),
+            triage: parsed,
+            createdAt: new Date().toISOString(),
+          });
+          HXAI.store.set('automation', 'triage_history', hist.slice(0, 20));
+          renderTriageHistory();
         } catch (err) {
           setStatus(`Failed: ${err.message || err}`, true);
         } finally {

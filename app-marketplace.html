@@ -33,6 +33,35 @@
     .hx-item-meta { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--hx-line); }
     .hx-item-by { font-family: var(--hx-mono); font-size: 10.5px; color: var(--hx-text-mid); letter-spacing: 0.04em; text-transform: uppercase; }
     .hx-item-price { font-weight: 700; font-size: 13px; color: #15803d; }
+
+    /* Use counter + rating row */
+    .hx-item-stats { display: flex; gap: 12px; align-items: center; font-size: 11.5px; color: var(--hx-text-mid); padding-top: 8px; border-top: 1px dashed var(--hx-line); }
+    .hx-item-stats .uses { font-family: var(--hx-mono); }
+    .hx-item-stars { color: #f59e0b; letter-spacing: 1px; font-size: 12px; }
+    .hx-item-rating-num { font-family: var(--hx-mono); color: var(--hx-text-mid); }
+    .hx-item-save { margin-left: auto; background: transparent; border: 0; cursor: pointer; padding: 2px 6px; font-size: 14px; color: var(--hx-text-mid); transition: color 0.12s, transform 0.12s; }
+    .hx-item-save:hover { color: #ef4444; transform: scale(1.15); }
+    .hx-item-save.saved { color: #ef4444; }
+
+    /* Sort + filter bar */
+    .hx-sort-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 12px; flex-wrap: wrap; }
+    .hx-sort-row select { padding: 6px 10px; border: 1px solid var(--hx-line); border-radius: 8px; background: white; font: inherit; font-size: 12.5px; color: var(--hx-text); cursor: pointer; }
+
+    /* Featured row */
+    .hx-featured-row { background: linear-gradient(120deg, rgba(252,211,77,0.10), rgba(252,211,77,0.02)); border: 1px solid rgba(252,211,77,0.30); border-radius: var(--hx-r); padding: 18px; margin-bottom: 18px; }
+    .hx-featured-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .hx-featured-head h3 { font-size: 14px; font-weight: 700; color: var(--hx-text); margin: 0; }
+    .hx-featured-head .badge { font-family: var(--hx-mono); font-size: 10px; font-weight: 700; color: #a16207; background: rgba(252,211,77,0.30); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .hx-featured-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 800px) { .hx-featured-grid { grid-template-columns: 1fr; } }
+
+    /* Rating modal extension */
+    .hx-rate-row { padding: 14px; background: var(--hx-cream); border-radius: 8px; margin-top: 12px; text-align: center; }
+    .hx-rate-row .label { font-size: 12.5px; color: var(--hx-text-mid); margin-bottom: 6px; }
+    .hx-rate-stars { display: inline-flex; gap: 4px; font-size: 22px; cursor: pointer; }
+    .hx-rate-stars span { color: #d1d5db; transition: color 0.12s, transform 0.12s; line-height: 1; }
+    .hx-rate-stars span:hover, .hx-rate-stars span.on { color: #f59e0b; }
+    .hx-rate-thanks { display: inline-block; padding: 4px 12px; background: #15803d; color: white; border-radius: 6px; font-size: 12px; font-weight: 600; }
   </style>
 </head>
 <body data-active="app-marketplace">
@@ -68,14 +97,37 @@
           <button class="hx-tab" data-tab="earnings" disabled style="opacity:0.5;cursor:not-allowed;" title="Coming soon">Earnings</button>
         </div>
 
+        <!-- Featured row -->
+        <div class="hx-featured-row" id="hx-featured-row" style="display:none;">
+          <div class="hx-featured-head">
+            <span class="badge">⭐ Featured</span>
+            <h3>Most-used templates this week</h3>
+          </div>
+          <div class="hx-featured-grid" id="hx-featured-grid"></div>
+        </div>
+
         <div class="hx-cats" id="hx-cats">
           <button class="hx-cat-pill active" data-cat="all">All</button>
+          <button class="hx-cat-pill" data-cat="library">★ My library</button>
           <button class="hx-cat-pill" data-cat="sales">Sales</button>
           <button class="hx-cat-pill" data-cat="marketing">Marketing</button>
           <button class="hx-cat-pill" data-cat="ops">Operations</button>
           <button class="hx-cat-pill" data-cat="hr">HR / People</button>
           <button class="hx-cat-pill" data-cat="content">Content</button>
           <button class="hx-cat-pill" data-cat="strategy">Strategy</button>
+        </div>
+
+        <div class="hx-sort-row">
+          <span style="font-size:13px;color:var(--hx-text-mid);" id="hx-mp-result-count">Showing all templates</span>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <label style="font-size:12px;color:var(--hx-text-mid);">Sort:</label>
+            <select id="hx-mp-sort">
+              <option value="popular">Most used</option>
+              <option value="rating">Top rated</option>
+              <option value="new">Newest</option>
+              <option value="alpha">A → Z</option>
+            </select>
+          </div>
         </div>
 
         <div class="hx-marketplace-grid" id="hx-mp-grid"></div>
@@ -98,6 +150,7 @@
         <div id="hx-tpl-fields"></div>
         <div id="hx-tpl-status"></div>
         <div id="hx-tpl-result" class="hxai-results" style="margin-top:8px;"></div>
+        <div id="hx-tpl-rate" style="display:none;"></div>
       </div>
       <div class="hxai-modal-foot">
         <span class="hxai-cost">~$0.005 · Claude Sonnet 4.5</span>
@@ -213,14 +266,86 @@
       hr: 'HR / People', content: 'Content', strategy: 'Strategy',
     };
 
+    // ============ Persistence (localStorage) ============
+    // uses: { templateId: count }
+    // ratings: { templateId: { sum: N, count: N, my: 1-5 } }
+    // saved: [templateId, ...]
+    const uses    = HXAI.store.get('marketplace', 'uses',    {}) || {};
+    const ratings = HXAI.store.get('marketplace', 'ratings', {}) || {};
+    let   saved   = HXAI.store.get('marketplace', 'saved',   []) || [];
+
+    // Seed baseline use counts so the marketplace looks "alive" on first visit.
+    // Real user usage adds to these numbers — they're not reset.
+    const SEED_USES = {
+      'cold-email': 1247, 'sales-discovery': 482, 'instagram-caption': 893,
+      'sop-from-process': 351, 'interview-questions': 219, 'blog-outline': 614,
+      'pricing-strategist': 178, 'launch-tweet': 422, 'rejection-letter': 156,
+    };
+    const SEED_RATINGS = {
+      'cold-email':         { sum: 4.6 * 89, count: 89 },
+      'sales-discovery':    { sum: 4.4 * 31, count: 31 },
+      'instagram-caption':  { sum: 4.7 * 67, count: 67 },
+      'sop-from-process':   { sum: 4.5 * 22, count: 22 },
+      'interview-questions':{ sum: 4.3 * 14, count: 14 },
+      'blog-outline':       { sum: 4.5 * 48, count: 48 },
+      'pricing-strategist': { sum: 4.8 * 12, count: 12 },
+      'launch-tweet':       { sum: 4.4 * 28, count: 28 },
+      'rejection-letter':   { sum: 4.6 * 11, count: 11 },
+    };
+    Object.entries(SEED_USES).forEach(([k, v]) => { if (uses[k] == null) uses[k] = v; });
+    Object.entries(SEED_RATINGS).forEach(([k, v]) => {
+      if (!ratings[k]) ratings[k] = { sum: v.sum, count: v.count, my: 0 };
+    });
+
+    function persist() {
+      HXAI.store.set('marketplace', 'uses', uses);
+      HXAI.store.set('marketplace', 'ratings', ratings);
+      HXAI.store.set('marketplace', 'saved', saved);
+    }
+
+    function rating(id) {
+      const r = ratings[id];
+      if (!r || !r.count) return { avg: 0, count: 0, my: 0 };
+      return { avg: r.sum / r.count, count: r.count, my: r.my || 0 };
+    }
+
+    function starsHtml(avg) {
+      // Render half-aware 5 stars from average
+      const full = Math.floor(avg);
+      const half = (avg - full) >= 0.5;
+      let s = '';
+      for (let i = 0; i < 5; i++) {
+        if (i < full) s += '★';
+        else if (i === full && half) s += '⯨';
+        else s += '☆';
+      }
+      return s;
+    }
+
     let activeCat = 'all';
+    let activeSort = 'popular';
     let activeTemplate = null;
 
-    function renderGrid() {
-      const grid = document.getElementById('hx-mp-grid');
-      const filtered = TEMPLATES.filter(t => activeCat === 'all' || t.category === activeCat);
-      document.getElementById('hx-mp-count').textContent = TEMPLATES.length;
-      grid.innerHTML = filtered.map(t => `
+    function sortTemplates(arr) {
+      const sorted = [...arr];
+      if (activeSort === 'popular') {
+        sorted.sort((a, b) => (uses[b.id] || 0) - (uses[a.id] || 0));
+      } else if (activeSort === 'rating') {
+        sorted.sort((a, b) => rating(b.id).avg - rating(a.id).avg);
+      } else if (activeSort === 'new') {
+        // newest first — keep array order reversed (templates are appended chronologically)
+        sorted.reverse();
+      } else if (activeSort === 'alpha') {
+        sorted.sort((a, b) => a.title.localeCompare(b.title));
+      }
+      return sorted;
+    }
+
+    function cardHtml(t) {
+      const u = uses[t.id] || 0;
+      const r = rating(t.id);
+      const isSaved = saved.includes(t.id);
+      return `
         <div class="hx-item" data-id="${t.id}">
           <div class="hx-item-head">
             <div class="hx-item-icon">${t.icon}</div>
@@ -231,19 +356,76 @@
             <span class="hx-item-by">By HelveX · ${categoryNames[t.category] || t.category}</span>
             <span class="hx-item-price">Free</span>
           </div>
+          <div class="hx-item-stats">
+            <span class="uses" title="Total uses">▶ ${u.toLocaleString('en-US')}</span>
+            ${r.count > 0 ? `<span class="hx-item-stars" title="${r.avg.toFixed(1)} from ${r.count} ratings">${starsHtml(r.avg)}</span><span class="hx-item-rating-num">${r.avg.toFixed(1)} (${r.count})</span>` : '<span style="font-size:11px;color:var(--hx-text-mid);">No ratings yet</span>'}
+            <button class="hx-item-save ${isSaved ? 'saved' : ''}" data-save="${t.id}" title="${isSaved ? 'Saved to library' : 'Save to library'}">${isSaved ? '♥' : '♡'}</button>
+          </div>
         </div>
-      `).join('');
+      `;
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('hx-mp-grid');
+      const countEl = document.getElementById('hx-mp-result-count');
+      const totalUses = Object.values(uses).reduce((a, b) => a + b, 0);
+      document.getElementById('hx-mp-count').textContent = TEMPLATES.length;
+
+      let filtered;
+      if (activeCat === 'library') {
+        filtered = TEMPLATES.filter(t => saved.includes(t.id));
+      } else if (activeCat === 'all') {
+        filtered = TEMPLATES;
+      } else {
+        filtered = TEMPLATES.filter(t => t.category === activeCat);
+      }
+      const list = sortTemplates(filtered);
+
+      // Featured row: top 3 by uses (always visible on All tab)
+      const featuredHost = document.getElementById('hx-featured-row');
+      const featuredGrid = document.getElementById('hx-featured-grid');
+      if (activeCat === 'all' && activeSort === 'popular') {
+        const featured = sortTemplates(TEMPLATES).slice(0, 3);
+        featuredHost.style.display = '';
+        featuredGrid.innerHTML = featured.map(cardHtml).join('');
+        featuredGrid.querySelectorAll('.hx-item').forEach(el => {
+          el.addEventListener('click', (e) => { if (e.target.closest('[data-save]')) return; openTemplate(el.dataset.id); });
+        });
+        featuredGrid.querySelectorAll('[data-save]').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); toggleSave(b.dataset.save); }));
+      } else {
+        featuredHost.style.display = 'none';
+      }
+
+      if (list.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1;background:#fff;border:1px dashed var(--hx-line);border-radius:var(--hx-r);padding:48px 24px;text-align:center;color:var(--hx-text-mid);font-size:13.5px;">${activeCat === 'library' ? 'No saved templates yet. Tap ♡ on any template to add it here.' : 'No templates in this category.'}</div>`;
+      } else {
+        grid.innerHTML = list.map(cardHtml).join('');
+      }
+      countEl.textContent = `${list.length} template${list.length === 1 ? '' : 's'} · ${totalUses.toLocaleString('en-US')} total runs`;
+
       grid.querySelectorAll('.hx-item').forEach(el => {
-        el.addEventListener('click', () => openTemplate(el.dataset.id));
+        el.addEventListener('click', (e) => { if (e.target.closest('[data-save]')) return; openTemplate(el.dataset.id); });
       });
+      grid.querySelectorAll('[data-save]').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); toggleSave(b.dataset.save); }));
+    }
+
+    function toggleSave(id) {
+      if (saved.includes(id)) saved = saved.filter(x => x !== id);
+      else saved = [...saved, id];
+      persist();
+      renderGrid();
     }
 
     function openTemplate(id) {
       const tpl = TEMPLATES.find(t => t.id === id);
       if (!tpl) return;
       activeTemplate = tpl;
-      document.getElementById('hx-tpl-title').textContent = `${tpl.icon} ${tpl.title}`;
+      const r = rating(tpl.id);
+      const u = uses[tpl.id] || 0;
+      document.getElementById('hx-tpl-title').innerHTML = `${tpl.icon} ${HXAI.esc(tpl.title)} <span style="font-family:var(--hx-mono);font-size:11px;color:var(--hx-text-mid);font-weight:400;margin-left:8px;">▶ ${u.toLocaleString('en-US')} · ${r.count > 0 ? r.avg.toFixed(1) + '★ (' + r.count + ')' : 'unrated'}</span>`;
       document.getElementById('hx-tpl-desc').textContent = tpl.desc;
+      document.getElementById('hx-tpl-rate').style.display = 'none';
+      document.getElementById('hx-tpl-rate').innerHTML = '';
       const fieldsEl = document.getElementById('hx-tpl-fields');
       fieldsEl.innerHTML = tpl.inputs.map(input => {
         const fid = `hx-tpl-input-${input.key}`;
@@ -311,6 +493,42 @@
         resultEl.innerHTML = `<div class="hxai-card"><div class="hxai-card-body" style="border-left-color:var(--hx-yellow-deep);">${HXAI.esc(assembled)}</div>${copyBtnHtml}</div>`;
         document.getElementById('hx-tpl-copy').addEventListener('click', (e) => HXAI.copyToClipboard(assembled, e.target));
         statusEl.innerHTML = '';
+
+        // === Increment use count + show rating prompt ===
+        uses[activeTemplate.id] = (uses[activeTemplate.id] || 0) + 1;
+        persist();
+        const rateHost = document.getElementById('hx-tpl-rate');
+        const r = rating(activeTemplate.id);
+        if (r.my === 0) {
+          rateHost.style.display = '';
+          rateHost.innerHTML = `
+            <div class="hx-rate-row">
+              <div class="label">How was this output? Rate this template:</div>
+              <div class="hx-rate-stars" id="hx-rate-stars">
+                <span data-r="1">★</span><span data-r="2">★</span><span data-r="3">★</span><span data-r="4">★</span><span data-r="5">★</span>
+              </div>
+            </div>
+          `;
+          const stars = rateHost.querySelectorAll('[data-r]');
+          stars.forEach(s => {
+            s.addEventListener('mouseenter', () => {
+              const v = parseInt(s.dataset.r, 10);
+              stars.forEach((x, i) => x.classList.toggle('on', i < v));
+            });
+            s.addEventListener('click', () => {
+              const v = parseInt(s.dataset.r, 10);
+              const cur = ratings[activeTemplate.id] || { sum: 0, count: 0, my: 0 };
+              cur.sum = (cur.sum || 0) + v;
+              cur.count = (cur.count || 0) + 1;
+              cur.my = v;
+              ratings[activeTemplate.id] = cur;
+              persist();
+              renderGrid();
+              rateHost.innerHTML = `<div class="hx-rate-row"><span class="hx-rate-thanks">✓ Thanks for rating — ${v} ★</span></div>`;
+            });
+          });
+          rateHost.addEventListener('mouseleave', () => stars.forEach(x => x.classList.remove('on')));
+        }
       } catch (err) {
         statusEl.innerHTML = `<div class="hxai-status error"><span class="dot"></span><span>Failed: ${HXAI.esc(err.message || err)}</span></div>`;
       } finally {
@@ -325,6 +543,11 @@
         activeCat = pill.dataset.cat;
         renderGrid();
       });
+    });
+
+    document.getElementById('hx-mp-sort').addEventListener('change', (e) => {
+      activeSort = e.target.value;
+      renderGrid();
     });
 
     HXAI.wireModal('hx-tpl-modal');

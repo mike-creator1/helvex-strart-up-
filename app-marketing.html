@@ -127,16 +127,10 @@
 
         <div class="hx-section-head" style="margin-top:24px;">
           <h2>Recent drafts</h2>
-          <span class="meta">Your generations will appear here once the generators go live</span>
+          <span class="meta" id="hx-history-meta">0 saved · stored in your browser</span>
         </div>
 
-        <div class="hx-empty-state">
-          <div class="hx-empty-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
-          </div>
-          <h3>No drafts yet</h3>
-          <p>This is where your generated posts, ads, articles, and emails will live. We'll wire the AI generation in the next milestone — your drafts will persist to your HelveX workspace, with full edit history.</p>
-        </div>
+        <div id="hx-history-host"></div>
 
       </main>
     </div>
@@ -486,6 +480,9 @@
           }
           renderVariants(parsed.variants);
           setStatus('');
+          if (window.HX_MARKETING_HISTORY) {
+            window.HX_MARKETING_HISTORY.add('email', payload.brief, parsed.variants);
+          }
         } catch (err) {
           console.error(err);
           setStatus(`Generation failed: ${err.message || err}. Try again.`, true);
@@ -568,6 +565,9 @@
           if (!parsed.posts || !Array.isArray(parsed.posts)) throw new Error('No posts in response');
           render(parsed.posts);
           setStatus('');
+          if (window.HX_MARKETING_HISTORY) {
+            window.HX_MARKETING_HISTORY.add('social', brief, parsed.posts);
+          }
         } catch (err) {
           setStatus(`Failed: ${err.message || err}`, true);
         } finally {
@@ -664,12 +664,88 @@
           if (!parsed.ads || !Array.isArray(parsed.ads)) throw new Error('No ads in response');
           renderAds(parsed.ads);
           setStatus('');
+          if (window.HX_MARKETING_HISTORY) {
+            window.HX_MARKETING_HISTORY.add('ads', brief, parsed.ads);
+          }
         } catch (err) {
           setStatus(`Failed: ${err.message || err}`, true);
         } finally {
           submit.disabled = false; submit.textContent = 'Generate ads';
         }
       });
+    })();
+  </script>
+
+  <!-- ============ RECENT DRAFTS HISTORY ============ -->
+  <script>
+    (function () {
+      const TYPE_LABEL = { email: '📧 Email campaign', social: '📸 Social posts', ads: '🎯 Ad copy' };
+      const TYPE_DOT   = { email: '#f59e0b', social: '#a855f7', ads: '#3b82f6' };
+
+      const host    = document.getElementById('hx-history-host');
+      const metaEl  = document.getElementById('hx-history-meta');
+
+      function load() { return HXAI.store.get('marketing', 'history', []) || []; }
+      function save(arr) { HXAI.store.set('marketing', 'history', arr.slice(0, 20)); }
+
+      function add(type, brief, output) {
+        const items = load();
+        items.unshift({
+          id: HXAI.store.id(),
+          type, brief: brief.slice(0, 200),
+          output,
+          createdAt: new Date().toISOString(),
+        });
+        save(items);
+        render();
+      }
+
+      function remove(id) {
+        save(load().filter(x => x.id !== id));
+        render();
+      }
+
+      function render() {
+        const items = load();
+        metaEl.textContent = `${items.length} saved · stored in your browser`;
+        if (items.length === 0) {
+          host.innerHTML = `
+            <div style="background:#fff;border:1px dashed var(--hx-line);border-radius:var(--hx-r);padding:36px 20px;text-align:center;color:var(--hx-text-mid);font-size:13.5px;">
+              <p style="margin:0 0 4px;font-size:14px;color:var(--hx-text);font-weight:600;">No drafts yet</p>
+              <p style="margin:0;">Generate any campaign, post, or ad above — it'll be saved here automatically.</p>
+            </div>
+          `;
+          return;
+        }
+        host.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">' + items.map(it => {
+          const dot = TYPE_DOT[it.type] || '#999';
+          return `
+            <div style="background:#fff;border:1px solid var(--hx-line);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color 0.12s;" data-id="${it.id}" class="hx-hist-item">
+              <span style="width:8px;height:8px;border-radius:50%;background:${dot};flex-shrink:0;"></span>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:13px;font-weight:600;color:var(--hx-text);margin-bottom:2px;">${TYPE_LABEL[it.type] || it.type}</div>
+                <div style="font-size:12px;color:var(--hx-text-mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${HXAI.esc(it.brief)}</div>
+              </div>
+              <div style="font-family:var(--hx-mono);font-size:11px;color:var(--hx-text-mid);flex-shrink:0;">${HXAI.timeAgo(it.createdAt)}</div>
+              <button class="hxai-copy" data-copy="${it.id}" style="flex-shrink:0;">Copy</button>
+              <button data-del="${it.id}" style="background:transparent;border:0;color:var(--hx-text-mid);cursor:pointer;font-size:14px;padding:0 4px;" title="Delete">×</button>
+            </div>
+          `;
+        }).join('') + '</div>';
+        host.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const it = load().find(x => x.id === b.dataset.copy);
+          if (it) HXAI.copyToClipboard(typeof it.output === 'string' ? it.output : JSON.stringify(it.output, null, 2), e.target);
+        }));
+        host.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', (e) => {
+          e.stopPropagation();
+          remove(b.dataset.del);
+        }));
+      }
+
+      // Expose adder for the 3 generators to call when they finish
+      window.HX_MARKETING_HISTORY = { add, render };
+      render();
     })();
   </script>
 
