@@ -1,0 +1,127 @@
+/* HelveX shared AI UI — modals, streaming results, chat bubbles.
+   Loaded by every app-* page that runs Claude-powered features. */
+
+/* Modal */
+.hxai-modal-back {
+  position: fixed; inset: 0;
+  background: rgba(15,15,16,0.42); backdrop-filter: blur(4px);
+  display: none; align-items: flex-start; justify-content: center;
+  z-index: 1000; padding: 56px 16px 16px; overflow-y: auto;
+}
+.hxai-modal-back.open { display: flex; }
+.hxai-modal {
+  background: #fff; border-radius: 16px;
+  box-shadow: 0 24px 64px -16px rgba(15,15,16,0.30);
+  max-width: 760px; width: 100%;
+  max-height: calc(100vh - 80px);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.hxai-modal.wide { max-width: 920px; }
+.hxai-modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px; border-bottom: 1px solid var(--hx-line);
+}
+.hxai-modal-head h3 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -0.005em; }
+.hxai-modal-head .close { background: transparent; border: 0; cursor: pointer; padding: 6px; color: var(--hx-text-mid); border-radius: 8px; }
+.hxai-modal-head .close:hover { background: var(--hx-cream); color: var(--hx-text); }
+.hxai-modal-body { padding: 20px 22px; overflow-y: auto; }
+.hxai-modal-foot {
+  padding: 14px 22px; border-top: 1px solid var(--hx-line);
+  background: var(--hx-cream);
+  display: flex; gap: 10px; justify-content: flex-end; align-items: center;
+}
+.hxai-modal-foot .hxai-cost { font-family: var(--hx-mono); font-size: 11px; color: var(--hx-text-mid); margin-right: auto; }
+
+/* Form */
+.hxai-field { display: block; margin-bottom: 14px; }
+.hxai-field label {
+  font-size: 12.5px; font-weight: 600; color: var(--hx-text);
+  display: block; margin-bottom: 6px; letter-spacing: -0.005em;
+}
+.hxai-field label .hxai-hint { color: var(--hx-text-mid); font-weight: 400; margin-left: 4px; }
+.hxai-field textarea,
+.hxai-field input,
+.hxai-field select {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--hx-line); border-radius: 10px;
+  font: inherit; font-size: 13.5px;
+  background: #fff; color: var(--hx-text);
+  outline: none; transition: border-color 0.12s, box-shadow 0.12s;
+}
+.hxai-field textarea:focus,
+.hxai-field input:focus,
+.hxai-field select:focus {
+  border-color: var(--hx-yellow-deep);
+  box-shadow: 0 0 0 3px rgba(252,211,77,0.18);
+}
+.hxai-field textarea { min-height: 100px; resize: vertical; line-height: 1.55; }
+.hxai-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { .hxai-field-row { grid-template-columns: 1fr; } }
+
+/* Status */
+.hxai-status { font-size: 12.5px; color: var(--hx-text-mid); display: flex; align-items: center; gap: 8px; padding: 12px 0; }
+.hxai-status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--hx-yellow-deep); animation: hxai-pulse 1.1s ease-in-out infinite; }
+@keyframes hxai-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+.hxai-status.error { color: #dc2626; }
+.hxai-status.error .dot { background: #dc2626; animation: none; }
+
+/* Result cards */
+.hxai-results { display: flex; flex-direction: column; gap: 14px; }
+.hxai-card { border: 1px solid var(--hx-line); border-radius: 12px; padding: 14px 16px; background: #fff; }
+.hxai-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.hxai-tag { font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; color: var(--hx-yellow-deep); text-transform: uppercase; letter-spacing: 0.08em; background: rgba(252,211,77,0.15); padding: 3px 8px; border-radius: 6px; }
+.hxai-card-title { font-weight: 600; font-size: 14.5px; color: var(--hx-text); margin: 4px 0; }
+.hxai-card-sub { font-size: 12.5px; color: var(--hx-text-mid); }
+.hxai-card-body { font-size: 13.5px; color: var(--hx-text); white-space: pre-wrap; line-height: 1.55; padding: 10px 12px; background: var(--hx-cream); border-radius: 8px; border-left: 3px solid var(--hx-yellow-deep); margin-top: 8px; }
+.hxai-card-cta { display: inline-block; margin-top: 10px; padding: 6px 14px; background: var(--hx-text); color: #fff; font-size: 12px; font-weight: 600; border-radius: 6px; letter-spacing: 0.02em; }
+.hxai-card-meta { font-size: 11.5px; color: var(--hx-text-mid); margin-top: 6px; }
+.hxai-copy { font-size: 11.5px; color: var(--hx-text-mid); background: transparent; border: 1px solid var(--hx-line); padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: all 0.12s; }
+.hxai-copy:hover { color: var(--hx-text); border-color: var(--hx-text); }
+.hxai-copy.copied { color: #22c55e; border-color: #22c55e; }
+
+/* Chip */
+.hxai-chip { display: inline-block; font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.06em; text-transform: uppercase; }
+.hxai-chip-green { background: rgba(34,197,94,0.12); color: #15803d; }
+.hxai-chip-yellow { background: rgba(252,211,77,0.18); color: #a16207; }
+.hxai-chip-red { background: rgba(220,38,38,0.10); color: #b91c1c; }
+.hxai-chip-blue { background: rgba(59,130,246,0.12); color: #1d4ed8; }
+.hxai-chip-gray { background: rgba(15,15,16,0.06); color: var(--hx-text-mid); }
+
+/* Chat (Business Assistant) */
+.hxai-chat { display: flex; flex-direction: column; height: 100%; min-height: 520px; }
+.hxai-chat-scroll { flex: 1; overflow-y: auto; padding: 8px 4px 14px; display: flex; flex-direction: column; gap: 14px; }
+.hxai-msg { display: flex; gap: 10px; max-width: 100%; }
+.hxai-msg.user { justify-content: flex-end; }
+.hxai-msg-bubble {
+  padding: 10px 14px; border-radius: 12px;
+  font-size: 13.5px; line-height: 1.55;
+  max-width: 84%; white-space: pre-wrap; word-wrap: break-word;
+}
+.hxai-msg.user .hxai-msg-bubble { background: var(--hx-text); color: #fff; border-bottom-right-radius: 4px; }
+.hxai-msg.assistant .hxai-msg-bubble { background: var(--hx-cream); color: var(--hx-text); border-bottom-left-radius: 4px; }
+.hxai-msg-avatar {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(252,211,77,0.18); color: var(--hx-yellow-deep);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-family: var(--hx-mono); font-weight: 700; font-size: 11px;
+}
+.hxai-msg.user .hxai-msg-avatar { display: none; }
+.hxai-chat-input-row { display: flex; gap: 8px; padding-top: 14px; border-top: 1px solid var(--hx-line); }
+.hxai-chat-input-row textarea {
+  flex: 1; min-height: 44px; max-height: 160px;
+  padding: 12px 14px; border: 1px solid var(--hx-line); border-radius: 12px;
+  font: inherit; font-size: 13.5px; resize: vertical; line-height: 1.5;
+}
+.hxai-chat-input-row textarea:focus { outline: none; border-color: var(--hx-yellow-deep); box-shadow: 0 0 0 3px rgba(252,211,77,0.18); }
+.hxai-chat-send {
+  padding: 0 18px; background: var(--hx-text); color: #fff;
+  border: 0; border-radius: 12px; font-weight: 600; font-size: 13px; cursor: pointer;
+  transition: background 0.12s;
+}
+.hxai-chat-send:hover:not(:disabled) { background: #000; }
+.hxai-chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+.hxai-typing { display: flex; gap: 4px; padding: 8px 0; }
+.hxai-typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--hx-text-mid); animation: hxai-typing 1.4s ease-in-out infinite; }
+.hxai-typing span:nth-child(2) { animation-delay: 0.15s; }
+.hxai-typing span:nth-child(3) { animation-delay: 0.30s; }
+@keyframes hxai-typing { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }

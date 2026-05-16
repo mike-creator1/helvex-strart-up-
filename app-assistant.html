@@ -4,34 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Business Assistant — HelveX</title>
-  <meta name="description" content="HelveX Business Assistant — plans, contracts, invoices, pitch decks, multilingual drafts." />
+  <meta name="description" content="HelveX Business Assistant — live AI chat for plans, contracts, invoices, pitch decks, multilingual drafts." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <link rel="stylesheet" href="/platform-ai.css" />
   <style>
-    .hx-doc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
-    @media (max-width: 900px) { .hx-doc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 560px) { .hx-doc-grid { grid-template-columns: 1fr; } }
-    .hx-doc { background: white; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 18px; cursor: pointer; transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s; display: flex; flex-direction: column; gap: 10px; text-align: left; opacity: 0.85; }
-    .hx-doc:hover { border-color: rgba(220, 38, 38, 0.4); transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(15,15,16,0.12); opacity: 1; }
-    .hx-doc-icon { width: 38px; height: 38px; border-radius: 10px; background: rgba(220, 38, 38, 0.08); display: flex; align-items: center; justify-content: center; color: var(--hx-red); }
-    .hx-doc-icon svg { width: 19px; height: 19px; }
-    .hx-doc h3 { font-size: 14.5px; font-weight: 600; color: var(--hx-text); margin: 0; letter-spacing: -0.005em; }
-    .hx-doc p  { font-size: 12.5px; color: var(--hx-text-mid); margin: 0; line-height: 1.5; }
-    .hx-doc-meta { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 8px; }
-    .hx-doc-tag { font-family: var(--hx-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hx-text-mid); }
-    .hx-doc-cta { font-size: 11.5px; font-weight: 600; color: var(--hx-red); }
-    .hx-empty-state { background: white; border: 1px dashed var(--hx-line); border-radius: var(--hx-r); padding: 48px 24px; text-align: center; margin-top: 14px; }
-    .hx-empty-state .hx-empty-icon { width: 44px; height: 44px; border-radius: 11px; background: var(--hx-cream); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px; }
-    .hx-empty-state .hx-empty-icon svg { width: 22px; height: 22px; color: var(--hx-text-mid); }
-    .hx-empty-state h3 { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
-    .hx-empty-state p { font-size: 13.5px; color: var(--hx-text-mid); margin: 0 0 18px; max-width: 420px; margin-inline: auto; line-height: 1.5; }
-    .hx-beta-strip { background: linear-gradient(90deg, rgba(252,211,77,0.15), rgba(252,211,77,0.04)); border: 1px solid rgba(252,211,77,0.45); border-radius: var(--hx-r); padding: 12px 16px; display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
-    .hx-beta-strip svg { width: 18px; height: 18px; color: var(--hx-yellow-deep); flex-shrink: 0; }
-    .hx-beta-strip p { font-size: 13px; color: var(--hx-text); margin: 0; line-height: 1.5; flex: 1; }
-    .hx-beta-strip strong { font-weight: 600; }
+    .hx-chat-panel { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 18px 20px; margin-top: 14px; display: flex; flex-direction: column; min-height: 560px; height: calc(100vh - 320px); }
+    .hx-chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--hx-text-mid); }
+    .hx-chat-empty h3 { font-size: 18px; color: var(--hx-text); margin: 0 0 6px; }
+    .hx-chat-empty p { font-size: 13.5px; margin: 0; max-width: 380px; line-height: 1.5; }
+    .hx-chat-empty .hx-empty-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--hx-cream); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .hx-chat-empty svg { width: 24px; height: 24px; color: var(--hx-yellow-deep); }
+    .hx-quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; width: 100%; max-width: 580px; }
+    @media (max-width: 700px) { .hx-quick-grid { grid-template-columns: 1fr; } }
+    .hx-quick { padding: 12px 14px; background: var(--hx-cream); border: 1px solid var(--hx-line); border-radius: 10px; text-align: left; cursor: pointer; transition: border-color 0.12s, transform 0.12s; font-size: 12.5px; color: var(--hx-text); }
+    .hx-quick:hover { border-color: var(--hx-yellow-deep); transform: translateY(-1px); }
+    .hx-quick strong { display: block; font-size: 12px; font-weight: 600; margin-bottom: 2px; color: var(--hx-text-mid); text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--hx-mono); }
   </style>
 </head>
 <body data-active="app-assistant">
@@ -45,51 +36,48 @@
         <div class="hx-page-head">
           <div>
             <h1>Business assistant.</h1>
-            <p class="sub">Plans, contracts, invoices, pitch decks — drafted from a one-line brief, in your tone, in any language.</p>
+            <p class="sub">Live AI co-pilot. Drafts, plans, analysis, translations — ask anything, get a finished answer.</p>
           </div>
           <div class="hx-page-actions">
             <a href="/business-assistant" class="hx-btn hx-btn-secondary">About assistant</a>
-            <button class="hx-btn hx-btn-primary" disabled title="Coming soon">+ New draft</button>
+            <button class="hx-btn hx-btn-primary" id="hx-new-chat">+ New chat</button>
           </div>
-        </div>
-
-        <div class="hx-beta-strip" role="note">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <p><strong>Business assistant — under construction.</strong> The generator surface and document-type catalogue are ready. AI generation, business-profile binding, and Word/PDF export are the next milestones. Until then, no drafts are produced.</p>
         </div>
 
         <div class="hx-grid hx-grid-4">
-          <div class="hx-stat"><p class="hx-stat-label">Drafts created</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">No drafts yet</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Sent</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">Contracts &amp; invoices</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Business profile</p><p class="hx-stat-value hx-mono">—</p><p class="hx-stat-meta">Set on first draft</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Languages</p><p class="hx-stat-value hx-mono">—</p><p class="hx-stat-meta">Pick on first run</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Model</p><p class="hx-stat-value hx-mono">Sonnet 4.5</p><p class="hx-stat-meta">Anthropic · streaming</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Languages</p><p class="hx-stat-value hx-mono">Auto</p><p class="hx-stat-meta">Replies in your language</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Cost / turn</p><p class="hx-stat-value hx-mono">~$0.01</p><p class="hx-stat-meta">Roughly per question</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Status</p><p class="hx-stat-value hx-mono" style="color:#15803d;">LIVE</p><p class="hx-stat-meta">Production ready</p></div>
         </div>
 
-        <div class="hx-section-head">
-          <h2>Generators</h2>
-          <span class="meta">Pick a document type · brief in one paragraph · review the draft</span>
-        </div>
-
-        <div class="hx-doc-grid">
-          <button class="hx-doc" disabled><span class="hx-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><h3>Business plan</h3><p>Executive summary, market, model, financials, milestones. Investor-ready.</p><div class="hx-doc-meta"><span class="hx-doc-tag">Plan</span><span class="hx-doc-cta">Soon →</span></div></button>
-          <button class="hx-doc" disabled><span class="hx-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></span><h3>Contract / NDA</h3><p>NDAs, SOWs, terms of service. Jurisdiction-aware templates.</p><div class="hx-doc-meta"><span class="hx-doc-tag">Legal</span><span class="hx-doc-cta">Soon →</span></div></button>
-          <button class="hx-doc" disabled><span class="hx-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span><h3>Invoice</h3><p>Branded PDF, VAT settings, payment link, sent + tracked.</p><div class="hx-doc-meta"><span class="hx-doc-tag">Billing</span><span class="hx-doc-cta">Soon →</span></div></button>
-          <button class="hx-doc" disabled><span class="hx-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><h3>Pitch deck outline</h3><p>Slide-by-slide structure with the right narrative + read-aloud script.</p><div class="hx-doc-meta"><span class="hx-doc-tag">Pitch</span><span class="hx-doc-cta">Soon →</span></div></button>
-          <button class="hx-doc" disabled><span class="hx-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><h3>Letter / email</h3><p>Cold outreach, refusals, payment chasers, partnerships.</p><div class="hx-doc-meta"><span class="hx-doc-tag">Comms</span><span class="hx-doc-cta">Soon →</span></div></button>
-          <button class="hx-doc" disabled><span class="hx-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></span><h3>Translate &amp; localise</h3><p>Any draft → any language. Native quality, tone-matched.</p><div class="hx-doc-meta"><span class="hx-doc-tag">Multi</span><span class="hx-doc-cta">Soon →</span></div></button>
+        <div class="hx-chat-panel hxai-chat" id="hx-chat">
+          <div class="hxai-chat-scroll" id="hx-chat-scroll">
+            <div class="hx-chat-empty" id="hx-chat-empty">
+              <div class="hx-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+              </div>
+              <h3>What do you need help with?</h3>
+              <p>Draft an email, write a contract, plan a launch, translate a document, analyse a deal — anything goes. Type below or pick a starter.</p>
+              <div class="hx-quick-grid">
+                <button class="hx-quick" data-prompt="Γράψε μου ένα cold email για επιχείρηση που πουλάει consulting στην Ελβετία και θέλει να προσεγγίσει tech startups με 11-50 υπαλλήλους."><strong>Cold email</strong>Greek consulting → Swiss tech startups</button>
+                <button class="hx-quick" data-prompt="Draft a 1-page non-disclosure agreement (NDA) for a SaaS company sharing roadmap details with a potential enterprise customer. Mutual NDA, 2-year term, Swiss law."><strong>Mutual NDA</strong>1-page, 2-year, Swiss law</button>
+                <button class="hx-quick" data-prompt="I'm launching a new pricing tier next Monday (€49/mo, unlimited workspaces). Plan a 7-day launch sequence: announcement, social, email, webinar invite. Give me the calendar."><strong>Launch plan</strong>7-day pricing launch sequence</button>
+                <button class="hx-quick" data-prompt="Πάρε αυτό το ελληνικό κείμενο και μετάφρασέ το σε επαγγελματικά Γερμανικά για χρήση σε contract: «Ο πελάτης δεσμεύεται να καταβάλει το ποσό εντός 30 ημερών από την έκδοση του τιμολογίου. Σε περίπτωση καθυστέρησης, ο τόκος υπερημερίας ορίζεται στο 5% ετησίως.»"><strong>Translate</strong>Greek legal → German</button>
+                <button class="hx-quick" data-prompt="A customer just emailed asking for a 30% discount on annual plan, saying they're talking to a competitor. We have margin to give 15% max. Draft my reply — keep them, don't grovel."><strong>Negotiation reply</strong>Discount ask, keep margin</button>
+                <button class="hx-quick" data-prompt="Give me 5 thoughtful questions to ask a SaaS founder in a discovery call to understand if they're a good fit for our growth marketing agency."><strong>Discovery questions</strong>For sales / qualification call</button>
+              </div>
+            </div>
+          </div>
+          <div class="hxai-chat-input-row">
+            <textarea id="hx-chat-input" placeholder="Type your question or instruction… (Enter to send, Shift+Enter for new line)"></textarea>
+            <button class="hxai-chat-send" id="hx-chat-send">Send</button>
+          </div>
         </div>
 
         <div class="hx-section-head" style="margin-top:24px;">
-          <h2>Recent drafts</h2>
-          <span class="meta">Your generated documents will appear here</span>
-        </div>
-
-        <div class="hx-empty-state">
-          <div class="hx-empty-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          </div>
-          <h3>No drafts yet</h3>
-          <p>Once the assistant goes live, every plan, contract, invoice, and pitch you generate will land here — editable, exportable, persistent.</p>
+          <h2>Coming soon</h2>
+          <span class="meta">Persistent threads · file uploads · CRM/calendar tool-use · export to PDF/DOCX</span>
         </div>
 
       </main>
@@ -97,5 +85,98 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script src="/platform-ai.js"></script>
+  <script>
+    (function () {
+      const scrollEl = document.getElementById('hx-chat-scroll');
+      const emptyEl  = document.getElementById('hx-chat-empty');
+      const input    = document.getElementById('hx-chat-input');
+      const sendBtn  = document.getElementById('hx-chat-send');
+      const newBtn   = document.getElementById('hx-new-chat');
+
+      const history = []; // {role, content}
+
+      function appendBubble(role, text = '') {
+        if (emptyEl && emptyEl.parentNode) emptyEl.remove();
+        const wrap = document.createElement('div');
+        wrap.className = `hxai-msg ${role}`;
+        const inner = role === 'user'
+          ? `<div class="hxai-msg-bubble">${HXAI.esc(text)}</div>`
+          : `<div class="hxai-msg-avatar">HX</div><div class="hxai-msg-bubble"><span class="hxai-msg-text">${HXAI.esc(text)}</span></div>`;
+        wrap.innerHTML = inner;
+        scrollEl.appendChild(wrap);
+        scrollEl.scrollTop = scrollEl.scrollHeight;
+        return wrap;
+      }
+
+      function appendTyping() {
+        const wrap = document.createElement('div');
+        wrap.className = 'hxai-msg assistant';
+        wrap.innerHTML = `<div class="hxai-msg-avatar">HX</div><div class="hxai-msg-bubble"><div class="hxai-typing"><span></span><span></span><span></span></div></div>`;
+        scrollEl.appendChild(wrap);
+        scrollEl.scrollTop = scrollEl.scrollHeight;
+        return wrap;
+      }
+
+      async function send(messageText) {
+        const text = (messageText || input.value).trim();
+        if (!text) return;
+        appendBubble('user', text);
+        history.push({ role: 'user', content: text });
+        input.value = '';
+        input.style.height = 'auto';
+        sendBtn.disabled = true;
+
+        const typing = appendTyping();
+        let assistantBubble = null;
+        let assembled = '';
+
+        try {
+          await HXAI.runStream('/api/assistant-chat', {
+            message: text,
+            history: history.slice(0, -1),
+          }, {
+            onChunk: (delta) => {
+              if (!assistantBubble) {
+                typing.remove();
+                assistantBubble = appendBubble('assistant', '');
+              }
+              assembled += delta;
+              const target = assistantBubble.querySelector('.hxai-msg-text');
+              target.textContent = assembled;
+              scrollEl.scrollTop = scrollEl.scrollHeight;
+            },
+            onDone: (full) => {
+              history.push({ role: 'assistant', content: full });
+            },
+          });
+        } catch (err) {
+          typing.remove();
+          appendBubble('assistant', `⚠️ ${err.message || err}`);
+        } finally {
+          sendBtn.disabled = false;
+          input.focus();
+        }
+      }
+
+      sendBtn.addEventListener('click', () => send());
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+      });
+      input.addEventListener('input', () => {
+        input.style.height = 'auto';
+        input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+      });
+
+      document.querySelectorAll('.hx-quick').forEach((btn) => {
+        btn.addEventListener('click', () => send(btn.getAttribute('data-prompt')));
+      });
+
+      newBtn.addEventListener('click', () => {
+        if (history.length && !confirm('Start a new chat? Current conversation will be cleared.')) return;
+        location.reload();
+      });
+    })();
+  </script>
 </body>
 </html>

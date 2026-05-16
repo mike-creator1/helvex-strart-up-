@@ -117,8 +117,8 @@
         </div>
 
         <div class="hx-gen-grid">
-          <button class="hx-gen" disabled><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></span><h3>Social posts</h3><p>Instagram · LinkedIn · X · Facebook. Sized, hashtagged, on-brand.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Posts</span><span class="hx-gen-cta">Soon →</span></div></button>
-          <button class="hx-gen" disabled><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg></span><h3>Ad copy</h3><p>Meta · Google · TikTok. Headlines, body, CTAs, A/B variants.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Ads</span><span class="hx-gen-cta">Soon →</span></div></button>
+          <button class="hx-gen hx-gen-live" id="hx-social-gen-btn"><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></span><h3>Social posts</h3><p>Instagram · LinkedIn · X · Facebook. Sized, hashtagged, on-brand.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Posts · LIVE</span><span class="hx-gen-cta">Open →</span></div></button>
+          <button class="hx-gen hx-gen-live" id="hx-ads-gen-btn"><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg></span><h3>Ad copy</h3><p>Meta · Google · TikTok. Headlines, body, CTAs, A/B variants.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Ads · LIVE</span><span class="hx-gen-cta">Open →</span></div></button>
           <button class="hx-gen" disabled><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span><h3>TikTok &amp; Reels scripts</h3><p>Hook, beats, captions, on-screen text. Short-form rhythm.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Video</span><span class="hx-gen-cta">Soon →</span></div></button>
           <button class="hx-gen" disabled><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><h3>SEO articles</h3><p>Topic → outline → article. Headings, links, meta description.</p><div class="hx-gen-meta"><span class="hx-gen-tag">SEO</span><span class="hx-gen-cta">Soon →</span></div></button>
           <button class="hx-gen hx-gen-live" id="hx-email-gen-btn"><span class="hx-gen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><h3>Email campaigns</h3><p>Newsletters, drips, broadcasts. Subjects that earn the open.</p><div class="hx-gen-meta"><span class="hx-gen-tag">Email · LIVE</span><span class="hx-gen-cta">Open →</span></div></button>
@@ -139,6 +139,118 @@
         </div>
 
       </main>
+    </div>
+  </div>
+
+  <!-- Social Posts Generator Modal -->
+  <div class="hx-modal-back" id="hx-social-modal" role="dialog" aria-modal="true">
+    <div class="hx-modal">
+      <div class="hx-modal-head">
+        <h3>Social posts generator</h3>
+        <button class="close" id="hx-social-modal-close" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="hx-modal-body">
+        <div class="hx-field">
+          <label for="hx-social-brief">What's the post about?</label>
+          <textarea id="hx-social-brief" required placeholder="e.g. Behind-the-scenes from our team retreat in Crete — 5 founders, 3 days, 1 product roadmap reset. Want to share what we learned about async planning."></textarea>
+        </div>
+        <div class="hx-field-row">
+          <div class="hx-field">
+            <label for="hx-social-tone">Tone</label>
+            <select id="hx-social-tone">
+              <option>Professional but warm</option>
+              <option>Friendly and casual</option>
+              <option>Confident and direct</option>
+              <option>Witty and playful</option>
+              <option>Premium / luxury</option>
+            </select>
+          </div>
+          <div class="hx-field">
+            <label for="hx-social-language">Language</label>
+            <select id="hx-social-language">
+              <option>English</option>
+              <option>Greek (Ελληνικά)</option>
+              <option>German (Deutsch)</option>
+              <option>French (Français)</option>
+              <option>Italian (Italiano)</option>
+              <option>Spanish (Español)</option>
+            </select>
+          </div>
+        </div>
+        <div class="hx-field">
+          <label>Platforms <span style="color:var(--hx-text-mid);font-weight:400;">(at least one)</span></label>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;padding-top:4px;">
+            <label style="display:flex;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" class="hx-social-plat" value="instagram" checked> Instagram</label>
+            <label style="display:flex;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" class="hx-social-plat" value="linkedin" checked> LinkedIn</label>
+            <label style="display:flex;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" class="hx-social-plat" value="x" checked> X (Twitter)</label>
+            <label style="display:flex;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" class="hx-social-plat" value="facebook"> Facebook</label>
+          </div>
+        </div>
+        <div id="hx-social-status"></div>
+        <div id="hx-social-result" class="hxai-results" style="margin-top:8px;"></div>
+      </div>
+      <div class="hx-modal-foot">
+        <span class="hx-cost" id="hx-social-cost-hint">~$0.005 per generation · Claude Sonnet 4.5</span>
+        <button class="hx-btn hx-btn-secondary" id="hx-social-cancel">Close</button>
+        <button class="hx-btn hx-btn-primary" id="hx-social-submit" type="button">Generate posts</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ads Generator Modal -->
+  <div class="hx-modal-back" id="hx-ads-modal" role="dialog" aria-modal="true">
+    <div class="hx-modal">
+      <div class="hx-modal-head">
+        <h3>Ad copy generator</h3>
+        <button class="close" id="hx-ads-modal-close" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="hx-modal-body">
+        <div class="hx-field">
+          <label for="hx-ads-brief">What are you advertising?</label>
+          <textarea id="hx-ads-brief" required placeholder="e.g. AI tool that auto-replies to customer support emails for Shopify stores. Saves 8+ hrs/week. €29/mo starter. Free 14-day trial, no card."></textarea>
+        </div>
+        <div class="hx-field-row">
+          <div class="hx-field">
+            <label for="hx-ads-language">Language</label>
+            <select id="hx-ads-language">
+              <option>English</option>
+              <option>Greek (Ελληνικά)</option>
+              <option>German (Deutsch)</option>
+              <option>French (Français)</option>
+              <option>Italian (Italiano)</option>
+              <option>Spanish (Español)</option>
+            </select>
+          </div>
+          <div class="hx-field">
+            <label for="hx-ads-variants">Variants per platform</label>
+            <select id="hx-ads-variants">
+              <option value="3">3 (default)</option>
+              <option value="2">2</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+        </div>
+        <div class="hx-field">
+          <label>Platforms</label>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;padding-top:4px;">
+            <label style="display:flex;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" class="hx-ads-plat" value="meta" checked> Meta (Facebook + Instagram)</label>
+            <label style="display:flex;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" class="hx-ads-plat" value="google" checked> Google Search</label>
+            <label style="display:flex;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" class="hx-ads-plat" value="tiktok"> TikTok</label>
+          </div>
+        </div>
+        <div id="hx-ads-status"></div>
+        <div id="hx-ads-result" class="hxai-results" style="margin-top:8px;"></div>
+      </div>
+      <div class="hx-modal-foot">
+        <span class="hx-cost">~$0.01 per generation · Claude Sonnet 4.5</span>
+        <button class="hx-btn hx-btn-secondary" id="hx-ads-cancel">Close</button>
+        <button class="hx-btn hx-btn-primary" id="hx-ads-submit" type="button">Generate ads</button>
+      </div>
     </div>
   </div>
 
@@ -379,6 +491,183 @@
           setStatus(`Generation failed: ${err.message || err}. Try again.`, true);
         } finally {
           submit.disabled = false; submit.textContent = 'Generate variants';
+        }
+      });
+    })();
+  </script>
+
+  <!-- Shared AI helper (modal handling, SSE parsing, JSON extraction) -->
+  <link rel="stylesheet" href="/platform-ai.css" />
+  <script src="/platform-ai.js"></script>
+  <script>
+    // ============ SOCIAL POSTS GENERATOR ============
+    (function () {
+      const btn      = document.getElementById('hx-social-gen-btn');
+      const modal    = document.getElementById('hx-social-modal');
+      const closeBtn = document.getElementById('hx-social-modal-close');
+      const cancelBtn= document.getElementById('hx-social-cancel');
+      const submit   = document.getElementById('hx-social-submit');
+      const statusEl = document.getElementById('hx-social-status');
+      const resultEl = document.getElementById('hx-social-result');
+
+      function open() { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
+      function close(){ modal.classList.remove('open'); document.body.style.overflow = ''; }
+      btn.addEventListener('click', open);
+      closeBtn.addEventListener('click', close);
+      cancelBtn.addEventListener('click', close);
+      modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+
+      function setStatus(text, err = false) {
+        statusEl.innerHTML = text ? `<div class="hxai-status${err ? ' error' : ''}"><span class="dot"></span><span>${text}</span></div>` : '';
+      }
+
+      const platIcons = { instagram: '📸', linkedin: '💼', x: '🐦', facebook: '👍' };
+      function render(posts) {
+        resultEl.innerHTML = posts.map((p, i) => {
+          const text = p.text || '';
+          const tags = (p.hashtags || []).map(h => h.startsWith('#') ? h : '#' + h).join(' ');
+          const full = text + (tags ? '\n\n' + tags : '');
+          return `
+            <div class="hxai-card">
+              <div class="hxai-card-head">
+                <span class="hxai-tag">${platIcons[p.platform] || ''} ${HXAI.esc(p.platform || '').toUpperCase()}</span>
+                <button class="hxai-copy" data-copy-${i}>Copy</button>
+              </div>
+              <div class="hxai-card-body">${HXAI.esc(text)}${tags ? `\n\n${HXAI.esc(tags)}` : ''}</div>
+              <div class="hxai-card-meta">${(p.chars || full.length)} chars</div>
+            </div>
+          `;
+        }).join('');
+        resultEl.querySelectorAll('[class="hxai-copy"]').forEach((b, idx) => {
+          b.addEventListener('click', (e) => {
+            const post = posts[idx];
+            const tags = (post.hashtags || []).map(h => h.startsWith('#') ? h : '#' + h).join(' ');
+            HXAI.copyToClipboard(post.text + (tags ? '\n\n' + tags : ''), e.target);
+          });
+        });
+      }
+
+      submit.addEventListener('click', async () => {
+        const brief = document.getElementById('hx-social-brief').value.trim();
+        if (brief.length < 10) { setStatus('Brief too short.', true); return; }
+        const platforms = Array.from(document.querySelectorAll('.hx-social-plat:checked')).map(c => c.value);
+        if (!platforms.length) { setStatus('Pick at least one platform.', true); return; }
+
+        submit.disabled = true; submit.textContent = 'Generating…';
+        resultEl.innerHTML = ''; setStatus('Calling Claude…');
+
+        try {
+          const raw = await HXAI.runStream('/api/generate-social', {
+            brief,
+            tone: document.getElementById('hx-social-tone').value,
+            language: document.getElementById('hx-social-language').value,
+            platforms,
+          }, { onChunk: (_, total) => setStatus(`Generating… (${total} chars)`) });
+          const parsed = HXAI.extractJson(raw);
+          if (!parsed.posts || !Array.isArray(parsed.posts)) throw new Error('No posts in response');
+          render(parsed.posts);
+          setStatus('');
+        } catch (err) {
+          setStatus(`Failed: ${err.message || err}`, true);
+        } finally {
+          submit.disabled = false; submit.textContent = 'Generate posts';
+        }
+      });
+    })();
+
+    // ============ ADS GENERATOR ============
+    (function () {
+      const btn      = document.getElementById('hx-ads-gen-btn');
+      const modal    = document.getElementById('hx-ads-modal');
+      const closeBtn = document.getElementById('hx-ads-modal-close');
+      const cancelBtn= document.getElementById('hx-ads-cancel');
+      const submit   = document.getElementById('hx-ads-submit');
+      const statusEl = document.getElementById('hx-ads-status');
+      const resultEl = document.getElementById('hx-ads-result');
+
+      function open() { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
+      function close(){ modal.classList.remove('open'); document.body.style.overflow = ''; }
+      btn.addEventListener('click', open);
+      closeBtn.addEventListener('click', close);
+      cancelBtn.addEventListener('click', close);
+      modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+
+      function setStatus(text, err = false) {
+        statusEl.innerHTML = text ? `<div class="hxai-status${err ? ' error' : ''}"><span class="dot"></span><span>${text}</span></div>` : '';
+      }
+
+      function renderAds(ads) {
+        resultEl.innerHTML = ads.map(group => {
+          const variantsHtml = (group.variants || []).map((v, i) => {
+            let content = '';
+            if (group.platform === 'meta') {
+              content = `
+                <div class="hxai-card-sub"><strong>Primary text:</strong> ${HXAI.esc(v.primary_text || '')} <em>(${(v.primary_text||'').length} chars)</em></div>
+                <div class="hxai-card-sub"><strong>Headline:</strong> ${HXAI.esc(v.headline || '')} <em>(${(v.headline||'').length}/27)</em></div>
+                <div class="hxai-card-sub"><strong>Description:</strong> ${HXAI.esc(v.description || '')} <em>(${(v.description||'').length}/27)</em></div>
+                ${v.cta ? `<div class="hxai-card-sub"><strong>CTA:</strong> ${HXAI.esc(v.cta)}</div>` : ''}
+              `;
+            } else if (group.platform === 'google') {
+              content = `
+                <div class="hxai-card-sub"><strong>Headlines (×3, max 30):</strong></div>
+                <ul style="margin:4px 0 8px;padding-left:20px;font-size:13px;">
+                  ${(v.headlines || []).map(h => `<li>${HXAI.esc(h)} <em style="color:var(--hx-text-mid);">(${(h||'').length}/30)</em></li>`).join('')}
+                </ul>
+                <div class="hxai-card-sub"><strong>Descriptions (×2, max 90):</strong></div>
+                <ul style="margin:4px 0 0;padding-left:20px;font-size:13px;">
+                  ${(v.descriptions || []).map(d => `<li>${HXAI.esc(d)} <em style="color:var(--hx-text-mid);">(${(d||'').length}/90)</em></li>`).join('')}
+                </ul>
+              `;
+            } else if (group.platform === 'tiktok') {
+              content = `
+                <div class="hxai-card-sub"><strong>Hook (text-on-screen 1s):</strong> ${HXAI.esc(v.hook || '')} <em>(${(v.hook||'').length}/30)</em></div>
+                <div class="hxai-card-sub"><strong>Caption:</strong> ${HXAI.esc(v.caption || '')} <em>(${(v.caption||'').length}/80)</em></div>
+              `;
+            }
+            return `
+              <div style="border-top:1px solid var(--hx-line);padding-top:10px;margin-top:10px;">
+                <div style="font-size:11.5px;color:var(--hx-yellow-deep);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">Variant ${i+1} · ${HXAI.esc(v.angle || '')}</div>
+                ${content}
+              </div>
+            `;
+          }).join('');
+          return `
+            <div class="hxai-card">
+              <div class="hxai-card-head">
+                <span class="hxai-tag">${HXAI.esc((group.platform || '').toUpperCase())}</span>
+              </div>
+              ${variantsHtml}
+            </div>
+          `;
+        }).join('');
+      }
+
+      submit.addEventListener('click', async () => {
+        const brief = document.getElementById('hx-ads-brief').value.trim();
+        if (brief.length < 10) { setStatus('Brief too short.', true); return; }
+        const platforms = Array.from(document.querySelectorAll('.hx-ads-plat:checked')).map(c => c.value);
+        if (!platforms.length) { setStatus('Pick at least one platform.', true); return; }
+
+        submit.disabled = true; submit.textContent = 'Generating…';
+        resultEl.innerHTML = ''; setStatus('Calling Claude…');
+
+        try {
+          const raw = await HXAI.runStream('/api/generate-ads', {
+            brief,
+            language: document.getElementById('hx-ads-language').value,
+            platforms,
+            variantsPerPlatform: parseInt(document.getElementById('hx-ads-variants').value, 10) || 3,
+          }, { onChunk: (_, total) => setStatus(`Generating… (${total} chars)`) });
+          const parsed = HXAI.extractJson(raw);
+          if (!parsed.ads || !Array.isArray(parsed.ads)) throw new Error('No ads in response');
+          renderAds(parsed.ads);
+          setStatus('');
+        } catch (err) {
+          setStatus(`Failed: ${err.message || err}`, true);
+        } finally {
+          submit.disabled = false; submit.textContent = 'Generate ads';
         }
       });
     })();

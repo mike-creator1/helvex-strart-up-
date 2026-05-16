@@ -4,32 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Automation — HelveX</title>
-  <meta name="description" content="HelveX Automation — drag-and-drop workflows for email, booking, invoicing, onboarding." />
+  <meta name="description" content="HelveX Automation — AI-powered inbox triage, smart replies, and workflow templates." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <link rel="stylesheet" href="/platform-ai.css" />
   <style>
     .hx-templates { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
     @media (max-width: 1100px) { .hx-templates { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 560px)  { .hx-templates { grid-template-columns: 1fr; } }
-    .hx-tpl { background: white; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px; cursor: pointer; transition: border-color 0.14s; opacity: 0.85; }
+    .hx-tpl { background: white; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px; cursor: pointer; transition: border-color 0.14s, transform 0.14s; opacity: 0.85; text-align: left; display: flex; flex-direction: column; gap: 8px; }
     .hx-tpl:hover { border-color: var(--hx-text-mid); opacity: 1; }
-    .hx-tpl-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--hx-cream); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+    .hx-tpl.hx-tpl-live { opacity: 1; border-color: rgba(34,197,94,0.4); }
+    .hx-tpl.hx-tpl-live:hover { border-color: #15803d; transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(15,15,16,0.10); }
+    .hx-tpl-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--hx-cream); display: flex; align-items: center; justify-content: center; }
+    .hx-tpl.hx-tpl-live .hx-tpl-icon { background: rgba(34,197,94,0.12); color: #15803d; }
     .hx-tpl-icon svg { width: 16px; height: 16px; color: var(--hx-text); }
+    .hx-tpl.hx-tpl-live .hx-tpl-icon svg { color: #15803d; }
     .hx-tpl h3 { font-size: 13.5px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.005em; }
     .hx-tpl p  { font-size: 12px; color: var(--hx-text-mid); margin: 0; line-height: 1.45; }
     .hx-tpl-tag { font-family: var(--hx-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: var(--hx-text-mid); text-transform: uppercase; margin-top: 8px; display: inline-block; }
-    .hx-empty-state { background: white; border: 1px dashed var(--hx-line); border-radius: var(--hx-r); padding: 48px 24px; text-align: center; margin-top: 14px; }
-    .hx-empty-state .hx-empty-icon { width: 44px; height: 44px; border-radius: 11px; background: var(--hx-cream); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px; }
-    .hx-empty-state .hx-empty-icon svg { width: 22px; height: 22px; color: var(--hx-text-mid); }
-    .hx-empty-state h3 { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
-    .hx-empty-state p { font-size: 13.5px; color: var(--hx-text-mid); margin: 0 0 18px; max-width: 420px; margin-inline: auto; line-height: 1.5; }
-    .hx-beta-strip { background: linear-gradient(90deg, rgba(252,211,77,0.15), rgba(252,211,77,0.04)); border: 1px solid rgba(252,211,77,0.45); border-radius: var(--hx-r); padding: 12px 16px; display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
-    .hx-beta-strip svg { width: 18px; height: 18px; color: var(--hx-yellow-deep); flex-shrink: 0; }
-    .hx-beta-strip p { font-size: 13px; color: var(--hx-text); margin: 0; line-height: 1.5; flex: 1; }
-    .hx-beta-strip strong { font-weight: 600; }
+    .hx-tpl.hx-tpl-live .hx-tpl-tag { color: #15803d; }
+    .hx-tool-card { background: white; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 22px 24px; margin-top: 14px; }
+    .hx-tool-card h2 { font-size: 18px; font-weight: 600; margin: 0 0 4px; }
+    .hx-tool-card .sub { font-size: 13px; color: var(--hx-text-mid); margin: 0 0 18px; }
   </style>
 </head>
 <body data-active="app-automation">
@@ -43,7 +43,7 @@
         <div class="hx-page-head">
           <div>
             <h1>Automation.</h1>
-            <p class="sub">Workflows that run themselves. Build once, watch the boring repetitive work disappear.</p>
+            <p class="sub">Workflows that run themselves. AI-powered triage, smart replies, automated busywork.</p>
           </div>
           <div class="hx-page-actions">
             <a href="/automation" class="hx-btn hx-btn-secondary">About automation</a>
@@ -51,37 +51,72 @@
           </div>
         </div>
 
-        <div class="hx-beta-strip" role="note">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <p><strong>Automation — under construction.</strong> The workflow surface is ready. The execution engine (triggers, conditions, retries, integrations with Gmail, WhatsApp, Stripe) is the next major milestone. Until then, no workflow runs in production.</p>
-        </div>
-
         <div class="hx-grid hx-grid-4">
-          <div class="hx-stat"><p class="hx-stat-label">Live workflows</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">None active yet</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Runs (30d)</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">—</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Time saved</p><p class="hx-stat-value hx-mono">—</p><p class="hx-stat-meta">Tracked once active</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Errors (30d)</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">Healthy</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Live tools</p><p class="hx-stat-value hx-mono">1</p><p class="hx-stat-meta">Smart inbox triage</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Coming soon</p><p class="hx-stat-value hx-mono">12</p><p class="hx-stat-meta">Builder + templates</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Avg. time saved</p><p class="hx-stat-value hx-mono">~3 min</p><p class="hx-stat-meta">Per email triaged</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Status</p><p class="hx-stat-value hx-mono" style="color:#15803d;">LIVE</p><p class="hx-stat-meta">Triage tool ready</p></div>
         </div>
 
-        <div class="hx-section-head">
-          <h2>Your workflows</h2>
-          <span class="meta">0 workflows · create one to see it here</span>
-        </div>
+        <!-- LIVE: Smart Inbox Triage -->
+        <div class="hx-tool-card">
+          <h2>📥 Smart inbox triage <span class="hxai-chip hxai-chip-green" style="margin-left:6px;">LIVE</span></h2>
+          <p class="sub">Paste any incoming email. Claude classifies intent + urgency + sentiment, then drafts a reply you can approve or send.</p>
 
-        <div class="hx-empty-state">
-          <div class="hx-empty-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6h7M6 8.5v7M18 8.5v7M8.5 18h7"/></svg>
+          <div class="hxai-field">
+            <label for="hx-triage-email">Incoming email <span class="hxai-hint">(paste the full message, sender info optional)</span></label>
+            <textarea id="hx-triage-email" placeholder="From: maria@acme.com&#10;Subject: Quick question about enterprise plan&#10;&#10;Hi,&#10;&#10;Saw your tool on Product Hunt last week. We're a 60-person SaaS company in Berlin and we're evaluating options. A few questions:&#10;&#10;1. Do you offer SSO on the team plan or only enterprise?&#10;2. Is there a way to test for 14 days without entering a card?&#10;3. Can you do a live demo with our team Thursday afternoon CET?&#10;&#10;Thanks,&#10;Maria"></textarea>
           </div>
-          <h3>No workflows yet</h3>
-          <p>Workflows live here once you build one. The builder canvas, trigger catalogue (Gmail, calendar, Stripe, WhatsApp, webhooks), and execution engine are in active development. The integrations land before the first production run.</p>
+
+          <div class="hxai-field-row">
+            <div class="hxai-field">
+              <label for="hx-triage-tone">Reply tone</label>
+              <select id="hx-triage-tone">
+                <option>Professional but warm</option>
+                <option>Friendly and casual</option>
+                <option>Confident and direct</option>
+                <option>Formal</option>
+              </select>
+            </div>
+            <div class="hxai-field">
+              <label for="hx-triage-language">Reply language</label>
+              <select id="hx-triage-language">
+                <option>Same as sender</option>
+                <option>English</option>
+                <option>Greek (Ελληνικά)</option>
+                <option>German (Deutsch)</option>
+                <option>French (Français)</option>
+                <option>Italian (Italiano)</option>
+                <option>Spanish (Español)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="hxai-field">
+            <label for="hx-triage-context">Extra context for the reply <span class="hxai-hint">(optional — pricing, availability, internal info)</span></label>
+            <textarea id="hx-triage-context" placeholder="e.g. Our team plan does NOT include SSO (only Enterprise from €299/mo). We do offer a 14-day trial without card. I'm available Thursday 14:00-16:00 CET."></textarea>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:8px;align-items:center;">
+            <span class="hxai-cost">~$0.01 · Claude Sonnet 4.5</span>
+            <button class="hx-btn hx-btn-primary" id="hx-triage-run">Triage + draft reply</button>
+          </div>
+
+          <div id="hx-triage-status"></div>
+          <div id="hx-triage-result" class="hxai-results" style="margin-top:8px;"></div>
         </div>
 
         <div class="hx-section-head" style="margin-top:24px;">
-          <h2>Templates to start from</h2>
-          <span class="meta">Vetted workflows · available once the engine ships</span>
+          <h2>Templates</h2>
+          <span class="meta">More AI-powered workflows shipping in the next milestones</span>
         </div>
         <div class="hx-templates">
-          <button class="hx-tpl" disabled><span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><h3>Inbox triage</h3><p>Auto-label, auto-reply, route to project. Gmail + Outlook.</p><span class="hx-tpl-tag">Soon</span></button>
+          <button class="hx-tpl hx-tpl-live" id="hx-jump-triage">
+            <span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+            <h3>Smart inbox triage</h3>
+            <p>Classify · urgency · draft reply · approve in one click.</p>
+            <span class="hx-tpl-tag">LIVE NOW ↑</span>
+          </button>
           <button class="hx-tpl" disabled><span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg></span><h3>Appointment flow</h3><p>Book → confirm → remind → recover no-shows.</p><span class="hx-tpl-tag">Soon</span></button>
           <button class="hx-tpl" disabled><span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span><h3>Invoice cadence</h3><p>Send → polite remind → firm remind → escalate.</p><span class="hx-tpl-tag">Soon</span></button>
           <button class="hx-tpl" disabled><span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 11l-3 3-3-3"/></svg></span><h3>Customer onboarding</h3><p>Welcome, intake, kick-off, day 7 + 30 check-ins.</p><span class="hx-tpl-tag">Soon</span></button>
@@ -92,5 +127,99 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script src="/platform-ai.js"></script>
+  <script>
+    (function () {
+      const btn        = document.getElementById('hx-triage-run');
+      const emailEl    = document.getElementById('hx-triage-email');
+      const toneEl     = document.getElementById('hx-triage-tone');
+      const langEl     = document.getElementById('hx-triage-language');
+      const ctxEl      = document.getElementById('hx-triage-context');
+      const statusEl   = document.getElementById('hx-triage-status');
+      const resultEl   = document.getElementById('hx-triage-result');
+
+      document.getElementById('hx-jump-triage').addEventListener('click', () => {
+        emailEl.focus();
+        window.scrollTo({ top: document.querySelector('.hx-tool-card').offsetTop - 60, behavior: 'smooth' });
+      });
+
+      function setStatus(text, err = false) {
+        statusEl.innerHTML = text ? `<div class="hxai-status${err ? ' error' : ''}"><span class="dot"></span><span>${text}</span></div>` : '';
+      }
+
+      function chip(value, mapping) {
+        const cls = mapping[value] || 'gray';
+        return `<span class="hxai-chip hxai-chip-${cls}">${HXAI.esc(value)}</span>`;
+      }
+
+      function render(triage) {
+        const urgencyClass   = { high: 'red', medium: 'yellow', low: 'gray' };
+        const sentimentClass = { positive: 'green', neutral: 'gray', negative: 'red' };
+        const recClass       = { reply: 'green', snooze: 'yellow', archive: 'gray', escalate: 'red', mark_spam: 'red' };
+        const intentClass    = { spam: 'red', complaint: 'red', sales_lead: 'green', support: 'blue', scheduling: 'yellow', thanks: 'green', newsletter: 'gray', internal: 'gray', partnership: 'blue', other: 'gray' };
+
+        const draft = triage.draft_reply || {};
+        const copyText = (draft.subject ? `Subject: ${draft.subject}\n\n` : '') + (draft.body || '');
+
+        const warnings = Array.isArray(triage.warnings) && triage.warnings.length
+          ? `<div style="margin-top:10px;padding:10px 12px;background:rgba(220,38,38,0.06);border-left:3px solid #dc2626;border-radius:8px;font-size:12.5px;color:#b91c1c;"><strong>⚠️ Warnings:</strong> ${triage.warnings.map(HXAI.esc).join(' · ')}</div>`
+          : '';
+
+        resultEl.innerHTML = `
+          <div class="hxai-card">
+            <div class="hxai-card-head">
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                ${chip('Intent: ' + (triage.intent || 'unknown'), intentClass)}
+                ${chip('Urgency: ' + (triage.urgency || '—'), urgencyClass)}
+                ${chip('Sentiment: ' + (triage.sentiment || '—'), sentimentClass)}
+                ${chip('Action: ' + (triage.recommendation || '—'), recClass)}
+              </div>
+            </div>
+            <div class="hxai-card-title">${HXAI.esc(triage.summary || 'No summary')}</div>
+            ${draft.subject || draft.body ? `
+              <div class="hxai-card-meta" style="margin-top:14px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;">
+                <strong style="color:var(--hx-text);">Draft reply</strong>
+                <button class="hxai-copy" data-copy-target="reply">Copy</button>
+              </div>
+              ${draft.subject ? `<div class="hxai-card-sub" style="margin-bottom:4px;"><strong>Subject:</strong> ${HXAI.esc(draft.subject)}</div>` : ''}
+              <div class="hxai-card-body">${HXAI.esc(draft.body || '')}</div>
+            ` : `<div style="margin-top:14px;font-size:12.5px;color:var(--hx-text-mid);font-style:italic;">No reply drafted — recommendation is to <strong>${HXAI.esc(triage.recommendation || 'review manually')}</strong>.</div>`}
+            ${warnings}
+          </div>
+        `;
+        const copyBtn = resultEl.querySelector('[data-copy-target="reply"]');
+        if (copyBtn) copyBtn.addEventListener('click', (e) => HXAI.copyToClipboard(copyText, e.target));
+      }
+
+      btn.addEventListener('click', async () => {
+        const email = emailEl.value.trim();
+        if (email.length < 20) { setStatus('Paste the full incoming email (at least 20 chars).', true); return; }
+        btn.disabled = true;
+        btn.textContent = 'Analysing…';
+        resultEl.innerHTML = '';
+        setStatus('Calling Claude…');
+
+        try {
+          const raw = await HXAI.runStream('/api/automation-reply', {
+            email,
+            tone: toneEl.value,
+            language: langEl.value,
+            context: ctxEl.value.trim(),
+          }, {
+            onChunk: (_, total) => setStatus(`Generating… (${total} chars)`),
+          });
+          setStatus('Parsing…');
+          const parsed = HXAI.extractJson(raw);
+          render(parsed);
+          setStatus('');
+        } catch (err) {
+          setStatus(`Failed: ${err.message || err}`, true);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Triage + draft reply';
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

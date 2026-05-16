@@ -4,12 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Marketplace — HelveX</title>
-  <meta name="description" content="HelveX Marketplace — templates, AI agents, automations, prompts, digital products." />
+  <meta name="description" content="HelveX Marketplace — curated AI prompt templates, agents, workflows. Try any template live in one click." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <link rel="stylesheet" href="/platform-ai.css" />
   <style>
     .hx-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--hx-line); margin-bottom: 18px; }
     .hx-tab { font-size: 13px; font-weight: 500; color: var(--hx-text-mid); padding: 10px 14px; background: transparent; border: 0; border-bottom: 2px solid transparent; cursor: pointer; margin-bottom: -1px; transition: color 0.12s, border-color 0.12s; }
@@ -19,15 +20,19 @@
     .hx-cat-pill { font-family: var(--hx-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; padding: 6px 12px; border-radius: 9999px; background: white; border: 1px solid var(--hx-line); color: var(--hx-text-mid); cursor: pointer; transition: color 0.12s, border-color 0.12s, background 0.12s; }
     .hx-cat-pill:hover { color: var(--hx-text); border-color: var(--hx-text-mid); }
     .hx-cat-pill.active { background: var(--hx-text); border-color: var(--hx-text); color: white; }
-    .hx-empty-state { background: white; border: 1px dashed var(--hx-line); border-radius: var(--hx-r); padding: 56px 24px; text-align: center; }
-    .hx-empty-state .hx-empty-icon { width: 44px; height: 44px; border-radius: 11px; background: var(--hx-cream); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px; }
-    .hx-empty-state .hx-empty-icon svg { width: 22px; height: 22px; color: var(--hx-text-mid); }
-    .hx-empty-state h3 { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
-    .hx-empty-state p { font-size: 13.5px; color: var(--hx-text-mid); margin: 0 0 18px; max-width: 460px; margin-inline: auto; line-height: 1.5; }
-    .hx-beta-strip { background: linear-gradient(90deg, rgba(252,211,77,0.15), rgba(252,211,77,0.04)); border: 1px solid rgba(252,211,77,0.45); border-radius: var(--hx-r); padding: 12px 16px; display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
-    .hx-beta-strip svg { width: 18px; height: 18px; color: var(--hx-yellow-deep); flex-shrink: 0; }
-    .hx-beta-strip p { font-size: 13px; color: var(--hx-text); margin: 0; line-height: 1.5; flex: 1; }
-    .hx-beta-strip strong { font-weight: 600; }
+
+    .hx-marketplace-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    @media (max-width: 1000px) { .hx-marketplace-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px)  { .hx-marketplace-grid { grid-template-columns: 1fr; } }
+    .hx-item { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 18px; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s; cursor: pointer; }
+    .hx-item:hover { border-color: var(--hx-yellow-deep); transform: translateY(-2px); box-shadow: 0 12px 28px -12px rgba(15,15,16,0.12); }
+    .hx-item-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .hx-item-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--hx-cream); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .hx-item h3 { font-size: 14.5px; font-weight: 600; margin: 0; letter-spacing: -0.005em; color: var(--hx-text); }
+    .hx-item p { font-size: 12.5px; color: var(--hx-text-mid); margin: 0; line-height: 1.5; }
+    .hx-item-meta { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--hx-line); }
+    .hx-item-by { font-family: var(--hx-mono); font-size: 10.5px; color: var(--hx-text-mid); letter-spacing: 0.04em; text-transform: uppercase; }
+    .hx-item-price { font-weight: 700; font-size: 13px; color: #15803d; }
   </style>
 </head>
 <body data-active="app-marketplace">
@@ -41,7 +46,7 @@
         <div class="hx-page-head">
           <div>
             <h1>Marketplace.</h1>
-            <p class="sub">Templates, agents, workflows, prompts, digital products — curated, vetted, one-click into your workspace.</p>
+            <p class="sub">Curated AI templates. Click any card → try it live with your own input. Free during beta.</p>
           </div>
           <div class="hx-page-actions">
             <a href="/marketplace" class="hx-btn hx-btn-secondary">About marketplace</a>
@@ -49,47 +54,281 @@
           </div>
         </div>
 
-        <div class="hx-beta-strip" role="note">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <p><strong>Marketplace — under construction.</strong> The browse surface, categories, and creator dashboard structure are ready. Stripe Connect for creator payouts, listing submission &amp; vetting, and one-click deploys land before the first item is sold.</p>
-        </div>
-
         <div class="hx-grid hx-grid-4">
-          <div class="hx-stat"><p class="hx-stat-label">In your library</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">No purchases yet</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Your listings</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">Not selling yet</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Earnings</p><p class="hx-stat-value hx-mono">CHF 0</p><p class="hx-stat-meta">75% rev share when live</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Sales (30d)</p><p class="hx-stat-value hx-mono">0</p><p class="hx-stat-meta">—</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Live templates</p><p class="hx-stat-value hx-mono" id="hx-mp-count">0</p><p class="hx-stat-meta">All free during beta</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Categories</p><p class="hx-stat-value hx-mono">6</p><p class="hx-stat-meta">Sales · Marketing · Ops · …</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Cost / run</p><p class="hx-stat-value hx-mono">~$0.005</p><p class="hx-stat-meta">Per template execution</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Status</p><p class="hx-stat-value hx-mono" style="color:#15803d;">LIVE</p><p class="hx-stat-meta">Try any template</p></div>
         </div>
 
         <div class="hx-tabs" role="tablist">
           <button class="hx-tab active" data-tab="browse">Browse</button>
-          <button class="hx-tab" data-tab="library">My library</button>
-          <button class="hx-tab" data-tab="listings">My listings</button>
-          <button class="hx-tab" data-tab="earnings">Earnings</button>
+          <button class="hx-tab" data-tab="library" disabled style="opacity:0.5;cursor:not-allowed;" title="Coming soon">My library</button>
+          <button class="hx-tab" data-tab="listings" disabled style="opacity:0.5;cursor:not-allowed;" title="Coming soon">My listings</button>
+          <button class="hx-tab" data-tab="earnings" disabled style="opacity:0.5;cursor:not-allowed;" title="Coming soon">Earnings</button>
         </div>
 
-        <div class="hx-cats">
-          <button class="hx-cat-pill active">All</button>
-          <button class="hx-cat-pill">Website templates</button>
-          <button class="hx-cat-pill">AI agents</button>
-          <button class="hx-cat-pill">Automations</button>
-          <button class="hx-cat-pill">Prompts</button>
-          <button class="hx-cat-pill">Digital products</button>
+        <div class="hx-cats" id="hx-cats">
+          <button class="hx-cat-pill active" data-cat="all">All</button>
+          <button class="hx-cat-pill" data-cat="sales">Sales</button>
+          <button class="hx-cat-pill" data-cat="marketing">Marketing</button>
+          <button class="hx-cat-pill" data-cat="ops">Operations</button>
+          <button class="hx-cat-pill" data-cat="hr">HR / People</button>
+          <button class="hx-cat-pill" data-cat="content">Content</button>
+          <button class="hx-cat-pill" data-cat="strategy">Strategy</button>
         </div>
 
-        <div class="hx-empty-state">
-          <div class="hx-empty-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 1 1-8 0"/></svg>
-          </div>
-          <h3>No listings yet</h3>
-          <p>The marketplace catalogue is empty until creators start publishing. We're inviting the first batch of creators now — if you've built something worth selling (a template, agent, automation, prompt library, or digital product), get in touch.</p>
-          <a href="/marketplace" class="hx-btn hx-btn-secondary">Read the marketplace plan</a>
-        </div>
+        <div class="hx-marketplace-grid" id="hx-mp-grid"></div>
 
       </main>
     </div>
   </div>
 
+  <!-- Try-template modal -->
+  <div class="hxai-modal-back" id="hx-tpl-modal" role="dialog" aria-modal="true">
+    <div class="hxai-modal">
+      <div class="hxai-modal-head">
+        <h3 id="hx-tpl-title">Template</h3>
+        <button class="close" data-modal-close="hx-tpl-modal" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="hxai-modal-body">
+        <p id="hx-tpl-desc" style="font-size:13px;color:var(--hx-text-mid);margin:0 0 14px;line-height:1.55;"></p>
+        <div id="hx-tpl-fields"></div>
+        <div id="hx-tpl-status"></div>
+        <div id="hx-tpl-result" class="hxai-results" style="margin-top:8px;"></div>
+      </div>
+      <div class="hxai-modal-foot">
+        <span class="hxai-cost">~$0.005 · Claude Sonnet 4.5</span>
+        <button class="hx-btn hx-btn-secondary" data-modal-close="hx-tpl-modal">Close</button>
+        <button class="hx-btn hx-btn-primary" id="hx-tpl-run">Run template</button>
+      </div>
+    </div>
+  </div>
+
   <script src="/platform.js"></script>
+  <script src="/platform-ai.js"></script>
+  <script>
+    const TEMPLATES = [
+      {
+        id: 'cold-email', category: 'sales', icon: '✉️', title: 'Cold email — that gets replies',
+        desc: 'B2B cold email structure: hook with a specific observation, deliver one value, ask for a tiny commitment.',
+        inputs: [
+          { key: 'targetRole', label: 'Target role + industry', placeholder: 'e.g. Head of Growth at Series-A SaaS startups', required: true },
+          { key: 'offer',      label: 'What you offer / pain it solves', type: 'textarea', placeholder: 'e.g. We help SaaS reduce CAC by 30%+ through smarter retargeting…', required: true },
+          { key: 'language',   label: 'Language', type: 'select', options: ['English', 'Greek', 'German', 'French', 'Italian', 'Spanish'] },
+        ],
+        system: 'You write cold sales emails that get replied to. Rules: under 90 words. No fluff. One specific observation about their world, one specific value, one tiny commitment ask (15-min chat, not "demo"). No "I hope this finds you well". No emojis unless asked. Plain text only.',
+        userTemplate: (i) => `Write a cold email in ${i.language || 'English'} to: ${i.targetRole}\n\nWhat we offer / pain we solve:\n${i.offer}\n\nReturn just the email (subject line on first line, then blank line, then body). No commentary.`,
+      },
+      {
+        id: 'sales-discovery', category: 'sales', icon: '🔎', title: 'Discovery call cheat-sheet',
+        desc: 'Prep before a sales call: opening observations, 5 qualifying questions, likely objections + counters.',
+        inputs: [
+          { key: 'company',   label: 'Prospect company', placeholder: 'e.g. Acme GmbH', required: true },
+          { key: 'industry',  label: 'Industry', placeholder: 'e.g. legal-tech SaaS', required: true },
+          { key: 'product',   label: 'What you are selling', type: 'textarea', placeholder: 'e.g. Contract-review automation, €499/mo per seat…', required: true },
+        ],
+        system: 'You are a senior B2B sales coach. Produce concise, useful prep — no padding. Numbered bullet lists where appropriate.',
+        userTemplate: (i) => `Discovery call prep for:\n- Prospect: ${i.company}\n- Industry: ${i.industry}\n- Product we sell: ${i.product}\n\nDeliver: (1) 3 sharp opening observations about their industry right now, (2) 5 qualifying questions to ask in order, (3) Top 3 objections they are likely to raise + 1-sentence counters each. Keep it tight — one page.`,
+      },
+      {
+        id: 'instagram-caption', category: 'marketing', icon: '📸', title: 'Instagram caption — 3 angles',
+        desc: 'Three Instagram caption variants for the same post: storytelling, educational, provocation. With hashtags.',
+        inputs: [
+          { key: 'topic', label: 'Post topic / image description', type: 'textarea', placeholder: 'e.g. Behind-the-scenes of our team retreat in Crete — 5 founders, 3 days, 1 product roadmap reset.', required: true },
+          { key: 'brand', label: 'Brand name / handle', placeholder: 'e.g. @helvex' },
+          { key: 'language', label: 'Language', type: 'select', options: ['English', 'Greek', 'German', 'French', 'Italian', 'Spanish'] },
+        ],
+        system: 'You write Instagram captions that earn saves and shares (not just likes). Under 1500 chars. Hook in line 1. 4-6 hashtags at the end, not banal ones.',
+        userTemplate: (i) => `Write 3 Instagram caption variants in ${i.language || 'English'} for this post:\n\n${i.topic}\n\n${i.brand ? `Brand: ${i.brand}` : ''}\n\nReturn as:\n\n**Variant 1 — storytelling angle**\n<caption>\n\n**Variant 2 — educational angle**\n<caption>\n\n**Variant 3 — provocation angle**\n<caption>`,
+      },
+      {
+        id: 'sop-from-process', category: 'ops', icon: '📋', title: 'SOP from a messy process',
+        desc: 'Turn a rough verbal description of how you do something into a clean Standard Operating Procedure.',
+        inputs: [
+          { key: 'process', label: 'Describe the process (rough is fine)', type: 'textarea', placeholder: 'e.g. when a new customer signs up, I get a Stripe email, then I add them to Notion, then I send them the welcome email manually…', required: true },
+          { key: 'team', label: 'Who will follow this SOP', placeholder: 'e.g. ops team, junior accounts', required: false },
+        ],
+        system: 'You are an operations expert. Turn rough descriptions into clean, numbered SOPs. Each step has an owner, an input, and a "done when" criterion. No fluff.',
+        userTemplate: (i) => `Convert this rough process into a clean Standard Operating Procedure:\n\nROUGH:\n${i.process}\n\n${i.team ? `Followed by: ${i.team}` : ''}\n\nFormat:\n# SOP: [name]\n**Goal:** …\n**Owner:** …\n**Trigger:** …\n\n## Steps\n1. [Step] — Owner: … — Done when: …\n2. …\n\n## Edge cases\n- …`,
+      },
+      {
+        id: 'interview-questions', category: 'hr', icon: '👥', title: 'Job interview kit',
+        desc: '10 deep interview questions: 4 technical, 4 behavioural, 2 "reveal" questions that expose real thinking.',
+        inputs: [
+          { key: 'role', label: 'Role title', placeholder: 'e.g. Senior Backend Engineer', required: true },
+          { key: 'mustHaves', label: 'Must-have skills / traits', type: 'textarea', placeholder: 'e.g. distributed systems, 5+ yrs Go, builds without hand-holding, comfortable with on-call', required: true },
+        ],
+        system: 'You design interview question kits. Mix technical depth, behavioural (STAR-format) and one "reveal" question that exposes how the candidate actually thinks under pressure.',
+        userTemplate: (i) => `Design a 10-question interview kit for: ${i.role}\n\nMust-haves: ${i.mustHaves}\n\nFor each question give: the question itself, what a great answer sounds like (one line), and a red flag to watch for. Group: 4 technical, 4 behavioural, 2 stress/reveal.`,
+      },
+      {
+        id: 'blog-outline', category: 'content', icon: '📝', title: 'SEO blog outline',
+        desc: 'Search-optimised blog outline: H1, H2s, key talking points, meta description, internal-link suggestions.',
+        inputs: [
+          { key: 'keyword', label: 'Target keyword / topic', placeholder: 'e.g. "how to onboard SaaS customers"', required: true },
+          { key: 'audience', label: 'Reader / audience', placeholder: 'e.g. SaaS founders with <100 customers', required: true },
+        ],
+        system: 'You write SEO content outlines that actually rank — informational depth, not keyword stuffing.',
+        userTemplate: (i) => `Produce an SEO blog outline for the keyword/topic: "${i.keyword}"\nAudience: ${i.audience}\n\nReturn:\n# H1: [title]\n**Meta description (155 chars):** …\n**Target word count:** …\n\n## H2 sections (5-7)\nFor each: 3-5 bullet talking points + 1 internal-link suggestion.\n\n## Suggested FAQs (4-6)\n## Featured-snippet opportunity\n## Suggested images / diagrams`,
+      },
+      {
+        id: 'pricing-strategist', category: 'strategy', icon: '💰', title: 'Pricing pressure test',
+        desc: 'Stress-test your pricing: 5 hard buyer questions, 3 alternative structures, 1 honest recommendation.',
+        inputs: [
+          { key: 'product', label: 'Product / what it does', type: 'textarea', placeholder: 'e.g. AI tool that auto-replies to customer support emails for Shopify stores', required: true },
+          { key: 'pricing', label: 'Your current pricing', type: 'textarea', placeholder: 'e.g. €29 starter (500 emails/mo), €99 pro (5,000), €299 scale (unlimited)', required: true },
+          { key: 'context', label: 'What you are unsure about', type: 'textarea', placeholder: 'e.g. starter feels too cheap, pro→scale jump feels too steep, no annual option…', required: false },
+        ],
+        system: 'You are a pricing strategist. Direct, opinionated, no hedging. Give a clear recommendation.',
+        userTemplate: (i) => `Pressure-test this pricing:\n\nProduct: ${i.product}\n\nCurrent pricing: ${i.pricing}\n\n${i.context ? `Founder is unsure about: ${i.context}` : ''}\n\nProduce:\n1. 5 hard questions a savvy buyer would ask\n2. 3 alternative plan structures (just headline + one-line rationale each)\n3. ONE clear recommendation — what you would actually do if it were your company, and why.`,
+      },
+      {
+        id: 'launch-tweet', category: 'marketing', icon: '🚀', title: 'Launch post for X (Twitter)',
+        desc: 'Three launch-day post variants for X — storytelling thread opener, bold claim, humble + numbers.',
+        inputs: [
+          { key: 'what', label: 'What are you launching?', type: 'textarea', placeholder: 'e.g. v2 of our pricing tool — now does cohort analysis…', required: true },
+          { key: 'why', label: 'Why does it matter? (proof, before/after, customer quote)', type: 'textarea', placeholder: 'e.g. beta users saw 18% revenue lift in 4 weeks…', required: true },
+        ],
+        system: 'You write launch posts for X that actually get engagement. Under 270 chars (leaves room for retweet). Hook line is everything. No emoji clutter.',
+        userTemplate: (i) => `Write 3 launch-day post variants for X (Twitter).\n\nLaunching:\n${i.what}\n\nWhy it matters:\n${i.why}\n\nReturn as:\n**Variant 1 — Storytelling thread opener** (line 1 of a 4-tweet thread)\n<post>\n\n**Variant 2 — Bold claim** (single tweet)\n<post>\n\n**Variant 3 — Humble + numbers** (single tweet)\n<post>`,
+      },
+      {
+        id: 'rejection-letter', category: 'hr', icon: '✉️', title: 'Graceful candidate rejection',
+        desc: 'Personal, kind candidate rejection email. Not a copy-paste. Leaves the door open without false promises.',
+        inputs: [
+          { key: 'role', label: 'Role they applied for', placeholder: 'e.g. Product Designer', required: true },
+          { key: 'reason', label: 'Why they were not selected (honest internal note — Claude will rewrite tactfully)', type: 'textarea', placeholder: 'e.g. portfolio strong but only B2C ecommerce — we needed enterprise SaaS UX', required: true },
+          { key: 'language', label: 'Language', type: 'select', options: ['English', 'Greek', 'German', 'French', 'Italian', 'Spanish'] },
+        ],
+        system: 'You write candidate rejection emails that are kind without being patronising. You translate the honest internal reason into something the candidate can actually use to grow.',
+        userTemplate: (i) => `Write a rejection email in ${i.language || 'English'} for a candidate who applied for: ${i.role}\n\nHonest internal reason they were not selected:\n${i.reason}\n\nThe email should: (1) be specific to them, not generic, (2) give them ONE thing to take away, (3) not promise to "keep them in mind for future roles" unless we mean it, (4) be under 130 words. Return just the email, no commentary.`,
+      },
+    ];
+
+    const categoryNames = {
+      sales: 'Sales', marketing: 'Marketing', ops: 'Operations',
+      hr: 'HR / People', content: 'Content', strategy: 'Strategy',
+    };
+
+    let activeCat = 'all';
+    let activeTemplate = null;
+
+    function renderGrid() {
+      const grid = document.getElementById('hx-mp-grid');
+      const filtered = TEMPLATES.filter(t => activeCat === 'all' || t.category === activeCat);
+      document.getElementById('hx-mp-count').textContent = TEMPLATES.length;
+      grid.innerHTML = filtered.map(t => `
+        <div class="hx-item" data-id="${t.id}">
+          <div class="hx-item-head">
+            <div class="hx-item-icon">${t.icon}</div>
+          </div>
+          <h3>${HXAI.esc(t.title)}</h3>
+          <p>${HXAI.esc(t.desc)}</p>
+          <div class="hx-item-meta">
+            <span class="hx-item-by">By HelveX · ${categoryNames[t.category] || t.category}</span>
+            <span class="hx-item-price">Free</span>
+          </div>
+        </div>
+      `).join('');
+      grid.querySelectorAll('.hx-item').forEach(el => {
+        el.addEventListener('click', () => openTemplate(el.dataset.id));
+      });
+    }
+
+    function openTemplate(id) {
+      const tpl = TEMPLATES.find(t => t.id === id);
+      if (!tpl) return;
+      activeTemplate = tpl;
+      document.getElementById('hx-tpl-title').textContent = `${tpl.icon} ${tpl.title}`;
+      document.getElementById('hx-tpl-desc').textContent = tpl.desc;
+      const fieldsEl = document.getElementById('hx-tpl-fields');
+      fieldsEl.innerHTML = tpl.inputs.map(input => {
+        const fid = `hx-tpl-input-${input.key}`;
+        if (input.type === 'select') {
+          return `
+            <div class="hxai-field">
+              <label for="${fid}">${HXAI.esc(input.label)}</label>
+              <select id="${fid}" data-key="${input.key}">
+                ${input.options.map(o => `<option>${HXAI.esc(o)}</option>`).join('')}
+              </select>
+            </div>`;
+        }
+        if (input.type === 'textarea') {
+          return `
+            <div class="hxai-field">
+              <label for="${fid}">${HXAI.esc(input.label)}${input.required ? '' : ' <span class="hxai-hint">(optional)</span>'}</label>
+              <textarea id="${fid}" data-key="${input.key}" placeholder="${HXAI.esc(input.placeholder || '')}"></textarea>
+            </div>`;
+        }
+        return `
+          <div class="hxai-field">
+            <label for="${fid}">${HXAI.esc(input.label)}${input.required ? '' : ' <span class="hxai-hint">(optional)</span>'}</label>
+            <input type="text" id="${fid}" data-key="${input.key}" placeholder="${HXAI.esc(input.placeholder || '')}" />
+          </div>`;
+      }).join('');
+      document.getElementById('hx-tpl-status').innerHTML = '';
+      document.getElementById('hx-tpl-result').innerHTML = '';
+      HXAI.openModal('hx-tpl-modal');
+    }
+
+    document.getElementById('hx-tpl-run').addEventListener('click', async () => {
+      if (!activeTemplate) return;
+      const inputs = {};
+      document.querySelectorAll('#hx-tpl-fields [data-key]').forEach(el => {
+        inputs[el.dataset.key] = el.value.trim();
+      });
+      for (const inp of activeTemplate.inputs) {
+        if (inp.required && !inputs[inp.key]) {
+          document.getElementById('hx-tpl-status').innerHTML = `<div class="hxai-status error"><span class="dot"></span><span>Fill in: ${HXAI.esc(inp.label)}</span></div>`;
+          return;
+        }
+      }
+      const userPrompt = activeTemplate.userTemplate(inputs);
+      const runBtn = document.getElementById('hx-tpl-run');
+      const resultEl = document.getElementById('hx-tpl-result');
+      const statusEl = document.getElementById('hx-tpl-status');
+      runBtn.disabled = true; runBtn.textContent = 'Running…';
+      resultEl.innerHTML = '';
+      statusEl.innerHTML = '<div class="hxai-status"><span class="dot"></span><span>Calling Claude…</span></div>';
+
+      let assembled = '';
+      try {
+        await HXAI.runStream('/api/run-template', {
+          systemPrompt: activeTemplate.system,
+          userPrompt,
+          maxTokens: 2000,
+        }, {
+          onChunk: (delta, total) => {
+            assembled += delta;
+            statusEl.innerHTML = `<div class="hxai-status"><span class="dot"></span><span>Generating… (${total} chars)</span></div>`;
+            resultEl.innerHTML = `<div class="hxai-card"><div class="hxai-card-body" style="border-left-color:var(--hx-yellow-deep);">${HXAI.esc(assembled)}</div></div>`;
+          },
+        });
+        const copyBtnHtml = `<div style="margin-top:10px;display:flex;justify-content:flex-end;"><button class="hxai-copy" id="hx-tpl-copy">Copy output</button></div>`;
+        resultEl.innerHTML = `<div class="hxai-card"><div class="hxai-card-body" style="border-left-color:var(--hx-yellow-deep);">${HXAI.esc(assembled)}</div>${copyBtnHtml}</div>`;
+        document.getElementById('hx-tpl-copy').addEventListener('click', (e) => HXAI.copyToClipboard(assembled, e.target));
+        statusEl.innerHTML = '';
+      } catch (err) {
+        statusEl.innerHTML = `<div class="hxai-status error"><span class="dot"></span><span>Failed: ${HXAI.esc(err.message || err)}</span></div>`;
+      } finally {
+        runBtn.disabled = false; runBtn.textContent = 'Run template';
+      }
+    });
+
+    document.querySelectorAll('#hx-cats .hx-cat-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#hx-cats .hx-cat-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        activeCat = pill.dataset.cat;
+        renderGrid();
+      });
+    });
+
+    HXAI.wireModal('hx-tpl-modal');
+    renderGrid();
+  </script>
 </body>
 </html>

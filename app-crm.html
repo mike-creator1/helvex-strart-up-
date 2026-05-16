@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <link rel="stylesheet" href="/platform-ai.css" />
   <style>
     /* Due-today banner — at top of page when leads need follow-up */
     .hx-due-banner { display: flex; align-items: center; gap: 14px; padding: 12px 16px; margin-bottom: 14px; background: linear-gradient(90deg, rgba(252,211,77,0.18) 0%, rgba(252,211,77,0.05) 100%); border: 1px solid rgba(252,211,77,0.5); border-radius: var(--hx-r); }
@@ -131,6 +132,7 @@
           </div>
           <div class="hx-page-actions">
             <a href="/crm" class="hx-btn hx-btn-secondary">About CRM</a>
+            <button class="hx-btn hx-btn-secondary" id="hx-enrich-btn" title="Claude analyses an email + name and produces a sales-intelligence profile">✨ AI Enrich</button>
             <button class="hx-btn hx-btn-primary" id="hx-new-lead-btn">+ New lead</button>
           </div>
         </div>
@@ -709,6 +711,133 @@
 
       // Stub for early references (overwritten when auth is ready)
       var loadTimeline = function () {};
+    })();
+  </script>
+
+  <!-- AI Enrich modal -->
+  <div class="hxai-modal-back" id="hx-enrich-modal" role="dialog" aria-modal="true">
+    <div class="hxai-modal">
+      <div class="hxai-modal-head">
+        <h3>✨ AI Enrich — sales intelligence from an email</h3>
+        <button class="close" data-modal-close="hx-enrich-modal" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="hxai-modal-body">
+        <p style="font-size:13px;color:var(--hx-text-mid);margin:0 0 14px;line-height:1.55;">
+          Paste a contact's email. Claude infers company, role, industry, size, and writes a sales-tailored conversation starter. Honest confidence levels — no hallucinated facts.
+        </p>
+        <div class="hxai-field-row">
+          <div class="hxai-field">
+            <label for="hx-enrich-email">Email address <span class="hxai-hint">(required)</span></label>
+            <input type="email" id="hx-enrich-email" placeholder="maria.kotsoni@acme.de" />
+          </div>
+          <div class="hxai-field">
+            <label for="hx-enrich-name">Name <span class="hxai-hint">(optional)</span></label>
+            <input type="text" id="hx-enrich-name" placeholder="Maria Kotsoni" />
+          </div>
+        </div>
+        <div class="hxai-field">
+          <label for="hx-enrich-notes">Notes / context <span class="hxai-hint">(optional — what brought them in)</span></label>
+          <textarea id="hx-enrich-notes" placeholder="e.g. Replied to our LinkedIn post about pricing. Mentioned they have 12 sales reps."></textarea>
+        </div>
+        <div id="hx-enrich-status"></div>
+        <div id="hx-enrich-result" class="hxai-results" style="margin-top:8px;"></div>
+      </div>
+      <div class="hxai-modal-foot">
+        <span class="hxai-cost">~$0.005 · Claude Sonnet 4.5</span>
+        <button class="hx-btn hx-btn-secondary" data-modal-close="hx-enrich-modal">Close</button>
+        <button class="hx-btn hx-btn-primary" id="hx-enrich-run">Enrich</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/platform-ai.js"></script>
+  <script>
+    (function () {
+      const btn       = document.getElementById('hx-enrich-btn');
+      const runBtn    = document.getElementById('hx-enrich-run');
+      const emailEl   = document.getElementById('hx-enrich-email');
+      const nameEl    = document.getElementById('hx-enrich-name');
+      const notesEl   = document.getElementById('hx-enrich-notes');
+      const statusEl  = document.getElementById('hx-enrich-status');
+      const resultEl  = document.getElementById('hx-enrich-result');
+
+      HXAI.wireModal('hx-enrich-modal');
+      btn.addEventListener('click', () => HXAI.openModal('hx-enrich-modal'));
+
+      function setStatus(text, err = false) {
+        statusEl.innerHTML = text ? `<div class="hxai-status${err ? ' error' : ''}"><span class="dot"></span><span>${text}</span></div>` : '';
+      }
+
+      function chip(text, cls) { return `<span class="hxai-chip hxai-chip-${cls}">${HXAI.esc(text)}</span>`; }
+      function confChip(c) {
+        const cls = c === 'high' ? 'green' : c === 'medium' ? 'yellow' : 'gray';
+        return chip(`Conf: ${c || '—'}`, cls);
+      }
+
+      function render(p) {
+        const warnings = Array.isArray(p.warnings) && p.warnings.length
+          ? `<div style="margin-top:10px;padding:10px 12px;background:rgba(220,38,38,0.06);border-left:3px solid #dc2626;border-radius:8px;font-size:12.5px;color:#b91c1c;"><strong>⚠️ Warnings:</strong> ${p.warnings.map(HXAI.esc).join(' · ')}</div>`
+          : '';
+        const signalsHtml = Array.isArray(p.signals) && p.signals.length
+          ? `<div style="margin-top:10px;"><strong style="font-size:12.5px;color:var(--hx-text-mid);">Signals:</strong><ul style="margin:4px 0 0;padding-left:20px;font-size:13px;color:var(--hx-text);line-height:1.55;">${p.signals.map(s => `<li>${HXAI.esc(s)}</li>`).join('')}</ul></div>`
+          : '';
+
+        const company  = p.company  || {};
+        const industry = p.industry || {};
+        const size     = p.size_band || {};
+        const person   = p.person   || {};
+
+        const fillNewLeadJs = `(function(){document.getElementById('hx-new-name').value=${JSON.stringify(p.person?.name || nameEl.value || '')};document.getElementById('hx-new-company').value=${JSON.stringify(company.name || '')};document.getElementById('hx-new-email').value=${JSON.stringify(emailEl.value)};document.getElementById('hx-new-notes').value=${JSON.stringify((p.signals||[]).join(' · ') + (p.conversation_starter ? '\\n\\nOpener: ' + p.conversation_starter : ''))};HXAI.closeModal('hx-enrich-modal');var btn=document.getElementById('hx-new-lead-btn');if(btn)btn.click();})()`;
+
+        resultEl.innerHTML = `
+          <div class="hxai-card">
+            <div class="hxai-card-head">
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                ${chip('Company: ' + (company.name || '—'), 'blue')}
+                ${confChip(company.confidence)}
+                ${chip('Industry: ' + (industry.value || '—'), 'gray')}
+                ${confChip(industry.confidence)}
+                ${chip('Size: ' + (size.value || '—'), 'gray')}
+                ${confChip(size.confidence)}
+              </div>
+            </div>
+            <div class="hxai-card-title">${HXAI.esc(person.name || 'Unknown person')}</div>
+            <div class="hxai-card-sub">${HXAI.esc(person.likely_seniority || '—')} · ${HXAI.esc(person.likely_function || '—')} · ${confChip(person.confidence)}</div>
+            ${signalsHtml}
+            ${p.conversation_starter ? `<div style="margin-top:14px;"><strong style="font-size:12.5px;color:var(--hx-text-mid);">Opener:</strong><div class="hxai-card-body" style="margin-top:6px;">${HXAI.esc(p.conversation_starter)}</div></div>` : ''}
+            ${p.outreach_angle ? `<div style="margin-top:10px;"><strong style="font-size:12.5px;color:var(--hx-text-mid);">Suggested angle:</strong> <span style="font-size:13px;">${HXAI.esc(p.outreach_angle)}</span></div>` : ''}
+            ${warnings}
+            <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+              <button class="hx-btn hx-btn-primary" onclick="${fillNewLeadJs}">Use to fill new lead form</button>
+              <button class="hxai-copy" id="hx-enrich-copy-json">Copy raw JSON</button>
+            </div>
+          </div>
+        `;
+        document.getElementById('hx-enrich-copy-json').addEventListener('click', (e) => HXAI.copyToClipboard(JSON.stringify(p, null, 2), e.target));
+      }
+
+      runBtn.addEventListener('click', async () => {
+        const email = emailEl.value.trim().toLowerCase();
+        if (!email.includes('@') || email.length < 5) { setStatus('Enter a valid email.', true); return; }
+        runBtn.disabled = true; runBtn.textContent = 'Enriching…';
+        resultEl.innerHTML = '';
+        setStatus('Calling Claude…');
+
+        try {
+          const raw = await HXAI.runStream('/api/crm-enrich', {
+            email, name: nameEl.value.trim(), notes: notesEl.value.trim(),
+          }, { onChunk: (_, total) => setStatus(`Generating… (${total} chars)`) });
+          const parsed = HXAI.extractJson(raw);
+          render(parsed);
+          setStatus('');
+        } catch (err) {
+          setStatus(`Failed: ${err.message || err}`, true);
+        } finally {
+          runBtn.disabled = false; runBtn.textContent = 'Enrich';
+        }
+      });
     })();
   </script>
 </body>
