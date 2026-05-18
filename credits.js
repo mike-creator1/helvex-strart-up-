@@ -109,28 +109,20 @@
 
       const sb = getSB();
       try {
-        const { data, error } = await sb
-          .from('user_credits')
-          .select('balance, plan, subscription_status, monthly_spend_limit, current_month_spend_usd')
+        const balRes = await sb
+          .from('credits_balance')
+          .select('credits_total, credits_used')
           .eq('user_id', session.user.id)
-          .single();
+          .maybeSingle();
 
-        if (error || !data) return { allowed: false, reason: 'no_account', balance: 0, needed: 0 };
+        if (balRes.error || !balRes.data) return { allowed: false, reason: 'no_account', balance: 0, needed: 0 };
 
         const cost    = estimatedCostUsd || (SERVICE_MINS[service] || 5) * CREDIT_VALUE_USD;
         const needed  = calcCredits(cost, service);
-        const balance = data.balance || 0;
+        const balance = Math.max(0, (balRes.data.credits_total || 0) - (balRes.data.credits_used || 0));
 
         if (balance < needed) {
           return { allowed: false, reason: 'insufficient_credits', balance, needed };
-        }
-
-        /* Enterprise monthly spend cap */
-        if (data.monthly_spend_limit > 0) {
-          const projectedSpend = (data.current_month_spend_usd || 0) + needed * CREDIT_VALUE_USD;
-          if (projectedSpend > data.monthly_spend_limit) {
-            return { allowed: false, reason: 'monthly_spend_limit_reached', balance, needed };
-          }
         }
 
         return { allowed: true, balance, needed };

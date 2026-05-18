@@ -93,44 +93,52 @@
         var activeHost = document.getElementById('hx-sub-active-host');
         var histHost = document.getElementById('hx-sub-history-host');
 
-        sb.from('user_credits').select('plan, subscription_status, balance, current_month_spend_usd, monthly_spend_limit, updated_at').maybeSingle()
-          .then(function (r) {
-            var d = r && r.data ? r.data : null;
-            var status = d && d.subscription_status;
-            var plan = d && d.plan;
-            var hasActive = d && status && status !== 'none' && status !== 'cancelled' && plan && plan !== 'free';
-            if (!hasActive) { activeHost.innerHTML = emptyActive(); return; }
-            activeHost.innerHTML =
-              '<div class="hx-card">' +
-                '<div class="hx-card-head">' +
-                  '<div>' +
-                    '<p class="hx-card-eyebrow">Current plan</p>' +
-                    '<h3>' + esc(titleCase(plan)) + '</h3>' +
-                  '</div>' +
-                  '<span class="hx-badge hx-badge-neutral">' + esc(titleCase(status)) + '</span>' +
+        // Active subscription from public.subscriptions, balance from public.credits_balance
+        Promise.all([
+          sb.from('subscriptions').select('plan, status, current_period_end, cancel_at_period_end, updated_at').order('updated_at', { ascending: false }).limit(1).maybeSingle(),
+          sb.from('credits_balance').select('credits_total, credits_used, updated_at').maybeSingle()
+        ]).then(function (results) {
+          var sub = results[0] && results[0].data ? results[0].data : null;
+          var bal = results[1] && results[1].data ? results[1].data : null;
+          var status = sub && sub.status;
+          var plan = sub && sub.plan;
+          var hasActive = sub && status && /^(active|trialing|past_due)$/.test(status);
+          if (!hasActive) { activeHost.innerHTML = emptyActive(); return; }
+          var remaining = bal ? Math.max(0, (bal.credits_total || 0) - (bal.credits_used || 0)) : 0;
+          var renewLabel = sub.cancel_at_period_end ? 'Ends' : 'Renews';
+          activeHost.innerHTML =
+            '<div class="hx-card">' +
+              '<div class="hx-card-head">' +
+                '<div>' +
+                  '<p class="hx-card-eyebrow">Current plan</p>' +
+                  '<h3>' + esc(titleCase(plan)) + '</h3>' +
                 '</div>' +
-                '<div class="hx-grid hx-grid-3" style="margin-top:14px;">' +
-                  '<div><p class="hx-stat-label">Credit balance</p><p class="hx-stat-value hx-mono">' + (d.balance || 0) + '</p></div>' +
-                  '<div><p class="hx-stat-label">This month</p><p class="hx-stat-value hx-mono">$' + (Number(d.current_month_spend_usd || 0)).toFixed(2) + '</p></div>' +
-                  '<div><p class="hx-stat-label">Cap</p><p class="hx-stat-value hx-mono">' + (d.monthly_spend_limit > 0 ? '$' + d.monthly_spend_limit : 'No cap') + '</p></div>' +
-                '</div>' +
-                '<p class="desc" style="margin-top:14px;">Last updated ' + fmtDate(d.updated_at) + '. Change tier from <a href="/pricing.html" style="color:var(--hx-text);text-decoration:underline;">Pricing</a>.</p>' +
-              '</div>';
-          })
-          .catch(function () { activeHost.innerHTML = emptyActive(); });
+                '<span class="hx-badge hx-badge-neutral">' + esc(titleCase(status)) + '</span>' +
+              '</div>' +
+              '<div class="hx-grid hx-grid-3" style="margin-top:14px;">' +
+                '<div><p class="hx-stat-label">Credits remaining</p><p class="hx-stat-value hx-mono">' + remaining + '</p></div>' +
+                '<div><p class="hx-stat-label">Credits used</p><p class="hx-stat-value hx-mono">' + (bal ? (bal.credits_used || 0) : 0) + '</p></div>' +
+                '<div><p class="hx-stat-label">' + renewLabel + '</p><p class="hx-stat-value" style="font-size:16px;">' + fmtDate(sub.current_period_end) + '</p></div>' +
+              '</div>' +
+              '<p class="desc" style="margin-top:14px;">Change tier from <a href="/pricing.html" style="color:var(--hx-text);text-decoration:underline;">Pricing</a>. Invoices live under <a href="/invoices.html" style="color:var(--hx-text);text-decoration:underline;">Invoices</a>.</p>' +
+            '</div>';
+        }).catch(function () { activeHost.innerHTML = emptyActive(); });
 
-        sb.from('credit_transactions').select('id, amount, kind, description, created_at').order('created_at', { ascending: false }).limit(50)
+        // History from public.credit_grants (real source-of-truth for grants/topups/renewals)
+        sb.from('credit_grants').select('id, amount, source, reference, created_at').order('created_at', { ascending: false }).limit(50)
           .then(function (r) {
-            var rows = r && r.data ? r.data.filter(function (t) { return /^(subscription|plan|renewal|topup|upgrade|downgrade)/i.test(t.kind || ''); }) : [];
+            var rows = r && r.data ? r.data : [];
             if (!rows.length) { histHost.innerHTML = emptyHistory(); return; }
             var html = '<div class="hx-card" style="padding:0;overflow:hidden;">';
             rows.forEach(function (t, i) {
+              var label = titleCase(t.source || 'Grant');
+              if (t.reference) label += ' · ' + esc(t.reference);
               html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;' + (i > 0 ? 'border-top:1px solid var(--hx-line);' : '') + '">' +
                 '<div>' +
-                  '<div style="font-size:13.5px;font-weight:500;">' + esc(t.description || t.kind) + '</div>' +
+                  '<div style="font-size:13.5px;font-weight:500;">' + label + '</div>' +
                   '<div class="hx-mono" style="font-size:11.5px;color:var(--hx-text-dim);">' + fmtDate(t.created_at) + '</div>' +
                 '</div>' +
-                '<span class="hx-mono" style="font-size:12.5px;">' + (t.amount > 0 ? '+' : '') + (t.amount || 0) + ' credits</span>' +
+                '<span class="hx-mono" style="font-size:12.5px;">+' + (t.amount || 0) + ' credits</span>' +
               '</div>';
             });
             html += '</div>';

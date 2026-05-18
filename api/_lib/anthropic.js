@@ -40,7 +40,40 @@ export async function callAnthropicStream({ system, userPrompt, maxTokens = 3000
  * Pipe an upstream streaming response straight to the Vercel response.
  * The browser receives raw SSE events ("event: content_block_delta" etc.)
  * and parses them in-page.
+ *
+ * Sanitises every "data:" line so the upstream model id ("claude-…") is
+ * never echoed to the client. We rewrite the `model` field inside any
+ * JSON payload (message_start, message_delta, etc.) to the HelveX brand
+ * model name before forwarding.
  */
+const HELVEX_MODEL_LABEL = 'nexus-4-5';
+
+function sanitiseSsePayload(raw) {
+  // Process line-by-line so we can rewrite only "data:" JSON lines and
+  // pass everything else through unchanged. A buffer is kept across
+  // chunks via the caller.
+  const lines = raw.split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (line.startsWith('data: ')) {
+      const body = line.slice(6);
+      if (body && body !== '[DONE]' && body.includes('"model"')) {
+        try {
+          const obj = JSON.parse(body);
+          if (obj && typeof obj === 'object') {
+            if (typeof obj.model === 'string') obj.model = HELVEX_MODEL_LABEL;
+            if (obj.message && typeof obj.message === 'object' && typeof obj.message.model === 'string') {
+              obj.message.model = HELVEX_MODEL_LABEL;
+            }
+            lines[i] = 'data: ' + JSON.stringify(obj);
+          }
+        } catch { /* not JSON we can rewrite — leave as-is */ }
+      }
+    }
+  }
+  return lines.join('\n');
+}
+
 export async function relayStream(upstream, res) {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache, no-transform');
@@ -50,13 +83,23 @@ export async function relayStream(upstream, res) {
 
   const reader = upstream.body.getReader();
   const decoder = new TextDecoder('utf-8');
+  let buffer = '';
 
   try {
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      res.write(decoder.decode(value, { stream: true }));
+      buffer += decoder.decode(value, { stream: true });
+      // Flush every complete SSE event (terminated by a blank line) and
+      // keep the trailing partial in the buffer for the next chunk.
+      const lastBoundary = buffer.lastIndexOf('\n\n');
+      if (lastBoundary !== -1) {
+        const ready = buffer.slice(0, lastBoundary + 2);
+        buffer = buffer.slice(lastBoundary + 2);
+        res.write(sanitiseSsePayload(ready));
+      }
     }
+    if (buffer) res.write(sanitiseSsePayload(buffer));
   } catch (err) {
     console.error('[upstream relay] error:', err?.message || err);
   } finally {

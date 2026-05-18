@@ -10,6 +10,8 @@
 //           arrive (visible "AI is thinking" UX). Falls back to plain JSON
 //           on upstream error.
 
+import { relayStream } from './_lib/anthropic.js';
+
 const MODEL = 'claude-sonnet-4-5';
 const MAX_TOKENS = 3000;
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
@@ -121,25 +123,7 @@ export default async function handler(req, res) {
     });
   }
 
-  // Forward the SSE stream directly to the client
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache, no-transform');
-  res.setHeader('Connection', 'keep-alive');
-  res.setHeader('X-Accel-Buffering', 'no');
-  res.status(200);
-
-  const reader = upstream.body.getReader();
-  const decoder = new TextDecoder('utf-8');
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      res.write(decoder.decode(value, { stream: true }));
-    }
-  } catch (err) {
-    console.error('[generate-campaign] stream relay error:', err?.message || err);
-  } finally {
-    try { res.end(); } catch {}
-  }
+  // Forward the SSE stream via the shared sanitising relay (strips the
+  // upstream model id from message_start / message_delta payloads).
+  await relayStream(upstream, res);
 }
