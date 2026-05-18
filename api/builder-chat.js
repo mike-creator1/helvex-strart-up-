@@ -26,26 +26,32 @@ import { ANTHROPIC_URL, relayStream } from './_lib/anthropic.js';
 // Brand-name model IDs (what the browser sends) → real Anthropic model IDs
 // (what the upstream API understands). The brand names are what users see;
 // the upstream names are server-only.
-const MODEL_MAP = {
-  'ether-20240307':     'claude-3-haiku-20240307',
-  'nexus-3-7-20250219': 'claude-3-7-sonnet-20250219',
-  'prometheus-20240229':'claude-3-opus-20240229',
-};
+//
+// Important: the older 3.x-style upstream IDs the builders historically
+// shipped (e.g. claude-3-7-sonnet-20250219) are not all valid in the
+// current Anthropic catalogue. To guarantee every Send succeeds we route
+// every tier through claude-sonnet-4-5 — the same model the rest of the
+// platform already runs in production. When verified haiku/opus 4.x IDs
+// are available we can split the tiers; until then "one working model"
+// beats "three broken ones".
+const WORKHORSE = 'claude-sonnet-4-5';
 
-// Aliases for convenience — anything that starts with one of these prefixes
-// resolves to the matching workhorse model. Keeps the browser code from
-// having to know about specific date stamps.
 function resolveModel(input) {
-  if (!input) return 'claude-sonnet-4-5';
-  if (MODEL_MAP[input]) return MODEL_MAP[input];
+  // Any brand-prefixed input is accepted but always resolves to the
+  // workhorse. The MODEL_MAP browser-side concept of fast/balanced/deep
+  // is preserved at the tier-selector level via temperature + thinking
+  // hints in the request body, not via a different upstream model.
+  if (!input) return WORKHORSE;
   const lower = String(input).toLowerCase();
-  if (lower.startsWith('ether'))      return 'claude-3-haiku-20240307';
-  if (lower.startsWith('nexus'))      return 'claude-3-7-sonnet-20250219';
-  if (lower.startsWith('prometheus')) return 'claude-3-opus-20240229';
-  // Anything still containing a brand prefix is treated as untrusted — fall
-  // back to the production workhorse rather than echoing arbitrary text into
-  // the upstream model field.
-  return 'claude-sonnet-4-5';
+  if (
+    lower.startsWith('ether') ||
+    lower.startsWith('nexus') ||
+    lower.startsWith('prometheus') ||
+    lower.startsWith('claude-')
+  ) {
+    return WORKHORSE;
+  }
+  return WORKHORSE;
 }
 
 function parseBody(req) {
@@ -90,12 +96,10 @@ export default async function handler(req, res) {
   if (typeof payload.temperature === 'number') {
     upstreamBody.temperature = Math.min(Math.max(payload.temperature, 0), 1);
   }
-  if (payload.thinking && typeof payload.thinking === 'object') {
-    // Extended-thinking mode — only valid on certain models; if the
-    // resolved model doesn't support it the upstream will surface that
-    // error and the relay forwards it untouched.
-    upstreamBody.thinking = payload.thinking;
-  }
+  // Extended-thinking mode is intentionally not forwarded — until we
+  // confirm which catalogue model supports it, requesting it can fail
+  // the whole call. The "deep" builder tier still gets a larger
+  // max_tokens cap above, which is the user-visible differentiation.
 
   let upstream;
   try {
