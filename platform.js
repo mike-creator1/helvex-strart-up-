@@ -320,4 +320,60 @@
   } else {
     injectShell();
   }
+
+  /* ─── Client-side error capture ─────────────────────────────────
+     Forwards window.onerror / unhandledrejection to /api/log-error.
+     Throttled to 6 reports per page-load so a tight error loop can't
+     hammer the endpoint. Anonymous errors are dropped server-side. */
+  (function () {
+    if (window.__hxErrInit) return;
+    window.__hxErrInit = true;
+    var sent = 0;
+    var LIMIT = 6;
+
+    async function sendError(payload) {
+      if (sent >= LIMIT) return;
+      sent++;
+      try {
+        var headers = { 'Content-Type': 'application/json' };
+        var sb = window.HX && window.HX.supabase;
+        if (sb) {
+          try {
+            var r = await sb.auth.getSession();
+            var s = r && r.data && r.data.session;
+            if (s && s.access_token) headers['Authorization'] = 'Bearer ' + s.access_token;
+          } catch (_) {}
+        }
+        await fetch('/api/log-error', {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(payload),
+          keepalive: true,
+        });
+      } catch (_) { /* swallow */ }
+    }
+
+    window.addEventListener('error', function (e) {
+      sendError({
+        type: 'error',
+        message: (e && e.message) || 'unknown',
+        stack: (e && e.error && e.error.stack) || '',
+        url: (e && e.filename) || location.href,
+        line: e && e.lineno,
+        column: e && e.colno,
+        page: location.pathname,
+      });
+    });
+
+    window.addEventListener('unhandledrejection', function (e) {
+      var reason = e && e.reason;
+      sendError({
+        type: 'unhandledrejection',
+        message: (reason && (reason.message || String(reason))) || 'unhandled rejection',
+        stack: (reason && reason.stack) || '',
+        url: location.href,
+        page: location.pathname,
+      });
+    });
+  })();
 })();

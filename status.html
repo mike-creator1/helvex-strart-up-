@@ -156,18 +156,73 @@
     <div class="max-w-5xl mx-auto px-6 sm:px-8">
       <div class="reveal rounded-2xl border border-line bg-white overflow-hidden">
         <div class="px-6 py-5 bg-cream/60 border-b border-line flex items-center justify-between gap-4 flex-wrap">
-          <div class="flex items-center gap-3"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span><span class="font-semibold text-ink">All systems operational</span></div>
-          <span class="text-xs font-mono text-ink-light">Last checked · 2 min ago</span>
+          <div class="flex items-center gap-3">
+            <span id="hx-status-dot" class="w-2.5 h-2.5 rounded-full bg-ink-light"></span>
+            <span id="hx-status-label" class="font-semibold text-ink">Checking…</span>
+          </div>
+          <span id="hx-status-checked" class="text-xs font-mono text-ink-light">Pinging services…</span>
         </div>
-        <div class="divide-y divide-line-soft">
-          <div class="flex items-center justify-between px-6 py-4 gap-4"><span class="text-sm text-ink">Ether · inference</span><span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.99% (90 d)</span></div><div class="flex items-center justify-between px-6 py-4 gap-4"><span class="text-sm text-ink">Nexus · inference</span><span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.98% (90 d)</span></div><div class="flex items-center justify-between px-6 py-4 gap-4"><span class="text-sm text-ink">Prometheus · agent runtime</span><span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.96% (90 d)</span></div><div class="flex items-center justify-between px-6 py-4 gap-4"><span class="text-sm text-ink">Workspace & web app</span><span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.99% (90 d)</span></div><div class="flex items-center justify-between px-6 py-4 gap-4"><span class="text-sm text-ink">Knowledge connectors</span><span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.95% (90 d)</span></div><div class="flex items-center justify-between px-6 py-4 gap-4"><span class="text-sm text-ink">Auth & SSO</span><span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.99% (90 d)</span></div><div class="flex items-center justify-between px-6 py-4 gap-4"><span class="text-sm text-ink">Public API</span><span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>operational · 99.97% (90 d)</span></div>
+        <div id="hx-status-rows" class="divide-y divide-line-soft">
+          <div class="flex items-center justify-between px-6 py-4 gap-4"><span class="text-sm text-ink">API · serverless</span><span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-ink-light"></span>checking…</span></div>
+          <div class="flex items-center justify-between px-6 py-4 gap-4"><span class="text-sm text-ink">Supabase · database & auth</span><span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-ink-light"></span>checking…</span></div>
+          <div class="flex items-center justify-between px-6 py-4 gap-4"><span class="text-sm text-ink">Upstream AI · inference</span><span class="flex items-center gap-2 text-xs font-mono text-ink-mid"><span class="w-1.5 h-1.5 rounded-full bg-ink-light"></span>checking…</span></div>
         </div>
         <div class="px-6 py-4 border-t border-line bg-cream/40 flex flex-wrap gap-4 justify-between text-xs text-ink-mid font-mono">
           <a href="mailto:status@helvex.ai?subject=HelveX%20-%20Status%20subscription" class="hover:text-ink underline">Subscribe to status updates</a>
+          <span id="hx-status-deploy" class="text-ink-light">—</span>
         </div>
       </div>
     </div>
   </section>
+
+  <script>
+    (function () {
+      var LABEL = {
+        api:       'API · serverless',
+        supabase:  'Supabase · database & auth',
+        anthropic: 'Upstream AI · inference',
+      };
+
+      function row(name, ok, ms) {
+        var label = LABEL[name] || name;
+        var dot   = ok ? 'bg-emerald-500' : 'bg-red';
+        var word  = ok ? 'operational' : 'degraded';
+        return '<div class="flex items-center justify-between px-6 py-4 gap-4">' +
+          '<span class="text-sm text-ink">' + label + '</span>' +
+          '<span class="flex items-center gap-2 text-xs font-mono text-ink-mid">' +
+            '<span class="w-1.5 h-1.5 rounded-full ' + dot + '"></span>' +
+            word + ' · ' + (ms != null ? ms + 'ms' : '—') +
+          '</span>' +
+        '</div>';
+      }
+
+      async function poll() {
+        var checkedAt = new Date();
+        try {
+          var r = await fetch('/api/health', { cache: 'no-store' });
+          var data = await r.json();
+          var allOk = !!data.ok;
+          var dot   = document.getElementById('hx-status-dot');
+          var lbl   = document.getElementById('hx-status-label');
+          var when  = document.getElementById('hx-status-checked');
+          var rows  = document.getElementById('hx-status-rows');
+          var deploy= document.getElementById('hx-status-deploy');
+
+          dot.className = 'w-2.5 h-2.5 rounded-full ' + (allOk ? 'bg-emerald-500 animate-pulse' : 'bg-red animate-pulse');
+          lbl.textContent = allOk ? 'All systems operational' : 'Service degraded';
+          when.textContent = 'Last checked · ' + checkedAt.toLocaleTimeString();
+          rows.innerHTML = (data.services || []).map(function (s) { return row(s.name, s.ok, s.ms); }).join('');
+          deploy.textContent = data.deployed ? 'Build ' + data.deployed + (data.region ? ' · ' + data.region : '') : '';
+        } catch (err) {
+          document.getElementById('hx-status-label').textContent = 'Status check failed';
+          document.getElementById('hx-status-checked').textContent = err.message || 'Could not reach /api/health';
+        }
+      }
+
+      poll();
+      setInterval(poll, 30000);
+    })();
+  </script>
 
   <section class="border-t border-line py-12 sm:py-16">
     <div class="max-w-3xl mx-auto px-6 sm:px-8">
