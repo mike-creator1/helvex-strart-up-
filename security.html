@@ -33,13 +33,13 @@
         <div class="hx-grid hx-grid-4">
           <div class="hx-stat">
             <p class="hx-stat-label">Two-factor</p>
-            <p class="hx-stat-value" style="font-size:18px;color:var(--hx-text-dim);">Not configured</p>
-            <p class="hx-stat-meta">Recommended</p>
+            <p class="hx-stat-value" id="hx-sec-tfa" style="font-size:18px;color:var(--hx-text-dim);">Not configured</p>
+            <p class="hx-stat-meta" id="hx-sec-tfa-meta">Recommended</p>
           </div>
           <div class="hx-stat">
-            <p class="hx-stat-label">Active sessions</p>
-            <p class="hx-stat-value hx-mono">1</p>
-            <p class="hx-stat-meta">This browser</p>
+            <p class="hx-stat-label">Email verified</p>
+            <p class="hx-stat-value" id="hx-sec-email" style="font-size:18px;">—</p>
+            <p class="hx-stat-meta" id="hx-sec-email-meta">—</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Region</p>
@@ -47,9 +47,9 @@
             <p class="hx-stat-meta">Data stays in Switzerland</p>
           </div>
           <div class="hx-stat">
-            <p class="hx-stat-label">SSO</p>
-            <p class="hx-stat-value" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta">Scale plan</p>
+            <p class="hx-stat-label">Account since</p>
+            <p class="hx-stat-value" id="hx-sec-since" style="font-size:18px;color:var(--hx-text-dim);">—</p>
+            <p class="hx-stat-meta" id="hx-sec-since-meta">—</p>
           </div>
         </div>
 
@@ -83,16 +83,14 @@
         </div>
 
         <div class="hx-section-head">
-          <h2>Active sessions</h2>
-          <span class="meta">1 device</span>
+          <h2>Current session</h2>
         </div>
         <div class="hx-empty">
           <div class="icon" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
           </div>
-          <h3>Just this browser</h3>
-          <p>Sign-ins from new devices are flagged in <a href="/activity.html" style="color:var(--hx-text);text-decoration:underline;">Activity</a> with IP, region, and timestamp. Sign out of every other session at any time.</p>
-          <button class="hx-btn hx-btn-secondary" disabled>Sign out other sessions</button>
+          <h3>This browser</h3>
+          <p>Sign-ins from new devices are flagged in <a href="/activity.html" style="color:var(--hx-text);text-decoration:underline;">Activity</a> with IP, region, and timestamp. To end the session on another device, sign out from there directly.</p>
         </div>
 
         <div class="hx-section-head">
@@ -133,5 +131,47 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      function fmtDate(iso) {
+        if (!iso) return '—';
+        try { return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); }
+        catch (e) { return '—'; }
+      }
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        sb.auth.getUser().then(function (res) {
+          var u = res && res.data ? res.data.user : null;
+          if (!u) return;
+          // Email verified
+          var verified = !!u.email_confirmed_at;
+          var emailEl = document.getElementById('hx-sec-email');
+          var emailMeta = document.getElementById('hx-sec-email-meta');
+          if (emailEl) { emailEl.textContent = verified ? 'Verified' : 'Pending'; emailEl.style.color = verified ? '#15803d' : 'var(--hx-text-dim)'; }
+          if (emailMeta) emailMeta.textContent = u.email || '';
+          // Account since
+          var sinceEl = document.getElementById('hx-sec-since');
+          var sinceMeta = document.getElementById('hx-sec-since-meta');
+          if (sinceEl) sinceEl.textContent = fmtDate(u.created_at);
+          if (sinceMeta) sinceMeta.textContent = u.created_at ? 'Joined HelveX' : '—';
+        });
+        // 2FA factor list
+        if (sb.auth.mfa && sb.auth.mfa.listFactors) {
+          sb.auth.mfa.listFactors().then(function (r) {
+            var f = r && r.data ? (r.data.totp || []) : [];
+            var on = f.length > 0;
+            var tfaEl = document.getElementById('hx-sec-tfa');
+            var tfaMeta = document.getElementById('hx-sec-tfa-meta');
+            if (tfaEl) { tfaEl.textContent = on ? 'Enabled' : 'Not configured'; tfaEl.style.color = on ? '#15803d' : 'var(--hx-text-dim)'; }
+            if (tfaMeta) tfaMeta.textContent = on ? f.length + ' factor' + (f.length === 1 ? '' : 's') + ' enrolled' : 'Recommended';
+          }).catch(function () {});
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

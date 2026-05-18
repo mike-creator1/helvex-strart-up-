@@ -32,28 +32,19 @@
         <div class="hx-section-head">
           <h2>Active subscription</h2>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-            </svg>
+        <div id="hx-sub-active-host">
+          <div class="hx-empty">
+            <h3>Loading…</h3>
           </div>
-          <h3>No active subscription</h3>
-          <p>Pick a plan to unlock monthly credits, priority delivery, and a senior engineer on your team.</p>
-          <a href="/pricing.html" class="hx-btn hx-btn-primary">Compare plans</a>
         </div>
 
         <div class="hx-section-head">
           <h2>Subscription history</h2>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>
-            </svg>
+        <div id="hx-sub-history-host">
+          <div class="hx-empty">
+            <h3>Loading…</h3>
           </div>
-          <h3>No history yet</h3>
-          <p>Past plan changes and renewals will be listed here.</p>
         </div>
 
       </main>
@@ -61,5 +52,93 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+      function titleCase(s) { return (s || '').charAt(0).toUpperCase() + (s || '').slice(1); }
+      function fmtDate(iso) {
+        if (!iso) return '—';
+        try { return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); }
+        catch (e) { return '—'; }
+      }
+      function emptyActive() {
+        return '<div class="hx-empty">' +
+          '<div class="icon" aria-hidden="true">' +
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+              '<polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>' +
+            '</svg>' +
+          '</div>' +
+          '<h3>No active subscription</h3>' +
+          '<p>Pick a plan to unlock monthly credits, priority delivery, and a senior engineer on your team.</p>' +
+          '<a href="/pricing.html" class="hx-btn hx-btn-primary">Compare plans</a>' +
+        '</div>';
+      }
+      function emptyHistory() {
+        return '<div class="hx-empty">' +
+          '<div class="icon" aria-hidden="true">' +
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+              '<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>' +
+            '</svg>' +
+          '</div>' +
+          '<h3>No history yet</h3>' +
+          '<p>Past plan changes and renewals will be listed here.</p>' +
+        '</div>';
+      }
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        var activeHost = document.getElementById('hx-sub-active-host');
+        var histHost = document.getElementById('hx-sub-history-host');
+
+        sb.from('user_credits').select('plan, subscription_status, balance, current_month_spend_usd, monthly_spend_limit, updated_at').maybeSingle()
+          .then(function (r) {
+            var d = r && r.data ? r.data : null;
+            var status = d && d.subscription_status;
+            var plan = d && d.plan;
+            var hasActive = d && status && status !== 'none' && status !== 'cancelled' && plan && plan !== 'free';
+            if (!hasActive) { activeHost.innerHTML = emptyActive(); return; }
+            activeHost.innerHTML =
+              '<div class="hx-card">' +
+                '<div class="hx-card-head">' +
+                  '<div>' +
+                    '<p class="hx-card-eyebrow">Current plan</p>' +
+                    '<h3>' + esc(titleCase(plan)) + '</h3>' +
+                  '</div>' +
+                  '<span class="hx-badge hx-badge-neutral">' + esc(titleCase(status)) + '</span>' +
+                '</div>' +
+                '<div class="hx-grid hx-grid-3" style="margin-top:14px;">' +
+                  '<div><p class="hx-stat-label">Credit balance</p><p class="hx-stat-value hx-mono">' + (d.balance || 0) + '</p></div>' +
+                  '<div><p class="hx-stat-label">This month</p><p class="hx-stat-value hx-mono">$' + (Number(d.current_month_spend_usd || 0)).toFixed(2) + '</p></div>' +
+                  '<div><p class="hx-stat-label">Cap</p><p class="hx-stat-value hx-mono">' + (d.monthly_spend_limit > 0 ? '$' + d.monthly_spend_limit : 'No cap') + '</p></div>' +
+                '</div>' +
+                '<p class="desc" style="margin-top:14px;">Last updated ' + fmtDate(d.updated_at) + '. Change tier from <a href="/pricing.html" style="color:var(--hx-text);text-decoration:underline;">Pricing</a>.</p>' +
+              '</div>';
+          })
+          .catch(function () { activeHost.innerHTML = emptyActive(); });
+
+        sb.from('credit_transactions').select('id, amount, kind, description, created_at').order('created_at', { ascending: false }).limit(50)
+          .then(function (r) {
+            var rows = r && r.data ? r.data.filter(function (t) { return /^(subscription|plan|renewal|topup|upgrade|downgrade)/i.test(t.kind || ''); }) : [];
+            if (!rows.length) { histHost.innerHTML = emptyHistory(); return; }
+            var html = '<div class="hx-card" style="padding:0;overflow:hidden;">';
+            rows.forEach(function (t, i) {
+              html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;' + (i > 0 ? 'border-top:1px solid var(--hx-line);' : '') + '">' +
+                '<div>' +
+                  '<div style="font-size:13.5px;font-weight:500;">' + esc(t.description || t.kind) + '</div>' +
+                  '<div class="hx-mono" style="font-size:11.5px;color:var(--hx-text-dim);">' + fmtDate(t.created_at) + '</div>' +
+                '</div>' +
+                '<span class="hx-mono" style="font-size:12.5px;">' + (t.amount > 0 ? '+' : '') + (t.amount || 0) + ' credits</span>' +
+              '</div>';
+            });
+            html += '</div>';
+            histHost.innerHTML = html;
+          })
+          .catch(function () { histHost.innerHTML = emptyHistory(); });
+      });
+    })();
+  </script>
 </body>
 </html>

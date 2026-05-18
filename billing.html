@@ -48,35 +48,35 @@
           <span class="meta">Optional</span>
         </div>
         <div class="hx-card">
-          <p class="desc" style="margin-bottom:18px;">These details are used on the invoices we issue to your accounting team. You can fill them in any time before your first charge.</p>
+          <p class="desc" style="margin-bottom:18px;">These details are used on the invoices we issue to your accounting team. You can fill them in any time before your first charge. Saved to your browser; submitted to billing automatically on first charge.</p>
           <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;">
             <div class="hx-field" style="margin:0;">
-              <label>Company name</label>
-              <input type="text" placeholder="Your company" />
+              <label for="bd-company">Company name</label>
+              <input type="text" id="bd-company" placeholder="Your company" />
             </div>
             <div class="hx-field" style="margin:0;">
-              <label>Billing email</label>
-              <input type="email" placeholder="finance@yourcompany.com" />
+              <label for="bd-email">Billing email</label>
+              <input type="email" id="bd-email" placeholder="finance@yourcompany.com" />
             </div>
             <div class="hx-field" style="margin:0;">
-              <label>Address line 1</label>
-              <input type="text" placeholder="Street and number" />
+              <label for="bd-addr1">Address line 1</label>
+              <input type="text" id="bd-addr1" placeholder="Street and number" />
             </div>
             <div class="hx-field" style="margin:0;">
-              <label>Address line 2 (optional)</label>
-              <input type="text" placeholder="Suite, floor…" />
+              <label for="bd-addr2">Address line 2 (optional)</label>
+              <input type="text" id="bd-addr2" placeholder="Suite, floor…" />
             </div>
             <div class="hx-field" style="margin:0;">
-              <label>City</label>
-              <input type="text" placeholder="City" />
+              <label for="bd-city">City</label>
+              <input type="text" id="bd-city" placeholder="City" />
             </div>
             <div class="hx-field" style="margin:0;">
-              <label>Postal code</label>
-              <input type="text" placeholder="Postal code" />
+              <label for="bd-postal">Postal code</label>
+              <input type="text" id="bd-postal" placeholder="Postal code" />
             </div>
             <div class="hx-field" style="margin:0;">
-              <label>Country</label>
-              <select>
+              <label for="bd-country">Country</label>
+              <select id="bd-country">
                 <option value="">Select…</option>
                 <option>Switzerland</option>
                 <option>Germany</option>
@@ -87,13 +87,14 @@
               </select>
             </div>
             <div class="hx-field" style="margin:0;">
-              <label>VAT / UID number</label>
-              <input type="text" placeholder="e.g. CHE-… MWST" />
+              <label for="bd-vat">VAT / UID number</label>
+              <input type="text" id="bd-vat" placeholder="e.g. CHE-… MWST" />
             </div>
           </div>
-          <div style="display:flex;gap:8px;margin-top:20px;">
-            <button class="hx-btn hx-btn-primary">Save details</button>
-            <button class="hx-btn hx-btn-ghost">Cancel</button>
+          <div style="display:flex;gap:8px;margin-top:20px;align-items:center;">
+            <button class="hx-btn hx-btn-primary" id="bd-save">Save details</button>
+            <button class="hx-btn hx-btn-ghost" id="bd-cancel">Cancel</button>
+            <span id="bd-status" style="margin-left:auto;font-size:12px;color:var(--hx-text-mid);"></span>
           </div>
         </div>
 
@@ -102,5 +103,50 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    (function () {
+      var KEY = 'helvex.billing_details';
+      var FIELDS = ['company','email','addr1','addr2','city','postal','country','vat'];
+      var $ = function (id) { return document.getElementById(id); };
+
+      function load() {
+        try {
+          var data = JSON.parse(localStorage.getItem(KEY) || '{}');
+          FIELDS.forEach(function (f) { var el = $('bd-' + f); if (el && data[f] != null) el.value = data[f]; });
+          if (Object.keys(data).length) {
+            $('bd-status').textContent = 'Loaded saved details';
+            setTimeout(function () { $('bd-status').textContent = ''; }, 2200);
+          }
+        } catch (e) {}
+      }
+
+      function save() {
+        var data = {};
+        FIELDS.forEach(function (f) { var el = $('bd-' + f); if (el) data[f] = el.value.trim(); });
+        if (!data.company && !data.email) {
+          $('bd-status').style.color = '#dc2626';
+          $('bd-status').textContent = 'Add at least a company name or billing email';
+          setTimeout(function () { $('bd-status').textContent = ''; }, 3000);
+          return;
+        }
+        try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+        if (window.cxToast) {
+          window.cxToast('Billing details saved', 'success');
+        } else {
+          $('bd-status').style.color = '#15803d';
+          $('bd-status').textContent = 'Saved';
+          setTimeout(function () { $('bd-status').textContent = ''; }, 2400);
+        }
+      }
+
+      function reset() {
+        FIELDS.forEach(function (f) { var el = $('bd-' + f); if (el) el.value = ''; });
+      }
+
+      load();
+      $('bd-save').addEventListener('click', save);
+      $('bd-cancel').addEventListener('click', reset);
+    })();
+  </script>
 </body>
 </html>
