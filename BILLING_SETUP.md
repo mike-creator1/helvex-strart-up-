@@ -128,7 +128,7 @@ credits.js: Credits.deduct('service', estimatedCost)
     → calls Supabase RPC deduct_credits()
     → atomically deducts, logs api_usage_log, logs credit_transaction
     ↓
-Claude API call runs
+HelveX AI call runs
     ↓
 credits.js: Credits.reconcile(logId, realCost, inputTokens, outputTokens)
     → calls Supabase RPC update_real_api_cost()

@@ -1,4 +1,4 @@
-// Shared Anthropic helper for every HelveX serverless endpoint.
+// Shared upstream-AI helper for every HelveX serverless endpoint.
 // Files in /api/_lib/* are NOT exposed as routes (underscore prefix
 // hides them from Vercel routing) — they're plain JS modules.
 
@@ -6,8 +6,8 @@ export const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 export const DEFAULT_MODEL = 'claude-sonnet-4-5';
 
 /**
- * Call Claude in streaming mode and return the raw fetch Response so the
- * caller can either parse it or pipe it straight to the browser.
+ * Call the upstream model in streaming mode and return the raw fetch Response
+ * so the caller can either parse it or pipe it straight to the browser.
  */
 export async function callAnthropicStream({ system, userPrompt, maxTokens = 3000, model = DEFAULT_MODEL, history = [] }) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -37,7 +37,7 @@ export async function callAnthropicStream({ system, userPrompt, maxTokens = 3000
 }
 
 /**
- * Pipe an Anthropic streaming response straight to the Vercel response.
+ * Pipe an upstream streaming response straight to the Vercel response.
  * The browser receives raw SSE events ("event: content_block_delta" etc.)
  * and parses them in-page.
  */
@@ -58,7 +58,7 @@ export async function relayStream(upstream, res) {
       res.write(decoder.decode(value, { stream: true }));
     }
   } catch (err) {
-    console.error('[anthropic relay] error:', err?.message || err);
+    console.error('[upstream relay] error:', err?.message || err);
   } finally {
     try { res.end(); } catch {}
   }
@@ -87,7 +87,7 @@ export function requirePost(req, res) {
     return false;
   }
   if (!process.env.ANTHROPIC_API_KEY) {
-    res.status(500).json({ error: 'Server not configured. ANTHROPIC_API_KEY missing on Vercel.' });
+    res.status(500).json({ error: 'Server not configured.' });
     return false;
   }
   return true;

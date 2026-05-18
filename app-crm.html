@@ -171,7 +171,7 @@
           </div>
           <div class="hx-page-actions">
             <a href="/crm" class="hx-btn hx-btn-secondary">About CRM</a>
-            <button class="hx-btn hx-btn-secondary" id="hx-enrich-btn" title="Claude analyses an email + name and produces a sales-intelligence profile">✨ AI Enrich</button>
+            <button class="hx-btn hx-btn-secondary" id="hx-enrich-btn" title="HelveX analyses an email + name and produces a sales-intelligence profile">✨ AI Enrich</button>
             <button class="hx-btn hx-btn-primary" id="hx-new-lead-btn">+ New lead</button>
           </div>
         </div>
@@ -837,7 +837,7 @@
       </div>
       <div class="hxai-modal-body">
         <p style="font-size:13px;color:var(--hx-text-mid);margin:0 0 14px;line-height:1.55;">
-          Paste a contact's email. Claude infers company, role, industry, size, and writes a sales-tailored conversation starter. Honest confidence levels — no hallucinated facts.
+          Paste a contact's email. HelveX infers company, role, industry, size, and writes a sales-tailored conversation starter. Honest confidence levels — no hallucinated facts.
         </p>
         <div class="hxai-field-row">
           <div class="hxai-field">
@@ -857,7 +857,7 @@
         <div id="hx-enrich-result" class="hxai-results" style="margin-top:8px;"></div>
       </div>
       <div class="hxai-modal-foot">
-        <span class="hxai-cost">~$0.005 · Claude Sonnet 4.5</span>
+        <span class="hxai-cost">~$0.005 · Nexus 4.5</span>
         <button class="hx-btn hx-btn-secondary" data-modal-close="hx-enrich-modal">Close</button>
         <button class="hx-btn hx-btn-primary" id="hx-enrich-run">Enrich</button>
       </div>
@@ -935,7 +935,7 @@
         if (!email.includes('@') || email.length < 5) { setStatus('Enter a valid email.', true); return; }
         runBtn.disabled = true; runBtn.textContent = 'Enriching…';
         resultEl.innerHTML = '';
-        setStatus('Calling Claude…');
+        setStatus('Calling HelveX…');
 
         try {
           const raw = await HXAI.runStream('/api/crm-enrich', {

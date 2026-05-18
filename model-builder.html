@@ -179,9 +179,9 @@ var CFG={
   color:'#18d7ff',bg:'rgba(24,215,255,.1)',
   system:'You are the CreateX AI Model Agent — a world-class expert in designing, configuring, fine-tuning, and deploying custom AI language models. Help users: select optimal base models, craft precise system prompts, configure training parameters, plan training datasets, evaluate model performance, and deploy to production. When asked to create a model configuration, provide a complete ready-to-use system prompt in a code block. Be direct, technical, and action-oriented.',
   suggestions:['Create a customer support model','Fine-tune a model on my data','Compare model architectures','Write a production system prompt'],
-  template:'Create an AI model for [use case].\n\nBase model: [claude-3-5-nexus / claude-3-ether]\nTask: [classification / generation / Q&A / summarization]\nTone: [formal / casual / technical]\nConstraints: [rules or limits]\n\nExample interactions:\n- Input: ...\n  Output: ...'
+  template:'Create an AI model for [use case].\n\nBase model: [Nexus / Ether]\nTask: [classification / generation / Q&A / summarization]\nTone: [formal / casual / technical]\nConstraints: [rules or limits]\n\nExample interactions:\n- Input: ...\n  Output: ...'
 };
-var MODEL_MAP={'4.3':'claude-3-ether-20240307','4.7':'claude-3-7-nexus-20250219','4.9':'claude-3-prometheus-20240229'};
+var MODEL_MAP={'4.3':'ether-20240307','4.7':'nexus-3-7-20250219','4.9':'prometheus-20240229'};
 var MAX_TOKENS={fast:1024,balanced:4096,deep:12000};
 /* ── State ── */
 var history=[],attachments=[],loading=false,listening=false,rec=null;
@@ -256,9 +256,9 @@ async function send(){
   try{
     var mv=document.getElementById('mdl-sel').value;
     var rv=document.getElementById('rsn-sel').value;
-    var mdlId=MODEL_MAP[mv]||'claude-3-7-nexus-20250219';
+    var mdlId=MODEL_MAP[mv]||'nexus-3-7-20250219';
     var body={model:mdlId,max_tokens:MAX_TOKENS[rv]||4096,system:CFG.system,messages:history.map(function(h){return{role:h.role,content:h.content};}),stream:true};
-    if(rv==='deep'&&mdlId==='claude-3-7-nexus-20250219'){body.thinking={type:'enabled',budget_tokens:8000};}
+    if(rv==='deep'&&mdlId==='nexus-3-7-20250219'){body.thinking={type:'enabled',budget_tokens:8000};}
     else if(rv==='fast'){body.temperature=0.3;}
     else if(rv==='balanced'){body.temperature=0.7;}
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'x-api-key':apiKey,'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify(body)});

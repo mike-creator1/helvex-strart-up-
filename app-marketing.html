@@ -186,7 +186,7 @@
         <div id="hx-social-result" class="hxai-results" style="margin-top:8px;"></div>
       </div>
       <div class="hx-modal-foot">
-        <span class="hx-cost" id="hx-social-cost-hint">~$0.005 per generation · Claude Sonnet 4.5</span>
+        <span class="hx-cost" id="hx-social-cost-hint">~$0.005 per generation · Nexus 4.5</span>
         <button class="hx-btn hx-btn-secondary" id="hx-social-cancel">Close</button>
         <button class="hx-btn hx-btn-primary" id="hx-social-submit" type="button">Generate posts</button>
       </div>
@@ -241,7 +241,7 @@
         <div id="hx-ads-result" class="hxai-results" style="margin-top:8px;"></div>
       </div>
       <div class="hx-modal-foot">
-        <span class="hx-cost">~$0.01 per generation · Claude Sonnet 4.5</span>
+        <span class="hx-cost">~$0.01 per generation · Nexus 4.5</span>
         <button class="hx-btn hx-btn-secondary" id="hx-ads-cancel">Close</button>
         <button class="hx-btn hx-btn-primary" id="hx-ads-submit" type="button">Generate ads</button>
       </div>
@@ -332,7 +332,7 @@
         <div id="hx-results-area" class="hx-results" style="margin-top:8px;"></div>
       </div>
       <div class="hx-modal-foot">
-        <span class="hx-cost" id="hx-cost-hint">~$0.01 per generation · Claude Sonnet 4.5</span>
+        <span class="hx-cost" id="hx-cost-hint">~$0.01 per generation · Nexus 4.5</span>
         <button class="hx-btn hx-btn-secondary" id="hx-email-cancel">Close</button>
         <button class="hx-btn hx-btn-primary" id="hx-email-submit" type="button">Generate variants</button>
       </div>
@@ -391,7 +391,7 @@
         }).join('');
       }
 
-      // Parse the streaming response. Anthropic SSE events look like:
+      // Parse the streaming response. Upstream SSE events look like:
       //   event: content_block_delta
       //   data: {"type":"content_block_delta","delta":{"type":"text_delta","text":"..."}}
       // We accumulate all text deltas; the final assembled text should be a
@@ -459,7 +459,7 @@
 
         submit.disabled = true; submit.textContent = 'Generating…';
         resultsEl.innerHTML = '';
-        setStatus('Calling Claude…');
+        setStatus('Calling HelveX…');
 
         try {
           const raw = await streamGenerate(payload);
@@ -552,7 +552,7 @@
         if (!platforms.length) { setStatus('Pick at least one platform.', true); return; }
 
         submit.disabled = true; submit.textContent = 'Generating…';
-        resultEl.innerHTML = ''; setStatus('Calling Claude…');
+        resultEl.innerHTML = ''; setStatus('Calling HelveX…');
 
         try {
           const raw = await HXAI.runStream('/api/generate-social', {
@@ -651,7 +651,7 @@
         if (!platforms.length) { setStatus('Pick at least one platform.', true); return; }
 
         submit.disabled = true; submit.textContent = 'Generating…';
-        resultEl.innerHTML = ''; setStatus('Calling Claude…');
+        resultEl.innerHTML = ''; setStatus('Calling HelveX…');
 
         try {
           const raw = await HXAI.runStream('/api/generate-ads', {

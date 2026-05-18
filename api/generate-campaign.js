@@ -1,11 +1,11 @@
-// Vercel serverless function — generates email campaign drafts via Anthropic API.
+// Vercel serverless function — generates email campaign drafts via the upstream AI.
 //
 // Required env: ANTHROPIC_API_KEY (set on Vercel → Project → Settings → Env Vars)
 //
 // Request:  POST /api/generate-campaign
 //           Body: { brief, audience, goal, tone, language, variants }
 //
-// Response: Server-Sent Events stream. Forwards Anthropic streaming events
+// Response: Server-Sent Events stream. Forwards upstream streaming events
 //           transparently to the client so the UI can render tokens as they
 //           arrive (visible "AI is thinking" UX). Falls back to plain JSON
 //           on upstream error.
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return res.status(500).json({
-      error: 'Server not configured. ANTHROPIC_API_KEY missing on Vercel.',
+      error: 'Server not configured.',
     });
   }
 
@@ -87,7 +87,7 @@ export default async function handler(req, res) {
 
   const variants = Math.min(Math.max(parseInt(payload.variants, 10) || 3, 1), 5);
 
-  // Call Anthropic — streaming
+  // Call upstream — streaming
   let upstream;
   try {
     upstream = await fetch(ANTHROPIC_URL, {
@@ -109,14 +109,14 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     console.error('[generate-campaign] fetch error:', err?.message || err);
-    return res.status(502).json({ error: 'Could not reach Claude API. Try again in a few seconds.' });
+    return res.status(502).json({ error: 'Could not reach HelveX AI. Try again in a few seconds.' });
   }
 
   if (!upstream.ok) {
     const text = await upstream.text().catch(() => '');
     console.error('[generate-campaign] upstream not ok:', upstream.status, text.slice(0, 500));
     return res.status(upstream.status).json({
-      error: `Claude API error (${upstream.status})`,
+      error: `HelveX AI error (${upstream.status})`,
       details: text.slice(0, 500),
     });
   }

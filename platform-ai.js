@@ -1,10 +1,10 @@
 /* HelveX shared AI client — call any /api/* streaming endpoint and parse
-   Anthropic SSE events into clean text/JSON for the caller.
-   Loaded by every app-* page that runs Claude-powered features. */
+   server-sent events into clean text/JSON for the caller.
+   Loaded by every app-* page that runs HelveX-powered features. */
 
 (function (global) {
   /**
-   * Run a Claude-powered endpoint with streaming.
+   * Run a HelveX-powered endpoint with streaming.
    *
    * @param {string} endpoint  e.g. '/api/generate-campaign'
    * @param {object} payload   request JSON body

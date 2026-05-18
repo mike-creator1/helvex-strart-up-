@@ -23,9 +23,9 @@
 
   /* HelveX Prometheus pricing (USD per 1M tokens) */
   const MODEL_PRICING = {
-    'claude-opus-4-5':    { input: 15.00, output: 75.00 },
-    'claude-sonnet-4-5':  { input: 3.00,  output: 15.00 },
-    'claude-haiku-3':     { input: 0.25,  output: 1.25  },
+    'prometheus-4-5':    { input: 15.00, output: 75.00 },
+    'nexus-4-5':  { input: 3.00,  output: 15.00 },
+    'ether-3':     { input: 0.25,  output: 1.25  },
   };
 
   /* Service minimums (mirrors DB — used as local fallback) */
@@ -64,7 +64,7 @@
    * @returns {number} cost in USD
    */
   function estimateCostFromTokens(inputTokens, outputTokens, model) {
-    const p = MODEL_PRICING[model] || MODEL_PRICING['claude-opus-4-5'];
+    const p = MODEL_PRICING[model] || MODEL_PRICING['prometheus-4-5'];
     return (inputTokens / 1e6) * p.input + (outputTokens / 1e6) * p.output;
   }
 
@@ -75,7 +75,7 @@
    * @returns {{ inputTokens, outputTokens, estimatedCost }}
    */
   function estimateFromPrompt(prompt, expectedOutputTokens, model) {
-    model = model || 'claude-opus-4-5';
+    model = model || 'prometheus-4-5';
     const inputTokens  = Math.ceil((prompt || '').length / 4);
     const outputTokens = expectedOutputTokens || 1000;
     const cost         = estimateCostFromTokens(inputTokens, outputTokens, model);
@@ -148,7 +148,7 @@
     async deduct(service, estimatedCostUsd, model, inputTokens, outputTokens) {
       const session = await getSession();
       if (!session) return { ok: false, reason: 'not_logged_in' };
-      model        = model        || 'claude-opus-4-5';
+      model        = model        || 'prometheus-4-5';
       inputTokens  = inputTokens  || 0;
       outputTokens = outputTokens || 0;
 

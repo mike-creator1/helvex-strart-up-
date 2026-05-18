@@ -643,7 +643,7 @@
         'Never use emojis, kaomoji, decorative symbols, or playful punctuation.',
         'Never include phrases like "Hi there!", "Sure!", or other filler greetings.',
         'Do not introduce yourself unless explicitly asked. When asked your name, you are Helix.',
-        'Never identify as Claude, Anthropic, GPT, OpenAI, or any third-party model or provider — you are Helix.',
+        'Never identify with or name any underlying model or provider — you are Helix, built by HelveX.',
         'Match the language the user writes in. If the user writes in Greek, reply in Greek.',
         'Be concise and substantive. Skip preamble. Lead with the answer, then add context only if useful.'
       ].join(' ');
@@ -658,6 +658,26 @@
         msgChannel: null,
         attachments: [],       // composer's pending attachments
       };
+
+      // ─── Global active project (shared across pages via localStorage) ──
+      // The project dropdown on this page persists the user's "working
+      // project" so that new chats — and the Overview / Projects pages —
+      // can all reflect the same context. Reading an existing conversation
+      // still shows its own saved project_id; the active project only
+      // governs NEW conversations and cross-page indicators.
+      var ACTIVE_KEY = 'hx_active_project';
+      function getActiveProject() {
+        try { return JSON.parse(localStorage.getItem(ACTIVE_KEY) || 'null'); }
+        catch (e) { return null; }
+      }
+      function setActiveProject(id, name) {
+        try {
+          if (id) localStorage.setItem(ACTIVE_KEY, JSON.stringify({ id: id, name: name || '' }));
+          else    localStorage.removeItem(ACTIVE_KEY);
+        } catch (e) {}
+        // Same-tab listeners (other components on this page)
+        try { document.dispatchEvent(new CustomEvent('hx:active-project-changed', { detail: getActiveProject() })); } catch (e) {}
+      }
 
       // ─── Attachment / upload limits ──────────────────────────────
       var ATTACH_LIMITS = {
@@ -712,20 +732,53 @@
 
         // ─── Project picker ──────────────────────────────────
         async function loadProjects() {
-          var r = await sb.from('projects').select('id,name,status').order('name');
+          var r = await sb.from('projects').select('id,name,status').order('updated_at', { ascending: false });
           var sel = $('hx-c-project');
           while (sel.options.length > 1) sel.remove(1);
-          (r.data || []).filter(function (p) { return p.status !== 'archived'; }).forEach(function (p) {
+          var byId = {};
+          var live = (r.data || []).filter(function (p) { return p.status !== 'archived'; });
+          state.projectCount = live.length;
+          live.forEach(function (p) {
+            byId[p.id] = p.name;
             var opt = document.createElement('option');
             opt.value = p.id; opt.textContent = p.name;
             sel.appendChild(opt);
           });
+
+          var active = getActiveProject();
+
+          // If the user has projects but no active selection (or the
+          // previously-selected one was archived/deleted), promote the
+          // most-recently-updated live project. The chat experience is
+          // project-scoped, so the dropdown should never sit on "None"
+          // when real projects exist.
+          if ((!active || !active.id || !byId[active.id]) && live.length > 0) {
+            var pick = live[0];
+            setActiveProject(pick.id, pick.name);
+            active = getActiveProject();
+          } else if (active && active.id && !byId[active.id]) {
+            // No live projects at all and the active one was archived
+            setActiveProject(null);
+            active = null;
+          }
+
+          // Reflect the resolved active project in the dropdown so the
+          // visible selection matches the stored state. openConversation()
+          // may override this later to show the open chat's own project.
+          sel.value = (active && active.id) || '';
         }
 
-        // ─── Conversation list ───────────────────────────────
+        // ─── Conversation list (scoped to the active project) ─
         async function refreshList() {
-          var r = await sb.from('conversations').select('id,title,model,updated_at,project_id')
+          var active = getActiveProject();
+          var q = sb.from('conversations').select('id,title,model,updated_at,project_id')
             .is('archived_at', null).order('updated_at', { ascending: false }).limit(100);
+          // Chat is project-scoped. When an active project is selected the
+          // sidebar only shows that project's conversations. With no active
+          // project we fall back to ALL conversations so users don't lose
+          // access to legacy chats that pre-date the project system.
+          if (active && active.id) q = q.eq('project_id', active.id);
+          var r = await q;
           state.conversations = r.data || [];
           renderList();
         }
@@ -733,7 +786,17 @@
         function renderList() {
           var host = $('hx-c-list');
           if (!state.conversations.length) {
-            host.innerHTML = '<div class="hx-chat-empty-list" id="hx-c-empty">No conversations yet.</div>';
+            var active = getActiveProject();
+            var hasProjects = !!(state.projectCount && state.projectCount > 0);
+            var msg;
+            if (!active || !active.id) {
+              msg = hasProjects
+                ? 'Select a project above to see its chats.'
+                : 'Create a project first to start chatting.';
+            } else {
+              msg = 'No chats in this project yet.';
+            }
+            host.innerHTML = '<div class="hx-chat-empty-list" id="hx-c-empty">' + msg + '</div>';
             return;
           }
           var html = '';
@@ -810,7 +873,31 @@
         function renderThread() {
           var thread = $('hx-c-thread');
           if (!state.conversation) {
-            thread.innerHTML = '<div class="hx-chat-blank"><h2>Helix</h2><p>Begin a conversation when you are ready.</p></div>';
+            var active = getActiveProject();
+            if (!active || !active.id) {
+              // No project selected — guide the user to pick one (or create
+              // their first project) before they can start chatting.
+              var hasProjects = !!(state.projectCount && state.projectCount > 0);
+              if (hasProjects) {
+                thread.innerHTML =
+                  '<div class="hx-chat-blank">' +
+                    '<h2>Pick a project</h2>' +
+                    '<p>Use the <strong>Project</strong> selector above to choose what you are working on. Every chat is saved under the active project.</p>' +
+                  '</div>';
+              } else {
+                thread.innerHTML =
+                  '<div class="hx-chat-blank">' +
+                    '<h2>Create your first project</h2>' +
+                    '<p>Chats live inside projects. Open <a href="/projects.html?new=1" style="text-decoration:underline;">Projects</a> to create one, then come back here.</p>' +
+                  '</div>';
+              }
+              return;
+            }
+            thread.innerHTML =
+              '<div class="hx-chat-blank">' +
+                '<h2>Helix</h2>' +
+                '<p>Working on <strong>' + escape(active.name || 'Unnamed project') + '</strong>. Send your first message below.</p>' +
+              '</div>';
             return;
           }
           if (!state.messages.length && !state.sending) {
@@ -947,8 +1034,25 @@
         // ─── New conversation ────────────────────────────────
         async function newConversation() {
           var u = (await sb.auth.getUser()).data.user; if (!u) return;
+          var active = getActiveProject();
+          // Guard: a chat must always live inside a project once the user
+          // has projects available. If they have none, route them to create
+          // one first. If they have projects but none is selected, surface
+          // the dropdown.
+          if (!active || !active.id) {
+            if (state.projectCount && state.projectCount > 0) {
+              $('hx-c-project').focus();
+              renderThread();
+              return;
+            } else {
+              if (confirm('You need a project before you can chat. Create one now?')) {
+                window.location.href = '/projects.html?new=1';
+              }
+              return;
+            }
+          }
           var model = $('hx-c-model').value || 'ether';
-          var proj  = $('hx-c-project').value || null;
+          var proj  = active.id;
           var ins = await sb.from('conversations').insert({
             owner_id: u.id, project_id: proj, model: model, title: 'New chat'
           }).select().maybeSingle();
@@ -1260,11 +1364,44 @@
           await sb.from('conversations').update({ model: model }).eq('id', state.conversation.id);
           state.conversation.model = model;
         });
+        // Project switch = full chat-context refresh. Closes the current
+        // conversation, persists the new active project, reloads the
+        // sidebar filtered to the new project's conversations, and opens
+        // the most recent (or shows the empty state if none exist).
+        async function switchActiveProject(projId, projName) {
+          setActiveProject(projId, projName);
+          // Tear down current conversation + realtime channel
+          if (state.msgChannel) { try { state.msgChannel.unsubscribe(); } catch (e) {} state.msgChannel = null; }
+          state.conversation = null;
+          state.messages = [];
+          $('hx-c-title').textContent = 'New chat';
+          // Reload the sidebar against the new project
+          await refreshList();
+          // Open the most recent chat in this project (if any)
+          if (state.conversations.length) {
+            await openConversation(state.conversations[0].id);
+          } else {
+            renderThread();
+          }
+        }
+
         $('hx-c-project').addEventListener('change', async function () {
-          if (!state.conversation) return;
-          var proj = $('hx-c-project').value || null;
-          await sb.from('conversations').update({ project_id: proj }).eq('id', state.conversation.id);
-          state.conversation.project_id = proj;
+          var sel  = $('hx-c-project');
+          var proj = sel.value || null;
+          var name = (proj && sel.options[sel.selectedIndex]) ? sel.options[sel.selectedIndex].textContent : '';
+          await switchActiveProject(proj, name);
+        });
+
+        // If another tab changes the active project, mirror the whole
+        // context swap so all workspace tabs stay in sync.
+        window.addEventListener('storage', async function (e) {
+          if (e.key !== ACTIVE_KEY) return;
+          var active = getActiveProject();
+          var sel = $('hx-c-project');
+          var newId = (active && active.id) || '';
+          if (sel.value === newId) return; // already in sync
+          sel.value = newId;
+          await switchActiveProject(newId || null, (active && active.name) || '');
         });
 
         // ─── Composer wiring ─────────────────────────────────
@@ -1743,11 +1880,19 @@
         sendBtn.addEventListener('click', function () { send(); });
 
         // ─── Boot ────────────────────────────────────────────
+        // Order matters: loadProjects() resolves which project is active
+        // (auto-picking the most recent if none was stored). refreshList()
+        // then filters conversations by that active project.
         sb.auth.getUser().then(async function (res) {
           var u = res && res.data ? res.data.user : null; if (!u) return;
           state.owner = u.id;
-          await Promise.all([loadProjects(), refreshList(), refreshBalance()]);
-          if (state.conversations.length) await openConversation(state.conversations[0].id);
+          await loadProjects();
+          await Promise.all([refreshList(), refreshBalance()]);
+          if (state.conversations.length) {
+            await openConversation(state.conversations[0].id);
+          } else {
+            renderThread(); // shows the appropriate blank state
+          }
         });
 
         window.addEventListener('beforeunload', function () {

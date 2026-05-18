@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS api_usage_log (
   user_id                UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   service                TEXT NOT NULL CHECK (service IN (
                            'cv_builder','auto_apply','agent_builder','website_builder','app_builder')),
-  model                  TEXT NOT NULL DEFAULT 'claude-opus-4-5',
+  model                  TEXT NOT NULL DEFAULT 'prometheus-4-5',
   input_tokens           INTEGER NOT NULL DEFAULT 0,
   output_tokens          INTEGER NOT NULL DEFAULT 0,
   total_tokens           INTEGER NOT NULL DEFAULT 0,
@@ -190,7 +190,7 @@ CREATE OR REPLACE FUNCTION deduct_credits(
   p_user_id           UUID,
   p_service           TEXT,
   p_estimated_cost    NUMERIC,
-  p_model             TEXT DEFAULT 'claude-opus-4-5',
+  p_model             TEXT DEFAULT 'prometheus-4-5',
   p_input_tokens      INTEGER DEFAULT 0,
   p_output_tokens     INTEGER DEFAULT 0
 ) RETURNS JSON LANGUAGE plpgsql SECURITY DEFINER AS $$

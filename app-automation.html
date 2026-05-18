@@ -61,7 +61,7 @@
         <!-- LIVE: Smart Inbox Triage -->
         <div class="hx-tool-card">
           <h2>📥 Smart inbox triage <span class="hxai-chip hxai-chip-green" style="margin-left:6px;">LIVE</span></h2>
-          <p class="sub">Paste any incoming email. Claude classifies intent + urgency + sentiment, then drafts a reply you can approve or send.</p>
+          <p class="sub">Paste any incoming email. HelveX classifies intent + urgency + sentiment, then drafts a reply you can approve or send.</p>
 
           <div class="hxai-field">
             <label for="hx-triage-email">Incoming email <span class="hxai-hint">(paste the full message, sender info optional)</span></label>
@@ -98,7 +98,7 @@
           </div>
 
           <div style="display:flex;justify-content:flex-end;gap:8px;align-items:center;">
-            <span class="hxai-cost">~$0.01 · Claude Sonnet 4.5</span>
+            <span class="hxai-cost">~$0.01 · Nexus 4.5</span>
             <button class="hx-btn hx-btn-primary" id="hx-triage-run">Triage + draft reply</button>
           </div>
 
@@ -248,7 +248,7 @@
         btn.disabled = true;
         btn.textContent = 'Analysing…';
         resultEl.innerHTML = '';
-        setStatus('Calling Claude…');
+        setStatus('Calling HelveX…');
 
         try {
           const raw = await HXAI.runStream('/api/automation-reply', {

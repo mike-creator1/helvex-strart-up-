@@ -57,7 +57,7 @@ Return only the JSON object per the schema.`;
     const upstream = await callAnthropicStream({ system: SYSTEM, userPrompt, maxTokens: 2000 });
     if (!upstream.ok) {
       const text = await upstream.text().catch(() => '');
-      return res.status(upstream.status).json({ error: `Claude API ${upstream.status}`, details: text.slice(0, 500) });
+      return res.status(upstream.status).json({ error: `HelveX AI ${upstream.status}`, details: text.slice(0, 500) });
     }
     await relayStream(upstream, res);
   } catch (err) {

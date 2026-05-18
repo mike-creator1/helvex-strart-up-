@@ -51,7 +51,7 @@ export default async function handler(req, res) {
     });
     if (!upstream.ok) {
       const text = await upstream.text().catch(() => '');
-      return res.status(upstream.status).json({ error: `Claude API ${upstream.status}`, details: text.slice(0, 500) });
+      return res.status(upstream.status).json({ error: `HelveX AI ${upstream.status}`, details: text.slice(0, 500) });
     }
     await relayStream(upstream, res);
   } catch (err) {
