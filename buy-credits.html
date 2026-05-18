@@ -33,20 +33,20 @@
         <div class="hx-grid hx-grid-3">
           <div class="hx-price-card">
             <p class="hx-price-name">Starter pack</p>
-            <div class="hx-price-amount">€600 <span class="per">· 500 cr</span></div>
+            <div class="hx-price-amount">CHF 600 <span class="per">· 500 cr</span></div>
             <p class="hx-price-desc">Quick top-up for small fixes, integrations, or a one-week consulting sprint.</p>
             <ul class="hx-price-features">
               <li>500 credits, never expire</li>
               <li>Stacks on subscription balance</li>
               <li>Same-day activation</li>
             </ul>
-            <button class="hx-btn hx-btn-secondary" style="width:100%;justify-content:center;">Choose pack</button>
+            <button type="button" class="hx-btn hx-btn-secondary hx-pack-btn" data-slug="pack-500" style="width:100%;justify-content:center;">Buy 500 credits</button>
           </div>
 
           <div class="hx-price-card featured">
             <span class="tag">Most picked</span>
             <p class="hx-price-name">Standard pack</p>
-            <div class="hx-price-amount">€1,200 <span class="per">· 1,000 cr</span></div>
+            <div class="hx-price-amount">CHF 1,200 <span class="per">· 1,000 cr</span></div>
             <p class="hx-price-desc">Funds a full medium-sized engagement — e.g. an internal copilot or a CRM rebuild cycle.</p>
             <ul class="hx-price-features">
               <li>1,000 credits, never expire</li>
@@ -54,12 +54,12 @@
               <li>Stacks on subscription balance</li>
               <li>Same-day activation</li>
             </ul>
-            <button class="hx-btn hx-btn-primary" style="width:100%;justify-content:center;">Choose pack</button>
+            <button type="button" class="hx-btn hx-btn-primary hx-pack-btn" data-slug="pack-1000" style="width:100%;justify-content:center;">Buy 1,000 credits</button>
           </div>
 
           <div class="hx-price-card">
             <p class="hx-price-name">Scale pack</p>
-            <div class="hx-price-amount">€2,500 <span class="per">· 2,500 cr</span></div>
+            <div class="hx-price-amount">CHF 2,500 <span class="per">· 2,500 cr</span></div>
             <p class="hx-price-desc">Best per-credit rate. Ideal if you've got two or three parallel projects in the next quarter.</p>
             <ul class="hx-price-features">
               <li>2,500 credits, never expire</li>
@@ -67,7 +67,7 @@
               <li>Priority queue on briefs</li>
               <li>Quarterly review with lead engineer</li>
             </ul>
-            <button class="hx-btn hx-btn-secondary" style="width:100%;justify-content:center;">Choose pack</button>
+            <button type="button" class="hx-btn hx-btn-secondary hx-pack-btn" data-slug="pack-2500" style="width:100%;justify-content:center;">Buy 2,500 credits</button>
           </div>
         </div>
 
@@ -77,21 +77,22 @@
           <span class="meta">For finance-approved budgets</span>
         </div>
         <div class="hx-card">
-          <p class="desc" style="margin-bottom:20px;">Pre-approved budget to spend? Enter the amount and we'll generate a quote and an invoice your finance team can pay by bank transfer.</p>
+          <p class="desc" style="margin-bottom:20px;">Pre-approved budget to spend? Enter the amount — we email your finance team a quote and an invoice they can pay by bank transfer.</p>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
             <div class="hx-field">
-              <label>Credit amount</label>
-              <input type="number" placeholder="e.g. 5000" min="500" step="100" />
+              <label for="hx-cq-amount">Credit amount</label>
+              <input type="number" id="hx-cq-amount" placeholder="e.g. 5000" min="500" step="100" />
               <div class="help">Minimum 500 cr. Volume discounts kick in at 5,000 cr.</div>
             </div>
             <div class="hx-field">
-              <label>PO / cost-centre reference (optional)</label>
-              <input type="text" placeholder="Internal reference" />
+              <label for="hx-cq-ref">PO / cost-centre reference (optional)</label>
+              <input type="text" id="hx-cq-ref" placeholder="Internal reference" />
             </div>
           </div>
-          <div style="display:flex;gap:8px;margin-top:8px;">
-            <button class="hx-btn hx-btn-primary">Request quote</button>
-            <button class="hx-btn hx-btn-ghost">Cancel</button>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+            <button type="button" class="hx-btn hx-btn-primary" id="hx-cq-submit">Request quote</button>
+            <button type="button" class="hx-btn hx-btn-ghost" id="hx-cq-cancel">Cancel</button>
+            <span id="hx-cq-status" style="margin-left:auto;font-size:12px;color:var(--hx-text-mid);"></span>
           </div>
         </div>
 
@@ -100,5 +101,107 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Real credit pack checkout — opens Stripe via the create-checkout-session
+       Edge Function. Custom amount creates a quote request via log_event. */
+    (function () {
+      var PROJECT_URL = 'https://yjmpallrtpeinpdilptj.supabase.co';
+
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      function toast(msg, kind) {
+        if (window.cxToast) { window.cxToast(msg, kind || 'info'); return; }
+        var n = document.createElement('div');
+        var color = kind === 'error' ? '#DC2626' : (kind === 'success' ? '#15803d' : '#333');
+        n.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid ' + color + ';color:' + color + ';padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:500;z-index:1000;max-width:480px;box-shadow:0 12px 36px rgba(0,0,0,0.12);';
+        n.textContent = msg;
+        document.body.appendChild(n);
+        setTimeout(function () { n.remove(); }, 5000);
+      }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+
+        async function startCheckout(btn, slug) {
+          var original = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = 'Redirecting…';
+          try {
+            var s = (await sb.auth.getSession()).data.session;
+            if (!s || !s.access_token) {
+              window.location.href = '/signup?return=' + encodeURIComponent('/buy-credits');
+              return;
+            }
+            var resp = await fetch(PROJECT_URL + '/functions/v1/create-checkout-session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + s.access_token },
+              body: JSON.stringify({ slug: slug })
+            });
+            var data = null;
+            try { data = await resp.json(); } catch (e) {}
+            if (!resp.ok || !data || !data.url) {
+              throw new Error((data && (data.message || data.error)) || ('Checkout failed (HTTP ' + resp.status + ').'));
+            }
+            window.location.href = data.url;
+          } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = original;
+            toast((err && err.message) || 'Checkout failed.', 'error');
+          }
+        }
+
+        document.querySelectorAll('.hx-pack-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () { startCheckout(btn, btn.getAttribute('data-slug')); });
+        });
+
+        var amount = document.getElementById('hx-cq-amount');
+        var ref = document.getElementById('hx-cq-ref');
+        var submit = document.getElementById('hx-cq-submit');
+        var cancel = document.getElementById('hx-cq-cancel');
+        var status = document.getElementById('hx-cq-status');
+
+        cancel.addEventListener('click', function () {
+          amount.value = '';
+          ref.value = '';
+          status.textContent = '';
+        });
+
+        submit.addEventListener('click', async function () {
+          var credits = parseInt(amount.value || '0', 10);
+          if (!credits || credits < 500) {
+            status.style.color = '#dc2626';
+            status.textContent = 'Minimum 500 credits.';
+            setTimeout(function () { status.textContent = ''; }, 3000);
+            return;
+          }
+          submit.disabled = true;
+          var original = submit.textContent;
+          submit.textContent = 'Sending…';
+          try {
+            var u = (await sb.auth.getUser()).data.user;
+            if (!u) throw new Error('Please sign in.');
+            var r = await sb.rpc('log_event', {
+              p_kind: 'credit_pack.quote_requested',
+              p_payload: { credits: credits, reference: (ref.value || '').trim(), email: u.email }
+            });
+            if (r.error) throw r.error;
+            status.style.color = 'var(--hx-emerald)';
+            status.textContent = 'Quote request sent — we\'ll email you within 1 business day.';
+            amount.value = ''; ref.value = '';
+            toast('Quote request sent.', 'success');
+          } catch (err) {
+            status.style.color = '#dc2626';
+            status.textContent = (err && err.message) || 'Could not send the request.';
+          } finally {
+            submit.disabled = false;
+            submit.textContent = original;
+            setTimeout(function () { status.textContent = ''; }, 6000);
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
