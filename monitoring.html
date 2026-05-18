@@ -117,8 +117,11 @@
               '<div class="hx-empty">' +
                 '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>' +
                 '<h3>Nothing to monitor yet</h3>' +
-                '<p>Once an agent or workflow ships, this view shows live uptime, p50/p95/p99 latency, error budgets, and active alerts per deployment.</p>' +
-                '<a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>' +
+                '<p>Monitoring lights up once you have at least one deployment shipping requests. Until then, the platform itself reports its own uptime — start there.</p>' +
+                '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">' +
+                  '<a href="/status.html" class="hx-btn hx-btn-primary">Platform status</a>' +
+                  '<a href="/deployments.html" class="hx-btn hx-btn-secondary">View deployments</a>' +
+                '</div>' +
               '</div>';
           } else {
             var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Deployment</th><th>Region</th><th>Status</th><th>Version</th></tr></thead><tbody>';

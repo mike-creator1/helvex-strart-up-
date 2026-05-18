@@ -100,8 +100,11 @@
               '<div class="hx-empty">' +
                 '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>' +
                 '<h3>No log events yet</h3>' +
-                '<p>When a workflow runs or an agent handles a request, structured log lines will appear here with trace ID, model, latency, and status — searchable and exportable.</p>' +
-                '<a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>' +
+                '<p>Logs start filling the moment you make your first AI call. Every model invocation, workflow step, and tool call lands here with trace ID, latency, and status — searchable and exportable.</p>' +
+                '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">' +
+                  '<a href="/app-assistant.html" class="hx-btn hx-btn-primary">Open Business Assistant</a>' +
+                  '<a href="/models.html" class="hx-btn hx-btn-secondary">Run the playground</a>' +
+                '</div>' +
               '</div>';
             return;
           }

@@ -105,8 +105,11 @@
               '<div class="hx-empty">' +
                 '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>' +
                 '<h3>No active deployments</h3>' +
-                '<p>When a HelveX engagement ships, the resulting agent or workflow is deployed here with a public endpoint, version history, and rollback.</p>' +
-                '<a href="/services.html" class="hx-btn hx-btn-primary">Browse services</a>' +
+                '<p>Build a workflow or an agent first — when it ships, it shows up here with a public endpoint, version history, and rollback. You can also commission a HelveX engagement that ends in a managed deployment.</p>' +
+                '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">' +
+                  '<a href="/workflows.html" class="hx-btn hx-btn-primary">Open Workflows</a>' +
+                  '<a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>' +
+                '</div>' +
               '</div>';
           } else {
             var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Name</th><th>Endpoint</th><th>Region</th><th>Version</th><th>Created</th><th>Status</th></tr></thead><tbody>';

@@ -125,8 +125,11 @@
               '<div class="hx-empty">' +
                 '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg></div>' +
                 '<h3>No usage to display</h3>' +
-                '<p>Once you have a deployment running, this page will break down spend per model, per project, and per workflow.</p>' +
-                '<a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>' +
+                '<p>Make one AI call and this page starts breaking down spend per model, per project, and per workflow. Every call is debited from your credits and logged here within seconds.</p>' +
+                '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">' +
+                  '<a href="/app-assistant.html" class="hx-btn hx-btn-primary">Open Business Assistant</a>' +
+                  '<a href="/models.html" class="hx-btn hx-btn-secondary">Run the playground</a>' +
+                '</div>' +
               '</div>';
           } else {
             var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Model</th><th class="right">Calls</th><th class="right">Prompt tokens</th><th class="right">Completion tokens</th><th class="right">Errors</th></tr></thead><tbody>';

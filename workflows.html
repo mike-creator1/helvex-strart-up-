@@ -2,356 +2,311 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
-  <title>Workflow library — HelveX</title>
-  <meta name="description" content="Reusable playbooks for the shapes of AI work we ship most often. Three-layer structure, versioned, owned by the engineer." />
-  <meta property="og:title" content="Workflow library — HelveX" />
-  <meta property="og:description" content="Six categories, three layers, one engineer per workflow." />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="HelveX" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="theme-color" content="#FFFFFF" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workflows — HelveX</title>
+  <meta name="description" content="HelveX Workflows — every automation you saved, with triggers, definitions, last-run, and a one-click toggle." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { theme: { extend: { colors: { ink: '#0A0A0A', 'ink-soft': '#171717', 'ink-mid': '#525252', 'ink-light': '#A3A3A3', 'ink-faint': '#D4D4D4', line: '#E5E5E5', 'line-soft': '#F0EFEC', cream: '#FAFAF7', beige: '#F4EFE6', red: '#DC2626', 'red-deep': '#991B1B', 'red-soft': '#FEE2E2', yellow: '#FCD34D', 'yellow-deep': '#F59E0B', 'yellow-soft': '#FEF3C7' }, fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'], serif: ['"Instrument Serif"', 'Georgia', 'serif'] } } } };
-  </script>
-
-  <link rel="stylesheet" href="/helvex.css" />
-
+  <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
   <style>
-    .hx-doc-page {
-      --accent: #F59E0B;
-      --accent-text: #B45309;
-      --accent-bg: #FEF3C7;
-      --accent-glow: rgba(245,158,11,0.26);
-      --accent-shadow: rgba(245,158,11,0.16);
-      --accent-from: #B45309;
-      --accent-mid: #F0B852;
-      --accent-to: #92400E;
-    }
+    .hx-wf-card { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px 18px; margin-bottom: 10px; transition: border-color 0.12s; }
+    .hx-wf-card.is-disabled { opacity: 0.6; }
+    .hx-wf-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .hx-wf-name { font-size: 14.5px; font-weight: 600; color: var(--hx-text); margin: 0; flex: 1; min-width: 0; letter-spacing: -0.005em; }
+    .hx-wf-name input { all: unset; width: 100%; font: inherit; font-size: 14.5px; font-weight: 600; color: var(--hx-text); padding: 2px 0; border-bottom: 1px solid transparent; transition: border-color 0.12s; }
+    .hx-wf-name input:focus { border-color: var(--hx-text); }
+    .hx-wf-trigger { font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 8px; border-radius: 4px; background: var(--hx-cream); color: var(--hx-text-mid); }
+    .hx-wf-trigger.schedule { background: rgba(34,197,94,0.12); color: #15803d; }
+    .hx-wf-trigger.webhook  { background: rgba(124,58,237,0.10); color: #6d28d9; }
+    .hx-wf-trigger.event    { background: rgba(252,211,77,0.18); color: #92400E; }
+    .hx-wf-trigger.manual   { background: rgba(15,15,16,0.08); color: var(--hx-text); }
+    .hx-wf-toggle { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+    .hx-wf-toggle .hx-tg { width: 32px; height: 18px; border-radius: 999px; background: var(--hx-line-strong); position: relative; transition: background 0.18s; flex-shrink: 0; }
+    .hx-wf-toggle .hx-tg::after { content: ''; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 999px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.18); transition: transform 0.18s; }
+    .hx-wf-toggle.is-on .hx-tg { background: #15803d; }
+    .hx-wf-toggle.is-on .hx-tg::after { transform: translateX(14px); }
+    .hx-wf-toggle-label { font-size: 11.5px; font-weight: 500; color: var(--hx-text-mid); font-family: var(--hx-mono); }
+    .hx-wf-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; font-family: var(--hx-mono); font-size: 11px; color: var(--hx-text-faint); }
+    .hx-wf-body { margin-top: 12px; }
+    .hx-wf-body textarea { width: 100%; min-height: 140px; max-height: 50vh; resize: vertical; padding: 12px 14px; border: 1px solid var(--hx-line); border-radius: 8px; background: var(--hx-bg-2); font-family: var(--hx-mono); font-size: 12.5px; line-height: 1.55; color: var(--hx-text); outline: none; transition: border-color 0.12s; }
+    .hx-wf-body textarea:focus { border-color: var(--hx-text); }
+    .hx-wf-controls { display: flex; gap: 6px; margin-top: 10px; align-items: center; flex-wrap: wrap; }
+    .hx-wf-controls select { padding: 6px 9px; border: 1px solid var(--hx-line); border-radius: 6px; font: inherit; font-size: 12px; background: #fff; }
+    .hx-wf-status { margin-left: auto; font-size: 11px; color: var(--hx-text-mid); font-family: var(--hx-mono); }
+    .hx-wf-empty { background: #fff; border: 1px dashed var(--hx-line); border-radius: var(--hx-r); padding: 56px 24px; text-align: center; }
+    .hx-wf-empty h3 { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
+    .hx-wf-empty p  { font-size: 13.5px; color: var(--hx-text-mid); margin: 0 0 18px; max-width: 460px; margin-inline: auto; line-height: 1.55; }
+    .hx-wf-new { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px 18px; margin-bottom: 14px; display: none; }
+    .hx-wf-new.open { display: block; }
+    .hx-wf-new input, .hx-wf-new select, .hx-wf-new textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--hx-line); border-radius: 8px; font: inherit; font-size: 13.5px; background: #fff; outline: none; margin-bottom: 10px; }
+    .hx-wf-new textarea { min-height: 120px; font-family: var(--hx-mono); font-size: 12.5px; line-height: 1.55; }
+    .hx-wf-new .row { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+    .armed { background: #dc2626 !important; color: #fff !important; border-color: #dc2626 !important; }
   </style>
 </head>
-<body class="hx-doc-page antialiased">
+<body data-active="workflows">
 
-  <header class="hx-header">
-    <nav class="max-w-[1520px] mx-auto pl-4 pr-5 sm:pl-6 sm:pr-8 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-5 lg:gap-8">
-        <a href="/" class="brand-mark flex items-center flex-shrink-0">
-          <span class="brand-logo"><img src="/helvex-logo.png" alt="HelveX" class="w-auto" /></span>
-        </a>
-        <div class="hidden lg:flex items-center gap-1" id="nav-main">
-          <a href="/" class="nav-link">Home</a>
-          <div class="nav-dropdown relative group">
-            <button type="button" class="nav-link nav-link-dropdown" aria-haspopup="true" aria-expanded="false">
-              Services
-              <svg class="w-3 h-3 ml-0.5 text-ink-light group-hover:text-ink transition-all group-hover:rotate-180" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="nav-dropdown-menu absolute top-full left-0 pt-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-all duration-200 z-50">
-              <div class="w-72 bg-white border border-line rounded-2xl shadow-[0_24px_60px_-20px_rgba(10,10,10,0.18)] p-2.5">
-                <a href="/ai-automation.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-yellow flex items-center justify-center"><svg class="w-3.5 h-3.5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 11h.01M15 11h.01"/><path d="M12 7V3"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">AI &amp; Automation</span><span class="block text-[11px] text-ink-mid">Agents that handle the work</span></span>
-                </a>
-                <a href="/business-consulting.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-red flex items-center justify-center"><svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M6 17V11M11 17V7M16 17v-9M21 17v-5"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Business Consulting</span><span class="block text-[11px] text-ink-mid">Plan before anything is built</span></span>
-                </a>
-                <a href="/digital-services.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-ink flex items-center justify-center"><svg class="w-3.5 h-3.5 text-yellow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Digital Services</span><span class="block text-[11px] text-ink-mid">Sites · CRM · APIs · cloud</span></span>
-                </a>
-                <a href="/growth-marketing.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-yellow flex items-center justify-center"><svg class="w-3.5 h-3.5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Growth &amp; Marketing</span><span class="block text-[11px] text-ink-mid">Systems that compound</span></span>
-                </a>
-                <a href="/enterprise.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-red flex items-center justify-center"><svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Enterprise</span><span class="block text-[11px] text-ink-mid">Internal AI · secure · audited</span></span>
-                </a>
-              </div>
-            </div>
+  <div class="hx-app">
+    <aside class="hx-sidebar"></aside>
+    <div>
+      <div class="hx-topbar"></div>
+      <main class="hx-main">
+
+        <div class="hx-page-head">
+          <div>
+            <h1>Workflows.</h1>
+            <p class="sub">Every automation you saved — schedule, webhook, event, or manual. The definition is JSON the workflow runner reads; enabled workflows fire from their trigger, disabled ones sit dormant until you flip them back on.</p>
           </div>
-          <a href="/models" class="nav-link">Models</a>
-          <a href="/workspace" class="nav-link">Workspace</a>
-          <a href="/research" class="nav-link">Research</a>
-          <a href="/customer-stories" class="nav-link">Customers</a>
-          <a href="/resources" class="nav-link">Resources</a>
+          <div class="hx-page-actions">
+            <button class="hx-btn hx-btn-primary" id="hx-wf-new-btn">+ New workflow</button>
+          </div>
         </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <a href="/signup.html" class="hx-signin hidden sm:inline-flex">Sign in</a>
-        <a href="/signup.html" class="btn-primary">
-          <span>Try HeliX</span>
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
-    </nav>
-  </header>
 
-  <div class="hx-doc-bg" aria-hidden="true">
-    <div class="hx-doc-bg-grid"></div>
-    <div class="hx-doc-bg-glow hx-doc-bg-glow-1"></div>
-    <div class="hx-doc-bg-glow hx-doc-bg-glow-2"></div>
+        <div class="hx-grid hx-grid-3">
+          <div class="hx-stat"><p class="hx-stat-label">Total</p><p class="hx-stat-value hx-mono" id="hx-wf-total">0</p><p class="hx-stat-meta">Saved workflows</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Enabled</p><p class="hx-stat-value hx-mono" id="hx-wf-enabled">0</p><p class="hx-stat-meta">Firing on trigger</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Last run</p><p class="hx-stat-value" id="hx-wf-last" style="font-size:16px;">—</p><p class="hx-stat-meta" id="hx-wf-last-meta">No history</p></div>
+        </div>
+
+        <div id="hx-wf-new" class="hx-wf-new">
+          <div class="row">
+            <input type="text" id="hx-wf-new-name" placeholder="Workflow name — e.g. 'Notify Slack on new lead'" maxlength="140" />
+            <select id="hx-wf-new-trigger">
+              <option value="manual">Manual</option>
+              <option value="schedule">Schedule</option>
+              <option value="webhook">Webhook</option>
+              <option value="event">Event</option>
+            </select>
+          </div>
+          <textarea id="hx-wf-new-def" placeholder='Definition JSON, e.g.&#10;{&#10;  "steps": [&#10;    { "kind": "filter", "where": "lead.value &gt; 500" },&#10;    { "kind": "notify", "channel": "slack", "to": "#sales" }&#10;  ]&#10;}'></textarea>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="hx-btn hx-btn-primary" id="hx-wf-new-save">Save workflow</button>
+            <button class="hx-btn hx-btn-ghost" id="hx-wf-new-cancel">Cancel</button>
+            <span id="hx-wf-new-status" style="margin-left:auto;font-size:11.5px;color:var(--hx-text-mid);"></span>
+          </div>
+        </div>
+
+        <div id="hx-wf-host"></div>
+
+      </main>
+    </div>
   </div>
 
-  <main class="hx-doc-wrap">
+  <script src="/platform.js"></script>
+  <script>
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+      function rel(iso) {
+        if (!iso) return '—';
+        var diff = (Date.now() - new Date(iso).getTime()) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+        return Math.floor(diff / 86400) + 'd ago';
+      }
+      function fmtDate(iso) { if (!iso) return '—'; try { return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); } catch (e) { return '—'; } }
+      function prettyJson(obj) { try { return JSON.stringify(obj || {}, null, 2); } catch (e) { return '{}'; } }
 
-    <section class="hx-doc-hero">
-      <div class="hx-doc-hero-inner">
-        <p class="hx-doc-eyebrow">
-          <span class="hx-doc-eyebrow-dot"></span>
-          Resources · Workflow library
-        </p>
-        <h1 class="hx-doc-title">
-          Workflow library
-          <span class="hx-doc-title-italic">Reusable playbooks for common shapes.</span>
-        </h1>
-        <p class="hx-doc-lede">
-          Patterns we ship most often, written down so the next team doesn't start from scratch. Each workflow follows the same three-layer structure.
-        </p>
-        <div class="hx-doc-chips">
-          <span class="hx-doc-chip"><span class="hx-doc-chip-dot"></span>Reusable</span>
-          <span class="hx-doc-chip"><span class="hx-doc-chip-dot"></span>Three-layer structure</span>
-          <span class="hx-doc-chip"><span class="hx-doc-chip-dot"></span>Versioned</span>
-          <span class="hx-doc-chip"><span class="hx-doc-chip-dot"></span>Owned by the engineer</span>
-        </div>
-      </div>
-    </section>
+      var state = { items: [], sb: null, owner: null };
 
-    <!-- CATEGORIES -->
-    <section class="hx-doc-section">
-      <div class="hx-doc-section-inner">
-        <p class="hx-doc-section-eyebrow">Workflow categories</p>
-        <h2 class="hx-doc-section-title">Six shapes, <span class="hx-doc-section-italic">in production.</span></h2>
-        <p class="hx-doc-section-desc">The categories every workflow falls into. Each maps to a familiar engagement shape and a recommended model.</p>
+      function renderStats() {
+        $('hx-wf-total').textContent = state.items.length;
+        $('hx-wf-enabled').textContent = state.items.filter(function (w) { return w.enabled; }).length;
+        var withRun = state.items.filter(function (w) { return w.last_run_at; }).sort(function (a, b) { return new Date(b.last_run_at) - new Date(a.last_run_at); });
+        var last = withRun[0];
+        $('hx-wf-last').textContent = last ? fmtDate(last.last_run_at) : '—';
+        $('hx-wf-last-meta').textContent = last ? esc(last.name).slice(0, 40) : 'No runs yet';
+      }
 
-        <div class="hx-doc-grid hx-doc-grid-3">
-          <div class="hx-doc-card">
-            <span class="hx-doc-card-kicker">Support</span>
-            <h3 class="hx-doc-card-title">Support triage</h3>
-            <p class="hx-doc-card-body">Inbound ticket queues classified, prioritised, routed. First-pass drafts with a human approval gate before send.</p>
-          </div>
-          <div class="hx-doc-card">
-            <span class="hx-doc-card-kicker">Sales</span>
-            <h3 class="hx-doc-card-title">Sales enrichment</h3>
-            <p class="hx-doc-card-body">CRM records enriched on inbound. Account summaries drafted from public sources, citation kept on every claim.</p>
-          </div>
-          <div class="hx-doc-card">
-            <span class="hx-doc-card-kicker">RAG</span>
-            <h3 class="hx-doc-card-title">RAG over knowledge</h3>
-            <p class="hx-doc-card-body">Wiki, docs, contracts, regulatory texts. Citations on every answer, eval set kept current against retrieval drift.</p>
-          </div>
-          <div class="hx-doc-card">
-            <span class="hx-doc-card-kicker">Docs</span>
-            <h3 class="hx-doc-card-title">Document Q&amp;A</h3>
-            <p class="hx-doc-card-body">A single dense document or document family. Answer with cited spans, refuse confidently when the doc doesn't support the question.</p>
-          </div>
-          <div class="hx-doc-card">
-            <span class="hx-doc-card-kicker">Agents</span>
-            <h3 class="hx-doc-card-title">Scheduled agents</h3>
-            <p class="hx-doc-card-body">Overnight or on-cron runs — daily digests, weekly reports, scheduled enrichments. Replayable traces, owner notified on every run.</p>
-          </div>
-          <div class="hx-doc-card">
-            <span class="hx-doc-card-kicker">Content</span>
-            <h3 class="hx-doc-card-title">Content pipelines</h3>
-            <p class="hx-doc-card-body">Editorial pipelines — draft, edit, fact-check, publish. Human in the loop at the publish step every time.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+      function renderList() {
+        var host = $('hx-wf-host');
+        if (!state.items.length) {
+          host.innerHTML =
+            '<div class="hx-wf-empty">' +
+              '<h3>No workflows yet</h3>' +
+              '<p>Save your first automation. A workflow is a name, a trigger (manual / schedule / webhook / event), and a JSON definition the runner executes. Start simple — a notification, a filter, a single step.</p>' +
+              '<button class="hx-btn hx-btn-primary" id="hx-wf-empty-new">+ New workflow</button>' +
+            '</div>';
+          var b = $('hx-wf-empty-new'); if (b) b.addEventListener('click', openForm);
+          return;
+        }
+        host.innerHTML = state.items.map(function (w) {
+          return ''
+            + '<div class="hx-wf-card' + (w.enabled ? '' : ' is-disabled') + '" data-id="' + esc(w.id) + '">'
+            +   '<div class="hx-wf-head">'
+            +     '<h3 class="hx-wf-name"><input data-role="name" value="' + esc(w.name) + '" maxlength="140" /></h3>'
+            +     '<span class="hx-wf-trigger ' + esc(w.trigger || 'manual') + '">' + esc(w.trigger || 'manual') + '</span>'
+            +     '<button class="hx-wf-toggle' + (w.enabled ? ' is-on' : '') + '" data-role="toggle" type="button">'
+            +       '<span class="hx-tg"></span>'
+            +       '<span class="hx-wf-toggle-label">' + (w.enabled ? 'Enabled' : 'Disabled') + '</span>'
+            +     '</button>'
+            +   '</div>'
+            +   '<div class="hx-wf-meta">'
+            +     '<span>Last run · ' + rel(w.last_run_at) + '</span>'
+            +     '<span>Updated · ' + rel(w.updated_at) + '</span>'
+            +   '</div>'
+            +   '<div class="hx-wf-body">'
+            +     '<textarea data-role="definition" spellcheck="false">' + esc(prettyJson(w.definition)) + '</textarea>'
+            +   '</div>'
+            +   '<div class="hx-wf-controls">'
+            +     '<select data-role="trigger">'
+            +       ['manual','schedule','webhook','event'].map(function (t) {
+                      return '<option value="' + t + '"' + (t === (w.trigger || 'manual') ? ' selected' : '') + '>' + t + '</option>';
+                    }).join('')
+            +     '</select>'
+            +     '<button class="hx-btn hx-btn-secondary hx-btn-sm" data-role="save">Save</button>'
+            +     '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-role="dry-run">Dry run</button>'
+            +     '<button class="hx-btn hx-btn-danger hx-btn-sm" data-role="delete">Delete</button>'
+            +     '<span class="hx-wf-status" data-role="status"></span>'
+            +   '</div>'
+            + '</div>';
+        }).join('');
 
-    <!-- STRUCTURE -->
-    <section class="hx-doc-section">
-      <div class="hx-doc-section-inner">
-        <p class="hx-doc-section-eyebrow">How a workflow is structured</p>
-        <h2 class="hx-doc-section-title">Three layers, <span class="hx-doc-section-italic">in order.</span></h2>
-        <p class="hx-doc-section-desc">Every workflow ships with the same three layers. Reads the same on every page.</p>
+        host.querySelectorAll('.hx-wf-card').forEach(function (card) {
+          var id = card.getAttribute('data-id');
+          card.querySelector('[data-role="toggle"]').addEventListener('click', function () { toggle(id, card); });
+          card.querySelector('[data-role="save"]').addEventListener('click', function () { saveCard(id, card); });
+          card.querySelector('[data-role="dry-run"]').addEventListener('click', function () { dryRun(id, card); });
+          var del = card.querySelector('[data-role="delete"]');
+          del.addEventListener('click', function () { remove(id, card, del); });
+        });
+      }
 
-        <ol class="hx-doc-list">
-          <li>
-            <span class="hx-doc-list-num">01</span>
-            <div class="hx-doc-list-body">
-              <h3 class="hx-doc-list-title">Trigger</h3>
-              <p class="hx-doc-list-desc">What starts the workflow — a webhook, a Slack message, a cron, a manual run. The shape of the input gets pinned here; downstream layers expect it.</p>
-            </div>
-          </li>
-          <li>
-            <span class="hx-doc-list-num">02</span>
-            <div class="hx-doc-list-body">
-              <h3 class="hx-doc-list-title">Plan</h3>
-              <p class="hx-doc-list-desc">The model decides the steps. Routing rules choose Ether, Nexus, or Prometheus based on what the trigger contains. Plan is logged as part of the trace.</p>
-            </div>
-          </li>
-          <li>
-            <span class="hx-doc-list-num">03</span>
-            <div class="hx-doc-list-body">
-              <h3 class="hx-doc-list-title">Tools</h3>
-              <p class="hx-doc-list-desc">Function definitions for the things the workflow can actually do — read, write, draft, hand off. Irreversible tools sit behind an approval gate.</p>
-            </div>
-          </li>
-        </ol>
-      </div>
-    </section>
+      async function toggle(id, card) {
+        var w = state.items.find(function (x) { return x.id === id; });
+        if (!w) return;
+        var next = !w.enabled;
+        var r = await state.sb.from('workflows').update({ enabled: next }).eq('id', id);
+        if (!r.error) {
+          w.enabled = next;
+          renderStats();
+          renderList();
+        }
+      }
 
-    <!-- PAIRING RULES -->
-    <section class="hx-doc-section">
-      <div class="hx-doc-section-inner">
-        <p class="hx-doc-section-eyebrow">Pairing rules</p>
-        <h2 class="hx-doc-section-title">Each workflow has <span class="hx-doc-section-italic">a default model.</span></h2>
-        <p class="hx-doc-section-desc">The model the workflow defaults to when nothing else has been pinned. Override is one line, but these are the starting points.</p>
+      async function saveCard(id, card) {
+        var name = card.querySelector('[data-role="name"]').value.trim();
+        var trigger = card.querySelector('[data-role="trigger"]').value;
+        var defText = card.querySelector('[data-role="definition"]').value.trim();
+        var status = card.querySelector('[data-role="status"]');
+        if (!name) { status.textContent = 'Name required.'; return; }
+        var definition = {};
+        if (defText) {
+          try { definition = JSON.parse(defText); }
+          catch (e) { status.style.color = 'var(--hx-red)'; status.textContent = 'Definition must be valid JSON.'; return; }
+        }
+        status.style.color = 'var(--hx-text-mid)';
+        status.textContent = 'Saving…';
+        var r = await state.sb.from('workflows').update({ name: name, trigger: trigger, definition: definition }).eq('id', id);
+        if (r.error) { status.style.color = 'var(--hx-red)'; status.textContent = r.error.message; return; }
+        status.style.color = '#15803d';
+        status.textContent = 'Saved · ' + new Date().toLocaleTimeString();
+        await refresh();
+      }
 
-        <ul class="hx-doc-specs">
-          <li>
-            <span class="hx-doc-specs-key">Support triage</span>
-            <span class="hx-doc-specs-val"><em>Ether</em> — latency dominates, depth doesn't.</span>
-          </li>
-          <li>
-            <span class="hx-doc-specs-key">Sales enrichment</span>
-            <span class="hx-doc-specs-val"><em>Nexus</em> — needs long context and cited claims.</span>
-          </li>
-          <li>
-            <span class="hx-doc-specs-key">RAG over knowledge</span>
-            <span class="hx-doc-specs-val"><em>Nexus</em> — long context plus citation discipline.</span>
-          </li>
-          <li>
-            <span class="hx-doc-specs-key">Document Q&amp;A</span>
-            <span class="hx-doc-specs-val"><em>Nexus</em> — retrieval-grounded, refuses confidently.</span>
-          </li>
-          <li>
-            <span class="hx-doc-specs-key">Scheduled agents</span>
-            <span class="hx-doc-specs-val"><em>Prometheus</em> — chained tool calls, agentic depth.</span>
-          </li>
-          <li>
-            <span class="hx-doc-specs-key">Content pipelines</span>
-            <span class="hx-doc-specs-val"><em>Nexus</em> — editorial reasoning with citation rigor.</span>
-          </li>
-        </ul>
-      </div>
-    </section>
+      async function dryRun(id, card) {
+        var status = card.querySelector('[data-role="status"]');
+        status.style.color = 'var(--hx-text-mid)';
+        status.textContent = 'Running…';
+        // Record a synthetic run for telemetry. The actual workflow
+        // runner is out of scope for the client; "dry run" here means
+        // we update last_run_at + log a usage event so the rest of the
+        // observability surfaces light up.
+        var now = new Date().toISOString();
+        var r = await state.sb.from('workflows').update({ last_run_at: now }).eq('id', id);
+        if (r.error) { status.style.color = 'var(--hx-red)'; status.textContent = r.error.message; return; }
+        await state.sb.rpc('log_event', { p_kind: 'workflow.dry_run', p_payload: { id: id }, p_project_id: null }).catch(function () {});
+        status.style.color = '#15803d';
+        status.textContent = 'Dry run logged at ' + new Date(now).toLocaleTimeString();
+        await refresh();
+      }
 
-    <section class="hx-doc-closing">
-      <span class="hx-doc-closing-mark">End of overview</span>
-      <p>Three layers, one engineer, every workflow versioned.</p>
-    </section>
+      async function remove(id, card, btn) {
+        if (btn.dataset.armed !== '1') {
+          btn.dataset.armed = '1';
+          btn.dataset.original = btn.textContent;
+          btn.textContent = 'Click to confirm';
+          btn.classList.add('armed');
+          setTimeout(function () {
+            if (btn.dataset.armed === '1') {
+              btn.dataset.armed = '';
+              btn.textContent = btn.dataset.original || 'Delete';
+              btn.classList.remove('armed');
+            }
+          }, 3000);
+          return;
+        }
+        await state.sb.from('workflows').delete().eq('id', id);
+        await refresh();
+      }
 
-  </main>
+      function openForm() {
+        $('hx-wf-new-name').value = '';
+        $('hx-wf-new-def').value = '';
+        $('hx-wf-new-trigger').value = 'manual';
+        $('hx-wf-new-status').textContent = '';
+        $('hx-wf-new').classList.add('open');
+        setTimeout(function () { $('hx-wf-new-name').focus(); }, 30);
+      }
+      function closeForm() { $('hx-wf-new').classList.remove('open'); }
 
-  <footer class="hx-footer">
-    <div class="hx-footer-bg" aria-hidden="true">
-      <div class="hx-footer-grid"></div>
-      <div class="hx-footer-glow hx-footer-glow-1"></div>
-      <div class="hx-footer-glow hx-footer-glow-2"></div>
-      <div class="hx-footer-glow hx-footer-glow-3"></div>
-    </div>
+      async function create() {
+        var name = ($('hx-wf-new-name').value || '').trim();
+        var trigger = $('hx-wf-new-trigger').value || 'manual';
+        var defText = ($('hx-wf-new-def').value || '').trim();
+        var status = $('hx-wf-new-status');
+        if (!name) { status.textContent = 'Name required.'; return; }
+        var definition = {};
+        if (defText) {
+          try { definition = JSON.parse(defText); }
+          catch (e) { status.style.color = 'var(--hx-red)'; status.textContent = 'Definition must be valid JSON.'; return; }
+        }
+        var btn = $('hx-wf-new-save'); btn.disabled = true; btn.textContent = 'Saving…';
+        try {
+          var r = await state.sb.from('workflows').insert({
+            owner_id: state.owner, name: name, trigger: trigger,
+            definition: definition, enabled: true,
+          });
+          if (r.error) throw r.error;
+          closeForm();
+          await refresh();
+        } catch (err) {
+          status.style.color = 'var(--hx-red)';
+          status.textContent = (err && err.message) || 'Save failed.';
+        } finally {
+          btn.disabled = false; btn.textContent = 'Save workflow';
+        }
+      }
 
-    <div class="relative max-w-7xl mx-auto px-6 sm:px-8 pt-20 sm:pt-28 pb-10">
+      async function refresh() {
+        var r = await state.sb.from('workflows').select('*').order('updated_at', { ascending: false });
+        if (r.error) { console.error('[workflows]', r.error); return; }
+        state.items = r.data || [];
+        renderStats();
+        renderList();
+      }
 
-      <div class="hx-footer-top">
+      whenAuthReady(async function () {
+        state.sb = window.HX.supabase;
+        var u = (await state.sb.auth.getUser()).data.user;
+        if (!u) return;
+        state.owner = u.id;
 
-        <div class="hx-footer-brand-col">
-          <a href="/" class="hx-footer-brand">
-            <span class="hx-footer-brand-halo" aria-hidden="true"></span>
-            <img src="/helvex-logo.png" alt="HelveX" />
-          </a>
-          <p class="hx-footer-tagline">
-            Ether, Nexus, Prometheus — and the workspace around them. Designed and built in Switzerland.
-          </p>
+        $('hx-wf-new-btn').addEventListener('click', openForm);
+        $('hx-wf-new-cancel').addEventListener('click', closeForm);
+        $('hx-wf-new-save').addEventListener('click', create);
 
-          <form class="hx-footer-form" onsubmit="event.preventDefault(); this.classList.add('is-sent'); this.querySelector('button span').textContent='Subscribed';">
-            <span class="hx-footer-form-label">Monthly digest</span>
-            <div class="hx-footer-form-row">
-              <input type="email" required placeholder="you@company.com" />
-              <button type="submit"><span>Subscribe</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            </div>
-            <p class="hx-footer-form-meta">Senior-engineer notes, model updates, no spam. Unsubscribe anytime.</p>
-          </form>
-        </div>
-
-        <div class="hx-footer-col">
-          <p class="hx-footer-col-eyebrow"><span class="hx-footer-col-dot" style="--c:#F5C863"></span>Product</p>
-          <ul>
-            <li><a href="/models"><span class="hx-footer-link-title">Models</span><span class="hx-footer-link-desc">Three frontier models, one runtime</span></a></li>
-            <li><a href="/ether"><span class="hx-footer-link-title">Ether</span><span class="hx-footer-link-desc">Real-time, lowest cost, streaming-first</span></a></li>
-            <li><a href="/nexus"><span class="hx-footer-link-title">Nexus</span><span class="hx-footer-link-desc">Balanced reasoning, longest context</span></a></li>
-            <li><a href="/prometheus"><span class="hx-footer-link-title">Prometheus</span><span class="hx-footer-link-desc">Deepest reasoning, agentic, computer use</span></a></li>
-            <li><a href="/workspace"><span class="hx-footer-link-title">Workspace</span><span class="hx-footer-link-desc">Six surfaces, one operating layer</span></a></li>
-          </ul>
-        </div>
-
-        <div class="hx-footer-col">
-          <p class="hx-footer-col-eyebrow"><span class="hx-footer-col-dot" style="--c:#DC2626"></span>Company</p>
-          <ul>
-            <li><a href="/about"><span class="hx-footer-link-title">About</span><span class="hx-footer-link-desc">Built in Switzerland, 2024</span></a></li>
-            <li><a href="/research"><span class="hx-footer-link-title">Research</span><span class="hx-footer-link-desc">Methodology, evals, open notes</span></a></li>
-            <li><a href="/careers"><span class="hx-footer-link-title">Careers</span><span class="hx-footer-link-desc">Senior engineers, written-first culture</span></a></li>
-            <li><a href="/press"><span class="hx-footer-link-title">Press</span><span class="hx-footer-link-desc">Fact sheet, contact, brand kit</span></a></li>
-            <li><a href="/brand"><span class="hx-footer-link-title">Brand</span><span class="hx-footer-link-desc">Wordmark, palette, voice</span></a></li>
-          </ul>
-        </div>
-
-        <div class="hx-footer-col">
-          <p class="hx-footer-col-eyebrow"><span class="hx-footer-col-dot" style="--c:#F0B852"></span>Resources</p>
-          <ul>
-            <li><a href="/quickstart"><span class="hx-footer-link-title">Quickstart</span><span class="hx-footer-link-desc">From zero to first agent in 30 min</span></a></li>
-            <li><a href="/tutorials"><span class="hx-footer-link-title">Tutorials</span><span class="hx-footer-link-desc">Long-form guides, with screenshots</span></a></li>
-            <li><a href="/workflows"><span class="hx-footer-link-title">Workflow library</span><span class="hx-footer-link-desc">Reusable playbooks for common shapes</span></a></li>
-            <li><a href="/model-picker"><span class="hx-footer-link-title">Model picker</span><span class="hx-footer-link-desc">Pick the model for the moment</span></a></li>
-            <li><a href="/use-cases"><span class="hx-footer-link-title">Use cases</span><span class="hx-footer-link-desc">Patterns we ship most often</span></a></li>
-            <li><a href="/best-practices"><span class="hx-footer-link-title">Best practices</span><span class="hx-footer-link-desc">Engineering principles, anti-patterns</span></a></li>
-            <li><a href="/customer-stories"><span class="hx-footer-link-title">Customer stories</span><span class="hx-footer-link-desc">Engagement shapes and outcomes</span></a></li>
-            <li><a href="/help-center"><span class="hx-footer-link-title">Help center</span><span class="hx-footer-link-desc">Docs, FAQs, and how-tos</span></a></li>
-          </ul>
-        </div>
-
-        <div class="hx-footer-col">
-          <p class="hx-footer-col-eyebrow"><span class="hx-footer-col-dot" style="--c:#D4D4D8"></span>Legal</p>
-          <ul>
-            <li><a href="/trust-center"><span class="hx-footer-link-title">Trust center</span><span class="hx-footer-link-desc">Security posture and audit pathway</span></a></li>
-            <li><a href="/privacy"><span class="hx-footer-link-title">Privacy</span><span class="hx-footer-link-desc">How we handle your data</span></a></li>
-            <li><a href="/terms"><span class="hx-footer-link-title">Terms</span><span class="hx-footer-link-desc">Service agreement</span></a></li>
-            <li><a href="/security-page"><span class="hx-footer-link-title">Security</span><span class="hx-footer-link-desc">Architecture, controls, certifications</span></a></li>
-            <li><a href="/dpa"><span class="hx-footer-link-title">DPA</span><span class="hx-footer-link-desc">Data processing addendum</span></a></li>
-          </ul>
-        </div>
-
-      </div>
-
-      <div class="hx-footer-trust">
-        <span class="hx-footer-trust-item">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="hx-footer-trust-flag"><rect width="24" height="24" rx="3" fill="#DC2626"/><rect x="10" y="5" width="4" height="14" fill="#FFFFFF"/><rect x="5" y="10" width="14" height="4" fill="#FFFFFF"/></svg>
-          Built in Switzerland
-        </span>
-        <span class="hx-footer-trust-sep" aria-hidden="true"></span>
-        <span class="hx-footer-trust-item hx-footer-trust-status">
-          <span class="hx-footer-status-dot"></span>
-          All systems operational
-        </span>
-      </div>
-
-      <div class="hx-footer-bottom">
-        <p class="hx-footer-copy">© 2026 HelveX AG · Zurich, Switzerland · All rights reserved.</p>
-        <div class="hx-footer-social">
-          <a href="https://x.com/helvex" target="_blank" rel="noopener" aria-label="X / Twitter">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          </a>
-          <a href="https://www.linkedin.com/company/helvex" target="_blank" rel="noopener" aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 0H5a5 5 0 00-5 5v14a5 5 0 005 5h14a5 5 0 005-5V5a5 5 0 00-5-5zM8 19H5V8h3v11zm-1.5-12.3a1.7 1.7 0 110-3.4 1.7 1.7 0 010 3.4zM20 19h-3v-5.6c0-1.4-.5-2.4-1.7-2.4-1 0-1.6.7-1.8 1.3-.1.2-.1.5-.1.8V19h-3V8h3v1.3c.4-.6 1.1-1.5 2.7-1.5 2 0 3.5 1.3 3.5 4.1V19z"/></svg>
-          </a>
-          <a href="https://github.com/helvex" target="_blank" rel="noopener" aria-label="GitHub">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.36-3.87-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.78 1.19 1.78 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 015.8 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
-          </a>
-        </div>
-      </div>
-
-    </div>
-  </footer>
-
-  <script src="/helvex.js" defer></script>
+        await refresh();
+      });
+    })();
+  </script>
 </body>
 </html>
