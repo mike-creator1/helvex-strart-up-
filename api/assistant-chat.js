@@ -1,4 +1,5 @@
 import { callAnthropicStream, relayStream, parseJsonBody, requirePost } from './_lib/anthropic.js';
+import { gateAndCharge } from './_lib/auth.js';
 
 const SYSTEM = `You are HelveX Assistant, the AI business companion built into the HelveX platform.
 
@@ -41,6 +42,9 @@ export default async function handler(req, res) {
   const systemOverride = typeof payload.system === 'string' && payload.system.trim().length > 10
     ? payload.system.trim().slice(0, 4000)
     : null;
+
+  const gate = await gateAndCharge(req, 'nexus-4-5', 1);
+  if (!gate.ok) return res.status(gate.status).json({ error: gate.error, trace_id: gate.traceId });
 
   try {
     const upstream = await callAnthropicStream({

@@ -15,13 +15,26 @@
    *
    * Returns a Promise that resolves with the full accumulated text.
    */
+  async function getSessionToken() {
+    try {
+      var sb = global.HX && global.HX.supabase;
+      if (!sb) return null;
+      var r = await sb.auth.getSession();
+      var s = r && r.data && r.data.session;
+      return s && s.access_token ? s.access_token : null;
+    } catch (e) { return null; }
+  }
+
   async function runStream(endpoint, payload, hooks = {}) {
     const { onChunk, onDone, onError } = hooks;
     let assembled = '';
     try {
+      const token = await getSessionToken();
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(payload),
       });
 

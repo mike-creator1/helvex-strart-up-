@@ -41,7 +41,7 @@
               <li>Email + chat support</li>
               <li>Cancel anytime</li>
             </ul>
-            <a href="/support.html?plan=starter" class="hx-btn hx-btn-secondary" style="width:100%;justify-content:center;">Start Starter</a>
+            <button type="button" class="hx-btn hx-btn-secondary hx-plan-btn" data-plan="starter" style="width:100%;justify-content:center;">Start Starter</button>
           </div>
 
           <div class="hx-price-card featured">
@@ -55,7 +55,7 @@
               <li>Slack channel + senior engineer</li>
               <li>Quarterly architecture review</li>
             </ul>
-            <a href="/support.html?plan=growth" class="hx-btn hx-btn-primary" style="width:100%;justify-content:center;">Start Growth</a>
+            <button type="button" class="hx-btn hx-btn-primary hx-plan-btn" data-plan="growth" style="width:100%;justify-content:center;">Start Growth</button>
           </div>
 
           <div class="hx-price-card">
@@ -69,7 +69,7 @@
               <li>Monthly executive readout</li>
               <li>SSO &amp; advanced audit logs</li>
             </ul>
-            <a href="/support.html?plan=scale" class="hx-btn hx-btn-primary" style="width:100%;justify-content:center;">Upgrade to Scale</a>
+            <button type="button" class="hx-btn hx-btn-primary hx-plan-btn" data-plan="scale" style="width:100%;justify-content:center;">Upgrade to Scale</button>
           </div>
         </div>
 
@@ -114,5 +114,62 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    (function () {
+      var PROJECT_URL = 'https://yjmpallrtpeinpdilptj.supabase.co';
+
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+
+      function showError(msg) {
+        if (window.cxToast) {
+          window.cxToast(msg, 'error');
+        } else {
+          var n = document.createElement('div');
+          n.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid #DC2626;color:#991B1B;padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:500;z-index:1000;max-width:480px;box-shadow:0 12px 36px rgba(0,0,0,0.12);';
+          n.textContent = msg;
+          document.body.appendChild(n);
+          setTimeout(function () { n.remove(); }, 5000);
+        }
+      }
+
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        document.querySelectorAll('.hx-plan-btn').forEach(function (btn) {
+          btn.addEventListener('click', async function () {
+            var plan = btn.getAttribute('data-plan');
+            var original = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = 'Redirecting…';
+            try {
+              var s = (await sb.auth.getSession()).data.session;
+              if (!s || !s.access_token) {
+                window.location.href = '/signup?return=' + encodeURIComponent('/pricing');
+                return;
+              }
+              var resp = await fetch(PROJECT_URL + '/functions/v1/create-checkout-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + s.access_token },
+                body: JSON.stringify({ slug: plan }),
+              });
+              var data = null;
+              try { data = await resp.json(); } catch (e) {}
+              if (!resp.ok || !data || !data.url) {
+                var msg = (data && (data.message || data.error)) || ('Checkout failed (HTTP ' + resp.status + ').');
+                throw new Error(msg);
+              }
+              window.location.href = data.url;
+            } catch (err) {
+              btn.disabled = false;
+              btn.innerHTML = original;
+              showError((err && err.message) || 'Checkout failed.');
+            }
+          });
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

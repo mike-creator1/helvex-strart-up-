@@ -1,4 +1,5 @@
 import { callAnthropicStream, relayStream, parseJsonBody, requirePost } from './_lib/anthropic.js';
+import { gateAndCharge } from './_lib/auth.js';
 
 const SYSTEM = `You are a B2B sales-intelligence analyst. Given a contact's email + optional
 name + optional notes, you produce a structured enrichment profile that a salesperson
@@ -44,6 +45,9 @@ export default async function handler(req, res) {
   }
   const name  = (payload.name  || '').toString().trim();
   const notes = (payload.notes || '').toString().trim();
+
+  const gate = await gateAndCharge(req, 'nexus-4-5', 1);
+  if (!gate.ok) return res.status(gate.status).json({ error: gate.error, trace_id: gate.traceId });
 
   const userPrompt = `Enrich this contact:
 

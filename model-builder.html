@@ -260,7 +260,7 @@ async function send(){
     if(rv==='deep'&&mdlId==='nexus-3-7-20250219'){body.thinking={type:'enabled',budget_tokens:8000};}
     else if(rv==='fast'){body.temperature=0.3;}
     else if(rv==='balanced'){body.temperature=0.7;}
-    var res=await fetch('/api/builder-chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
+    var _h={'content-type':'application/json'};try{var _s=(await window.sb.auth.getSession()).data.session;if(_s&&_s.access_token)_h.Authorization='Bearer '+_s.access_token;}catch(e){}var res=await fetch('/api/builder-chat',{method:'POST',headers:_h,body:JSON.stringify(body)});
     if(!res.ok){var e=await res.json().catch(function(){return{};});throw new Error((e.error&&e.error.message)||'API error '+res.status);}
     var reader=res.body.getReader(),dec=new TextDecoder(),buf='',txt='';
     var aMsg={role:'assistant',content:''};history.push(aMsg);

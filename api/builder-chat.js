@@ -22,6 +22,7 @@
 //   with the `model` field rewritten to the HelveX brand name.
 
 import { ANTHROPIC_URL, relayStream } from './_lib/anthropic.js';
+import { gateAndCharge } from './_lib/auth.js';
 
 // Brand-name model IDs (what the browser sends) → real Anthropic model IDs
 // (what the upstream API understands). The brand names are what users see;
@@ -83,6 +84,9 @@ export default async function handler(req, res) {
   if (!messages.length) {
     return res.status(400).json({ error: 'messages array is required' });
   }
+
+  const gate = await gateAndCharge(req, 'nexus-4-5', 1);
+  if (!gate.ok) return res.status(gate.status).json({ error: gate.error, trace_id: gate.traceId });
 
   const upstreamBody = {
     model: resolveModel(payload.model),

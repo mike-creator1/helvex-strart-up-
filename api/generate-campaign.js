@@ -11,6 +11,7 @@
 //           on upstream error.
 
 import { relayStream } from './_lib/anthropic.js';
+import { gateAndCharge } from './_lib/auth.js';
 
 const MODEL = 'claude-sonnet-4-5';
 const MAX_TOKENS = 3000;
@@ -88,6 +89,9 @@ export default async function handler(req, res) {
   }
 
   const variants = Math.min(Math.max(parseInt(payload.variants, 10) || 3, 1), 5);
+
+  const gate = await gateAndCharge(req, 'nexus-4-5', 1);
+  if (!gate.ok) return res.status(gate.status).json({ error: gate.error, trace_id: gate.traceId });
 
   // Call upstream — streaming
   let upstream;

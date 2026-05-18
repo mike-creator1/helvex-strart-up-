@@ -1,4 +1,5 @@
 import { callAnthropicStream, relayStream, parseJsonBody, requirePost } from './_lib/anthropic.js';
+import { gateAndCharge } from './_lib/auth.js';
 
 const SYSTEM = `You are a performance-marketing copywriter who writes ad copy that converts.
 
@@ -65,6 +66,9 @@ BRIEF:
 ${brief}
 
 Return only the JSON object per the schema. Stay strictly within character limits.`;
+
+  const gate = await gateAndCharge(req, 'nexus-4-5', 1);
+  if (!gate.ok) return res.status(gate.status).json({ error: gate.error, trace_id: gate.traceId });
 
   try {
     const upstream = await callAnthropicStream({ system: SYSTEM, userPrompt, maxTokens: 2500 });
