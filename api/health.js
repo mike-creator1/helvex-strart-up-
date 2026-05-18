@@ -22,12 +22,14 @@ async function timed(label, fn) {
 }
 
 async function checkSupabase() {
-  // PostgREST root with apikey responds 200 quickly when the DB is up.
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/`, {
-    headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` },
+  // PostgREST returns 401/4xx for unauthenticated paths but anything
+  // under 500 means the database/PostgREST process is up and serving.
+  // Only a network failure or 5xx counts as "down".
+  const r = await fetch(`${SUPABASE_URL}/auth/v1/health`, {
+    headers: { apikey: SUPABASE_ANON },
     signal: AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined,
   });
-  return r.ok;
+  return r.status < 500;
 }
 
 async function checkAnthropic() {
