@@ -126,7 +126,10 @@
               '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.tls_status) + '</span></td>' +
               '<td><code class="hx-mono" style="font-size:11.5px;background:var(--hx-bg-2);padding:2px 6px;border-radius:4px;">helvex-verify=' + escape(r.verification_token) + '</code></td>' +
               '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(r.created_at) + '</span></td>' +
-              '<td class="right"><button class="hx-btn hx-btn-danger hx-btn-sm" data-act="remove">Remove</button></td>' +
+              '<td class="right">' +
+                (r.status === 'verified' ? '' : '<button class="hx-btn hx-btn-secondary hx-btn-sm" data-act="verify" style="margin-right:6px;">Verify</button>') +
+                '<button class="hx-btn hx-btn-danger hx-btn-sm" data-act="remove">Remove</button>' +
+              '</td>' +
             '</tr>';
           });
           html += '</tbody></table></div>';
@@ -134,6 +137,30 @@
         }
 
         $('hx-dom-host-list').addEventListener('click', async function (e) {
+          var verifyBtn = e.target.closest && e.target.closest('button[data-act="verify"]');
+          if (verifyBtn) {
+            var row = verifyBtn.closest('tr');
+            var domainId = row.getAttribute('data-id');
+            var lbl = verifyBtn.textContent;
+            verifyBtn.disabled = true; verifyBtn.textContent = 'Checking DNS…';
+            try {
+              var s = (await sb.auth.getSession()).data.session;
+              if (!s || !s.access_token) { window.location.href = '/signup'; return; }
+              var resp = await fetch('https://yjmpallrtpeinpdilptj.supabase.co/functions/v1/verify-domain', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json', authorization: 'Bearer ' + s.access_token },
+                body: JSON.stringify({ domain_id: domainId })
+              });
+              var body = null; try { body = await resp.json(); } catch (ee) {}
+              if (!resp.ok || !body) throw new Error((body && (body.message || body.error)) || ('HTTP ' + resp.status));
+              if (window.cxToast) window.cxToast(body.verified ? 'Verified · TLS issuing' : 'TXT record not found yet — ' + (body.next || 'try again in a few minutes.'), body.verified ? 'success' : 'error');
+              refresh();
+            } catch (err) {
+              if (window.cxToast) window.cxToast((err && err.message) || 'Verification failed.', 'error');
+              verifyBtn.disabled = false; verifyBtn.textContent = lbl;
+            }
+            return;
+          }
           var btn = e.target.closest && e.target.closest('button[data-act="remove"]');
           if (!btn) return;
           if (btn.dataset.armed !== '1') {

@@ -162,6 +162,39 @@
         if (msg) setTimeout(function () { if (el.textContent === msg) el.textContent = ''; }, 3000);
       }
 
+      // Applying theme + language to the document so the choice is visible
+      // immediately, not just stored in the database.
+      function applyTheme(theme) {
+        var root = document.documentElement;
+        var resolved = theme;
+        if (theme === 'system') {
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', resolved);
+        root.style.colorScheme = resolved;
+        try { localStorage.setItem('hx.theme', theme); } catch (e) {}
+      }
+      function applyLanguage(lang) {
+        document.documentElement.setAttribute('lang', lang || 'en');
+        try { localStorage.setItem('hx.language', lang || 'en'); } catch (e) {}
+      }
+      function applyTimezone(tz) {
+        if (tz) try { localStorage.setItem('hx.timezone', tz); } catch (e) {}
+      }
+
+      // React to OS theme changes when theme === 'system'
+      if (window.matchMedia) {
+        try {
+          var mql = window.matchMedia('(prefers-color-scheme: dark)');
+          var listener = function () {
+            var pref = (function () { try { return localStorage.getItem('hx.theme') || 'system'; } catch (e) { return 'system'; } })();
+            if (pref === 'system') applyTheme('system');
+          };
+          if (mql.addEventListener) mql.addEventListener('change', listener);
+          else if (mql.addListener) mql.addListener(listener);
+        } catch (e) {}
+      }
+
       whenAuthReady(function () {
         var sb = window.HX.supabase;
         var uid = null;
@@ -185,7 +218,17 @@
           $('hx-notif-product').checked  = st.email_product  !== false;
           $('hx-notif-security').checked = st.email_security !== false;
           $('hx-notif-billing').checked  = st.email_billing  !== false;
+
+          // Apply the loaded preferences immediately so the user sees them.
+          applyTheme(st.theme || 'system');
+          applyLanguage(st.language || 'en');
+          applyTimezone(st.timezone || 'Europe/Zurich');
         });
+
+        // Live preview as the user changes any selector — feels responsive.
+        $('hx-ws-theme').addEventListener('change',    function () { applyTheme($('hx-ws-theme').value); });
+        $('hx-ws-language').addEventListener('change', function () { applyLanguage($('hx-ws-language').value); });
+        $('hx-ws-timezone').addEventListener('change', function () { applyTimezone($('hx-ws-timezone').value); });
 
         // Save workspace (company → profiles, timezone/lang/theme → user_settings)
         $('hx-ws-save').addEventListener('click', async function (e) {

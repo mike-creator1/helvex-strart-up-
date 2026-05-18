@@ -6,6 +6,25 @@
 (function () {
   'use strict';
 
+  // Theme + language bootstrap — applied before paint so there's no flash.
+  // Settings page persists to user_settings *and* localStorage; this reads
+  // localStorage so every platform page picks up the user's preference.
+  (function applyStoredTheme() {
+    try {
+      var theme = localStorage.getItem('hx.theme') || 'system';
+      var resolved = theme;
+      if (theme === 'system') {
+        resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', resolved);
+      document.documentElement.style.colorScheme = resolved;
+    } catch (e) {}
+    try {
+      var lang = localStorage.getItem('hx.language');
+      if (lang) document.documentElement.setAttribute('lang', lang);
+    } catch (e) {}
+  })();
+
   var NAV_GROUPS = [
     {
       label: 'Workspace',

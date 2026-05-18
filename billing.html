@@ -26,6 +26,7 @@
           </div>
           <div class="hx-page-actions">
             <a href="/invoices.html" class="hx-btn hx-btn-secondary">View invoices</a>
+            <button type="button" id="hx-bd-portal" class="hx-btn hx-btn-primary" style="display:none;">Manage in Stripe</button>
           </div>
         </div>
 
@@ -139,6 +140,30 @@
                   '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>' + (sub.data.status || 'active') + '</span>' +
                 '</div>' +
               '</div>';
+            $('hx-bd-portal').style.display = '';
+          }
+        }
+
+        async function openBillingPortal(btn) {
+          var original = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = 'Opening…';
+          try {
+            var s = (await sb.auth.getSession()).data.session;
+            if (!s || !s.access_token) { window.location.href = '/signup'; return; }
+            var resp = await fetch('https://yjmpallrtpeinpdilptj.supabase.co/functions/v1/create-billing-portal-session', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json', authorization: 'Bearer ' + s.access_token },
+              body: '{}'
+            });
+            var body = null; try { body = await resp.json(); } catch (e) {}
+            if (!resp.ok || !body || !body.url) {
+              throw new Error((body && (body.message || body.error)) || ('Portal failed (HTTP ' + resp.status + ').'));
+            }
+            window.location.href = body.url;
+          } catch (err) {
+            if (window.cxToast) window.cxToast((err && err.message) || 'Could not open portal.', 'error');
+            btn.disabled = false; btn.textContent = original;
           }
         }
 
@@ -183,6 +208,7 @@
           loadDetails(u);
           $('bd-save').addEventListener('click', function () { save(u); });
           $('bd-cancel').addEventListener('click', reset);
+          $('hx-bd-portal').addEventListener('click', function () { openBillingPortal($('hx-bd-portal')); });
         });
       });
     })();

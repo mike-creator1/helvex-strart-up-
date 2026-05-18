@@ -739,6 +739,7 @@
   </footer>
 
   <script src="/helvex.js" defer></script>
+  <script src="/auth.js"></script>
   <script>
     (function () {
       var form = document.getElementById('support-form');
@@ -784,20 +785,53 @@
             return;
           }
 
-          // Optimistic UI — the backend wire-up is handled by a separate
-          // endpoint when the SaaS surface is connected.
+          // Real submission — POST to send-support-email edge function.
+          // The function persists the request to public.support_requests and
+          // emails support@swissupport.com via Resend.
           var label = btn.querySelector('span');
           btn.disabled = true;
           if (label) label.textContent = 'Sending…';
 
-          setTimeout(function () {
-            success.classList.add('show');
-            success.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            btn.disabled = false;
-            if (label) label.textContent = 'Send another';
-            form.reset();
-            updateCount();
-          }, 600);
+          (async function () {
+            try {
+              // Need a Supabase session to authenticate the request.
+              var sb = (window.HX && window.HX.supabase) || null;
+              if (!sb) {
+                // SDK not loaded yet on the public-facing page — fall back to
+                // anon insert via the REST API once the SDK hydrates.
+                throw new Error('Auth client not ready. Please refresh and try again.');
+              }
+              var sess = (await sb.auth.getSession()).data.session;
+              if (!sess || !sess.access_token) {
+                // Unauthenticated visitor — bounce to sign-up so they can come back.
+                window.location.href = '/signup?return=' + encodeURIComponent('/support');
+                return;
+              }
+              var resp = await fetch('https://yjmpallrtpeinpdilptj.supabase.co/functions/v1/send-support-email', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json', authorization: 'Bearer ' + sess.access_token },
+                body: JSON.stringify({ name: name, email: email, subject: subject, category: category, message: message })
+              });
+              var body = null; try { body = await resp.json(); } catch (e) {}
+              if (!resp.ok || !body || body.error) {
+                throw new Error((body && (body.message || body.error)) || ('Send failed (HTTP ' + resp.status + ').'));
+              }
+              success.textContent = body.delivered
+                ? "Got it — we'll reply to " + email + " within one business day. (Trace: " + body.trace_id + ")"
+                : "Request saved (trace " + body.trace_id + "). Email delivery is currently offline; our team will pick it up from the dashboard within one business day.";
+              success.classList.add('show');
+              success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              form.reset();
+              updateCount();
+            } catch (err) {
+              error.textContent = (err && err.message) || 'Could not send your request. Please try again.';
+              error.classList.add('show');
+              error.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } finally {
+              btn.disabled = false;
+              if (label) label.textContent = 'Send another';
+            }
+          })();
         });
       }
     })();

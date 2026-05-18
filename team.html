@@ -262,13 +262,20 @@
           var btn = e.currentTarget; var lbl = btn.textContent;
           btn.disabled = true; btn.textContent = 'Sending…';
           try {
-            var u = (await sb.auth.getUser()).data.user;
-            var r = await sb.from('invitations').insert({ owner_id: u.id, email: email, role: role }).select().maybeSingle();
-            if (r.error) throw r.error;
-            await sb.rpc('log_event', { p_kind: 'team.invitation_sent', p_payload: { email: email, role: role, id: r.data.id } });
+            // send-invitation edge fn creates the invitations row (with a
+            // 7-day token) AND emails the recipient via Resend.
+            var sess = (await sb.auth.getSession()).data.session;
+            if (!sess || !sess.access_token) throw new Error('Please sign in again.');
+            var resp = await fetch('https://yjmpallrtpeinpdilptj.supabase.co/functions/v1/send-invitation', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json', authorization: 'Bearer ' + sess.access_token },
+              body: JSON.stringify({ email: email, role: role })
+            });
+            var body = null; try { body = await resp.json(); } catch (ee) {}
+            if (!resp.ok || !body || body.error) throw new Error((body && (body.message || body.error)) || ('HTTP ' + resp.status));
             $('hx-invite-form').hidden = true;
             $('hx-invite-email').value = '';
-            status('hx-invite-status', '');
+            status('hx-invite-status', body.delivered ? 'Invitation emailed to ' + email + '.' : 'Invitation saved — email delivery is offline, share the link manually.');
             await refresh();
           } catch (err) {
             status('hx-invite-status', (err && err.message) || 'Could not send invite.', 'error');

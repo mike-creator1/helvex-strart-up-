@@ -9,6 +9,35 @@
    • Red reserved for warnings / destructive
    ═══════════════════════════════════════════════════════════ */
 
+/* Dark mode — driven by html[data-theme="dark"] (set by platform.js
+   bootstrap from localStorage "hx.theme" which Settings page writes).
+   Light mode is the default; this block overrides the core variables.   */
+html[data-theme="dark"] {
+  --hx-bg:           #07070A;
+  --hx-bg-2:         #0E0E14;
+  --hx-bg-3:         #15151D;
+  --hx-surface:      #0E0E14;
+  --hx-surface-2:    #15151D;
+  --hx-surface-3:    #1A1A23;
+  --hx-line:         #1F1F28;
+  --hx-line-soft:    #15151D;
+  --hx-line-strong:  #2A2A36;
+  --hx-line-focus:   #FCD34D;
+  --hx-text:         #F5F5F7;
+  --hx-text-mid:     #A8A8B0;
+  --hx-text-dim:     #6E6E78;
+  --hx-text-faint:   #494954;
+  --hx-yellow-soft:  rgba(252, 211, 77, 0.12);
+  --hx-red-soft:     rgba(220, 38, 38, 0.16);
+  --hx-emerald-soft: rgba(16, 185, 129, 0.16);
+  --hx-shadow-xs:    0 1px 2px rgba(0, 0, 0, 0.5);
+  --hx-shadow-sm:    0 1px 3px rgba(0, 0, 0, 0.55);
+  --hx-shadow:       0 4px 12px -2px rgba(0, 0, 0, 0.55);
+  --hx-shadow-lg:    0 12px 32px -8px rgba(0, 0, 0, 0.6);
+}
+html[data-theme="dark"] body { color-scheme: dark; }
+html[data-theme="dark"] img { filter: brightness(0.95); }
+
 :root {
   /* Surfaces */
   --hx-bg:           #FAFAFA;

@@ -25,7 +25,8 @@
             <p class="sub">Your active HelveX plan, renewal, and upgrade options. Changing tier takes effect on the next billing cycle.</p>
           </div>
           <div class="hx-page-actions">
-            <a href="/pricing.html" class="hx-btn hx-btn-primary">Choose a plan</a>
+            <a href="/pricing.html" class="hx-btn hx-btn-secondary">Change plan</a>
+            <button type="button" id="hx-sub-portal" class="hx-btn hx-btn-primary" style="display:none;">Manage in Stripe</button>
           </div>
         </div>
 
@@ -104,6 +105,30 @@
           var plan = sub && sub.plan;
           var hasActive = sub && status && /^(active|trialing|past_due)$/.test(status);
           if (!hasActive) { activeHost.innerHTML = emptyActive(); return; }
+          // Reveal "Manage in Stripe" once an active subscription is confirmed.
+          var portalBtn = document.getElementById('hx-sub-portal');
+          if (portalBtn) {
+            portalBtn.style.display = '';
+            portalBtn.addEventListener('click', async function () {
+              var orig = portalBtn.textContent;
+              portalBtn.disabled = true; portalBtn.textContent = 'Opening…';
+              try {
+                var s = (await sb.auth.getSession()).data.session;
+                if (!s || !s.access_token) { window.location.href = '/signup'; return; }
+                var resp = await fetch('https://yjmpallrtpeinpdilptj.supabase.co/functions/v1/create-billing-portal-session', {
+                  method: 'POST',
+                  headers: { 'content-type': 'application/json', authorization: 'Bearer ' + s.access_token },
+                  body: '{}'
+                });
+                var body = null; try { body = await resp.json(); } catch (e) {}
+                if (!resp.ok || !body || !body.url) throw new Error((body && (body.message || body.error)) || ('Portal failed (HTTP ' + resp.status + ').'));
+                window.location.href = body.url;
+              } catch (err) {
+                if (window.cxToast) window.cxToast((err && err.message) || 'Could not open portal.', 'error');
+                portalBtn.disabled = false; portalBtn.textContent = orig;
+              }
+            });
+          }
           var remaining = bal ? Math.max(0, (bal.credits_total || 0) - (bal.credits_used || 0)) : 0;
           var renewLabel = sub.cancel_at_period_end ? 'Ends' : 'Renews';
           activeHost.innerHTML =

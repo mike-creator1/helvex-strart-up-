@@ -56,29 +56,41 @@
         <div class="hx-section-head">
           <h2>Authentication</h2>
         </div>
-        <div class="hx-grid hx-grid-2">
-          <div class="hx-card">
-            <div class="hx-card-head">
-              <div>
-                <p class="hx-card-eyebrow">Two-factor</p>
-                <h3>Authenticator app (TOTP)</h3>
-              </div>
-              <span class="hx-badge hx-badge-neutral">Off</span>
+        <div class="hx-card" id="hx-tfa-card">
+          <div class="hx-card-head">
+            <div>
+              <p class="hx-card-eyebrow">Two-factor</p>
+              <h3>Authenticator app (TOTP)</h3>
             </div>
-            <p class="desc">Bind a 6-digit code from an authenticator app to every sign-in. Strongly recommended — phishable factors like SMS are not supported.</p>
-            <a href="/settings.html" class="hx-card-link">Enable 2FA</a>
+            <span class="hx-badge hx-badge-neutral" id="hx-tfa-state-badge">Off</span>
+          </div>
+          <p class="desc">Bind a 6-digit code from an authenticator app to every sign-in. Strongly recommended — phishable factors like SMS are not supported.</p>
+
+          <!-- Factor list (visible when 2FA is enabled) -->
+          <div id="hx-tfa-factors" style="display:none;margin-top:14px;"></div>
+
+          <!-- Enrollment UI (revealed once user clicks Enable) -->
+          <div id="hx-tfa-enroll" hidden style="margin-top:14px;border-top:1px solid var(--hx-line);padding-top:14px;">
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;">
+              <img id="hx-tfa-qr" alt="Scan with your authenticator app" style="width:160px;height:160px;background:#fff;padding:8px;border:1px solid var(--hx-line);border-radius:8px;" />
+              <div>
+                <p style="margin:0 0 6px;font-size:13.5px;font-weight:500;">Scan this QR with your authenticator app</p>
+                <p class="desc" style="margin:0 0 12px;">Or paste this secret: <code class="hx-mono" id="hx-tfa-secret" style="background:var(--hx-bg-2);padding:2px 6px;border-radius:4px;font-size:12px;"></code></p>
+                <label style="font-size:12.5px;color:var(--hx-text-mid);">Enter the 6-digit code your app shows</label>
+                <div style="display:flex;gap:8px;margin-top:8px;">
+                  <input type="text" id="hx-tfa-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="000000" style="font-family:var(--hx-mono);letter-spacing:6px;text-align:center;width:140px;padding:8px 10px;border:1px solid var(--hx-line);border-radius:6px;background:var(--hx-surface);color:var(--hx-text);" />
+                  <button class="hx-btn hx-btn-primary" id="hx-tfa-verify">Verify &amp; enable</button>
+                  <button class="hx-btn hx-btn-ghost"   id="hx-tfa-cancel">Cancel</button>
+                </div>
+                <p id="hx-tfa-status" style="margin:8px 0 0;font-size:12.5px;font-weight:500;"></p>
+              </div>
+            </div>
           </div>
 
-          <div class="hx-card">
-            <div class="hx-card-head">
-              <div>
-                <p class="hx-card-eyebrow">Recovery</p>
-                <h3>Recovery codes</h3>
-              </div>
-              <span class="hx-badge hx-badge-neutral">Not generated</span>
-            </div>
-            <p class="desc">Eight one-time codes that work when your authenticator is lost. Stored hashed — even we can't read them. Generated when you enable 2FA.</p>
-            <a href="/settings.html" class="hx-card-link">Generate codes</a>
+          <!-- Action buttons (default state) -->
+          <div id="hx-tfa-actions" style="margin-top:14px;">
+            <button class="hx-btn hx-btn-primary"  id="hx-tfa-enable"  type="button">Enable 2FA</button>
+            <button class="hx-btn hx-btn-danger"   id="hx-tfa-disable" type="button" style="display:none;">Disable 2FA</button>
           </div>
         </div>
 
@@ -159,17 +171,144 @@
           if (sinceEl) sinceEl.textContent = fmtDate(u.created_at);
           if (sinceMeta) sinceMeta.textContent = u.created_at ? 'Joined HelveX' : '—';
         });
-        // 2FA factor list
-        if (sb.auth.mfa && sb.auth.mfa.listFactors) {
-          sb.auth.mfa.listFactors().then(function (r) {
-            var f = r && r.data ? (r.data.totp || []) : [];
-            var on = f.length > 0;
-            var tfaEl = document.getElementById('hx-sec-tfa');
-            var tfaMeta = document.getElementById('hx-sec-tfa-meta');
-            if (tfaEl) { tfaEl.textContent = on ? 'Enabled' : 'Not configured'; tfaEl.style.color = on ? '#15803d' : 'var(--hx-text-dim)'; }
-            if (tfaMeta) tfaMeta.textContent = on ? f.length + ' factor' + (f.length === 1 ? '' : 's') + ' enrolled' : 'Recommended';
-          }).catch(function () {});
+        // 2FA — real enrollment via Supabase MFA
+        var $ = function (id) { return document.getElementById(id); };
+        var enrollState = null; // { factorId, secret, qr }
+
+        function status(msg, kind) {
+          var el = $('hx-tfa-status'); if (!el) return;
+          el.style.color = kind === 'error' ? 'var(--hx-red)' : 'var(--hx-emerald)';
+          el.textContent = msg || '';
         }
+
+        function paintFactors(factors) {
+          var on = factors.length > 0;
+          var tfaEl = $('hx-sec-tfa');
+          var tfaMeta = $('hx-sec-tfa-meta');
+          if (tfaEl) { tfaEl.textContent = on ? 'Enabled' : 'Not configured'; tfaEl.style.color = on ? '#15803d' : 'var(--hx-text-dim)'; }
+          if (tfaMeta) tfaMeta.textContent = on ? factors.length + ' factor' + (factors.length === 1 ? '' : 's') + ' enrolled' : 'Recommended';
+          var badge = $('hx-tfa-state-badge');
+          if (badge) {
+            badge.textContent = on ? 'On' : 'Off';
+            badge.className = on ? 'hx-badge hx-badge-emerald' : 'hx-badge hx-badge-neutral';
+          }
+          var host = $('hx-tfa-factors');
+          if (host) {
+            if (on) {
+              host.style.display = '';
+              host.innerHTML = factors.map(function (f) {
+                return '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--hx-line);">' +
+                  '<div><div style="font-size:13px;font-weight:500;">' + (f.friendly_name || 'Authenticator') + '</div><div class="hx-mono" style="font-size:11.5px;color:var(--hx-text-dim);">' + f.id.slice(0, 8) + '… · enrolled ' + (f.created_at ? new Date(f.created_at).toLocaleDateString() : '—') + '</div></div>' +
+                  '<button class="hx-btn hx-btn-danger hx-btn-sm" data-act="unenroll" data-id="' + f.id + '">Remove</button>' +
+                '</div>';
+              }).join('');
+            } else {
+              host.style.display = 'none';
+              host.innerHTML = '';
+            }
+          }
+          $('hx-tfa-enable').style.display  = on ? 'none' : '';
+          $('hx-tfa-disable').style.display = on ? '' : 'none';
+        }
+
+        async function refreshFactors() {
+          if (!sb.auth.mfa || !sb.auth.mfa.listFactors) return;
+          try {
+            var r = await sb.auth.mfa.listFactors();
+            var factors = (r && r.data && r.data.totp) || [];
+            paintFactors(factors);
+            return factors;
+          } catch (e) { paintFactors([]); return []; }
+        }
+
+        async function beginEnrollment() {
+          status('');
+          if (!sb.auth.mfa || !sb.auth.mfa.enroll) {
+            status('Your Supabase client doesn\'t support MFA. Update the SDK.', 'error');
+            return;
+          }
+          var btn = $('hx-tfa-enable');
+          btn.disabled = true; btn.textContent = 'Generating…';
+          try {
+            var res = await sb.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Authenticator · ' + new Date().toLocaleDateString() });
+            if (res.error) throw res.error;
+            enrollState = {
+              factorId: res.data.id,
+              secret:   res.data.totp.secret,
+              qr:       res.data.totp.qr_code,
+            };
+            $('hx-tfa-qr').src = enrollState.qr;
+            $('hx-tfa-secret').textContent = enrollState.secret;
+            $('hx-tfa-enroll').hidden = false;
+            $('hx-tfa-actions').style.display = 'none';
+            $('hx-tfa-code').focus();
+          } catch (err) {
+            status((err && err.message) || 'Could not start enrollment.', 'error');
+            btn.disabled = false; btn.textContent = 'Enable 2FA';
+          }
+        }
+
+        async function verifyEnrollment() {
+          if (!enrollState) return;
+          var code = ($('hx-tfa-code').value || '').replace(/\D/g, '').slice(0, 6);
+          if (code.length !== 6) { status('Enter the 6-digit code.', 'error'); return; }
+          var btn = $('hx-tfa-verify'); var lbl = btn.textContent;
+          btn.disabled = true; btn.textContent = 'Verifying…';
+          try {
+            var ch = await sb.auth.mfa.challenge({ factorId: enrollState.factorId });
+            if (ch.error) throw ch.error;
+            var ver = await sb.auth.mfa.verify({ factorId: enrollState.factorId, challengeId: ch.data.id, code: code });
+            if (ver.error) throw ver.error;
+            await sb.rpc('log_event', { p_kind: 'security.tfa_enabled', p_payload: { factor_id: enrollState.factorId } });
+            enrollState = null;
+            $('hx-tfa-enroll').hidden = true;
+            $('hx-tfa-actions').style.display = '';
+            $('hx-tfa-code').value = '';
+            $('hx-tfa-enable').disabled = false; $('hx-tfa-enable').textContent = 'Enable 2FA';
+            await refreshFactors();
+            status('2FA enabled successfully.');
+          } catch (err) {
+            status((err && err.message) || 'Verification failed — check the code and try again.', 'error');
+            btn.disabled = false; btn.textContent = lbl;
+          }
+        }
+
+        async function cancelEnrollment() {
+          if (enrollState && sb.auth.mfa && sb.auth.mfa.unenroll) {
+            try { await sb.auth.mfa.unenroll({ factorId: enrollState.factorId }); } catch (e) {}
+          }
+          enrollState = null;
+          $('hx-tfa-enroll').hidden = true;
+          $('hx-tfa-actions').style.display = '';
+          $('hx-tfa-code').value = '';
+          $('hx-tfa-enable').disabled = false; $('hx-tfa-enable').textContent = 'Enable 2FA';
+          status('');
+        }
+
+        async function disableAll() {
+          var factors = await refreshFactors();
+          if (!factors.length) return;
+          if (!confirm('Disable 2FA on this account? You can re-enable it any time.')) return;
+          for (var i = 0; i < factors.length; i++) {
+            try { await sb.auth.mfa.unenroll({ factorId: factors[i].id }); } catch (e) {}
+          }
+          await sb.rpc('log_event', { p_kind: 'security.tfa_disabled', p_payload: {} });
+          await refreshFactors();
+        }
+
+        $('hx-tfa-enable').addEventListener('click', beginEnrollment);
+        $('hx-tfa-verify').addEventListener('click', verifyEnrollment);
+        $('hx-tfa-cancel').addEventListener('click', cancelEnrollment);
+        $('hx-tfa-disable').addEventListener('click', disableAll);
+        $('hx-tfa-factors').addEventListener('click', async function (e) {
+          var b = e.target.closest && e.target.closest('button[data-act="unenroll"]');
+          if (!b) return;
+          if (!confirm('Remove this authenticator?')) return;
+          try { await sb.auth.mfa.unenroll({ factorId: b.getAttribute('data-id') }); } catch (err) {}
+          await refreshFactors();
+        });
+
+        refreshFactors();
       });
     })();
   </script>
