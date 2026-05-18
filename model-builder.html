@@ -235,7 +235,6 @@ async function send(){
   var inp=document.getElementById('c-input');
   var text=inp.value.trim();
   if(!text&&!attachments.length)return;
-  if(!apiKey){document.getElementById('key-modal').classList.add('open');return;}
   var content=text;
   if(attachments.length){
     content=[];
@@ -261,7 +260,7 @@ async function send(){
     if(rv==='deep'&&mdlId==='nexus-3-7-20250219'){body.thinking={type:'enabled',budget_tokens:8000};}
     else if(rv==='fast'){body.temperature=0.3;}
     else if(rv==='balanced'){body.temperature=0.7;}
-    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'x-api-key':apiKey,'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify(body)});
+    var res=await fetch('/api/builder-chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
     if(!res.ok){var e=await res.json().catch(function(){return{};});throw new Error((e.error&&e.error.message)||'API error '+res.status);}
     var reader=res.body.getReader(),dec=new TextDecoder(),buf='',txt='';
     var aMsg={role:'assistant',content:''};history.push(aMsg);
