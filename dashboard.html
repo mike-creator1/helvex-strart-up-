@@ -10,6 +10,60 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <style>
+    /* Active-project bar — shown when the user has picked a working
+       project from the chat or projects page. Mirrors the chat's
+       "Project: ..." selector and lets the user clear or switch. */
+    .hx-active-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 10px 14px;
+      margin: 0 0 14px;
+      background: var(--hx-yellow-soft);
+      border: 1px solid rgba(252, 211, 77, 0.45);
+      border-radius: var(--hx-r);
+    }
+    .hx-active-bar[hidden] { display: none; }
+    .hx-active-bar-kicker {
+      font-family: var(--hx-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--hx-yellow-deep);
+    }
+    .hx-active-bar-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--hx-yellow-deep);
+      display: inline-block;
+      box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.28);
+    }
+    .hx-active-bar-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--hx-text);
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .hx-active-bar-action {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--hx-text-mid);
+      background: transparent;
+      border: 0;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.12s, background 0.12s;
+    }
+    .hx-active-bar-action:hover { color: var(--hx-text); background: rgba(0,0,0,0.04); }
+  </style>
 </head>
 <body data-active="dashboard">
 
@@ -31,6 +85,17 @@
               <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
+        </div>
+
+        <!-- Active project banner — visible only when the user has selected
+             one from chat or projects. Reads from localStorage. -->
+        <div class="hx-active-bar" id="hx-active-bar" hidden>
+          <span class="hx-active-bar-dot" aria-hidden="true"></span>
+          <span class="hx-active-bar-kicker">Working on</span>
+          <span class="hx-active-bar-name" id="hx-active-bar-name">—</span>
+          <a href="/projects.html" class="hx-active-bar-action">Manage</a>
+          <a href="/chat.html"     class="hx-active-bar-action">Open chat</a>
+          <button type="button" id="hx-active-bar-clear" class="hx-active-bar-action">Clear</button>
         </div>
 
         <!-- Status row — every value reads from real account state. -->
@@ -57,36 +122,21 @@
           </div>
         </div>
 
-        <!-- Active engagements — empty state for now. -->
+        <!-- Active engagements — rendered into a stable host so the
+             active-project context can refresh it without re-loading. -->
         <div class="hx-section-head">
           <h2>Active engagements</h2>
           <a href="/projects.html">View all</a>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-            </svg>
-          </div>
-          <h3>No active projects</h3>
-          <p>Once you request an engagement, it will appear here with its current stage and the engineer who owns it.</p>
-          <a href="/services.html" class="hx-btn hx-btn-primary">Request an engagement</a>
-        </div>
+        <div id="hx-engagement-host"></div>
 
-        <!-- Recent activity — empty until something happens -->
+        <!-- Recent activity — same pattern. Filtered to the active
+             project's events when one is selected. -->
         <div class="hx-section-head">
           <h2>Recent activity</h2>
           <a href="/activity.html">Open activity log</a>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-            </svg>
-          </div>
-          <h3>Nothing has happened yet</h3>
-          <p>Sign-ins, project briefs, deployments, plan changes — every action will be logged here with actor, timestamp, and trace ID.</p>
-        </div>
+        <div id="hx-activity-host"></div>
 
         <!-- Practice areas (real product info, not simulated activity). -->
         <div class="hx-section-head">
@@ -152,9 +202,50 @@
         }).join(' / ');
       }
 
+      // ─── Active project banner ───────────────────────────────
+      // Shared cross-page state, driven by localStorage. Reflects the
+      // project the user picked from the chat dropdown or the Projects
+      // page. Listens for both same-tab CustomEvents and cross-tab
+      // storage events so it stays in sync.
+      var ACTIVE_KEY = 'hx_active_project';
+      function getActiveProject() {
+        try { return JSON.parse(localStorage.getItem(ACTIVE_KEY) || 'null'); }
+        catch (e) { return null; }
+      }
+      function clearActiveProject() {
+        try { localStorage.removeItem(ACTIVE_KEY); } catch (e) {}
+        try { document.dispatchEvent(new CustomEvent('hx:active-project-changed', { detail: null })); } catch (e) {}
+      }
+      function renderActiveBar() {
+        var bar  = $('hx-active-bar');
+        var name = $('hx-active-bar-name');
+        if (!bar || !name) return;
+        var a = getActiveProject();
+        if (a && a.id) {
+          bar.hidden = false;
+          name.textContent = a.name || 'Unnamed project';
+        } else {
+          bar.hidden = true;
+        }
+      }
+      function wireActiveBar() {
+        renderActiveBar();
+        var clearBtn = $('hx-active-bar-clear');
+        if (clearBtn) clearBtn.addEventListener('click', function () {
+          clearActiveProject();
+          renderActiveBar();
+        });
+        document.addEventListener('hx:active-project-changed', renderActiveBar);
+        window.addEventListener('storage', function (e) { if (e.key === ACTIVE_KEY) renderActiveBar(); });
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireActiveBar);
+      else wireActiveBar();
+
       whenAuthReady(function () {
         var sb = window.HX.supabase;
-        sb.auth.getUser().then(async function (res) {
+
+        async function loadDashboard() {
+          var res = await sb.auth.getUser();
           var user = res && res.data ? res.data.user : null;
           if (!user) return;
           var meta = user.user_metadata || {};
@@ -162,13 +253,23 @@
           var el = $('hx-greeting');
           if (el && first) el.textContent = 'Welcome back, ' + first + '.';
 
+          // The Overview reflects the same "active project" context that
+          // the chat uses. If there is one, recent activity is filtered
+          // to events tagged with it.
+          var active = getActiveProject();
+          var activityQuery = sb.from('activity_events')
+            .select('id,kind,created_at,payload,project_id')
+            .order('created_at', { ascending: false })
+            .limit(8);
+          if (active && active.id) activityQuery = activityQuery.eq('project_id', active.id);
+
           // Parallel fetch of every dashboard data source
           var [projects, credits, subs, invoices, recent] = await Promise.all([
-            sb.from('projects').select('id,status', { count: 'exact', head: false }),
+            sb.from('projects').select('id,name,slug,status,description,updated_at', { count: 'exact', head: false }),
             sb.from('credits_balance').select('credits_total,credits_used').maybeSingle(),
             sb.from('subscriptions').select('plan,status,current_period_end').maybeSingle(),
             sb.from('invoices').select('id,status', { count: 'exact', head: true }).neq('status', 'paid'),
-            sb.from('activity_events').select('id,kind,created_at,payload').order('created_at', { ascending: false }).limit(8)
+            activityQuery
           ]);
 
           // Credits
@@ -200,12 +301,56 @@
           // Open invoices
           $('hx-stat-invoices').textContent = (invoices && invoices.count) || 0;
 
-          // Recent activity — populate the hx-empty section if events exist
-          if (recent && recent.data && recent.data.length) {
-            var actHosts = document.querySelectorAll('.hx-empty');
-            // The 2nd hx-empty on the page is the "Recent activity" one
-            var actEmpty = actHosts.length > 1 ? actHosts[1] : null;
-            if (actEmpty) {
+          // Active engagement panel — shows the active project front-
+          // and-centre, or the no-active-project empty state.
+          var engHost = $('hx-engagement-host');
+          if (engHost) {
+            if (active && active.id) {
+              var thisProj = rows.find(function (p) { return p.id === active.id; });
+              if (thisProj) {
+                var statusLabel = (thisProj.status || 'active').charAt(0).toUpperCase() + (thisProj.status || 'active').slice(1);
+                engHost.innerHTML =
+                  '<div class="hx-card" style="padding:18px;">' +
+                    '<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">' +
+                      '<div style="min-width:0;">' +
+                        '<p class="hx-mono" style="margin:0 0 4px;font-size:10px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:var(--hx-text-dim);">Active engagement</p>' +
+                        '<h3 style="margin:0 0 2px;font-size:16px;font-weight:700;letter-spacing:-0.012em;">' + escape(thisProj.name) + '</h3>' +
+                        (thisProj.description ? '<p style="margin:4px 0 0;color:var(--hx-text-mid);font-size:13px;line-height:1.5;">' + escape(thisProj.description) + '</p>' : '') +
+                      '</div>' +
+                      '<div style="display:flex;gap:8px;flex-shrink:0;">' +
+                        '<a href="/chat.html" class="hx-btn hx-btn-secondary hx-btn-sm">Open chat</a>' +
+                        '<a href="/projects.html" class="hx-btn hx-btn-ghost hx-btn-sm">Manage</a>' +
+                      '</div>' +
+                    '</div>' +
+                    '<p class="hx-mono" style="margin:12px 0 0;font-size:11px;color:var(--hx-text-dim);">Status: ' + escape(statusLabel) + ' · Slug: ' + escape(thisProj.slug || '—') + '</p>' +
+                  '</div>';
+              } else {
+                engHost.innerHTML = '<div class="hx-empty"><h3>This project was removed</h3><p>Pick a different active project from the chat or projects page.</p></div>';
+              }
+            } else if (rows.length > 0) {
+              engHost.innerHTML =
+                '<div class="hx-empty">' +
+                  '<div class="icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>' +
+                  '<h3>No active project selected</h3>' +
+                  '<p>Pick one of your ' + rows.length + ' projects to scope the chat and this overview to it.</p>' +
+                  '<a href="/projects.html" class="hx-btn hx-btn-primary">Choose a project</a>' +
+                '</div>';
+            } else {
+              engHost.innerHTML =
+                '<div class="hx-empty">' +
+                  '<div class="icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>' +
+                  '<h3>No projects yet</h3>' +
+                  '<p>Create your first project to start chatting and tracking work in one place.</p>' +
+                  '<a href="/projects.html?new=1" class="hx-btn hx-btn-primary">+ New project</a>' +
+                '</div>';
+            }
+          }
+
+          // Recent activity — filtered to the active project's events when
+          // one is selected, otherwise shows the workspace-wide stream.
+          var actHost = $('hx-activity-host');
+          if (actHost) {
+            if (recent && recent.data && recent.data.length) {
               var html = '<div class="hx-card" style="padding:0;overflow:hidden;">';
               recent.data.forEach(function (r, i) {
                 html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;' + (i > 0 ? 'border-top:1px solid var(--hx-line);' : '') + '">' +
@@ -214,10 +359,26 @@
                   '</div>';
               });
               html += '</div>';
-              actEmpty.outerHTML = html;
+              actHost.innerHTML = html;
+            } else {
+              var emptyTitle = (active && active.id) ? 'No activity in this project yet' : 'Nothing has happened yet';
+              var emptyDesc  = (active && active.id)
+                ? 'Once you create chats or make changes inside this project, they will appear here.'
+                : 'Sign-ins, project briefs, deployments, plan changes — every action will be logged here with actor, timestamp, and trace ID.';
+              actHost.innerHTML =
+                '<div class="hx-empty">' +
+                  '<div class="icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>' +
+                  '<h3>' + emptyTitle + '</h3>' +
+                  '<p>' + emptyDesc + '</p>' +
+                '</div>';
             }
           }
-        });
+        }
+
+        loadDashboard();
+        // Re-render whenever the active project changes (same tab or other tab)
+        document.addEventListener('hx:active-project-changed', function () { loadDashboard(); });
+        window.addEventListener('storage', function (e) { if (e.key === ACTIVE_KEY) loadDashboard(); });
       });
     })();
   </script>

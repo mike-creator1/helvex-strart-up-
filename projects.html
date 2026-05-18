@@ -10,6 +10,60 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <style>
+    /* Active-project banner — same visual language as dashboard.html */
+    .hx-active-bar {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      padding: 10px 14px; margin: 0 0 14px;
+      background: var(--hx-yellow-soft);
+      border: 1px solid rgba(252, 211, 77, 0.45);
+      border-radius: var(--hx-r);
+    }
+    .hx-active-bar[hidden] { display: none; }
+    .hx-active-bar-kicker {
+      font-family: var(--hx-mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      color: var(--hx-yellow-deep);
+    }
+    .hx-active-bar-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--hx-yellow-deep);
+      display: inline-block;
+      box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.28);
+    }
+    .hx-active-bar-name {
+      font-size: 13px; font-weight: 600; color: var(--hx-text);
+      flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .hx-active-bar-action {
+      font-size: 12px; font-weight: 500; color: var(--hx-text-mid);
+      background: transparent; border: 0; padding: 4px 8px; border-radius: 6px;
+      cursor: pointer; text-decoration: none;
+      transition: color 0.12s, background 0.12s;
+    }
+    .hx-active-bar-action:hover { color: var(--hx-text); background: rgba(0,0,0,0.04); }
+
+    /* Active row in the projects table */
+    .hx-table tr.is-active-project {
+      background: linear-gradient(90deg, rgba(252, 211, 77, 0.10), transparent 60%);
+    }
+    .hx-table tr.is-active-project td:first-child::before {
+      content: ''; display: inline-block;
+      width: 3px; height: 14px; border-radius: 2px;
+      background: var(--hx-yellow-deep);
+      margin-right: 8px; vertical-align: -2px;
+    }
+    .hx-active-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-family: var(--hx-mono); font-size: 9.5px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--hx-yellow-deep);
+      background: rgba(252, 211, 77, 0.18);
+      border: 1px solid rgba(252, 211, 77, 0.45);
+      padding: 2px 7px; border-radius: 9999px;
+      margin-left: 8px;
+    }
+  </style>
 </head>
 <body data-active="projects">
 
@@ -28,6 +82,16 @@
             <a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>
             <button id="hx-new-project" class="hx-btn hx-btn-primary">+ New project</button>
           </div>
+        </div>
+
+        <!-- Active project banner — shared with chat + overview -->
+        <div class="hx-active-bar" id="hx-active-bar" hidden>
+          <span class="hx-active-bar-dot" aria-hidden="true"></span>
+          <span class="hx-active-bar-kicker">Working on</span>
+          <span class="hx-active-bar-name" id="hx-active-bar-name">—</span>
+          <a href="/chat.html"      class="hx-active-bar-action">Open chat</a>
+          <a href="/dashboard.html" class="hx-active-bar-action">Open overview</a>
+          <button type="button" id="hx-active-bar-clear" class="hx-active-bar-action">Clear</button>
         </div>
 
         <div class="hx-grid hx-grid-4">
@@ -100,6 +164,37 @@
       }
       var $ = function (id) { return document.getElementById(id); };
 
+      // ─── Active project (shared with chat.html + dashboard.html) ──
+      var ACTIVE_KEY = 'hx_active_project';
+      function getActiveProject() {
+        try { return JSON.parse(localStorage.getItem(ACTIVE_KEY) || 'null'); }
+        catch (e) { return null; }
+      }
+      function setActiveProject(id, name) {
+        try {
+          if (id) localStorage.setItem(ACTIVE_KEY, JSON.stringify({ id: id, name: name || '' }));
+          else    localStorage.removeItem(ACTIVE_KEY);
+        } catch (e) {}
+        try { document.dispatchEvent(new CustomEvent('hx:active-project-changed', { detail: getActiveProject() })); } catch (e) {}
+      }
+      function renderActiveBar() {
+        var bar  = $('hx-active-bar');
+        var name = $('hx-active-bar-name');
+        if (!bar || !name) return;
+        var a = getActiveProject();
+        if (a && a.id) { bar.hidden = false; name.textContent = a.name || 'Unnamed project'; }
+        else { bar.hidden = true; }
+      }
+      function wireActiveBar() {
+        renderActiveBar();
+        var clearBtn = $('hx-active-bar-clear');
+        if (clearBtn) clearBtn.addEventListener('click', function () { setActiveProject(null); renderActiveBar(); });
+        document.addEventListener('hx:active-project-changed', renderActiveBar);
+        window.addEventListener('storage', function (e) { if (e.key === ACTIVE_KEY) renderActiveBar(); });
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireActiveBar);
+      else wireActiveBar();
+
       function slugify(s) {
         return (s || '').toString().toLowerCase().trim()
           .replace(/[^a-z0-9-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').slice(0, 64);
@@ -137,16 +232,29 @@
       }
 
       function renderTable(host, rows) {
+        var active = getActiveProject();
+        var activeId = active && active.id || '';
         var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr>' +
           '<th>Name</th><th>Slug</th><th>Status</th><th>Created</th><th class="right">Actions</th>' +
           '</tr></thead><tbody>';
         rows.forEach(function (r) {
-          html += '<tr data-id="' + escape(r.id) + '">' +
-            '<td><strong>' + escape(r.name) + '</strong>' + (r.description ? '<div style="color:var(--hx-text-mid);font-size:12.5px;margin-top:2px;">' + escape(r.description) + '</div>' : '') + '</td>' +
+          var isActive = r.id === activeId;
+          var canSetActive = r.status === 'active' && !isActive;
+          html += '<tr data-id="' + escape(r.id) + '" data-name="' + escape(r.name) + '"' + (isActive ? ' class="is-active-project"' : '') + '>' +
+            '<td><strong>' + escape(r.name) + '</strong>' +
+              (isActive ? '<span class="hx-active-pill"><span class="hx-active-bar-dot"></span>Active</span>' : '') +
+              (r.description ? '<div style="color:var(--hx-text-mid);font-size:12.5px;margin-top:2px;">' + escape(r.description) + '</div>' : '') +
+            '</td>' +
             '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.slug) + '</span></td>' +
             '<td>' + badge(r.status) + '</td>' +
             '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(r.created_at) + '</span></td>' +
             '<td class="right">' +
+              (canSetActive
+                ? '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="set-active">Set active</button> '
+                : '') +
+              (isActive
+                ? '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="clear-active">Clear active</button> '
+                : '') +
               (r.status === 'active'
                 ? '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="pause">Pause</button> '
                 : (r.status === 'paused'
@@ -212,10 +320,18 @@
           var btn = e.target.closest && e.target.closest('button[data-act]');
           if (!btn) return;
           var tr = btn.closest('tr'); if (!tr) return;
-          var id = tr.getAttribute('data-id');
-          var act = btn.getAttribute('data-act');
+          var id   = tr.getAttribute('data-id');
+          var name = tr.getAttribute('data-name') || '';
+          var act  = btn.getAttribute('data-act');
+          var active = getActiveProject();
           btn.disabled = true;
           try {
+            // Active-project actions don't touch the projects table —
+            // they just persist a localStorage preference shared with
+            // chat.html and dashboard.html.
+            if (act === 'set-active')   { setActiveProject(id, name);            await refresh(); btn.disabled = false; return; }
+            if (act === 'clear-active') { setActiveProject(null);                await refresh(); btn.disabled = false; return; }
+
             if (act === 'pause')   { await sb.from('projects').update({ status: 'paused' }).eq('id', id); await sb.rpc('log_event', { p_kind: 'project.paused', p_payload: { id: id }, p_project_id: id }); }
             if (act === 'resume')  { await sb.from('projects').update({ status: 'active' }).eq('id', id); await sb.rpc('log_event', { p_kind: 'project.resumed', p_payload: { id: id }, p_project_id: id }); }
             if (act === 'archive') { await sb.from('projects').update({ status: 'archived' }).eq('id', id); await sb.rpc('log_event', { p_kind: 'project.archived', p_payload: { id: id }, p_project_id: id }); }
@@ -223,6 +339,11 @@
               if (!confirm('Delete this project? Activity events stay, but the project row is removed.')) { btn.disabled = false; return; }
               await sb.from('projects').delete().eq('id', id);
               await sb.rpc('log_event', { p_kind: 'project.deleted', p_payload: { id: id } });
+            }
+            // If the active project just got archived or deleted, drop it
+            // so chat / overview don't keep pointing at a stale ID.
+            if ((act === 'archive' || act === 'delete') && active && active.id === id) {
+              setActiveProject(null);
             }
             await refresh();
           } catch (err) {
