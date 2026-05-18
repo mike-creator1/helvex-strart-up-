@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workbench — HelveX</title>
+  <meta name="description" content="HelveX Workbench — pinned outputs from every session, kept editable and searchable." />
+  <link rel="icon" type="image/png" href="/helvex-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
+  <style>
+    /* ──────────────────────────────────────────────────────────────
+       HelveX Workbench — a paradigm distinct from Claude artifacts.
+       Browser-first: every output lives in a flat, searchable list.
+       Open one → it expands into a focused editor card inline. No
+       overlapping panels, no modal stack, no second column. ────── */
+    .hx-wb-toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+    .hx-wb-search { flex: 1; min-width: 240px; position: relative; }
+    .hx-wb-search input { width: 100%; padding: 10px 14px 10px 38px; border: 1px solid var(--hx-line); border-radius: 10px; font: inherit; font-size: 13.5px; background: #fff; outline: none; transition: border-color 0.12s, box-shadow 0.12s; }
+    .hx-wb-search input:focus { border-color: var(--hx-text); box-shadow: 0 0 0 3px rgba(15,15,16,0.05); }
+    .hx-wb-search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--hx-text-mid); }
+    .hx-wb-filter { padding: 9px 14px; border: 1px solid var(--hx-line); border-radius: 10px; background: #fff; font: inherit; font-size: 12.5px; color: var(--hx-text); cursor: pointer; }
+    .hx-wb-filter.active { background: var(--hx-text); color: #fff; border-color: var(--hx-text); }
+    .hx-wb-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+    .hx-wb-card { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px 18px; cursor: pointer; transition: border-color 0.12s, transform 0.12s; }
+    .hx-wb-card:hover { border-color: var(--hx-text-mid); }
+    .hx-wb-card.open { border-color: var(--hx-text); }
+    .hx-wb-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .hx-wb-card-title { font-size: 14.5px; font-weight: 600; color: var(--hx-text); margin: 0; letter-spacing: -0.005em; flex: 1; min-width: 0; }
+    .hx-wb-card-title input { all: unset; width: 100%; font: inherit; font-size: 14.5px; font-weight: 600; color: var(--hx-text); padding: 4px 0; border-bottom: 1px solid transparent; transition: border-color 0.12s; }
+    .hx-wb-card-title input:focus { border-color: var(--hx-text); }
+    .hx-wb-card-meta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; font-family: var(--hx-mono); font-size: 11px; color: var(--hx-text-mid); }
+    .hx-wb-kind { padding: 2px 8px; border-radius: 5px; font-family: var(--hx-mono); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; background: var(--hx-cream); color: var(--hx-text-mid); }
+    .hx-wb-kind.code     { background: rgba(15,15,16,0.08); color: var(--hx-text); }
+    .hx-wb-kind.document { background: rgba(252,211,77,0.18); color: #92400E; }
+    .hx-wb-kind.config   { background: rgba(34,197,94,0.12); color: #15803d; }
+    .hx-wb-kind.prompt   { background: rgba(124,58,237,0.10); color: #6d28d9; }
+    .hx-wb-kind.snippet  { background: rgba(220,38,38,0.10); color: #991B1B; }
+    .hx-wb-preview { font-size: 12.5px; color: var(--hx-text-mid); margin-top: 8px; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .hx-wb-body { margin-top: 14px; display: none; }
+    .hx-wb-card.open .hx-wb-body { display: block; }
+    .hx-wb-card.open .hx-wb-preview { display: none; }
+    .hx-wb-body textarea { width: 100%; min-height: 320px; max-height: 70vh; resize: vertical; padding: 14px 16px; border: 1px solid var(--hx-line); border-radius: 10px; background: var(--hx-bg-2); font-family: var(--hx-mono); font-size: 13px; line-height: 1.6; color: var(--hx-text); outline: none; transition: border-color 0.12s; }
+    .hx-wb-body textarea:focus { border-color: var(--hx-text); }
+    .hx-wb-body .controls { display: flex; gap: 8px; margin-top: 12px; align-items: center; }
+    .hx-wb-body .controls select { padding: 7px 10px; border: 1px solid var(--hx-line); border-radius: 8px; font: inherit; font-size: 12px; background: #fff; }
+    .hx-wb-body .status { margin-left: auto; font-size: 11.5px; color: var(--hx-text-mid); font-family: var(--hx-mono); }
+    .hx-wb-empty { background: #fff; border: 1px dashed var(--hx-line); border-radius: var(--hx-r); padding: 60px 24px; text-align: center; }
+    .hx-wb-empty .icon { width: 44px; height: 44px; border-radius: 11px; background: var(--hx-cream); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px; color: var(--hx-text-mid); }
+    .hx-wb-empty h3 { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
+    .hx-wb-empty p { font-size: 13.5px; color: var(--hx-text-mid); margin: 0 0 18px; max-width: 460px; margin-inline: auto; line-height: 1.55; }
+    .hx-wb-new-form { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 18px 20px; margin-bottom: 14px; display: none; }
+    .hx-wb-new-form.open { display: block; }
+    .hx-wb-new-form input, .hx-wb-new-form textarea, .hx-wb-new-form select { width: 100%; padding: 10px 12px; border: 1px solid var(--hx-line); border-radius: 10px; font: inherit; font-size: 13.5px; background: #fff; outline: none; margin-bottom: 10px; }
+    .hx-wb-new-form textarea { min-height: 140px; font-family: var(--hx-mono); font-size: 12.5px; line-height: 1.55; }
+    .hx-wb-new-form .row { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+    .armed { background: #dc2626 !important; color: #fff !important; border-color: #dc2626 !important; }
+  </style>
+</head>
+<body data-active="workbench">
+
+  <div class="hx-app">
+    <aside class="hx-sidebar"></aside>
+    <div>
+      <div class="hx-topbar"></div>
+      <main class="hx-main">
+
+        <div class="hx-page-head">
+          <div>
+            <h1>Workbench.</h1>
+            <p class="sub">Pinned outputs from every HelveX session. Code, documents, configurations, prompts, snippets — kept editable, searchable, and yours.</p>
+          </div>
+          <div class="hx-page-actions">
+            <button class="hx-btn hx-btn-primary" id="hx-wb-new">+ New artifact</button>
+          </div>
+        </div>
+
+        <div class="hx-grid hx-grid-4">
+          <div class="hx-stat"><p class="hx-stat-label">Total</p><p class="hx-stat-value hx-mono" id="hx-wb-total">0</p><p class="hx-stat-meta">Artifacts in your workspace</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Pinned</p><p class="hx-stat-value hx-mono" id="hx-wb-pinned">0</p><p class="hx-stat-meta">Marked important</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Last edited</p><p class="hx-stat-value" id="hx-wb-last" style="font-size:16px;">—</p><p class="hx-stat-meta" id="hx-wb-last-meta">No history</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Region</p><p class="hx-stat-value" style="font-size:18px;">EU-CH-1</p><p class="hx-stat-meta">Encrypted at rest</p></div>
+        </div>
+
+        <div id="hx-wb-new-form" class="hx-wb-new-form">
+          <div class="row">
+            <input type="text" id="hx-wb-new-title" placeholder="Title — e.g. 'Stripe webhook handler v2'" maxlength="140" />
+            <select id="hx-wb-new-kind">
+              <option value="note">Note</option>
+              <option value="code">Code</option>
+              <option value="document">Document</option>
+              <option value="config">Config</option>
+              <option value="prompt">Prompt</option>
+              <option value="snippet">Snippet</option>
+            </select>
+          </div>
+          <textarea id="hx-wb-new-content" placeholder="Paste content. Code blocks, prose, YAML, JSON — anything. Edit freely after saving."></textarea>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="hx-btn hx-btn-primary" id="hx-wb-new-save">Save</button>
+            <button class="hx-btn hx-btn-ghost" id="hx-wb-new-cancel">Cancel</button>
+            <span id="hx-wb-new-status" style="margin-left:auto;font-size:11.5px;color:var(--hx-text-mid);"></span>
+          </div>
+        </div>
+
+        <div class="hx-wb-toolbar">
+          <div class="hx-wb-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="hx-wb-search-input" placeholder="Search title or content…" />
+          </div>
+          <button class="hx-wb-filter active" data-filter="all">All</button>
+          <button class="hx-wb-filter" data-filter="code">Code</button>
+          <button class="hx-wb-filter" data-filter="document">Document</button>
+          <button class="hx-wb-filter" data-filter="config">Config</button>
+          <button class="hx-wb-filter" data-filter="prompt">Prompt</button>
+          <button class="hx-wb-filter" data-filter="snippet">Snippet</button>
+          <button class="hx-wb-filter" data-filter="note">Note</button>
+        </div>
+
+        <div id="hx-wb-grid" class="hx-wb-grid"></div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/platform.js"></script>
+  <script>
+    (function () {
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+      function relTime(iso) {
+        if (!iso) return '—';
+        var d = new Date(iso).getTime();
+        var diff = (Date.now() - d) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+        return Math.floor(diff / 86400) + 'd ago';
+      }
+      function fmtDate(iso) {
+        if (!iso) return '—';
+        try { return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); } catch (e) { return '—'; }
+      }
+
+      var state = { artifacts: [], filter: 'all', search: '', openId: null, sb: null, owner: null };
+
+      function renderStats() {
+        var total = state.artifacts.length;
+        var pinned = state.artifacts.filter(function (a) { return a.pinned; }).length;
+        $('hx-wb-total').textContent = total;
+        $('hx-wb-pinned').textContent = pinned;
+        var last = state.artifacts[0];
+        $('hx-wb-last').textContent = last ? fmtDate(last.updated_at) : '—';
+        $('hx-wb-last-meta').textContent = last ? esc(last.title).slice(0, 40) : 'No history';
+      }
+
+      function filterRows() {
+        var q = state.search.trim().toLowerCase();
+        return state.artifacts.filter(function (a) {
+          if (state.filter !== 'all' && a.kind !== state.filter) return false;
+          if (!q) return true;
+          return (a.title || '').toLowerCase().includes(q) || (a.content || '').toLowerCase().includes(q);
+        });
+      }
+
+      function renderGrid() {
+        var rows = filterRows();
+        var host = $('hx-wb-grid');
+        if (!rows.length) {
+          host.innerHTML = ''
+            + '<div class="hx-wb-empty">'
+            +   '<div class="icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>'
+            +   '<h3>' + (state.search || state.filter !== 'all' ? 'Nothing matches your filter.' : 'Your workbench is empty.') + '</h3>'
+            +   '<p>' + (state.search || state.filter !== 'all' ? 'Try a different search or clear the filter.' : 'Drop in a piece of code, a draft, a prompt — anything worth keeping next to your work.') + '</p>'
+            +   '<button class="hx-btn hx-btn-primary" id="hx-wb-empty-new">+ New artifact</button>'
+            + '</div>';
+          var b = $('hx-wb-empty-new'); if (b) b.addEventListener('click', openNewForm);
+          return;
+        }
+        host.innerHTML = rows.map(function (a) {
+          var isOpen = a.id === state.openId;
+          var preview = (a.content || '').slice(0, 200);
+          return ''
+            + '<div class="hx-wb-card' + (isOpen ? ' open' : '') + '" data-id="' + esc(a.id) + '">'
+            +   '<div class="hx-wb-card-head">'
+            +     '<div class="hx-wb-card-title">' + (isOpen
+                    ? '<input data-role="title" value="' + esc(a.title) + '" maxlength="140" />'
+                    : esc(a.title))
+            +     '</div>'
+            +     '<div class="hx-wb-card-meta">'
+            +       '<span class="hx-wb-kind ' + a.kind + '">' + esc(a.kind) + '</span>'
+            +       '<span>' + relTime(a.updated_at) + '</span>'
+            +     '</div>'
+            +   '</div>'
+            +   (isOpen ? '' : '<div class="hx-wb-preview">' + esc(preview) + '</div>')
+            +   '<div class="hx-wb-body">'
+            +     '<textarea data-role="content" spellcheck="false">' + esc(a.content || '') + '</textarea>'
+            +     '<div class="controls">'
+            +       '<select data-role="kind">'
+            +         ['note','code','document','config','prompt','snippet'].map(function (k) {
+                        return '<option value="' + k + '"' + (k === a.kind ? ' selected' : '') + '>' + k + '</option>';
+                      }).join('')
+            +       '</select>'
+            +       '<button class="hx-btn hx-btn-secondary hx-btn-sm" data-role="save">Save</button>'
+            +       '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-role="close">Close</button>'
+            +       '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-role="pin">' + (a.pinned ? 'Unpin' : 'Pin') + '</button>'
+            +       '<button class="hx-btn hx-btn-danger hx-btn-sm" data-role="delete">Delete</button>'
+            +       '<span class="status" data-role="status"></span>'
+            +     '</div>'
+            +   '</div>'
+            + '</div>';
+        }).join('');
+
+        host.querySelectorAll('.hx-wb-card').forEach(function (card) {
+          var id = card.getAttribute('data-id');
+          card.addEventListener('click', function (e) {
+            if (e.target.closest('[data-role]')) return;
+            state.openId = state.openId === id ? null : id;
+            renderGrid();
+          });
+          var save = card.querySelector('[data-role="save"]');
+          if (save) save.addEventListener('click', function () { saveArtifact(card, id); });
+          var close = card.querySelector('[data-role="close"]');
+          if (close) close.addEventListener('click', function () { state.openId = null; renderGrid(); });
+          var del = card.querySelector('[data-role="delete"]');
+          if (del) del.addEventListener('click', function () { deleteArtifact(card, id, del); });
+          var pin = card.querySelector('[data-role="pin"]');
+          if (pin) pin.addEventListener('click', function () { togglePin(id); });
+        });
+      }
+
+      async function refresh() {
+        var r = await state.sb.from('artifacts').select('*').order('updated_at', { ascending: false });
+        if (r.error) { console.error('[workbench] load:', r.error); return; }
+        state.artifacts = r.data || [];
+        renderStats();
+        renderGrid();
+      }
+
+      function openNewForm() {
+        $('hx-wb-new-title').value = '';
+        $('hx-wb-new-content').value = '';
+        $('hx-wb-new-kind').value = 'note';
+        $('hx-wb-new-form').classList.add('open');
+        setTimeout(function () { $('hx-wb-new-title').focus(); }, 30);
+      }
+
+      function closeNewForm() {
+        $('hx-wb-new-form').classList.remove('open');
+        $('hx-wb-new-status').textContent = '';
+      }
+
+      async function createArtifact() {
+        var title = ($('hx-wb-new-title').value || '').trim();
+        var content = ($('hx-wb-new-content').value || '').trim();
+        var kind = $('hx-wb-new-kind').value || 'note';
+        if (!title) { $('hx-wb-new-status').textContent = 'Title required.'; return; }
+        var save = $('hx-wb-new-save');
+        save.disabled = true; save.textContent = 'Saving…';
+        try {
+          var r = await state.sb.from('artifacts').insert({
+            owner_id: state.owner, kind: kind, title: title, content: content,
+          }).select().single();
+          if (r.error) throw r.error;
+          closeNewForm();
+          await refresh();
+        } catch (err) {
+          $('hx-wb-new-status').textContent = (err && err.message) || 'Save failed.';
+        } finally {
+          save.disabled = false; save.textContent = 'Save';
+        }
+      }
+
+      async function saveArtifact(card, id) {
+        var titleEl   = card.querySelector('[data-role="title"]');
+        var contentEl = card.querySelector('[data-role="content"]');
+        var kindEl    = card.querySelector('[data-role="kind"]');
+        var status    = card.querySelector('[data-role="status"]');
+        var patch = {
+          title:   (titleEl   ? titleEl.value   : '').trim(),
+          content: contentEl ? contentEl.value : '',
+          kind:    kindEl    ? kindEl.value    : 'note',
+        };
+        if (!patch.title) { status.textContent = 'Title required.'; return; }
+        status.textContent = 'Saving…';
+        var r = await state.sb.from('artifacts').update(patch).eq('id', id);
+        if (r.error) { status.textContent = r.error.message; return; }
+        status.textContent = 'Saved · ' + new Date().toLocaleTimeString();
+        await refresh();
+      }
+
+      async function deleteArtifact(card, id, btn) {
+        if (btn.dataset.armed !== '1') {
+          btn.dataset.armed = '1';
+          btn.dataset.original = btn.textContent;
+          btn.textContent = 'Click to confirm';
+          btn.classList.add('armed');
+          setTimeout(function () {
+            if (btn.dataset.armed === '1') {
+              btn.dataset.armed = '';
+              btn.textContent = btn.dataset.original || 'Delete';
+              btn.classList.remove('armed');
+            }
+          }, 3000);
+          return;
+        }
+        btn.dataset.armed = '';
+        btn.classList.remove('armed');
+        var r = await state.sb.from('artifacts').delete().eq('id', id);
+        if (r.error) {
+          var status = card.querySelector('[data-role="status"]');
+          if (status) status.textContent = r.error.message;
+          return;
+        }
+        state.openId = null;
+        await refresh();
+      }
+
+      async function togglePin(id) {
+        var a = state.artifacts.find(function (x) { return x.id === id; });
+        if (!a) return;
+        var r = await state.sb.from('artifacts').update({ pinned: !a.pinned }).eq('id', id);
+        if (!r.error) await refresh();
+      }
+
+      whenAuthReady(async function () {
+        state.sb = window.HX.supabase;
+        var u = (await state.sb.auth.getUser()).data.user;
+        if (!u) return;
+        state.owner = u.id;
+
+        $('hx-wb-new').addEventListener('click', openNewForm);
+        $('hx-wb-new-cancel').addEventListener('click', closeNewForm);
+        $('hx-wb-new-save').addEventListener('click', createArtifact);
+
+        document.querySelectorAll('.hx-wb-filter').forEach(function (b) {
+          b.addEventListener('click', function () {
+            document.querySelectorAll('.hx-wb-filter').forEach(function (x) { x.classList.remove('active'); });
+            b.classList.add('active');
+            state.filter = b.getAttribute('data-filter');
+            renderGrid();
+          });
+        });
+        $('hx-wb-search-input').addEventListener('input', function (e) {
+          state.search = e.target.value;
+          renderGrid();
+        });
+
+        await refresh();
+      });
+    })();
+  </script>
+</body>
+</html>

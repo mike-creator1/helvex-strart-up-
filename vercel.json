@@ -50,6 +50,8 @@
     { "source": "/reset-password", "destination": "/reset-password.html" },
     { "source": "/dashboard", "destination": "/dashboard.html" },
     { "source": "/chat", "destination": "/chat.html" },
+    { "source": "/workbench", "destination": "/workbench.html" },
+    { "source": "/docs", "destination": "/docs.html" },
     { "source": "/services", "destination": "/services.html" },
     { "source": "/consulting", "destination": "/consulting.html" },
     { "source": "/projects", "destination": "/projects.html" },
