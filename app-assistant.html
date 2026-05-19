@@ -182,16 +182,29 @@
         { id: 'recruit',  ico: 'R',  name: 'Recruiter',        desc: 'Job specs, interview kits, candidate rejection emails, sourcing.',system: 'You are a senior recruiter who has hired 500+ people across tech, sales, and operations. You write tight job specs that filter the right candidates, design interview kits, draft kind rejection emails. Match the user\'s language.' },
       ];
 
+      // Personas remain client-side: they're UX customisation, not data
+      // worth a server round-trip. Only the built-ins + user-added ones.
       const customPersonas = HXAI.store.get('assistant', 'custom_personas', []);
       let personas = [...BUILTIN_PERSONAS, ...customPersonas];
 
       // ============ THREADS ============
-      // thread = { id, title, personaId, messages: [{role, content}], createdAt, updatedAt }
-      let threads = HXAI.store.get('assistant', 'threads', []);
+      // Threads + messages live in Supabase (assistant_threads,
+      // assistant_messages) so they survive cache clears and follow the
+      // user across devices. The in-memory `threads` array is the
+      // working state — every mutation is mirrored asynchronously to
+      // Supabase. UI stays optimistic so it feels instant.
+      //
+      // Shape: { id, title, personaId, personaName, personaIcon,
+      //          messages: [{role, content}], createdAt, updatedAt,
+      //          __dirty: bool, __loadedMessages: bool }
+      let threads = [];
       let activeId = HXAI.store.get('assistant', 'active_thread', null);
+      let supabaseClient = null;
+      let supabaseOwnerId = null;
 
       function persist() {
-        HXAI.store.set('assistant', 'threads', threads);
+        // Local-only state: keep the active-thread pointer + custom
+        // personas in localStorage so reloads remember what was open.
         HXAI.store.set('assistant', 'active_thread', activeId);
         HXAI.store.set('assistant', 'custom_personas', customPersonas);
         document.getElementById('hx-stat-threads').textContent = threads.length;
@@ -205,18 +218,66 @@
         return personas.find(p => p.id === pid) || personas[0];
       }
 
+      // Fire-and-forget upsert. The UI never blocks on Supabase; we
+      // only surface errors via console so a transient network blip
+      // doesn't break the chat flow.
+      function persistThreadRemote(t) {
+        if (!supabaseClient || !supabaseOwnerId) return;
+        const persona = personas.find(p => p.id === t.personaId) || personas[0];
+        supabaseClient.from('assistant_threads').upsert({
+          id: t.id,
+          owner_id: supabaseOwnerId,
+          persona_id: t.personaId,
+          persona_name: persona ? persona.name : 'Default',
+          persona_icon: persona ? persona.ico : null,
+          title: t.title,
+          updated_at: t.updatedAt || new Date().toISOString(),
+        }).then((r) => { if (r.error) console.warn('[assistant] persist thread:', r.error.message); });
+      }
+      function persistMessageRemote(threadId, role, content) {
+        if (!supabaseClient || !supabaseOwnerId) return;
+        supabaseClient.from('assistant_messages').insert({
+          thread_id: threadId, role, content,
+        }).then((r) => { if (r.error) console.warn('[assistant] persist message:', r.error.message); });
+      }
+      function deleteThreadRemote(id) {
+        if (!supabaseClient || !supabaseOwnerId) return;
+        supabaseClient.from('assistant_threads').delete().eq('id', id)
+          .then((r) => { if (r.error) console.warn('[assistant] delete thread:', r.error.message); });
+      }
+
+      // Lazy-load messages for a thread the first time it's opened.
+      // Threads we list in the sidebar only have the title/persona meta;
+      // pulling all messages up front would be wasteful.
+      async function ensureMessagesLoaded(t) {
+        if (!t || t.__loadedMessages) return;
+        if (!supabaseClient) return;
+        const r = await supabaseClient.from('assistant_messages')
+          .select('role,content').eq('thread_id', t.id).order('created_at', { ascending: true });
+        if (r.error) { console.warn('[assistant] load messages:', r.error.message); return; }
+        t.messages = (r.data || []).map(m => ({ role: m.role, content: m.content }));
+        t.__loadedMessages = true;
+      }
+
       function newThread(personaId = 'default') {
+        const persona = personas.find(p => p.id === personaId) || personas[0];
+        const id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('t_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9));
+        const now = new Date().toISOString();
         const t = {
-          id: HXAI.store.id(),
-          title: 'New chat',
+          id,
+          title: 'New thread',
           personaId,
+          personaName: persona ? persona.name : 'Default',
+          personaIcon: persona ? persona.ico : null,
           messages: [],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          createdAt: now,
+          updatedAt: now,
+          __loadedMessages: true, // brand-new thread → no messages yet
         };
         threads.unshift(t);
         activeId = t.id;
         persist();
+        persistThreadRemote(t);
         return t;
       }
 
@@ -224,6 +285,7 @@
         threads = threads.filter(t => t.id !== id);
         if (activeId === id) activeId = threads[0]?.id || null;
         persist();
+        deleteThreadRemote(id);
       }
 
       function autoTitle(msg) {
@@ -480,9 +542,19 @@
         persist();
       }
 
-      function switchTo(id) {
+      async function switchTo(id) {
         activeId = id;
+        const t = activeThread();
+        // Lazy-load this thread's messages from Supabase the first
+        // time it's opened. The render is intentionally split: empty
+        // shell first (so the click feels immediate) then the loaded
+        // body once the messages arrive.
         renderAll();
+        if (t && !t.__loadedMessages) {
+          await ensureMessagesLoaded(t);
+          if (activeId === id) renderAll();
+        }
+        persist();
       }
 
       // ============ SEND ============
@@ -506,6 +578,10 @@
 
         renderThreadList();
         persist();
+        // Mirror user turn to Supabase (fire-and-forget). Title may
+        // have just changed too, so refresh the thread row.
+        persistMessageRemote(t.id, 'user', text);
+        persistThreadRemote(t);
 
         const typing = appendTyping();
         let assistantBubble = null;
@@ -532,6 +608,8 @@
               t.messages.push({ role: 'assistant', content: full });
               t.updatedAt = new Date().toISOString();
               persist();
+              persistMessageRemote(t.id, 'assistant', full);
+              persistThreadRemote(t);
               renderThreadList();
             },
           });
@@ -541,6 +619,7 @@
           const errNode = appendBubble('assistant', errMsg);
           t.messages.push({ role: 'assistant', content: errMsg });
           persist();
+          persistMessageRemote(t.id, 'assistant', errMsg);
         } finally {
           sendBtn.disabled = false;
           input.focus();
@@ -572,13 +651,63 @@
       });
 
       // ============ INIT ============
-      if (threads.length === 0) {
-        newThread('default');
-      } else if (!activeId || !activeThread()) {
-        activeId = threads[0].id;
-      }
+      // Render the empty shell immediately so the page doesn't look
+      // frozen while we wait for auth + the threads list to come back
+      // from Supabase. Real data swaps in once both have arrived.
       renderAll();
-      setTimeout(() => input.focus(), 100);
+
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.auth) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
+      }
+
+      whenAuthReady(async function () {
+        supabaseClient = window.HX && window.HX.supabase;
+        if (!supabaseClient) return;
+        const u = (await supabaseClient.auth.getUser()).data.user;
+        if (!u) return;
+        supabaseOwnerId = u.id;
+
+        // Load thread metadata (no messages yet — those load on demand
+        // when the user opens a thread).
+        const r = await supabaseClient.from('assistant_threads')
+          .select('id,persona_id,persona_name,persona_icon,title,created_at,updated_at')
+          .is('archived_at', null)
+          .order('updated_at', { ascending: false });
+        if (r.error) {
+          console.warn('[assistant] load threads:', r.error.message);
+        } else {
+          threads = (r.data || []).map((row) => ({
+            id: row.id,
+            title: row.title || 'New thread',
+            personaId: row.persona_id || 'default',
+            personaName: row.persona_name || 'Default',
+            personaIcon: row.persona_icon || null,
+            messages: [],
+            createdAt: row.created_at,
+            updatedAt: row.updated_at,
+            __loadedMessages: false,
+          }));
+        }
+
+        // If the user already had an active thread last time, prefer it
+        // (so reload returns you to the chat you were in). Otherwise
+        // fall back to the most recent thread, then to a brand-new one.
+        if (!threads.length) {
+          newThread('default');
+        } else if (!activeId || !activeThread()) {
+          activeId = threads[0].id;
+        }
+
+        // Load messages for the active thread so the user sees their
+        // last conversation without having to click around.
+        const t = activeThread();
+        if (t) await ensureMessagesLoaded(t);
+
+        persist();
+        renderAll();
+        setTimeout(() => input.focus(), 100);
+      });
     })();
   </script>
 </body>

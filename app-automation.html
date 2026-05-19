@@ -51,10 +51,11 @@
           </div>
         </div>
 
-        <div class="hx-grid hx-grid-3">
-          <div class="hx-stat"><p class="hx-stat-label">Active tools</p><p class="hx-stat-value hx-mono">1</p><p class="hx-stat-meta">Smart inbox triage</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Avg. time saved</p><p class="hx-stat-value hx-mono">~3 min</p><p class="hx-stat-meta">Per email triaged</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Emails triaged</p><p class="hx-stat-value hx-mono" id="hx-triage-count">0</p><p class="hx-stat-meta">In your browser</p></div>
+        <div class="hx-grid hx-grid-4">
+          <div class="hx-stat"><p class="hx-stat-label">Active tools</p><p class="hx-stat-value hx-mono">4</p><p class="hx-stat-meta">Triage · Digest · Actions · Summarise</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Avg. time saved</p><p class="hx-stat-value hx-mono">~8 min</p><p class="hx-stat-meta">Per run, across tools</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Total runs</p><p class="hx-stat-value hx-mono" id="hx-auto-total-runs">0</p><p class="hx-stat-meta">Stored in your browser</p></div>
+          <div class="hx-stat"><p class="hx-stat-label">Last run</p><p class="hx-stat-value" id="hx-auto-last" style="font-size:15px;">—</p><p class="hx-stat-meta" id="hx-auto-last-meta">No history yet</p></div>
         </div>
 
         <div class="hx-tool-card">
@@ -110,6 +111,109 @@
         </div>
         <div id="hx-triage-history-host"></div>
 
+        <!-- TOOL 02 — DAILY DIGEST -->
+        <div class="hx-tool-card" id="hx-tool-digest" style="margin-top:24px;">
+          <h2>Daily digest</h2>
+          <p class="sub">Paste a wall of separate items (emails, messages, commits, notes). Get one digest grouped by theme, with deadlines and asks pulled out.</p>
+
+          <div class="hxai-field">
+            <label for="hx-digest-items">Items to digest <span class="hxai-hint">(any source — paste raw)</span></label>
+            <textarea id="hx-digest-items" placeholder="--- email from sara, mon 09:14 ---&#10;Approval on the new pricing page? Need it live by Wed.&#10;&#10;--- slack: #eng-platform, mon 11:02 ---&#10;Deploy of v2.4 rolled out clean. Webhook latency improved 40%.&#10;&#10;--- meeting notes, mon 14:30 ---&#10;Q3 plan: lock CRM + Workbench by end of month. Stripe migration deferred to Q4.&#10;&#10;--- email from ilias, mon 16:48 ---&#10;Invoice #117 is overdue 5 days. Forwarded reminder.&#10;"></textarea>
+          </div>
+
+          <div class="hxai-field-row">
+            <div class="hxai-field">
+              <label for="hx-digest-tone">Tone</label>
+              <select id="hx-digest-tone">
+                <option value="neutral and direct">Neutral and direct</option>
+                <option value="executive briefing">Executive briefing</option>
+                <option value="conversational">Conversational</option>
+              </select>
+            </div>
+            <div class="hxai-field">
+              <label for="hx-digest-length">Length</label>
+              <select id="hx-digest-length">
+                <option value="short">Short (max 5 bullets per section)</option>
+                <option value="medium" selected>Medium</option>
+                <option value="long">Long (full coverage)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:8px;align-items:center;">
+            <span class="hxai-cost">~$0.01 · Nexus 4.5</span>
+            <button class="hx-btn hx-btn-primary" id="hx-digest-run">Build digest</button>
+          </div>
+
+          <div id="hx-digest-status"></div>
+          <div id="hx-digest-result" class="hxai-results" style="margin-top:8px;"></div>
+        </div>
+
+        <!-- TOOL 03 — MEETING NOTES → ACTION ITEMS -->
+        <div class="hx-tool-card" id="hx-tool-actions" style="margin-top:18px;">
+          <h2>Meeting notes → action items</h2>
+          <p class="sub">Paste raw notes or a transcript. Get a clean list of actions (with owner + due date if mentioned), decisions made, and open questions.</p>
+
+          <div class="hxai-field">
+            <label for="hx-actions-notes">Notes / transcript</label>
+            <textarea id="hx-actions-notes" placeholder="Meeting: Q3 planning, Thu 14:00&#10;Attendees: Mike, Sara, Ilias, Daniela&#10;&#10;Discussed Workbench launch. Mike wants it live by end of next week. Sara to write the launch post (deadline Monday). Daniela will handle the email blast — she needs the post 24h before send.&#10;&#10;Decided: cap free tier at 50 artifacts. Pricing will be €19/mo for Pro (unlimited).&#10;&#10;Open: do we offer annual discount? Need to decide before launch."></textarea>
+          </div>
+
+          <div class="hxai-field-row">
+            <div class="hxai-field">
+              <label for="hx-actions-participants">Participants <span class="hxai-hint">(comma-separated, helps owner assignment)</span></label>
+              <input type="text" id="hx-actions-participants" placeholder="Mike, Sara, Ilias, Daniela" />
+            </div>
+            <div class="hxai-field">
+              <label for="hx-actions-today">Reference date</label>
+              <input type="date" id="hx-actions-today" />
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:8px;align-items:center;">
+            <span class="hxai-cost">~$0.01 · Nexus 4.5</span>
+            <button class="hx-btn hx-btn-primary" id="hx-actions-run">Extract actions</button>
+          </div>
+
+          <div id="hx-actions-status"></div>
+          <div id="hx-actions-result" class="hxai-results" style="margin-top:8px;"></div>
+        </div>
+
+        <!-- TOOL 04 — DOCUMENT SUMMARISER -->
+        <div class="hx-tool-card" id="hx-tool-summarise" style="margin-top:18px;">
+          <h2>Document summariser</h2>
+          <p class="sub">Paste a long doc (proposal, report, contract, article). Get a tight bullet summary with the actual content — not "this document discusses X" filler.</p>
+
+          <div class="hxai-field">
+            <label for="hx-sum-document">Document <span class="hxai-hint">(paste the full text)</span></label>
+            <textarea id="hx-sum-document" placeholder="Paste the document text here. Anything from a 5-page memo to a 30-page report."></textarea>
+          </div>
+
+          <div class="hxai-field-row">
+            <div class="hxai-field">
+              <label for="hx-sum-audience">Audience</label>
+              <input type="text" id="hx-sum-audience" placeholder="e.g. CEO, product team, legal review" value="general operator" />
+            </div>
+            <div class="hxai-field">
+              <label for="hx-sum-length">Length</label>
+              <select id="hx-sum-length">
+                <option value="short">Short (4-6 bullets total)</option>
+                <option value="medium" selected>Medium (8-12 bullets)</option>
+                <option value="long">Long (full coverage)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:8px;align-items:center;">
+            <span class="hxai-cost">~$0.02 · Nexus 4.5</span>
+            <button class="hx-btn hx-btn-primary" id="hx-sum-run">Summarise</button>
+          </div>
+
+          <div id="hx-sum-status"></div>
+          <div id="hx-sum-result" class="hxai-results" style="margin-top:8px;"></div>
+        </div>
+
+        <!-- Tool jump-nav: live now lists all four tools. -->
         <div class="hx-section-head" style="margin-top:24px;">
           <h2>Tools</h2>
           <span class="meta">Tap to jump to the tool above</span>
@@ -119,6 +223,25 @@
             <span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
             <h3>Smart inbox triage</h3>
             <p>Classify · urgency · draft reply · approve in one click.</p>
+            <span class="hx-tpl-tag">Live</span>
+          </button>
+          <button class="hx-tpl hx-tpl-live" id="hx-jump-digest">
+            <span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>
+            <h3>Daily digest</h3>
+            <p>Multiple items → one digest grouped by theme.</p>
+            <span class="hx-tpl-tag">Live</span>
+          </button>
+          <button class="hx-tpl hx-tpl-live" id="hx-jump-actions">
+            <span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+            <h3>Action items extractor</h3>
+            <p>Meeting notes → actions + owner + due date.</p>
+            <span class="hx-tpl-tag">Live</span>
+          </button>
+          <button class="hx-tpl hx-tpl-live" id="hx-jump-summarise">
+            <span class="hx-tpl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></span>
+            <h3>Document summariser</h3>
+            <p>Long doc → TL;DR + sections + key numbers.</p>
+            <span class="hx-tpl-tag">Live</span>
           </button>
         </div>
 
@@ -138,10 +261,22 @@
       const statusEl   = document.getElementById('hx-triage-status');
       const resultEl   = document.getElementById('hx-triage-result');
 
+      // ── Tool-nav jump-to-section wiring (all four tools) ──
+      function jumpTo(toolId, focusEl) {
+        const target = document.getElementById(toolId);
+        if (!target) return;
+        if (focusEl) focusEl.focus();
+        window.scrollTo({ top: target.offsetTop - 60, behavior: 'smooth' });
+      }
+      // Triage card is the first .hx-tool-card; jump there + focus email.
       document.getElementById('hx-jump-triage').addEventListener('click', () => {
         emailEl.focus();
-        window.scrollTo({ top: document.querySelector('.hx-tool-card').offsetTop - 60, behavior: 'smooth' });
+        const card = document.querySelector('.hx-tool-card');
+        if (card) window.scrollTo({ top: card.offsetTop - 60, behavior: 'smooth' });
       });
+      document.getElementById('hx-jump-digest').addEventListener('click',    () => jumpTo('hx-tool-digest',    document.getElementById('hx-digest-items')));
+      document.getElementById('hx-jump-actions').addEventListener('click',   () => jumpTo('hx-tool-actions',   document.getElementById('hx-actions-notes')));
+      document.getElementById('hx-jump-summarise').addEventListener('click', () => jumpTo('hx-tool-summarise', document.getElementById('hx-sum-document')));
 
       function setStatus(text, err = false) {
         statusEl.innerHTML = text ? `<div class="hxai-status${err ? ' error' : ''}"><span class="dot"></span><span>${text}</span></div>` : '';
@@ -267,12 +402,220 @@
           });
           HXAI.store.set('automation', 'triage_history', hist.slice(0, 20));
           renderTriageHistory();
+          recordRun('triage');
         } catch (err) {
           setStatus(`Failed: ${err.message || err}`, true);
         } finally {
           btn.disabled = false;
           btn.textContent = 'Triage + draft reply';
         }
+      });
+
+      // ─────────────────────────────────────────────────────────────
+      //  Shared run-stats — every tool calls recordRun(toolKey) when
+      //  it succeeds, and the top stats row + "Last run" line update.
+      // ─────────────────────────────────────────────────────────────
+      function recordRun(toolKey) {
+        const runs = HXAI.store.get('automation', 'tool_runs', []) || [];
+        runs.unshift({ tool: toolKey, at: new Date().toISOString() });
+        HXAI.store.set('automation', 'tool_runs', runs.slice(0, 100));
+        renderRunStats();
+      }
+      function renderRunStats() {
+        const runs = HXAI.store.get('automation', 'tool_runs', []) || [];
+        document.getElementById('hx-auto-total-runs').textContent = runs.length;
+        if (runs.length) {
+          const last = runs[0];
+          const label = { triage: 'Smart triage', digest: 'Daily digest', actions: 'Action items', summarise: 'Summariser' }[last.tool] || last.tool;
+          document.getElementById('hx-auto-last').textContent = label;
+          document.getElementById('hx-auto-last-meta').textContent = HXAI.store.timeAgo(last.at);
+        }
+      }
+      renderRunStats();
+
+      // ─────────────────────────────────────────────────────────────
+      //  Generic JSON-tool wiring used by Digest, Actions, Summarise.
+      //  Same shape every time: take input, stream from `endpoint`,
+      //  extract JSON, hand to `render`. Cuts repetition and keeps
+      //  the per-tool blocks below tiny.
+      // ─────────────────────────────────────────────────────────────
+      function setStatusFor(elId, text, err = false) {
+        const el = document.getElementById(elId);
+        el.innerHTML = text ? `<div class="hxai-status${err ? ' error' : ''}"><span class="dot"></span><span>${text}</span></div>` : '';
+      }
+      async function runJsonTool({ runBtnId, statusId, resultId, endpoint, payload, render, label, toolKey, runningLabel }) {
+        const runBtn = document.getElementById(runBtnId);
+        const resultEl = document.getElementById(resultId);
+        runBtn.disabled = true;
+        runBtn.textContent = runningLabel || 'Running…';
+        resultEl.innerHTML = '';
+        setStatusFor(statusId, 'Calling HelveX…');
+        try {
+          const raw = await HXAI.runStream(endpoint, payload, {
+            onChunk: (_, total) => setStatusFor(statusId, `Generating… (${total} chars)`),
+          });
+          setStatusFor(statusId, 'Parsing…');
+          const parsed = HXAI.extractJson(raw);
+          render(parsed, resultEl);
+          setStatusFor(statusId, '');
+          recordRun(toolKey);
+        } catch (err) {
+          setStatusFor(statusId, `Failed: ${err.message || err}`, true);
+        } finally {
+          runBtn.disabled = false;
+          runBtn.textContent = label;
+        }
+      }
+
+      // ── TOOL 02: Daily digest ──
+      document.getElementById('hx-digest-run').addEventListener('click', () => {
+        const items  = document.getElementById('hx-digest-items').value.trim();
+        const tone   = document.getElementById('hx-digest-tone').value;
+        const length = document.getElementById('hx-digest-length').value;
+        if (items.length < 40) { setStatusFor('hx-digest-status', 'Paste at least 40 characters worth of items.', true); return; }
+        runJsonTool({
+          runBtnId: 'hx-digest-run',
+          statusId: 'hx-digest-status',
+          resultId: 'hx-digest-result',
+          endpoint: '/api/automation-digest',
+          payload: { items, tone, length },
+          label: 'Build digest',
+          runningLabel: 'Digesting…',
+          toolKey: 'digest',
+          render: (d, host) => {
+            const sections = Array.isArray(d.sections) ? d.sections : [];
+            const needs    = Array.isArray(d.needs_response) ? d.needs_response : [];
+            const blockers = Array.isArray(d.blockers) ? d.blockers : [];
+            host.innerHTML = `
+              <div class="hxai-card">
+                <div class="hxai-card-title" style="margin-bottom:14px;">${HXAI.esc(d.headline || 'Digest')}</div>
+                ${sections.map(s => `
+                  <div style="margin-bottom:14px;">
+                    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--hx-text-mid);margin-bottom:6px;font-family:var(--hx-mono);">${HXAI.esc(s.title || 'Section')}</div>
+                    <ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.55;">
+                      ${(Array.isArray(s.bullets) ? s.bullets : []).map(b => `<li style="margin-bottom:4px;">${HXAI.esc(b)}</li>`).join('')}
+                    </ul>
+                  </div>
+                `).join('')}
+                ${needs.length ? `
+                  <div style="margin-top:10px;padding:12px 14px;background:rgba(245,158,11,0.08);border-left:3px solid #f59e0b;border-radius:8px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#92400e;margin-bottom:6px;font-family:var(--hx-mono);">Needs response</div>
+                    ${needs.map(n => `<div style="font-size:12.5px;margin-bottom:3px;"><b>${HXAI.esc(n.from || 'Unknown')}</b> — ${HXAI.esc(n.ask || '')}${n.by ? ` <span style="color:var(--hx-text-mid);font-family:var(--hx-mono);">· by ${HXAI.esc(n.by)}</span>` : ''}</div>`).join('')}
+                  </div>` : ''}
+                ${blockers.length ? `
+                  <div style="margin-top:10px;padding:12px 14px;background:rgba(220,38,38,0.06);border-left:3px solid #dc2626;border-radius:8px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#b91c1c;margin-bottom:6px;font-family:var(--hx-mono);">Blockers</div>
+                    ${blockers.map(b => `<div style="font-size:12.5px;margin-bottom:3px;">${HXAI.esc(b)}</div>`).join('')}
+                  </div>` : ''}
+              </div>`;
+          },
+        });
+      });
+
+      // ── TOOL 03: Action items ──
+      (function initActionsToolDefaults() {
+        const today = document.getElementById('hx-actions-today');
+        if (today && !today.value) today.value = new Date().toISOString().slice(0, 10);
+      })();
+      document.getElementById('hx-actions-run').addEventListener('click', () => {
+        const notes        = document.getElementById('hx-actions-notes').value.trim();
+        const participants = document.getElementById('hx-actions-participants').value.trim();
+        const today        = document.getElementById('hx-actions-today').value;
+        if (notes.length < 40) { setStatusFor('hx-actions-status', 'Paste at least 40 characters of notes.', true); return; }
+        runJsonTool({
+          runBtnId: 'hx-actions-run',
+          statusId: 'hx-actions-status',
+          resultId: 'hx-actions-result',
+          endpoint: '/api/automation-actions',
+          payload: { notes, participants, today },
+          label: 'Extract actions',
+          runningLabel: 'Extracting…',
+          toolKey: 'actions',
+          render: (d, host) => {
+            const acts = Array.isArray(d.actions) ? d.actions : [];
+            const decs = Array.isArray(d.decisions) ? d.decisions : [];
+            const open = Array.isArray(d.open_questions) ? d.open_questions : [];
+            const prioClass = { high: '#dc2626', medium: '#f59e0b', low: '#6b7280' };
+            host.innerHTML = `
+              <div class="hxai-card">
+                ${acts.length ? `
+                  <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--hx-text-mid);margin-bottom:8px;font-family:var(--hx-mono);">Actions</div>
+                  <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+                    ${acts.map(a => `
+                      <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--hx-bg-2);border:1px solid var(--hx-line);border-radius:8px;">
+                        <span style="width:8px;height:8px;border-radius:50%;background:${prioClass[a.priority] || '#6b7280'};margin-top:6px;flex-shrink:0;"></span>
+                        <div style="flex:1;min-width:0;">
+                          <div style="font-size:13px;font-weight:500;color:var(--hx-text);">${HXAI.esc(a.task || '')}</div>
+                          <div style="font-size:11.5px;color:var(--hx-text-mid);margin-top:2px;font-family:var(--hx-mono);">
+                            ${a.owner ? `<b style="color:var(--hx-text);">${HXAI.esc(a.owner)}</b>` : '<i>no owner</i>'}
+                            ${a.due ? ` · due ${HXAI.esc(a.due)}` : ''}
+                            · ${HXAI.esc(a.priority || 'medium')} priority
+                          </div>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>` : '<div style="color:var(--hx-text-mid);font-size:13px;margin-bottom:14px;">No action items found.</div>'}
+                ${decs.length ? `
+                  <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--hx-text-mid);margin-bottom:6px;font-family:var(--hx-mono);">Decisions</div>
+                  <ul style="margin:0 0 14px;padding-left:18px;font-size:13px;line-height:1.55;">
+                    ${decs.map(d => `<li style="margin-bottom:3px;">${HXAI.esc(d)}</li>`).join('')}
+                  </ul>` : ''}
+                ${open.length ? `
+                  <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--hx-text-mid);margin-bottom:6px;font-family:var(--hx-mono);">Open questions</div>
+                  <ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.55;color:var(--hx-text);">
+                    ${open.map(q => `<li style="margin-bottom:3px;">${HXAI.esc(q)}</li>`).join('')}
+                  </ul>` : ''}
+              </div>`;
+          },
+        });
+      });
+
+      // ── TOOL 04: Document summariser ──
+      document.getElementById('hx-sum-run').addEventListener('click', () => {
+        const document_ = document.getElementById('hx-sum-document').value.trim();
+        const audience  = document.getElementById('hx-sum-audience').value.trim();
+        const length    = document.getElementById('hx-sum-length').value;
+        if (document_.length < 200) { setStatusFor('hx-sum-status', 'Document too short — paste at least 200 characters.', true); return; }
+        runJsonTool({
+          runBtnId: 'hx-sum-run',
+          statusId: 'hx-sum-status',
+          resultId: 'hx-sum-result',
+          endpoint: '/api/automation-summarize',
+          payload: { document: document_, audience, length },
+          label: 'Summarise',
+          runningLabel: 'Summarising…',
+          toolKey: 'summarise',
+          render: (d, host) => {
+            const sections = Array.isArray(d.sections) ? d.sections : [];
+            const numbers  = Array.isArray(d.key_numbers) ? d.key_numbers : [];
+            const open     = Array.isArray(d.open_questions) ? d.open_questions : [];
+            host.innerHTML = `
+              <div class="hxai-card">
+                ${d.tl_dr ? `
+                  <div style="padding:12px 14px;background:var(--hx-bg-2);border-left:3px solid var(--hx-text);border-radius:8px;margin-bottom:14px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--hx-text-mid);margin-bottom:4px;font-family:var(--hx-mono);">TL;DR</div>
+                    <div style="font-size:13.5px;line-height:1.55;color:var(--hx-text);">${HXAI.esc(d.tl_dr)}</div>
+                  </div>` : ''}
+                ${sections.map(s => `
+                  <div style="margin-bottom:14px;">
+                    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--hx-text-mid);margin-bottom:6px;font-family:var(--hx-mono);">${HXAI.esc(s.title || 'Section')}</div>
+                    <ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.55;">
+                      ${(Array.isArray(s.bullets) ? s.bullets : []).map(b => `<li style="margin-bottom:4px;">${HXAI.esc(b)}</li>`).join('')}
+                    </ul>
+                  </div>`).join('')}
+                ${numbers.length ? `
+                  <div style="margin-top:10px;padding:12px 14px;background:rgba(34,197,94,0.06);border-left:3px solid #15803d;border-radius:8px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#15803d;margin-bottom:6px;font-family:var(--hx-mono);">Key numbers</div>
+                    ${numbers.map(n => `<div style="font-size:12.5px;margin-bottom:3px;"><b>${HXAI.esc(n.value || '')}</b> — ${HXAI.esc(n.label || '')}</div>`).join('')}
+                  </div>` : ''}
+                ${open.length ? `
+                  <div style="margin-top:10px;padding:12px 14px;background:rgba(124,58,237,0.06);border-left:3px solid #6d28d9;border-radius:8px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#6d28d9;margin-bottom:6px;font-family:var(--hx-mono);">Open questions</div>
+                    ${open.map(q => `<div style="font-size:12.5px;margin-bottom:3px;">${HXAI.esc(q)}</div>`).join('')}
+                  </div>` : ''}
+              </div>`;
+          },
+        });
       });
     })();
   </script>
