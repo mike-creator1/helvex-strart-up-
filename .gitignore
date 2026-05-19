@@ -14,3 +14,5 @@ node_modules/
 .set-secret.mjs
 .gh-pubkey.json
 node_modules/
+.audit/
+.fresh-yaml.mjs

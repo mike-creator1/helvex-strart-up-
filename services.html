@@ -431,13 +431,13 @@
         try {
           var sess = (await state.sb.auth.getSession()).data.session;
           if (!sess || !sess.access_token) return;
-          await fetch('/api/services-notify', {
+          await fetch('/api/notify', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': 'Bearer ' + sess.access_token,
             },
-            body: JSON.stringify({ request_id: requestId }),
+            body: JSON.stringify({ kind: 'service_request', request_id: requestId }),
           });
         } catch (_) { /* silent — notification failure is non-critical */ }
       }

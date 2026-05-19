@@ -380,7 +380,8 @@
         setStatus('Calling HelveX…');
 
         try {
-          const raw = await HXAI.runStream('/api/automation-reply', {
+          const raw = await HXAI.runStream('/api/automation', {
+            kind: 'reply',
             email,
             tone: toneEl.value,
             language: langEl.value,
@@ -477,8 +478,8 @@
           runBtnId: 'hx-digest-run',
           statusId: 'hx-digest-status',
           resultId: 'hx-digest-result',
-          endpoint: '/api/automation-digest',
-          payload: { items, tone, length },
+          endpoint: '/api/automation',
+          payload: { kind: 'digest', items, tone, length },
           label: 'Build digest',
           runningLabel: 'Digesting…',
           toolKey: 'digest',
@@ -526,8 +527,8 @@
           runBtnId: 'hx-actions-run',
           statusId: 'hx-actions-status',
           resultId: 'hx-actions-result',
-          endpoint: '/api/automation-actions',
-          payload: { notes, participants, today },
+          endpoint: '/api/automation',
+          payload: { kind: 'actions', notes, participants, today },
           label: 'Extract actions',
           runningLabel: 'Extracting…',
           toolKey: 'actions',
@@ -580,8 +581,8 @@
           runBtnId: 'hx-sum-run',
           statusId: 'hx-sum-status',
           resultId: 'hx-sum-result',
-          endpoint: '/api/automation-summarize',
-          payload: { document: document_, audience, length },
+          endpoint: '/api/automation',
+          payload: { kind: 'summarize', document: document_, audience, length },
           label: 'Summarise',
           runningLabel: 'Summarising…',
           toolKey: 'summarise',
