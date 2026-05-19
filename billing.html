@@ -4,12 +4,47 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Billing — HelveX</title>
-  <meta name="description" content="HelveX billing — payment methods, billing address, and tax information." />
+  <meta name="description" content="Plan, credits, invoices and payment details — one place for everything money-related on HelveX." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <style>
+    /* Section spacing for the four-in-one billing surface. */
+    .hx-bx-row { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; margin-top: 8px; }
+    .hx-bx-row > * { flex: 1 1 220px; min-width: 0; }
+    .hx-bx-stat { background: var(--hx-surface); border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 11px 13px 10px; }
+    .hx-bx-stat-label { font-size: 11px; color: var(--hx-text-dim); font-weight: 500; margin: 0 0 5px; }
+    .hx-bx-stat-value { font-size: 16px; font-weight: 600; letter-spacing: -0.012em; color: var(--hx-text); margin: 0 0 2px; font-feature-settings: 'tnum'; line-height: 1.2; }
+    .hx-bx-stat-value.mono { font-family: var(--hx-mono); font-size: 15px; }
+    .hx-bx-stat-meta { font-size: 11px; color: var(--hx-text-dim); margin: 0; }
+    .hx-bx-stat-pill { display: inline-block; font-family: var(--hx-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.06em; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+    .hx-bx-stat-pill.active { background: rgba(34,197,94,0.12); color: #15803d; }
+    .hx-bx-stat-pill.free   { background: rgba(15,15,16,0.06);  color: var(--hx-text-mid); }
+    .hx-bx-stat-pill.past_due { background: rgba(220,38,38,0.10); color: #991b1b; }
+    .hx-bx-stat-pill.canceled { background: rgba(15,15,16,0.06); color: var(--hx-text-mid); }
+    .hx-bx-stat-pill.paid     { background: rgba(34,197,94,0.12); color: #15803d; }
+    .hx-bx-stat-pill.open     { background: rgba(245,158,11,0.14); color: #92400e; }
+    .hx-bx-stat-pill.uncollectible { background: rgba(220,38,38,0.10); color: #991b1b; }
+    .hx-bx-stat-pill.void   { background: rgba(15,15,16,0.06); color: var(--hx-text-mid); }
+    .hx-bx-stat-pill.draft  { background: rgba(15,15,16,0.06); color: var(--hx-text-mid); }
+
+    .hx-bx-row-item { background: var(--hx-surface); border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 10px 14px; display: flex; align-items: center; gap: 12px; }
+    .hx-bx-row-item + .hx-bx-row-item { margin-top: 6px; }
+    .hx-bx-row-item .when { font-family: var(--hx-mono); font-size: 11px; color: var(--hx-text-dim); flex-shrink: 0; min-width: 90px; }
+    .hx-bx-row-item .what { flex: 1; min-width: 0; font-size: 13px; color: var(--hx-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hx-bx-row-item .amt  { font-family: var(--hx-mono); font-size: 13px; font-weight: 600; color: var(--hx-text); flex-shrink: 0; }
+    .hx-bx-row-item .actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    .hx-bx-empty { background: var(--hx-bg-2); border: 1px dashed var(--hx-line); border-radius: var(--hx-r); padding: 22px 18px; text-align: center; color: var(--hx-text-mid); font-size: 13px; }
+
+    .hx-bx-form { background: var(--hx-surface); border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px 18px; }
+    .hx-bx-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    @media (max-width: 700px) { .hx-bx-form-grid { grid-template-columns: 1fr; } }
+    .hx-bx-form .hx-field { margin: 0; }
+  </style>
 </head>
 <body data-active="billing">
 
@@ -21,83 +56,74 @@
 
         <div class="hx-page-head">
           <div>
-            <h1>Billing.</h1>
-            <p class="sub">Your payment methods, billing address, and tax details. Changes apply to your next invoice.</p>
+            <h1>Billing &amp; Plan</h1>
+            <p class="sub">Your subscription, credits, invoices and payment details in one place.</p>
           </div>
           <div class="hx-page-actions">
-            <a href="/invoices.html" class="hx-btn hx-btn-secondary">View invoices</a>
-            <button type="button" id="hx-bd-portal" class="hx-btn hx-btn-primary" style="display:none;">Manage in Stripe</button>
+            <button type="button" id="hx-bx-portal" class="hx-btn hx-btn-primary" style="display:none;">Manage in Stripe</button>
           </div>
         </div>
 
+        <!-- Top stats row — plan, credits, next invoice, payment status -->
+        <div class="hx-bx-row" id="hx-bx-stats">
+          <div class="hx-bx-stat">
+            <p class="hx-bx-stat-label">Plan</p>
+            <p class="hx-bx-stat-value" id="hx-bx-plan">—</p>
+            <p class="hx-bx-stat-meta" id="hx-bx-plan-meta">Loading…</p>
+          </div>
+          <div class="hx-bx-stat">
+            <p class="hx-bx-stat-label">Credits remaining</p>
+            <p class="hx-bx-stat-value mono" id="hx-bx-credits">—</p>
+            <p class="hx-bx-stat-meta" id="hx-bx-credits-meta">of —</p>
+          </div>
+          <div class="hx-bx-stat">
+            <p class="hx-bx-stat-label">Next invoice</p>
+            <p class="hx-bx-stat-value" id="hx-bx-next">—</p>
+            <p class="hx-bx-stat-meta" id="hx-bx-next-meta">—</p>
+          </div>
+          <div class="hx-bx-stat">
+            <p class="hx-bx-stat-label">Payment method</p>
+            <p class="hx-bx-stat-value" id="hx-bx-pm">—</p>
+            <p class="hx-bx-stat-meta" id="hx-bx-pm-meta">—</p>
+          </div>
+        </div>
+
+        <!-- CREDITS — balance, recent grants, top-up -->
         <div class="hx-section-head">
-          <h2>Payment methods</h2>
+          <h2>Credits</h2>
+          <span class="meta" id="hx-bx-credits-meta-top">—</span>
         </div>
-        <div id="hx-bd-payment">
-          <div class="hx-empty">
-            <div class="icon" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="6" width="20" height="14" rx="2"/><line x1="2" y1="11" x2="22" y2="11"/><line x1="6" y1="16" x2="10" y2="16"/>
-              </svg>
-            </div>
-            <h3>No payment method on file</h3>
-            <p>Add a card during checkout when you choose a plan or buy a credit pack — HelveX never stores your card details directly.</p>
-            <a href="/pricing.html" class="hx-btn hx-btn-secondary">Choose a plan</a>
-          </div>
+        <div id="hx-bx-credits-list"></div>
+        <div style="margin-top:8px;">
+          <a href="/buy-credits.html" class="hx-btn hx-btn-secondary">Buy more credits</a>
         </div>
 
+        <!-- INVOICES — list with hosted/pdf links -->
+        <div class="hx-section-head">
+          <h2>Invoices</h2>
+          <span class="meta" id="hx-bx-invoices-meta">—</span>
+        </div>
+        <div id="hx-bx-invoices-list"></div>
+
+        <!-- BILLING DETAILS — company / address / VAT, saved to profiles.billing_details -->
         <div class="hx-section-head">
           <h2>Billing details</h2>
-          <span class="meta">Optional</span>
+          <span class="meta">Used on invoices</span>
         </div>
-        <div class="hx-card">
-          <p class="desc" style="margin-bottom:18px;">These details are used on the invoices we issue to your accounting team. You can fill them in any time before your first charge. Saved to your browser; submitted to billing automatically on first charge.</p>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;">
-            <div class="hx-field" style="margin:0;">
-              <label for="bd-company">Company name</label>
-              <input type="text" id="bd-company" placeholder="Your company" />
-            </div>
-            <div class="hx-field" style="margin:0;">
-              <label for="bd-email">Billing email</label>
-              <input type="email" id="bd-email" placeholder="finance@yourcompany.com" />
-            </div>
-            <div class="hx-field" style="margin:0;">
-              <label for="bd-addr1">Address line 1</label>
-              <input type="text" id="bd-addr1" placeholder="Street and number" />
-            </div>
-            <div class="hx-field" style="margin:0;">
-              <label for="bd-addr2">Address line 2 (optional)</label>
-              <input type="text" id="bd-addr2" placeholder="Suite, floor…" />
-            </div>
-            <div class="hx-field" style="margin:0;">
-              <label for="bd-city">City</label>
-              <input type="text" id="bd-city" placeholder="City" />
-            </div>
-            <div class="hx-field" style="margin:0;">
-              <label for="bd-postal">Postal code</label>
-              <input type="text" id="bd-postal" placeholder="Postal code" />
-            </div>
-            <div class="hx-field" style="margin:0;">
-              <label for="bd-country">Country</label>
-              <select id="bd-country">
-                <option value="">Select…</option>
-                <option>Switzerland</option>
-                <option>Germany</option>
-                <option>Austria</option>
-                <option>Liechtenstein</option>
-                <option>France</option>
-                <option>Italy</option>
-              </select>
-            </div>
-            <div class="hx-field" style="margin:0;">
-              <label for="bd-vat">VAT / UID number</label>
-              <input type="text" id="bd-vat" placeholder="e.g. CHE-… MWST" />
-            </div>
+        <div class="hx-bx-form">
+          <div class="hx-bx-form-grid">
+            <div class="hx-field"><label for="bd-company">Company name</label><input type="text" id="bd-company" placeholder="Your company" /></div>
+            <div class="hx-field"><label for="bd-email">Billing email</label><input type="email" id="bd-email" placeholder="finance@yourcompany.com" /></div>
+            <div class="hx-field"><label for="bd-addr1">Address line 1</label><input type="text" id="bd-addr1" placeholder="Street and number" /></div>
+            <div class="hx-field"><label for="bd-addr2">Address line 2</label><input type="text" id="bd-addr2" placeholder="Suite, floor…" /></div>
+            <div class="hx-field"><label for="bd-city">City</label><input type="text" id="bd-city" placeholder="City" /></div>
+            <div class="hx-field"><label for="bd-postal">Postal code</label><input type="text" id="bd-postal" placeholder="Postal code" /></div>
+            <div class="hx-field"><label for="bd-country">Country</label><input type="text" id="bd-country" placeholder="Country" /></div>
+            <div class="hx-field"><label for="bd-vat">VAT / Tax ID</label><input type="text" id="bd-vat" placeholder="VAT or tax identifier" /></div>
           </div>
-          <div style="display:flex;gap:8px;margin-top:20px;align-items:center;">
-            <button class="hx-btn hx-btn-primary" id="bd-save">Save details</button>
-            <button class="hx-btn hx-btn-ghost" id="bd-cancel">Cancel</button>
-            <span id="bd-status" style="margin-left:auto;font-size:12px;color:var(--hx-text-mid);"></span>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:14px;">
+            <button type="button" class="hx-btn hx-btn-primary" id="bd-save">Save</button>
+            <span id="bd-save-status" style="font-size:12px;color:var(--hx-text-mid);"></span>
           </div>
         </div>
 
@@ -107,108 +133,155 @@
 
   <script src="/platform.js"></script>
   <script>
-    /* Real billing details — persisted on profiles.billing_details (jsonb). */
     (function () {
-      var FIELDS = ['company','email','addr1','addr2','city','postal','country','vat'];
-      var $ = function (id) { return document.getElementById(id); };
+      'use strict';
       function whenAuthReady(fn) {
         if (window.HX && window.HX.supabase) { fn(); return; }
         document.addEventListener('hx:auth-ready', fn, { once: true });
       }
-      function setStatus(msg, color) {
-        var el = $('bd-status');
-        el.style.color = color || 'var(--hx-text-mid)';
-        el.textContent = msg;
-        if (msg) setTimeout(function () { if (el.textContent === msg) el.textContent = ''; }, 3000);
-      }
+      const $ = (id) => document.getElementById(id);
+      const esc = (s) => (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const fmtMoney = (cents, ccy) => {
+        if (cents == null) return '—';
+        try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: (ccy || 'EUR').toUpperCase(), maximumFractionDigits: 2 }).format(cents / 100); }
+        catch (e) { return ((ccy || 'EUR') + ' ' + (cents / 100).toFixed(2)); }
+      };
+      const fmtDate = (iso) => {
+        if (!iso) return '—';
+        try { return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); }
+        catch (e) { return '—'; }
+      };
+      const PLAN_LABEL = { free: 'Free', basic: 'Basic', pro: 'Pro', enterprise: 'Enterprise' };
 
-      whenAuthReady(function () {
-        var sb = window.HX.supabase;
-        var pmHost = $('hx-bd-payment');
+      whenAuthReady(async function () {
+        const sb = window.HX.supabase;
+        const u = (await sb.auth.getUser()).data.user;
+        if (!u) return;
 
-        async function loadPaymentMethod(u) {
-          var sub = await sb.from('subscriptions').select('plan,status,stripe_customer_id,current_period_end').order('created_at', { ascending: false }).limit(1).maybeSingle();
-          if (sub && sub.data && sub.data.stripe_customer_id) {
-            var planName = sub.data.plan ? sub.data.plan[0].toUpperCase() + sub.data.plan.slice(1) : 'Plan';
-            pmHost.innerHTML =
-              '<div class="hx-card">' +
-                '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">' +
-                  '<div>' +
-                    '<p style="margin:0;font-weight:600;font-size:14px;">' + planName + ' subscription</p>' +
-                    '<p style="margin:4px 0 0;font-size:12.5px;color:var(--hx-text-mid);">Card on file · managed by Stripe' + (sub.data.current_period_end ? (' · renews ' + new Date(sub.data.current_period_end).toLocaleDateString()) : '') + '</p>' +
-                  '</div>' +
-                  '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>' + (sub.data.status || 'active') + '</span>' +
-                '</div>' +
-              '</div>';
-            $('hx-bd-portal').style.display = '';
-          }
+        // ── Stats row ──
+        const [sub, bal, invFirst] = await Promise.all([
+          sb.from('subscriptions')
+            .select('plan,status,stripe_customer_id,current_period_end,cancel_at_period_end')
+            .order('updated_at', { ascending: false }).limit(1).maybeSingle(),
+          sb.from('credits_balance').select('credits_total,credits_used').maybeSingle(),
+          sb.from('invoices')
+            .select('amount_cents,currency,status,period_end,created_at')
+            .order('created_at', { ascending: false }).limit(1).maybeSingle(),
+        ]);
+
+        // Plan
+        const plan = (sub && sub.data && sub.data.plan) || 'free';
+        const status = (sub && sub.data && sub.data.status) || 'active';
+        $('hx-bx-plan').innerHTML = (PLAN_LABEL[plan] || plan) +
+          ' <span class="hx-bx-stat-pill ' + esc(status) + '">' + esc(status) + '</span>';
+        const renew = sub && sub.data && sub.data.current_period_end;
+        $('hx-bx-plan-meta').textContent = renew
+          ? ((sub.data.cancel_at_period_end ? 'Cancels ' : 'Renews ') + fmtDate(renew))
+          : 'No active subscription';
+
+        // Credits
+        const total = (bal && bal.data && bal.data.credits_total) || 0;
+        const used  = (bal && bal.data && bal.data.credits_used)  || 0;
+        const left  = Math.max(0, total - used);
+        $('hx-bx-credits').textContent = left.toLocaleString();
+        $('hx-bx-credits-meta').textContent = 'of ' + total.toLocaleString();
+        $('hx-bx-credits-meta-top').textContent = left.toLocaleString() + ' / ' + total.toLocaleString() + ' available';
+
+        // Next invoice (approximation from most recent if subscription is monthly)
+        if (sub && sub.data && sub.data.current_period_end) {
+          $('hx-bx-next').textContent = fmtDate(sub.data.current_period_end);
+          $('hx-bx-next-meta').textContent = sub.data.cancel_at_period_end ? 'Cancelled — no charge' : 'Estimated';
+        } else if (invFirst && invFirst.data) {
+          $('hx-bx-next').textContent = fmtMoney(invFirst.data.amount_cents, invFirst.data.currency);
+          $('hx-bx-next-meta').textContent = 'Most recent';
+        } else {
+          $('hx-bx-next').textContent = '—';
+          $('hx-bx-next-meta').textContent = 'No invoices yet';
         }
 
-        async function openBillingPortal(btn) {
-          var original = btn.textContent;
-          btn.disabled = true;
-          btn.textContent = 'Opening…';
-          try {
-            var s = (await sb.auth.getSession()).data.session;
-            if (!s || !s.access_token) { window.location.href = '/signup'; return; }
-            var resp = await fetch('https://yjmpallrtpeinpdilptj.supabase.co/functions/v1/create-billing-portal-session', {
-              method: 'POST',
-              headers: { 'content-type': 'application/json', authorization: 'Bearer ' + s.access_token },
-              body: '{}'
-            });
-            var body = null; try { body = await resp.json(); } catch (e) {}
-            if (!resp.ok || !body || !body.url) {
-              throw new Error((body && (body.message || body.error)) || ('Portal failed (HTTP ' + resp.status + ').'));
+        // Payment method
+        const hasStripe = !!(sub && sub.data && sub.data.stripe_customer_id);
+        $('hx-bx-pm').textContent = hasStripe ? 'On file' : 'None';
+        $('hx-bx-pm-meta').textContent = hasStripe ? 'Manage in Stripe portal' : 'Add during first purchase';
+        if (hasStripe) {
+          const btn = $('hx-bx-portal');
+          btn.style.display = 'inline-flex';
+          btn.addEventListener('click', async () => {
+            btn.disabled = true; btn.textContent = 'Opening Stripe…';
+            try {
+              const r = await fetch('/api/billing-portal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json',
+                           'Authorization': 'Bearer ' + (await sb.auth.getSession()).data.session.access_token },
+              });
+              const d = await r.json();
+              if (d.url) window.location.href = d.url;
+              else throw new Error(d.error || 'Could not open portal');
+            } catch (e) {
+              btn.disabled = false; btn.textContent = 'Manage in Stripe';
+              alert(e.message || 'Could not open Stripe portal');
             }
-            window.location.href = body.url;
-          } catch (err) {
-            if (window.cxToast) window.cxToast((err && err.message) || 'Could not open portal.', 'error');
-            btn.disabled = false; btn.textContent = original;
-          }
+          });
         }
 
-        async function loadDetails(u) {
-          var r = await sb.from('profiles').select('billing_details').eq('id', u.id).maybeSingle();
-          var data = (r && r.data && r.data.billing_details) || {};
-          FIELDS.forEach(function (f) { var el = $('bd-' + f); if (el && data[f] != null) el.value = data[f]; });
-          if (Object.keys(data).length) setStatus('Loaded saved details');
+        // ── Credits history (last 50 grants) ──
+        const grants = await sb.from('credit_grants')
+          .select('id, amount, source, reference, created_at')
+          .order('created_at', { ascending: false }).limit(50);
+        const host = $('hx-bx-credits-list');
+        if (!grants.data || !grants.data.length) {
+          host.innerHTML = '<div class="hx-bx-empty">No credit grants yet. Grants appear here when credits are added (sign-up bonus, top-up, subscription renewal).</div>';
+        } else {
+          host.innerHTML = grants.data.map(g =>
+            '<div class="hx-bx-row-item">'
+            + '<span class="when">' + esc(fmtDate(g.created_at)) + '</span>'
+            + '<span class="what">' + esc(g.source || 'grant') + (g.reference ? ' · <em style="color:var(--hx-text-dim);">' + esc(g.reference) + '</em>' : '') + '</span>'
+            + '<span class="amt" style="color:' + (g.amount >= 0 ? '#15803d' : '#dc2626') + ';">'
+              + (g.amount >= 0 ? '+' : '') + g.amount.toLocaleString() + '</span>'
+            + '</div>'
+          ).join('');
         }
 
-        async function save(u) {
-          var data = {};
-          FIELDS.forEach(function (f) { var el = $('bd-' + f); if (el) data[f] = el.value.trim(); });
-          if (!data.company && !data.email) {
-            setStatus('Add at least a company name or billing email', '#dc2626');
-            return;
-          }
-          $('bd-save').disabled = true;
-          var original = $('bd-save').textContent;
-          $('bd-save').textContent = 'Saving…';
-          try {
-            var r = await sb.from('profiles').update({ billing_details: data, updated_at: new Date().toISOString() }).eq('id', u.id);
-            if (r.error) throw r.error;
-            if (window.cxToast) window.cxToast('Billing details saved', 'success');
-            setStatus('Saved', 'var(--hx-emerald)');
-          } catch (err) {
-            setStatus((err && err.message) || 'Save failed', '#dc2626');
-          } finally {
-            $('bd-save').disabled = false;
-            $('bd-save').textContent = original;
-          }
+        // ── Invoices list (last 50) ──
+        const inv = await sb.from('invoices')
+          .select('id, stripe_invoice_id, amount_cents, currency, status, hosted_url, pdf_url, period_start, period_end, created_at')
+          .order('created_at', { ascending: false }).limit(50);
+        const ihost = $('hx-bx-invoices-list');
+        $('hx-bx-invoices-meta').textContent = (inv.data && inv.data.length ? inv.data.length : 0) + ' total';
+        if (!inv.data || !inv.data.length) {
+          ihost.innerHTML = '<div class="hx-bx-empty">No invoices yet. They appear here as soon as Stripe issues the first one for your account.</div>';
+        } else {
+          ihost.innerHTML = inv.data.map(i =>
+            '<div class="hx-bx-row-item">'
+            + '<span class="when">' + esc(fmtDate(i.created_at)) + '</span>'
+            + '<span class="what">' + esc(i.stripe_invoice_id || i.id.slice(0, 8)) + (i.period_end ? ' · period ends ' + esc(fmtDate(i.period_end)) : '') + '</span>'
+            + '<span class="hx-bx-stat-pill ' + esc(i.status || 'open') + '">' + esc(i.status || 'open') + '</span>'
+            + '<span class="amt">' + esc(fmtMoney(i.amount_cents, i.currency)) + '</span>'
+            + '<span class="actions">'
+            +   (i.hosted_url ? '<a class="hx-btn hx-btn-secondary hx-btn-sm" href="' + esc(i.hosted_url) + '" target="_blank" rel="noopener">View</a>' : '')
+            +   (i.pdf_url ? '<a class="hx-btn hx-btn-ghost hx-btn-sm" href="' + esc(i.pdf_url) + '" target="_blank" rel="noopener">PDF</a>' : '')
+            + '</span>'
+            + '</div>'
+          ).join('');
         }
 
-        function reset() {
-          FIELDS.forEach(function (f) { var el = $('bd-' + f); if (el) el.value = ''; });
-        }
+        // ── Billing details form ──
+        const prof = await sb.from('profiles').select('billing_details').eq('id', u.id).maybeSingle();
+        const bd = (prof.data && prof.data.billing_details) || {};
+        const fields = ['company','email','addr1','addr2','city','postal','country','vat'];
+        fields.forEach(k => { if ($('bd-' + k)) $('bd-' + k).value = bd[k] || ''; });
 
-        sb.auth.getUser().then(function (res) {
-          var u = res && res.data ? res.data.user : null;
-          if (!u) return;
-          loadPaymentMethod(u);
-          loadDetails(u);
-          $('bd-save').addEventListener('click', function () { save(u); });
-          $('bd-cancel').addEventListener('click', reset);
-          $('hx-bd-portal').addEventListener('click', function () { openBillingPortal($('hx-bd-portal')); });
+        $('bd-save').addEventListener('click', async () => {
+          const btn = $('bd-save'); const status = $('bd-save-status');
+          btn.disabled = true; status.textContent = 'Saving…';
+          const data = {};
+          fields.forEach(k => { data[k] = ($('bd-' + k).value || '').trim(); });
+          const r = await sb.from('profiles')
+            .update({ billing_details: data, updated_at: new Date().toISOString() })
+            .eq('id', u.id);
+          btn.disabled = false;
+          if (r.error) { status.textContent = r.error.message; status.style.color = '#dc2626'; }
+          else { status.textContent = 'Saved.'; status.style.color = 'var(--hx-text-mid)'; setTimeout(() => { status.textContent = ''; }, 2500); }
         });
       });
     })();

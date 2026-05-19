@@ -100,8 +100,6 @@
     { "source": "/subscriptions",      "destination": "/billing",               "permanent": false },
     { "source": "/subscriptions.html", "destination": "/billing",               "permanent": false },
     { "source": "/invoices",           "destination": "/billing?tab=invoices",  "permanent": false },
-    { "source": "/invoices.html",      "destination": "/billing?tab=invoices",  "permanent": false },
-    { "source": "/profile",            "destination": "/settings",              "permanent": false },
-    { "source": "/profile.html",       "destination": "/settings",              "permanent": false }
+    { "source": "/invoices.html",      "destination": "/billing?tab=invoices",  "permanent": false }
   ]
 }
