@@ -25,6 +25,12 @@
     } catch (e) {}
   })();
 
+  // ── Sidebar nav, post-audit ─────────────────────────────────────────
+  // Audit-driven rebuild: 28 items → 19 items. Cuts:
+  //   • Models, Business Assistant, Monitoring, Pricing → DEAD/duplicate
+  //   • Credits/Subscriptions/Invoices/Billing → one /billing surface
+  //   • Profile → folded into Settings
+  // Every remaining item earns its slot (returned-to-weekly use-case).
   var NAV_GROUPS = [
     {
       label: 'Workspace',
@@ -41,16 +47,16 @@
     {
       label: 'Toolkit',
       items: [
-        { id: 'app-crm',         href: '/app-crm',         label: 'CRM',                icon: 'contacts' },
-        { id: 'app-marketing',   href: '/app-marketing',   label: 'Marketing Tools',    icon: 'megaphone' },
-        { id: 'app-automation',  href: '/app-automation',  label: 'Automation',         icon: 'flow' },
-        { id: 'app-assistant',   href: '/app-assistant',   label: 'Business Assistant', icon: 'sparkle' }
+        // Removed: Business Assistant (duplicate of Chat with a persona dropdown).
+        { id: 'app-crm',         href: '/app-crm',         label: 'CRM',             icon: 'contacts' },
+        { id: 'app-marketing',   href: '/app-marketing',   label: 'Marketing Tools', icon: 'megaphone' },
+        { id: 'app-automation',  href: '/app-automation',  label: 'Automation',      icon: 'flow' }
       ]
     },
     {
-      label: 'AI',
+      label: 'Build',
       items: [
-        { id: 'models',      href: '/models.html',      label: 'Models',      icon: 'cpu' },
+        // Removed: Models (vanity catalog; chat already picks model).
         { id: 'workflows',   href: '/workflows.html',   label: 'Workflows',   icon: 'zap' },
         { id: 'deployments', href: '/deployments.html', label: 'Deployments', icon: 'cloud' }
       ]
@@ -58,10 +64,11 @@
     {
       label: 'Observability',
       items: [
+        // Removed: Monitoring (re-derived from deployments + usage_events —
+        // same data, no new view).
         { id: 'activity',   href: '/activity.html',   label: 'Activity',   icon: 'pulse' },
         { id: 'usage',      href: '/usage.html',      label: 'Usage',      icon: 'chart' },
-        { id: 'logs',       href: '/logs.html',       label: 'Logs',       icon: 'terminal' },
-        { id: 'monitoring', href: '/monitoring.html', label: 'Monitoring', icon: 'heart' }
+        { id: 'logs',       href: '/logs.html',       label: 'Logs',       icon: 'terminal' }
       ]
     },
     {
@@ -75,17 +82,17 @@
     {
       label: 'Billing',
       items: [
-        { id: 'credits',       href: '/credits.html',       label: 'Credits',       icon: 'coin' },
-        { id: 'pricing',       href: '/pricing.html',       label: 'Pricing',       icon: 'tag' },
-        { id: 'subscriptions', href: '/subscriptions.html', label: 'Subscriptions', icon: 'refresh' },
-        { id: 'invoices',      href: '/invoices.html',      label: 'Invoices',      icon: 'doc' },
-        { id: 'billing',       href: '/billing.html',       label: 'Billing',       icon: 'card' }
+        // Merged: 5 sidebar items → one /billing surface with tabs
+        // (Plan · Credits · Invoices · Payment). Pricing dropped —
+        // belongs on the marketing site, not the workspace.
+        { id: 'billing', href: '/billing.html', label: 'Billing & Plan', icon: 'card' }
       ]
     },
     {
       label: 'Account',
       items: [
-        { id: 'profile',  href: '/profile.html',  label: 'Profile',  icon: 'user'   },
+        // Profile merged into Settings (was 5 fields the user touched
+        // once at signup and never again).
         { id: 'team',     href: '/team.html',     label: 'Team',     icon: 'users'  },
         { id: 'security', href: '/security.html', label: 'Security', icon: 'shield' },
         { id: 'settings', href: '/settings.html', label: 'Settings', icon: 'cog'    },

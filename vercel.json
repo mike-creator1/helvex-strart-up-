@@ -85,6 +85,23 @@
     { "source": "/business-assistant", "destination": "/app-assistant", "permanent": false },
     { "source": "/business-assistant.html", "destination": "/app-assistant", "permanent": false },
     { "source": "/business-consulting", "destination": "/consulting", "permanent": false },
-    { "source": "/business-consulting.html", "destination": "/consulting", "permanent": false }
+    { "source": "/business-consulting.html", "destination": "/consulting", "permanent": false },
+
+    { "source": "/app-assistant",      "destination": "/chat",     "permanent": false },
+    { "source": "/app-assistant.html", "destination": "/chat",     "permanent": false },
+    { "source": "/models",             "destination": "/chat",     "permanent": false },
+    { "source": "/models.html",        "destination": "/chat",     "permanent": false },
+    { "source": "/monitoring",         "destination": "/usage",    "permanent": false },
+    { "source": "/monitoring.html",    "destination": "/usage",    "permanent": false },
+    { "source": "/pricing",            "destination": "/billing",  "permanent": false },
+    { "source": "/pricing.html",       "destination": "/billing",  "permanent": false },
+    { "source": "/credits",            "destination": "/billing?tab=credits",   "permanent": false },
+    { "source": "/credits.html",       "destination": "/billing?tab=credits",   "permanent": false },
+    { "source": "/subscriptions",      "destination": "/billing",               "permanent": false },
+    { "source": "/subscriptions.html", "destination": "/billing",               "permanent": false },
+    { "source": "/invoices",           "destination": "/billing?tab=invoices",  "permanent": false },
+    { "source": "/invoices.html",      "destination": "/billing?tab=invoices",  "permanent": false },
+    { "source": "/profile",            "destination": "/settings",              "permanent": false },
+    { "source": "/profile.html",       "destination": "/settings",              "permanent": false }
   ]
 }
