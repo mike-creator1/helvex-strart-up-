@@ -689,40 +689,48 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
 /* ═══════════════════════════════════════════════════════════
    MAIN — page content
    ═══════════════════════════════════════════════════════════ */
+/* Tighter page padding — was 28/32, now 18/24. Brings more of the
+   actual content into view above the fold (Vercel-density). */
 .hx-main {
-  padding: 28px 32px 80px;
+  padding: 18px 24px 64px;
   min-width: 0;
   max-width: 100%;
 }
-@media (max-width: 900px) { .hx-main { padding: 22px 18px 56px; } }
+@media (max-width: 900px) { .hx-main { padding: 14px 14px 48px; } }
 
-/* Page header */
+/* Page header — Vercel-density redesign.
+   Old: 26px title, 24px paddings, big sub. Felt like a brochure.
+   New: 18px title, 14/12px paddings, tighter rhythm. Reads like
+   an ops dashboard, not a marketing page. */
 .hx-page-head {
   display: flex;
-  align-items: flex-start;
+  align-items: center;             /* vertically centred so the action sits inline */
   justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 24px;
-  padding-bottom: 22px;
+  gap: 18px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
   border-bottom: 1px solid var(--hx-line);
   flex-wrap: wrap;
 }
 .hx-page-head h1 {
-  font-size: 26px;
+  font-size: 18px;                 /* down from 26 — same scale as Vercel project headers */
   font-weight: 600;
-  letter-spacing: -0.028em;
-  line-height: 1.15;
-  margin: 0 0 6px;
+  letter-spacing: -0.016em;
+  line-height: 1.2;
+  margin: 0 0 2px;
   color: var(--hx-text);
 }
+/* The "Title." trailing-period style felt brochure-y. Hide periods
+   on page headers globally so we don't have to edit 40 files. */
+.hx-page-head h1::after { content: ""; }
 .hx-page-head .sub {
   color: var(--hx-text-mid);
-  font-size: 13.5px;
-  line-height: 1.55;
+  font-size: 12.5px;
+  line-height: 1.5;
   margin: 0;
-  max-width: 620px;
+  max-width: 720px;
 }
-.hx-page-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.hx-page-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 
 /* Tabs */
 .hx-tabs {
@@ -879,40 +887,49 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
 /* ═══════════════════════════════════════════════════════════
    STAT TILE
    ═══════════════════════════════════════════════════════════ */
+/* Stat tile — tightened to match Vercel's density. Old version had
+   14px+13px padding and 22px value; gave the impression of a brochure
+   stat block. New version: 11px padding, 16px value, less whitespace
+   between label/value/meta. */
 .hx-stat {
   background: var(--hx-surface);
   border: 1px solid var(--hx-line);
-  border-radius: var(--hx-r-lg);
-  padding: 14px 16px 13px;
-  transition: border-color 0.15s;
+  border-radius: var(--hx-r);
+  padding: 11px 13px 10px;
+  transition: border-color 0.12s;
 }
 .hx-stat:hover { border-color: var(--hx-line-strong); }
 .hx-stat-label {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--hx-text-dim);
   font-weight: 500;
-  margin: 0 0 8px;
+  margin: 0 0 5px;
   text-transform: none;
   letter-spacing: 0;
 }
 .hx-stat-value {
-  font-size: 22px;
+  font-size: 16px;                 /* down from 22 — Vercel uses ~16–18 */
   font-weight: 600;
-  letter-spacing: -0.028em;
+  letter-spacing: -0.012em;
   color: var(--hx-text);
-  margin: 0 0 3px;
-  line-height: 1.1;
+  margin: 0 0 2px;
+  line-height: 1.2;
   font-feature-settings: 'tnum';
+}
+.hx-stat-value.hx-mono {
+  font-family: var(--hx-mono, 'JetBrains Mono', ui-monospace, monospace);
+  font-size: 15px;
+  font-weight: 600;
 }
 .hx-stat-value .suffix {
   color: var(--hx-text-dim);
   font-weight: 500;
-  font-size: 0.65em;
+  font-size: 0.7em;
   margin-left: 2px;
   letter-spacing: 0;
 }
 .hx-stat-meta {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--hx-text-dim);
   font-weight: 500;
   margin: 0;
@@ -921,7 +938,8 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
 /* ═══════════════════════════════════════════════════════════
    GRID
    ═══════════════════════════════════════════════════════════ */
-.hx-grid { display: grid; gap: 12px; }
+/* Tighter grid gaps to bring the data density up. Was 12, now 10. */
+.hx-grid { display: grid; gap: 10px; }
 .hx-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .hx-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .hx-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -941,14 +959,15 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
   align-items: flex-end;
   justify-content: space-between;
   gap: 14px;
-  margin: 26px 0 10px;
+  margin: 18px 0 8px;             /* was 26/10, now 18/8 */
   padding-bottom: 0;
 }
 .hx-section-head h2 {
   margin: 0;
-  font-size: 14.5px;
+  font-size: 13px;                 /* was 14.5 — denser section labels */
   font-weight: 600;
-  letter-spacing: -0.012em;
+  letter-spacing: 0;
+  text-transform: uppercase;       /* matches Vercel's section-head treatment */
   color: var(--hx-text);
 }
 .hx-section-head .meta {
