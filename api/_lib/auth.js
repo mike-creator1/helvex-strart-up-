@@ -101,6 +101,21 @@ function newTraceId() {
 }
 
 /**
+ * Resolve just the calling user — for endpoints that don't need to
+ * charge credits (e.g. notification senders). Returns
+ * `{ ok: true, user, token }` or `{ ok: false, status, error }`.
+ */
+export async function requireUser(req) {
+  const token = readAuthToken(req);
+  if (!token)               return { ok: false, status: 401, error: 'Sign in to use HelveX.' };
+  const user = await resolveUser(token);
+  if (!user)                return { ok: false, status: 401, error: 'Session expired. Sign in again.' };
+  return { ok: true, user, token };
+}
+
+export { SUPABASE_URL, SUPABASE_ANON };
+
+/**
  * Single gate every AI endpoint runs before forwarding to the upstream
  * model. On success returns `{ ok: true, owner, token, traceId }`. On
  * failure returns `{ ok: false, status, error, traceId }` ready to be

@@ -453,6 +453,12 @@
             timezone: $('hx-con-tz').value || null,
           }).select().single();
           if (ins.error) throw ins.error;
+
+          // Fire notification emails — team alert with the proposed
+          // slots, customer confirmation. Non-blocking: a mail failure
+          // never rolls back the booking. The DB row is the truth.
+          fireConsultingNotify(ins.data.id);
+
           closeNewForm();
           await refresh();
           state.openId = ins.data.id;
@@ -462,6 +468,21 @@
         } finally {
           btn.disabled = false; btn.textContent = 'Request booking';
         }
+      }
+
+      async function fireConsultingNotify(bookingId) {
+        try {
+          var sess = (await state.sb.auth.getSession()).data.session;
+          if (!sess || !sess.access_token) return;
+          await fetch('/api/consulting-notify', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + sess.access_token,
+            },
+            body: JSON.stringify({ booking_id: bookingId }),
+          });
+        } catch (_) { /* silent — notification failure is non-critical */ }
       }
 
       async function cancelBooking(card, id, btn) {

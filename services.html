@@ -409,6 +409,13 @@
             preferred_start: start,
           }).select().single();
           if (ins.error) throw ins.error;
+
+          // Fire notification emails — team gets an alert, customer
+          // gets a "received" confirmation. Non-blocking: a failure
+          // here doesn't roll back the insert. The DB row is the
+          // source of truth; mail is a courtesy.
+          fireServiceNotify(ins.data.id);
+
           closeNewForm();
           await refresh();
           state.openId = ins.data.id;
@@ -418,6 +425,21 @@
         } finally {
           btn.disabled = false; btn.textContent = 'Submit request';
         }
+      }
+
+      async function fireServiceNotify(requestId) {
+        try {
+          var sess = (await state.sb.auth.getSession()).data.session;
+          if (!sess || !sess.access_token) return;
+          await fetch('/api/services-notify', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + sess.access_token,
+            },
+            body: JSON.stringify({ request_id: requestId }),
+          });
+        } catch (_) { /* silent — notification failure is non-critical */ }
       }
 
       async function approveQuote(card, id) {
