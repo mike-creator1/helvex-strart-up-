@@ -212,7 +212,7 @@
                 <div style="font-size:13px;font-weight:600;color:var(--hx-text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${HXAI.esc(summary)}</div>
                 <div style="font-size:11.5px;color:var(--hx-text-mid);font-family:var(--hx-mono);">${HXAI.esc(intent)} · ${HXAI.esc(it.triage?.urgency || '')} · ${HXAI.esc(it.triage?.recommendation || '')}</div>
               </div>
-              <div style="font-family:var(--hx-mono);font-size:11px;color:var(--hx-text-mid);flex-shrink:0;">${HXAI.timeAgo(it.createdAt)}</div>
+              <div style="font-family:var(--hx-mono);font-size:11px;color:var(--hx-text-mid);flex-shrink:0;">${HXAI.store.timeAgo(it.createdAt)}</div>
               <button class="hxai-copy" data-copy-triage="${it.id}" style="flex-shrink:0;">Copy reply</button>
               <button data-del-triage="${it.id}" style="background:transparent;border:0;color:var(--hx-text-mid);cursor:pointer;font-size:14px;padding:0 4px;" title="Delete">×</button>
             </div>

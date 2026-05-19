@@ -717,7 +717,7 @@
                 <div style="font-size:13px;font-weight:600;color:var(--hx-text);margin-bottom:2px;">${TYPE_LABEL[it.type] || it.type}</div>
                 <div style="font-size:12px;color:var(--hx-text-mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${HXAI.esc(it.brief)}</div>
               </div>
-              <div style="font-family:var(--hx-mono);font-size:11px;color:var(--hx-text-mid);flex-shrink:0;">${HXAI.timeAgo(it.createdAt)}</div>
+              <div style="font-family:var(--hx-mono);font-size:11px;color:var(--hx-text-mid);flex-shrink:0;">${HXAI.store.timeAgo(it.createdAt)}</div>
               <button class="hxai-copy" data-copy="${it.id}" style="flex-shrink:0;">Copy</button>
               <button data-del="${it.id}" style="background:transparent;border:0;color:var(--hx-text-mid);cursor:pointer;font-size:14px;padding:0 4px;" title="Delete">×</button>
             </div>
