@@ -160,14 +160,43 @@
     html +=   '<img src="/helvex-logo.png" alt="HelveX" />';
     html += '</a>';
 
-    html += '<button type="button" class="hx-workspace" id="hx-workspace-btn" title="Workspace">';
-    html +=   '<span class="hx-workspace-avatar" id="hx-workspace-avatar">·</span>';
-    html +=   '<span class="hx-workspace-info">';
-    html +=     '<span class="hx-workspace-name" id="hx-workspace-name">Loading…</span>';
-    html +=     '<span class="hx-workspace-plan" id="hx-workspace-plan">Free</span>';
-    html +=   '</span>';
-    html +=   '<svg class="hx-workspace-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="8 9 12 5 16 9"/><polyline points="8 15 12 19 16 15"/></svg>';
-    html += '</button>';
+    // Workspace pill — clickable, opens a Vercel-style dropdown with
+    // workspace switcher + account actions (settings, billing, sign-out).
+    html += '<div class="hx-workspace-wrap">';
+    html +=   '<button type="button" class="hx-workspace" id="hx-workspace-btn" title="Open workspace menu" aria-haspopup="true" aria-expanded="false">';
+    html +=     '<span class="hx-workspace-avatar" id="hx-workspace-avatar">·</span>';
+    html +=     '<span class="hx-workspace-info">';
+    html +=       '<span class="hx-workspace-name" id="hx-workspace-name">Loading…</span>';
+    html +=       '<span class="hx-workspace-plan" id="hx-workspace-plan">Free</span>';
+    html +=     '</span>';
+    html +=     '<svg class="hx-workspace-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="8 9 12 5 16 9"/><polyline points="8 15 12 19 16 15"/></svg>';
+    html +=   '</button>';
+    // The menu itself — hidden until the pill is clicked.
+    html +=   '<div class="hx-workspace-menu" id="hx-workspace-menu" role="menu" aria-label="Workspace menu">';
+    html +=     '<div class="hx-workspace-menu-head">';
+    html +=       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="color:var(--hx-text-dim);"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+    html +=       '<input type="text" id="hx-workspace-search" placeholder="Find workspace…" autocomplete="off" />';
+    html +=       '<span class="esc">Esc</span>';
+    html +=     '</div>';
+    html +=     '<div class="hx-workspace-menu-section">Workspace</div>';
+    html +=     '<button type="button" class="hx-workspace-menu-item is-current" data-action="current">';
+    html +=       '<span class="hx-workspace-avatar" style="width:18px;height:18px;font-size:9px;" id="hx-workspace-menu-avatar">·</span>';
+    html +=       '<span id="hx-workspace-menu-name">Loading…</span>';
+    html +=       '<svg class="chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>';
+    html +=     '</button>';
+    html +=     '<div class="hx-workspace-menu-sep"></div>';
+    html +=     '<div class="hx-workspace-menu-section">Account</div>';
+    html +=     '<a class="hx-workspace-menu-item" href="/settings.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>';
+    html +=     '<a class="hx-workspace-menu-item" href="/billing.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><line x1="2" y1="11" x2="22" y2="11"/><line x1="6" y1="16" x2="10" y2="16"/></svg>Billing &amp; Plan</a>';
+    html +=     '<a class="hx-workspace-menu-item" href="/team.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team</a>';
+    html +=     '<a class="hx-workspace-menu-item" href="/api-keys.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>API Keys</a>';
+    html +=     '<div class="hx-workspace-menu-sep"></div>';
+    html +=     '<button type="button" class="hx-workspace-menu-item" data-action="theme"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Toggle theme</button>';
+    html +=     '<a class="hx-workspace-menu-item" href="/support.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Help &amp; support</a>';
+    html +=     '<div class="hx-workspace-menu-sep"></div>';
+    html +=     '<button type="button" class="hx-workspace-menu-item is-danger" data-action="signout"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</button>';
+    html +=   '</div>';
+    html += '</div>';
 
     html += '<button type="button" class="hx-sidebar-find" id="hx-sidebar-find" aria-label="Search">';
     html +=   svg('search', { sw: 1.8 });
@@ -258,8 +287,77 @@
       }
       var wsNameEl = document.getElementById('hx-workspace-name');
       var wsAvEl   = document.getElementById('hx-workspace-avatar');
-      if (wsNameEl) wsNameEl.textContent = wsName || 'Personal';
-      if (wsAvEl)   wsAvEl.textContent   = (wsName || 'P').slice(0, 1).toUpperCase();
+      var wsMenuNameEl = document.getElementById('hx-workspace-menu-name');
+      var wsMenuAvEl   = document.getElementById('hx-workspace-menu-avatar');
+      var label = wsName || 'Personal';
+      var initial = label.slice(0, 1).toUpperCase();
+      if (wsNameEl)     wsNameEl.textContent     = label;
+      if (wsAvEl)       wsAvEl.textContent       = initial;
+      if (wsMenuNameEl) wsMenuNameEl.textContent = label;
+      if (wsMenuAvEl)   wsMenuAvEl.textContent   = initial;
+    });
+  }
+
+  /* ─── Workspace dropdown — clicks open the Vercel-style menu, Esc
+         and outside-clicks close it, and the menu's data-action items
+         drive theme toggle + sign-out without duplicating logic. ─── */
+  function wireWorkspaceMenu() {
+    var btn  = document.getElementById('hx-workspace-btn');
+    var menu = document.getElementById('hx-workspace-menu');
+    var input = document.getElementById('hx-workspace-search');
+    if (!btn || !menu) return;
+
+    function open() {
+      menu.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+      // Defer focus so the input grabs caret after the show.
+      setTimeout(function () { if (input) input.focus(); }, 30);
+    }
+    function close() {
+      menu.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+      if (input) input.value = '';
+    }
+    function toggle() { menu.classList.contains('open') ? close() : open(); }
+
+    btn.addEventListener('click', function (e) { e.stopPropagation(); toggle(); });
+    document.addEventListener('click', function (e) {
+      if (!menu.classList.contains('open')) return;
+      if (e.target.closest('#hx-workspace-menu')) return;
+      close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menu.classList.contains('open')) close();
+    });
+
+    // Action wiring for the data-action menu items.
+    menu.addEventListener('click', function (e) {
+      var item = e.target.closest('[data-action]');
+      if (!item) return;
+      var action = item.getAttribute('data-action');
+      if (action === 'current') { close(); return; } // already on this workspace
+      if (action === 'theme') {
+        try {
+          var current = localStorage.getItem('hx.theme') || 'system';
+          var next = current === 'dark' ? 'light' : (current === 'light' ? 'system' : 'dark');
+          localStorage.setItem('hx.theme', next);
+          var resolved = next === 'system'
+            ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+            : next;
+          document.documentElement.setAttribute('data-theme', resolved);
+          document.documentElement.style.colorScheme = resolved;
+        } catch (_) {}
+        close();
+        return;
+      }
+      if (action === 'signout') {
+        close();
+        try {
+          if (window.HX && window.HX.supabase) {
+            window.HX.supabase.auth.signOut().finally(function () { window.location.href = '/signup'; });
+          } else { window.location.href = '/signup'; }
+        } catch (_) { window.location.href = '/signup'; }
+      }
     });
   }
 
@@ -306,6 +404,7 @@
     if (sidebar) {
       sidebar.innerHTML = buildSidebar(activeId);
       setupSidebarReveal(sidebar);
+      wireWorkspaceMenu();           // workspace pill → dropdown
     }
 
     var topbar = document.querySelector('.hx-topbar');

@@ -169,16 +169,18 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
   .hx-sidebar.open { transform: translateX(0); }
 }
 
-/* Brand mark — small wordmark above the workspace switcher */
+/* Brand mark — wordmark above the workspace switcher.
+   User feedback: logo was barely visible at 22px. Bumped to 36px so
+   it actually reads as the product mark. */
 .hx-sidebar-brand {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 4px 8px 0;
-  margin-bottom: 10px;
+  padding: 8px 10px 4px;
+  margin-bottom: 12px;
   text-decoration: none;
 }
-.hx-sidebar-brand img { height: 22px; width: auto; }
+.hx-sidebar-brand img { height: 36px; width: auto; }
 .hx-sidebar-brand-name {
   font-size: 13.5px;
   font-weight: 600;
@@ -267,6 +269,85 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
   color: var(--hx-text-faint);
   flex-shrink: 0;
 }
+
+/* Workspace dropdown — opens on click of the workspace pill.
+   Vercel-style: search box at top, list of options, divider, settings
+   and sign-out actions at the bottom. */
+.hx-workspace-wrap { position: relative; }
+.hx-workspace-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  min-width: 240px;
+  background: var(--hx-surface);
+  border: 1px solid var(--hx-line);
+  border-radius: var(--hx-r);
+  box-shadow: var(--hx-shadow-lg);
+  padding: 6px;
+  z-index: 200;
+  display: none;
+}
+.hx-workspace-menu.open { display: block; }
+.hx-workspace-menu-head {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid var(--hx-line);
+  margin-bottom: 6px;
+}
+.hx-workspace-menu-head input {
+  flex: 1; min-width: 0;
+  background: transparent; border: 0;
+  font: inherit; font-size: 13px;
+  color: var(--hx-text); outline: none;
+}
+.hx-workspace-menu-head input::placeholder { color: var(--hx-text-dim); }
+.hx-workspace-menu-head .esc {
+  font-family: var(--hx-mono); font-size: 10px;
+  color: var(--hx-text-dim);
+  padding: 2px 6px;
+  border: 1px solid var(--hx-line);
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+.hx-workspace-menu-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px;
+  border-radius: var(--hx-r-sm);
+  font-size: 13.5px; font-weight: 500;
+  color: var(--hx-text);
+  cursor: pointer;
+  text-decoration: none;
+  border: 0; background: transparent;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.1s;
+}
+.hx-workspace-menu-item:hover { background: var(--hx-bg-2); }
+.hx-workspace-menu-item .ico {
+  width: 18px; height: 18px;
+  color: var(--hx-text-mid);
+  flex-shrink: 0;
+}
+.hx-workspace-menu-item .chk {
+  margin-left: auto;
+  color: var(--hx-text);
+  flex-shrink: 0;
+}
+.hx-workspace-menu-item.is-current { font-weight: 600; }
+.hx-workspace-menu-sep {
+  height: 1px; background: var(--hx-line);
+  margin: 6px -6px;
+}
+.hx-workspace-menu-section {
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hx-text-dim);
+  padding: 8px 10px 4px;
+}
+.hx-workspace-menu-item.is-danger { color: #b91c1c; }
+.hx-workspace-menu-item.is-danger .ico { color: #b91c1c; }
 
 /* Find — a sidebar Cmd+K affordance */
 .hx-sidebar-find {
