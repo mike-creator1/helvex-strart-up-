@@ -79,6 +79,12 @@
     { "source": "/security", "destination": "/security.html" }
   ],
   "redirects": [
-    { "source": "/checkout/sync-plan", "destination": "/checkout/strategy-call", "permanent": true }
+    { "source": "/checkout/sync-plan", "destination": "/checkout/strategy-call", "permanent": true },
+    { "source": "/brand", "destination": "/dashboard", "permanent": false },
+    { "source": "/brand.html", "destination": "/dashboard", "permanent": false },
+    { "source": "/business-assistant", "destination": "/app-assistant", "permanent": false },
+    { "source": "/business-assistant.html", "destination": "/app-assistant", "permanent": false },
+    { "source": "/business-consulting", "destination": "/consulting", "permanent": false },
+    { "source": "/business-consulting.html", "destination": "/consulting", "permanent": false }
   ]
 }

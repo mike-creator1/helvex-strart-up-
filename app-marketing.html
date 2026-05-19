@@ -676,34 +676,93 @@
       const host    = document.getElementById('hx-history-host');
       const metaEl  = document.getElementById('hx-history-meta');
 
-      function load() { return HXAI.store.get('marketing', 'history', []) || []; }
-      function save(arr) { HXAI.store.set('marketing', 'history', arr.slice(0, 20)); }
+      // Source-of-truth lives in Supabase (marketing_drafts table) so
+      // drafts survive cache clears and follow the user across devices.
+      // We keep an in-memory cache so the UI never blocks on the
+      // network for re-renders / removes.
+      let cache = [];
+      let supabaseClient = null;
+      let supabaseOwner  = null;
+
+      async function loadFromSupabase() {
+        if (!supabaseClient || !supabaseOwner) return;
+        try {
+          const r = await supabaseClient.from('marketing_drafts')
+            .select('*').order('created_at', { ascending: false }).limit(30);
+          if (r.error) { console.warn('[marketing] load drafts:', r.error.message); return; }
+          cache = (r.data || []).map(row => ({
+            id: row.id,
+            type: row.kind,
+            brief: row.brief || '',
+            output: safeParse(row.output, row.meta && row.meta.output_kind),
+            createdAt: row.created_at,
+          }));
+          render();
+        } catch (e) {
+          console.warn('[marketing] load drafts error:', (e && e.message) || e);
+        }
+      }
+      function safeParse(s, hint) {
+        if (s == null) return null;
+        if (typeof s !== 'string') return s;
+        if (hint === 'string') return s;
+        try { return JSON.parse(s); } catch { return s; }
+      }
 
       function add(type, brief, output) {
-        const items = load();
-        items.unshift({
-          id: HXAI.store.id(),
-          type, brief: brief.slice(0, 200),
-          output,
+        // Optimistic: prepend to local cache immediately so the user
+        // sees the draft in the list before Supabase confirms.
+        const optimistic = {
+          id: 'tmp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+          type, brief: (brief || '').slice(0, 200), output,
           createdAt: new Date().toISOString(),
-        });
-        save(items);
+        };
+        cache.unshift(optimistic);
+        if (cache.length > 30) cache.length = 30;
         render();
+
+        if (!supabaseClient || !supabaseOwner) return;
+        const isString = typeof output === 'string';
+        supabaseClient.from('marketing_drafts').insert({
+          owner_id: supabaseOwner,
+          kind: type,
+          title: (brief || '').slice(0, 100),
+          brief: (brief || '').slice(0, 4000),
+          output: isString ? output : JSON.stringify(output),
+          meta: { output_kind: isString ? 'string' : 'json' },
+        }).select().single().then((r) => {
+          if (r.error) { console.warn('[marketing] persist draft:', r.error.message); return; }
+          // Swap optimistic with canonical row id.
+          const idx = cache.findIndex(x => x.id === optimistic.id);
+          if (idx > -1 && r.data) {
+            cache[idx] = { ...optimistic, id: r.data.id, createdAt: r.data.created_at };
+            render();
+          }
+        });
       }
 
       function remove(id) {
-        save(load().filter(x => x.id !== id));
+        cache = cache.filter(x => x.id !== id);
         render();
+        if (!supabaseClient || !supabaseOwner) return;
+        // Skip the network call for purely-optimistic rows that never
+        // made it to Supabase (their ids start with 'tmp_').
+        if (String(id).startsWith('tmp_')) return;
+        supabaseClient.from('marketing_drafts').delete().eq('id', id)
+          .then(r => { if (r.error) console.warn('[marketing] delete draft:', r.error.message); });
       }
+      function load() { return cache; }
 
       function render() {
         const items = load();
-        metaEl.textContent = `${items.length} saved · stored in your browser`;
+        metaEl.textContent = items.length
+          ? `${items.length} saved · synced to your account`
+          : 'No drafts yet';
         if (items.length === 0) {
           host.innerHTML = `
             <div style="background:#fff;border:1px dashed var(--hx-line);border-radius:var(--hx-r);padding:36px 20px;text-align:center;color:var(--hx-text-mid);font-size:13.5px;">
               <p style="margin:0 0 4px;font-size:14px;color:var(--hx-text);font-weight:600;">No drafts yet</p>
-              <p style="margin:0;">Generate any campaign, post, or ad above — it'll be saved here automatically.</p>
+              <p style="margin:0;">Generate any campaign, post, or ad above — it'll be saved here automatically and synced across your devices.</p>
             </div>
           `;
           return;
@@ -736,7 +795,25 @@
 
       // Expose adder for the 3 generators to call when they finish
       window.HX_MARKETING_HISTORY = { add, render };
+
+      // Render the empty shell immediately so the section isn't blank
+      // while auth + Supabase load. Real data swaps in once both
+      // resolve.
       render();
+      (function whenAuthReadyForDrafts() {
+        function go() {
+          supabaseClient = window.HX && window.HX.supabase;
+          if (!supabaseClient) return;
+          supabaseClient.auth.getUser().then(({ data }) => {
+            if (data && data.user) {
+              supabaseOwner = data.user.id;
+              loadFromSupabase();
+            }
+          });
+        }
+        if (window.HX && window.HX.auth) { go(); return; }
+        document.addEventListener('hx:auth-ready', go, { once: true });
+      })();
     })();
   </script>
 

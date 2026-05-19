@@ -213,6 +213,15 @@
           <div id="hx-sum-result" class="hxai-results" style="margin-top:8px;"></div>
         </div>
 
+        <!-- Recent runs across all 4 tools — persisted in Supabase
+             (automation_runs) so a refresh, browser switch, or another
+             device all show the same history. -->
+        <div class="hx-section-head" style="margin-top:24px;">
+          <h2>Recent runs</h2>
+          <span class="meta" id="hx-runs-meta">Loading…</span>
+        </div>
+        <div id="hx-runs-host" style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;"></div>
+
         <!-- Tool jump-nav: live now lists all four tools. -->
         <div class="hx-section-head" style="margin-top:24px;">
           <h2>Tools</h2>
@@ -403,7 +412,9 @@
           });
           HXAI.store.set('automation', 'triage_history', hist.slice(0, 20));
           renderTriageHistory();
-          recordRun('triage');
+          // 'reply' is the canonical tool kind; the local-storage
+          // history above keeps using 'triage' for backwards compat.
+          recordRun('reply', { email: email.slice(0, 4000), tone: toneEl.value, language: langEl.value }, parsed);
         } catch (err) {
           setStatus(`Failed: ${err.message || err}`, true);
         } finally {
@@ -413,26 +424,147 @@
       });
 
       // ─────────────────────────────────────────────────────────────
-      //  Shared run-stats — every tool calls recordRun(toolKey) when
-      //  it succeeds, and the top stats row + "Last run" line update.
+      //  Persistent run history — every tool calls recordRun(...) with
+      //  its input + parsed output; the row goes to Supabase
+      //  (automation_runs) under RLS, then loadRuns() refreshes the
+      //  "Recent runs" list below + the top stats. Refresh, switch
+      //  browser, switch device — the history follows the user.
       // ─────────────────────────────────────────────────────────────
-      function recordRun(toolKey) {
-        const runs = HXAI.store.get('automation', 'tool_runs', []) || [];
-        runs.unshift({ tool: toolKey, at: new Date().toISOString() });
-        HXAI.store.set('automation', 'tool_runs', runs.slice(0, 100));
-        renderRunStats();
+      const TOOL_LABEL = { reply: 'Smart triage', digest: 'Daily digest', actions: 'Action items', summarize: 'Summariser', summarise: 'Summariser' };
+      let supabaseClient = null;
+      let supabaseOwner  = null;
+      let cachedRuns     = [];
+
+      function deriveRunTitle(toolKey, input, output) {
+        try {
+          if (toolKey === 'reply')     return (output && output.summary) || 'Email triage';
+          if (toolKey === 'digest')    return (output && output.headline) || 'Daily digest';
+          if (toolKey === 'actions') {
+            const n = (output && Array.isArray(output.actions)) ? output.actions.length : 0;
+            return n + ' action' + (n === 1 ? '' : 's') + ' extracted';
+          }
+          if (toolKey === 'summarize' || toolKey === 'summarise') {
+            return (output && output.tl_dr) ? String(output.tl_dr).slice(0, 80) : 'Document summary';
+          }
+        } catch (_) {}
+        return TOOL_LABEL[toolKey] || toolKey;
       }
-      function renderRunStats() {
-        const runs = HXAI.store.get('automation', 'tool_runs', []) || [];
-        document.getElementById('hx-auto-total-runs').textContent = runs.length;
-        if (runs.length) {
-          const last = runs[0];
-          const label = { triage: 'Smart triage', digest: 'Daily digest', actions: 'Action items', summarise: 'Summariser' }[last.tool] || last.tool;
-          document.getElementById('hx-auto-last').textContent = label;
-          document.getElementById('hx-auto-last-meta').textContent = HXAI.store.timeAgo(last.at);
+
+      async function recordRun(toolKey, input, output) {
+        // Optimistic local prepend so the UI updates instantly even on
+        // a slow network. Supabase write is fire-and-forget; if it
+        // fails we just log — the tool already returned its output.
+        const row = {
+          id: 'tmp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+          tool: toolKey,
+          title: deriveRunTitle(toolKey, input, output),
+          input: input || {},
+          output: output || {},
+          created_at: new Date().toISOString(),
+        };
+        cachedRuns.unshift(row);
+        if (cachedRuns.length > 50) cachedRuns.length = 50;
+        renderRuns();
+
+        if (!supabaseClient || !supabaseOwner) return;
+        try {
+          const ins = await supabaseClient.from('automation_runs').insert({
+            owner_id: supabaseOwner,
+            tool: toolKey,
+            title: row.title,
+            input: row.input,
+            output: row.output,
+          }).select().single();
+          if (ins.data && ins.data.id) {
+            // Replace the optimistic placeholder with the canonical row.
+            const idx = cachedRuns.findIndex(r => r.id === row.id);
+            if (idx > -1) cachedRuns[idx] = ins.data;
+            renderRuns();
+          }
+        } catch (e) {
+          console.warn('[automation] persist run:', (e && e.message) || e);
         }
       }
-      renderRunStats();
+
+      function renderRuns() {
+        const host = document.getElementById('hx-runs-host');
+        const meta = document.getElementById('hx-runs-meta');
+        if (!cachedRuns.length) {
+          meta.textContent = 'Nothing yet — run a tool above';
+          host.innerHTML = `<div style="background:#fff;border:1px dashed var(--hx-line);border-radius:var(--hx-r);padding:24px 18px;text-align:center;color:var(--hx-text-mid);font-size:13px;">Tool results land here automatically and follow you across devices.</div>`;
+        } else {
+          meta.textContent = cachedRuns.length + ' run' + (cachedRuns.length === 1 ? '' : 's');
+          host.innerHTML = cachedRuns.slice(0, 15).map((r, i) => {
+            const label = TOOL_LABEL[r.tool] || r.tool;
+            const when = HXAI.store.timeAgo ? HXAI.store.timeAgo(r.created_at) : new Date(r.created_at).toLocaleString();
+            return `
+              <div style="background:#fff;border:1px solid var(--hx-line);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;" data-run-idx="${i}">
+                <span style="font-family:var(--hx-mono);font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;background:rgba(15,15,16,0.06);color:var(--hx-text);padding:3px 8px;border-radius:5px;flex-shrink:0;">${HXAI.esc(label)}</span>
+                <div style="flex:1;min-width:0;font-size:13px;color:var(--hx-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${HXAI.esc(r.title || 'Untitled run')}</div>
+                <div style="font-family:var(--hx-mono);font-size:11px;color:var(--hx-text-mid);flex-shrink:0;">${HXAI.esc(when)}</div>
+              </div>`;
+          }).join('');
+          // Click a row to re-render its parsed output into the matching tool's result panel.
+          host.querySelectorAll('[data-run-idx]').forEach(el => {
+            el.addEventListener('click', () => {
+              const idx = +el.getAttribute('data-run-idx');
+              const r = cachedRuns[idx];
+              if (!r) return;
+              const resultId = { reply: 'hx-triage-result', digest: 'hx-digest-result', actions: 'hx-actions-result', summarize: 'hx-sum-result', summarise: 'hx-sum-result' }[r.tool];
+              const card = document.querySelector('#hx-tool-' + (r.tool === 'reply' ? 'triage' : r.tool === 'summarize' ? 'summarise' : r.tool));
+              if (resultId && document.getElementById(resultId)) {
+                document.getElementById(resultId).innerHTML = `<div class="hxai-card" style="background:var(--hx-bg-2);padding:14px 16px;"><div style="font-size:11.5px;color:var(--hx-text-mid);margin-bottom:8px;font-family:var(--hx-mono);">Restored from ${HXAI.esc(new Date(r.created_at).toLocaleString())}</div><pre style="margin:0;font-family:var(--hx-mono);font-size:12px;line-height:1.55;white-space:pre-wrap;color:var(--hx-text);">${HXAI.esc(JSON.stringify(r.output, null, 2))}</pre></div>`;
+              }
+              if (card) window.scrollTo({ top: card.offsetTop - 60, behavior: 'smooth' });
+            });
+          });
+        }
+        // Top stats row in sync with the loaded runs.
+        document.getElementById('hx-auto-total-runs').textContent = cachedRuns.length;
+        if (cachedRuns.length) {
+          const last = cachedRuns[0];
+          document.getElementById('hx-auto-last').textContent = TOOL_LABEL[last.tool] || last.tool;
+          document.getElementById('hx-auto-last-meta').textContent = HXAI.store.timeAgo ? HXAI.store.timeAgo(last.created_at) : '';
+        } else {
+          document.getElementById('hx-auto-last').textContent = '—';
+          document.getElementById('hx-auto-last-meta').textContent = 'No history yet';
+        }
+      }
+
+      async function loadRuns() {
+        if (!supabaseClient || !supabaseOwner) { renderRuns(); return; }
+        try {
+          const r = await supabaseClient.from('automation_runs')
+            .select('*').order('created_at', { ascending: false }).limit(50);
+          if (r.error) {
+            console.warn('[automation] load runs:', r.error.message);
+          } else {
+            cachedRuns = r.data || [];
+          }
+        } catch (e) {
+          console.warn('[automation] load runs error:', (e && e.message) || e);
+        }
+        renderRuns();
+      }
+
+      // Boot the run history once auth is ready (Supabase client is on
+      // window.HX.supabase by then). Renders the empty shell first so
+      // the page doesn't look frozen during the auth+query roundtrip.
+      renderRuns();
+      (function whenAuthReadyForRuns() {
+        function go() {
+          supabaseClient = window.HX && window.HX.supabase;
+          if (!supabaseClient) return;
+          supabaseClient.auth.getUser().then(({ data }) => {
+            if (data && data.user) {
+              supabaseOwner = data.user.id;
+              loadRuns();
+            }
+          });
+        }
+        if (window.HX && window.HX.auth) { go(); return; }
+        document.addEventListener('hx:auth-ready', go, { once: true });
+      })();
 
       // ─────────────────────────────────────────────────────────────
       //  Generic JSON-tool wiring used by Digest, Actions, Summarise.
@@ -459,7 +591,11 @@
           const parsed = HXAI.extractJson(raw);
           render(parsed, resultEl);
           setStatusFor(statusId, '');
-          recordRun(toolKey);
+          // Persist the run (input + parsed output) to Supabase so the
+          // "Recent runs" section + the top stats stay in sync across
+          // refreshes and devices. payload.kind already carries the
+          // tool identifier — use it as the canonical key.
+          recordRun(payload && payload.kind ? payload.kind : toolKey, payload || {}, parsed);
         } catch (err) {
           setStatusFor(statusId, `Failed: ${err.message || err}`, true);
         } finally {
