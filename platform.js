@@ -107,7 +107,9 @@
         { id: 'team',          href: '/team.html',            label: 'Team members',      icon: 'users'     },
         { id: 'audit-log',     href: '/audit-log.html',       label: 'Audit log',         icon: 'history'   },
         { id: 'settings',      href: '/settings.html',        label: 'Preferences',       icon: 'cog'       },
-        { id: 'support',       href: '/support.html',         label: 'Support',           icon: 'help'      }
+        // Support lives INSIDE the platform — never bounce the user out
+        // to the public marketing page from a signed-in surface.
+        { id: 'support',       href: '/tickets.html',         label: 'Support',           icon: 'help'      }
       ]
     }
   ];
@@ -207,7 +209,7 @@
     html +=     '<a class="hx-workspace-menu-item" href="/api-keys.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>API Keys</a>';
     html +=     '<div class="hx-workspace-menu-sep"></div>';
     html +=     '<button type="button" class="hx-workspace-menu-item" data-action="theme"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Toggle theme</button>';
-    html +=     '<a class="hx-workspace-menu-item" href="/support.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Help &amp; support</a>';
+    html +=     '<a class="hx-workspace-menu-item" href="/tickets.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Help &amp; support</a>';
     // Sign-out lives in the top-bar user-action button (rendered by the
     // topbar); having it here too was redundant and felt out of place.
     html +=   '</div>';

@@ -2,6 +2,7 @@
 // transactional notifications. Routes by `kind`:
 //   kind: 'service_request'    body: { request_id }
 //   kind: 'consulting_booking' body: { booking_id }
+//   kind: 'support_ticket'     body: { ticket_id }
 //
 // Looks up the row server-side using the caller's Supabase JWT (RLS
 // confirms ownership), then fans two emails: one to the HelveX team
@@ -37,7 +38,89 @@ export default async function handler(req, res) {
 
   if (kind === 'service_request')    return notifyServiceRequest(auth, body, res);
   if (kind === 'consulting_booking') return notifyConsultingBooking(auth, body, res);
-  return res.status(400).json({ error: `Unknown kind "${kind}". Use service_request or consulting_booking.` });
+  if (kind === 'support_ticket')     return notifySupportTicket(auth, body, res);
+  return res.status(400).json({ error: `Unknown kind "${kind}". Use service_request, consulting_booking, or support_ticket.` });
+}
+
+const TOPIC_LABEL = {
+  billing:   'Billing & invoicing',
+  technical: 'Technical issue',
+  account:   'Account / access',
+  feature:   'Feature request',
+  other:     'Other',
+};
+const PRIORITY_LABEL = {
+  low:    'Low — when you can',
+  normal: 'Normal',
+  urgent: 'Urgent — blocking work',
+};
+
+async function notifySupportTicket(auth, body, res) {
+  const ticketId = body.ticket_id ? String(body.ticket_id) : '';
+  if (!ticketId) return res.status(400).json({ error: 'ticket_id required' });
+
+  const row = await readRow(auth.token, 'support_tickets', ticketId);
+  if (row.error) return res.status(row.status).json({ error: row.error });
+  if (!row.data) return res.status(404).json({ error: 'Ticket not found or not yours.' });
+
+  const r = row.data;
+  const customerEmail = auth.user.email;
+  const topicLabel    = TOPIC_LABEL[r.topic] || r.topic;
+  const priorityLabel = PRIORITY_LABEL[r.priority] || r.priority;
+  const submittedAt   = new Date(r.created_at).toLocaleString();
+  const meta          = r.meta || {};
+
+  const teamHtml = emailShell({
+    title: `New support ticket — ${topicLabel}`,
+    intro: `${customerEmail || 'A customer'} opened a ticket from inside the platform. Priority: ${priorityLabel}.`,
+    rows: [
+      { label: 'Customer',  value: customerEmail || 'unknown' },
+      { label: 'Subject',   value: r.subject },
+      { label: 'Topic',     value: topicLabel },
+      { label: 'Priority',  value: priorityLabel },
+      { label: 'Submitted', value: submittedAt },
+      { label: 'Source URL',value: meta.url || 'not captured' },
+      { label: 'Plan',      value: meta.plan || 'not captured' },
+      { label: 'Message',   html: `<div style="white-space:pre-wrap;">${escapeHtml(r.message || '')}</div>` },
+      { label: 'Ticket ID', value: r.id },
+    ],
+    footnote: 'Reply directly to this email to reach the customer. Set status = pending/resolved on support_tickets to push state into their workspace.',
+  });
+  const teamRes = await sendEmail({
+    to: TEAM_EMAIL,
+    subject: `[Support · ${priorityLabel}] ${r.subject} — ${customerEmail || 'new ticket'}`,
+    html: teamHtml,
+    text: `New support ticket from ${customerEmail}. Topic: ${topicLabel}. Priority: ${priorityLabel}. Subject: ${r.subject}.\n\nMessage:\n${r.message}\n\nTicket ID: ${r.id}`,
+    replyTo: customerEmail || undefined,
+  });
+
+  let custRes = { ok: true, skipped: true };
+  if (customerEmail) {
+    const custHtml = emailShell({
+      title: 'Ticket received.',
+      intro: 'Thanks for the report. A human reads every ticket — no auto-replies. We aim to get back inside one business day on active engagements, two to three otherwise.',
+      rows: [
+        { label: 'Subject',  value: r.subject },
+        { label: 'Topic',    value: topicLabel },
+        { label: 'Priority', value: priorityLabel },
+        { label: 'Ticket',   value: `#${r.id}` },
+      ],
+      footnote: 'You can track this ticket from the Support page in your workspace. Reply to this email to add details — it threads back into the same ticket.',
+    });
+    custRes = await sendEmail({
+      to: customerEmail,
+      subject: `We got your ticket — ${r.subject} (#${r.id})`,
+      html: custHtml,
+      text: `Thanks — we received your ticket "${r.subject}" (#${r.id}). We'll reply within one business day on active engagements, two to three otherwise.`,
+      replyTo: TEAM_EMAIL,
+    });
+  }
+
+  return res.status(200).json({
+    ok: true,
+    team:     { ok: teamRes.ok, error: teamRes.error || null },
+    customer: { ok: custRes.ok, skipped: !!custRes.skipped, error: custRes.error || null },
+  });
 }
 
 async function notifyServiceRequest(auth, body, res) {

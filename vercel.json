@@ -81,7 +81,8 @@
     { "source": "/notifications", "destination": "/notifications.html" },
     { "source": "/sessions", "destination": "/sessions.html" },
     { "source": "/connected", "destination": "/connected.html" },
-    { "source": "/audit-log", "destination": "/audit-log.html" }
+    { "source": "/audit-log", "destination": "/audit-log.html" },
+    { "source": "/tickets", "destination": "/tickets.html" }
   ],
   "redirects": [
     { "source": "/checkout/sync-plan", "destination": "/checkout/strategy-call", "permanent": true },
