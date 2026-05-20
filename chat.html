@@ -2964,7 +2964,7 @@
                 system:          HELIX_SYSTEM + (state.agentEnabled ? HELIX_AGENT_SYSTEM : ''),
                 messages:        send_msgs,
                 user_attachments: persistAttachs,
-                max_tokens:      state.agentEnabled ? 4096 : 2048,
+                max_tokens:      state.agentEnabled ? 8192 : 2048,
                 stream:          true,
                 tools:           {
                   web:  !!(state.webEnabled  || state.agentEnabled),
@@ -3020,6 +3020,26 @@
                 try { obj = JSON.parse(dataStr); } catch (e) { continue; }
                 if (evname === 'content_block_delta' && obj.delta && obj.delta.type === 'text_delta') {
                   appendDelta(obj.delta.text || '');
+                } else if (evname === 'content_block_start' && obj.content_block) {
+                  // Anthropic server-side tools — when the model invokes
+                  // web_search or code_execution, surface a visible
+                  // status line so the user knows work is happening.
+                  var cb = obj.content_block;
+                  if (cb.type === 'server_tool_use' || cb.type === 'code_execution_tool_use') {
+                    var toolName = cb.name || cb.type;
+                    var label = toolName === 'web_search' ? 'Searching the web' :
+                                toolName === 'code_execution' ? 'Running code' :
+                                ('Using ' + toolName);
+                    appendDelta('\n\n> _' + label + '…_\n\n');
+                  } else if (cb.type === 'web_search_tool_result' || cb.type === 'code_execution_tool_result') {
+                    // Result block landed — model will continue text shortly
+                    appendDelta('\n');
+                  }
+                } else if (evname === 'message_delta' && obj.delta && obj.delta.stop_reason) {
+                  // If the model stopped because it hit max_tokens, tell the user
+                  if (obj.delta.stop_reason === 'max_tokens') {
+                    appendDelta('\n\n> _Response truncated. Tap Regenerate or ask Helix to continue._');
+                  }
                 } else if (evname === 'helvex_done') {
                   if (obj.trace_id) traceCell.textContent = obj.trace_id;
                 } else if (evname === 'error' && obj.error && obj.error.message) {
