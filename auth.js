@@ -7,6 +7,30 @@
 (function () {
   'use strict';
 
+  // Auth/signup/login pages also block pinch-zoom and double-tap-zoom.
+  // iOS Safari ignores user-scalable=no in some contexts; these listeners
+  // and CSS touch-action enforce no-zoom on the auth flow too.
+  (function lockZoomOnAuth() {
+    var prevent = function (e) { e.preventDefault(); };
+    document.addEventListener('gesturestart',  prevent, { passive: false });
+    document.addEventListener('gesturechange', prevent, { passive: false });
+    document.addEventListener('gestureend',    prevent, { passive: false });
+    var lastTouchEnd = 0;
+    document.addEventListener('touchend', function (e) {
+      var now = Date.now();
+      if (now - lastTouchEnd <= 320) e.preventDefault();
+      lastTouchEnd = now;
+    }, { passive: false });
+    document.addEventListener('wheel', function (e) {
+      if (e.ctrlKey) e.preventDefault();
+    }, { passive: false });
+    document.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+        e.preventDefault();
+      }
+    });
+  })();
+
   var SUPABASE_URL = 'https://yjmpallrtpeinpdilptj.supabase.co';
   var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_vx5tD4mUizuspej5-g3XlQ_PnbjXSeR';
   var OTP_FN_URL = SUPABASE_URL + '/functions/v1/auth-otp';

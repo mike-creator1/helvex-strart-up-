@@ -48,6 +48,13 @@ html, body {
   font-size: 14px;
   line-height: 1.5;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
+  /* No zoom on auth pages either. */
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 a { color: inherit; text-decoration: none; }
 ::selection { background: rgba(0,0,0,0.08); color: var(--hx-text); }
