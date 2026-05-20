@@ -979,6 +979,18 @@
       from { transform: rotate(0deg); }
       to   { transform: rotate(360deg); }
     }
+    /* Code execution toggle — when on, glows emerald to differentiate from web search */
+    #hx-c-code[aria-pressed="true"] {
+      background: var(--hx-emerald-soft);
+      color: var(--hx-emerald);
+      border-color: color-mix(in srgb, var(--hx-emerald) 35%, var(--hx-line));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--hx-emerald) 12%, transparent);
+    }
+    #hx-c-code[aria-pressed="true"] svg { animation: hx-code-pulse 2.2s ease-in-out infinite; }
+    @keyframes hx-code-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.7; transform: scale(0.92); }
+    }
     .hx-chat-tool-btn.is-active::before {
       content: ''; position: absolute; width: 32px; height: 32px;
       border-radius: 8px;
@@ -1428,6 +1440,15 @@
                   </button>
                   <button
                     class="hx-chat-tool-btn"
+                    id="hx-c-code"
+                    type="button"
+                    aria-pressed="false"
+                    aria-label="Code execution"
+                    title="Run Python · charts · data analysis · math">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                  </button>
+                  <button
+                    class="hx-chat-tool-btn"
                     id="hx-c-mic"
                     type="button"
                     aria-label="Voice input"
@@ -1645,6 +1666,7 @@
         msgChannel: null,
         attachments: [],       // composer's pending attachments
         webEnabled: false,     // when true, model gets Anthropic web_search tool
+        codeEnabled: false,    // when true, model gets Anthropic code_execution tool
       };
 
       // ─── Global active project (shared across pages via localStorage) ──
@@ -2334,7 +2356,7 @@
                 user_attachments: persistAttachs,
                 max_tokens:      2048,
                 stream:          true,
-                tools:           { web: !!state.webEnabled },
+                tools:           { web: !!state.webEnabled, code: !!state.codeEnabled },
               }),
             });
 
@@ -3141,6 +3163,18 @@
             webBtn.setAttribute('title', state.webEnabled
               ? 'Web search ON — Helix will browse for current info'
               : 'Browse the web for fresh info');
+          });
+        }
+        // Code execution toggle — when on, Helix can run Python in a
+        // sandbox: math, data analysis, chart generation, CSV processing.
+        var codeBtn = $('hx-c-code');
+        if (codeBtn) {
+          codeBtn.addEventListener('click', function () {
+            state.codeEnabled = !state.codeEnabled;
+            codeBtn.setAttribute('aria-pressed', state.codeEnabled ? 'true' : 'false');
+            codeBtn.setAttribute('title', state.codeEnabled
+              ? 'Code execution ON — Helix can run Python, analyze data, draw charts'
+              : 'Run Python · charts · data analysis · math');
           });
         }
 
