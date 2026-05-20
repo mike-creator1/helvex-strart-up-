@@ -1710,7 +1710,10 @@ html[data-theme="dark"] select option {
   color: #FFFFFF;
 }
 
-/* Page-local card / drawer / modal classes that hardcode white. */
+/* Page-local card / drawer / modal classes that hardcode white.
+   List built from a full audit of every platform page — anything
+   that shipped with `background: #fff` or `background: white` in
+   its own <style> block. */
 html[data-theme="dark"] .hx-con-card,
 html[data-theme="dark"] .hx-con-new-form,
 html[data-theme="dark"] .hx-deal,
@@ -1728,7 +1731,25 @@ html[data-theme="dark"] .hx-modal,
 html[data-theme="dark"] .hx-persona-pill,
 html[data-theme="dark"] .hx-persona-menu,
 html[data-theme="dark"] .hx-thread-pane,
-html[data-theme="dark"] .hx-asst-main {
+html[data-theme="dark"] .hx-asst-main,
+/* Workflows surface */
+html[data-theme="dark"] .hx-wf-card,
+html[data-theme="dark"] .hx-wf-empty,
+html[data-theme="dark"] .hx-wf-new,
+/* Workbench surface */
+html[data-theme="dark"] .hx-wb-card,
+html[data-theme="dark"] .hx-wb-empty,
+html[data-theme="dark"] .hx-wb-new-form,
+html[data-theme="dark"] .hx-wb-filter,
+/* Services surface */
+html[data-theme="dark"] .hx-svc-card,
+html[data-theme="dark"] .hx-svc-new-form,
+/* Memory surface */
+html[data-theme="dark"] .hx-mem-card,
+html[data-theme="dark"] .hx-mem-new,
+html[data-theme="dark"] .hx-mem-tag-filter,
+/* CRM danger button (was white-bg + red-text — invisible in dark) */
+html[data-theme="dark"] .hx-btn-danger {
   background-color: #000000 !important;
   border-color: var(--hx-line) !important;
 }
@@ -1796,19 +1817,36 @@ html[data-theme="dark"] .hx-note-form textarea {
 }
 
 /* Catch-all for inline white backgrounds — both the spaced and
-   unspaced variants, hex and named. !important is necessary
-   because inline style attributes always beat class rules. */
+   unspaced variants, hex and named, plus JS-injected runtime
+   styles via .cssText. !important is necessary because inline
+   style attributes always beat class rules. */
 html[data-theme="dark"] [style*="background:#fff"],
 html[data-theme="dark"] [style*="background: #fff"],
 html[data-theme="dark"] [style*="background:#FFFFFF"],
 html[data-theme="dark"] [style*="background: #FFFFFF"],
+html[data-theme="dark"] [style*="background:#FFF"],
+html[data-theme="dark"] [style*="background: #FFF"],
 html[data-theme="dark"] [style*="background:white"],
 html[data-theme="dark"] [style*="background: white"],
 html[data-theme="dark"] [style*="background-color:#fff"],
 html[data-theme="dark"] [style*="background-color: #fff"],
+html[data-theme="dark"] [style*="background-color:#FFFFFF"],
+html[data-theme="dark"] [style*="background-color: #FFFFFF"],
 html[data-theme="dark"] [style*="background-color:white"],
-html[data-theme="dark"] [style*="background-color: white"] {
-  background-color: var(--hx-surface) !important;
+html[data-theme="dark"] [style*="background-color: white"],
+/* Browser-normalised serialisations (rgb form, with and without
+   spaces) — happens when a script writes `style.cssText = "...
+   background:#fff..."` and the engine rewrites the attribute. */
+html[data-theme="dark"] [style*="background: rgb(255, 255, 255)"],
+html[data-theme="dark"] [style*="background:rgb(255,255,255)"],
+html[data-theme="dark"] [style*="background: rgb(255,255,255)"],
+html[data-theme="dark"] [style*="background:rgb(255, 255, 255)"],
+html[data-theme="dark"] [style*="background-color: rgb(255, 255, 255)"],
+html[data-theme="dark"] [style*="background-color:rgb(255,255,255)"],
+html[data-theme="dark"] [style*="background-color: rgb(255,255,255)"],
+html[data-theme="dark"] [style*="background-color:rgb(255, 255, 255)"] {
+  background-color: #000000 !important;
+  color: var(--hx-text) !important;
 }
 
 /* The cmdp-foot kbd is the last remaining hardcoded white inside
