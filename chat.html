@@ -835,6 +835,19 @@
     .hx-chat-tool-btn.is-active {
       background: var(--hx-text); color: var(--hx-bg); border-color: var(--hx-text);
     }
+    /* Web search tool button — when enabled, glows gold to show the model
+       will browse the web. Persists between messages until the user turns it off. */
+    #hx-c-web[aria-pressed="true"] {
+      background: var(--hx-yellow-soft);
+      color: var(--hx-yellow-deep);
+      border-color: color-mix(in srgb, var(--hx-yellow) 35%, var(--hx-line));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--hx-yellow) 12%, transparent);
+    }
+    #hx-c-web[aria-pressed="true"] svg { animation: hx-web-spin 14s linear infinite; }
+    @keyframes hx-web-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
     .hx-chat-tool-btn.is-active::before {
       content: ''; position: absolute; width: 32px; height: 32px;
       border-radius: 8px;
@@ -1275,6 +1288,15 @@
                     spellcheck="true"></textarea>
                   <button
                     class="hx-chat-tool-btn"
+                    id="hx-c-web"
+                    type="button"
+                    aria-pressed="false"
+                    aria-label="Web search"
+                    title="Browse the web for fresh info">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg>
+                  </button>
+                  <button
+                    class="hx-chat-tool-btn"
                     id="hx-c-mic"
                     type="button"
                     aria-label="Voice input"
@@ -1415,6 +1437,7 @@
         streaming: false,      // first delta received, actively streaming
         msgChannel: null,
         attachments: [],       // composer's pending attachments
+        webEnabled: false,     // when true, model gets Anthropic web_search tool
       };
 
       // ─── Global active project (shared across pages via localStorage) ──
@@ -2074,6 +2097,7 @@
                 user_attachments: persistAttachs,
                 max_tokens:      2048,
                 stream:          true,
+                tools:           { web: !!state.webEnabled },
               }),
             });
 
@@ -2869,6 +2893,19 @@
         });
 
         micBtn.addEventListener('click', toggleVoice);
+
+        // Web search toggle — when on, the model gets Anthropic's server-side
+        // web_search tool and will browse for current info when needed.
+        var webBtn = $('hx-c-web');
+        if (webBtn) {
+          webBtn.addEventListener('click', function () {
+            state.webEnabled = !state.webEnabled;
+            webBtn.setAttribute('aria-pressed', state.webEnabled ? 'true' : 'false');
+            webBtn.setAttribute('title', state.webEnabled
+              ? 'Web search ON — Helix will browse for current info'
+              : 'Browse the web for fresh info');
+          });
+        }
 
         if (voiceDoneBtn) {
           voiceDoneBtn.addEventListener('click', function () {
