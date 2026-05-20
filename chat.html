@@ -885,18 +885,71 @@
       letter-spacing: 0.02em;
       box-shadow: var(--hx-shadow-xs);
     }
-    .hx-thinking-orb {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--hx-yellow) 0%, var(--hx-yellow-deep) 100%);
-      box-shadow:
-        0 0 0 3px var(--hx-yellow-soft),
-        0 0 10px color-mix(in srgb, var(--hx-yellow) 60%, transparent);
-      animation: hx-thinking-orb 1.6s ease-in-out infinite;
+    /* Model-aware mark — each Helix model shows its own logo in the
+       thinking pill. Color + animation are themed per model. */
+    .hx-thinking-mark {
+      width: 22px; height: 22px;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      border-radius: 8px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
     }
-    @keyframes hx-thinking-orb {
-      0%, 100% { transform: scale(0.85); box-shadow: 0 0 0 3px var(--hx-yellow-soft), 0 0 8px color-mix(in srgb, var(--hx-yellow) 45%, transparent); }
-      50%      { transform: scale(1.1);  box-shadow: 0 0 0 5px var(--hx-yellow-soft), 0 0 16px color-mix(in srgb, var(--hx-yellow) 75%, transparent); }
+    .hx-thinking-mark svg { width: 14px; height: 14px; }
+    /* Ether — atom orbits, gold accent, slow rotation */
+    .hx-thinking.is-ether {
+      border-color: color-mix(in srgb, var(--hx-yellow) 35%, var(--hx-line));
+    }
+    .hx-thinking.is-ether .hx-thinking-mark {
+      background: var(--hx-yellow-soft);
+      border-color: color-mix(in srgb, var(--hx-yellow) 35%, var(--hx-line));
+      color: var(--hx-yellow-deep);
+      box-shadow: 0 0 12px color-mix(in srgb, var(--hx-yellow) 25%, transparent);
+    }
+    .hx-thinking.is-ether .hx-thinking-mark svg {
+      animation: hx-mark-rotate 3.2s linear infinite;
+    }
+    @keyframes hx-mark-rotate {
+      to { transform: rotate(360deg); }
+    }
+    /* Nexus — reasoning burst, coral/red accent, breathing pulse */
+    .hx-thinking.is-nexus {
+      border-color: color-mix(in srgb, var(--hx-red) 28%, var(--hx-line));
+    }
+    .hx-thinking.is-nexus .hx-thinking-mark {
+      background: var(--hx-red-soft);
+      border-color: color-mix(in srgb, var(--hx-red) 30%, var(--hx-line));
+      color: var(--hx-red);
+      box-shadow: 0 0 12px color-mix(in srgb, var(--hx-red) 20%, transparent);
+    }
+    .hx-thinking.is-nexus .hx-thinking-mark svg {
+      animation: hx-mark-burst 2.2s ease-in-out infinite;
+    }
+    @keyframes hx-mark-burst {
+      0%, 100% { transform: scale(0.92); }
+      50%      { transform: scale(1.08); }
+    }
+    /* Prometheus — flame, graphite accent, flickering ascent */
+    .hx-thinking.is-prometheus {
+      border-color: color-mix(in srgb, var(--hx-text) 25%, var(--hx-line));
+    }
+    .hx-thinking.is-prometheus .hx-thinking-mark {
+      background: linear-gradient(180deg, var(--hx-bg-2) 0%, color-mix(in srgb, var(--hx-text) 8%, var(--hx-bg-2)) 100%);
+      border-color: color-mix(in srgb, var(--hx-text) 30%, var(--hx-line));
+      color: var(--hx-text);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 35%, transparent),
+        0 0 14px color-mix(in srgb, var(--hx-text) 18%, transparent);
+    }
+    .hx-thinking.is-prometheus .hx-thinking-mark svg {
+      animation: hx-mark-flicker 1.5s ease-in-out infinite;
+      transform-origin: 12px 20px;
+    }
+    @keyframes hx-mark-flicker {
+      0%, 100% { transform: scale(1)   skewX(0deg);  opacity: 1; }
+      25%      { transform: scale(1.05) skewX(-1.5deg); opacity: 0.9; }
+      50%      { transform: scale(0.96) skewX(1deg);    opacity: 1; }
+      75%      { transform: scale(1.04) skewX(-0.5deg); opacity: 0.95; }
     }
     .hx-thinking-text {
       font-family: 'Instrument Serif', Georgia, serif;
@@ -2015,6 +2068,51 @@
           .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       }
 
+      // The three HelveX models each have a distinct mark on the marketing
+      // site. The chat reuses those exact marks so the thinking indicator
+      // always shows the active model's identity (atom orbits for Ether,
+      // burst for Nexus, flame for Prometheus).
+      function modelLogoSvg(model) {
+        if (model === 'nexus') {
+          return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+            '<g>' +
+              '<circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="0.6" stroke-opacity=".30"/>' +
+              '<line x1="12" y1="12" x2="12"  y2="3.5"  stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/>' +
+              '<line x1="12" y1="12" x2="19.4" y2="7.5"  stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/>' +
+              '<line x1="12" y1="12" x2="19.4" y2="16.5" stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/>' +
+              '<line x1="12" y1="12" x2="12"  y2="20.5" stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/>' +
+              '<line x1="12" y1="12" x2="4.6"  y2="16.5" stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/>' +
+              '<line x1="12" y1="12" x2="4.6"  y2="7.5"  stroke="currentColor" stroke-width="1.1" stroke-opacity=".6"/>' +
+              '<circle cx="12"   cy="3.5"  r="1.6" fill="currentColor"/>' +
+              '<circle cx="19.4" cy="7.5"  r="1.4" fill="currentColor" fill-opacity=".9"/>' +
+              '<circle cx="19.4" cy="16.5" r="1.4" fill="currentColor" fill-opacity=".75"/>' +
+              '<circle cx="12"   cy="20.5" r="1.4" fill="currentColor" fill-opacity=".6"/>' +
+              '<circle cx="4.6"  cy="16.5" r="1.4" fill="currentColor" fill-opacity=".75"/>' +
+              '<circle cx="4.6"  cy="7.5"  r="1.4" fill="currentColor" fill-opacity=".9"/>' +
+              '<circle cx="12" cy="12" r="2.6" fill="currentColor"/>' +
+            '</g>' +
+          '</svg>';
+        }
+        if (model === 'prometheus') {
+          return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+            '<g>' +
+              '<path d="M12 2.5 C 13.5 5 15 6.5 15 9 C 15 10.5 14 11 13 11.5 C 14.5 9 13.5 6.5 12 2.5 Z" fill="currentColor" fill-opacity=".6"/>' +
+              '<path d="M12 2.5 C 9 6 7 9.5 8 13.5 C 8 18 11 21 12 21 C 13 21 16 18 16 13.5 C 16 11.5 14.5 10 14 7.5 C 13.5 9.5 13 10.5 12 11.5 C 11.5 10 11 8 12 2.5 Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="currentColor" fill-opacity=".25"/>' +
+              '<path d="M12 12.5 C 10.5 14.5 10 16 11.5 18 C 12 19 13 18 13 17 C 13 16 12.5 14.5 12 12.5 Z" fill="currentColor"/>' +
+            '</g>' +
+          '</svg>';
+        }
+        // Default: ether (atom orbits)
+        return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+          '<g>' +
+            '<ellipse cx="12" cy="12" rx="10" ry="3.5" stroke="currentColor" stroke-width="1.3" stroke-opacity=".95"/>' +
+            '<ellipse cx="12" cy="12" rx="10" ry="3.5" stroke="currentColor" stroke-width="1.3" stroke-opacity=".7" transform="rotate(60 12 12)"/>' +
+            '<ellipse cx="12" cy="12" rx="10" ry="3.5" stroke="currentColor" stroke-width="1.3" stroke-opacity=".5" transform="rotate(120 12 12)"/>' +
+            '<circle cx="12" cy="12" r="2.4" fill="currentColor"/>' +
+          '</g>' +
+        '</svg>';
+      }
+
       // Renders message content with fenced code-block support + inline
       // basics. Splits on ```lang\n...\n``` fences. Code goes into a
       // premium card with header (language + Copy + Preview if HTML), the
@@ -2668,11 +2766,12 @@
             html += renderMessage(m);
           });
           if (state.sending) {
+            var activeModel = ($('hx-c-model') && $('hx-c-model').value) || 'ether';
             html += '<div class="hx-msg is-assistant">' +
               '<div class="hx-msg-body">' +
                 '<div class="hx-msg-meta"><strong>Helix</strong></div>' +
-                '<div class="hx-thinking">' +
-                  '<span class="hx-thinking-orb" aria-hidden="true"></span>' +
+                '<div class="hx-thinking is-' + activeModel + '">' +
+                  '<span class="hx-thinking-mark" aria-hidden="true">' + modelLogoSvg(activeModel) + '</span>' +
                   '<span class="hx-thinking-text">' + (state.agentEnabled ? 'Planning' : 'Thinking') + '</span>' +
                   '<span class="hx-typing"><span></span><span></span><span></span></span>' +
                 '</div>' +
