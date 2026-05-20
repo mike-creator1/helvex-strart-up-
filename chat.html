@@ -611,13 +611,99 @@
     .hx-chat-item {
       position: relative;
       display: flex;
-      flex-direction: column;
-      gap: 3px;
-      padding: 10px 12px 10px 14px;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 8px 10px 14px;
       border-radius: var(--hx-r);
       cursor: pointer;
       transition: background 0.14s ease, border-color 0.14s ease, transform 0.14s ease;
       border: 1px solid transparent;
+    }
+    .hx-chat-item-body { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+    /* 3-dots options button on each conversation row */
+    .hx-chat-item-more {
+      width: 26px; height: 26px;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--hx-text-dim);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.14s ease, background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+      padding: 0;
+    }
+    .hx-chat-item:hover .hx-chat-item-more,
+    .hx-chat-item.is-active .hx-chat-item-more { opacity: 1; }
+    .hx-chat-item-more:hover {
+      background: var(--hx-bg-2);
+      color: var(--hx-text);
+      border-color: var(--hx-line);
+    }
+    .hx-chat-item-more svg { width: 14px; height: 14px; }
+    /* Touch devices: always show the dots (no hover) */
+    @media (hover: none) {
+      .hx-chat-item-more { opacity: 0.7; }
+    }
+
+    /* Conversation context menu (3-dots dropdown) */
+    .hx-cmenu {
+      position: fixed;
+      min-width: 220px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: 12px;
+      padding: 6px;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+        0 18px 38px -12px rgba(20,18,12,0.20),
+        0 4px 10px rgba(20,18,12,0.06);
+      z-index: 90;
+      animation: hx-cmenu-in 0.16s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    @keyframes hx-cmenu-in {
+      from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .hx-cmenu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 8px 10px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      color: var(--hx-text);
+      text-align: left;
+      transition: background 0.12s ease, color 0.12s ease;
+    }
+    .hx-cmenu-item:hover { background: var(--hx-bg-2); }
+    .hx-cmenu-item svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--hx-text-mid); }
+    .hx-cmenu-item:hover svg { color: var(--hx-text); }
+    .hx-cmenu-item span { flex: 1; }
+    .hx-cmenu-item kbd {
+      font-family: var(--hx-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--hx-text-faint);
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: 4px;
+      padding: 1px 5px;
+      line-height: 1.4;
+    }
+    .hx-cmenu-item.is-danger { color: var(--hx-red); }
+    .hx-cmenu-item.is-danger svg { color: var(--hx-red); }
+    .hx-cmenu-item.is-danger:hover { background: var(--hx-red-soft); }
+    .hx-cmenu-sep {
+      height: 1px;
+      margin: 4px 4px;
+      background: var(--hx-line);
     }
     .hx-chat-item::before {
       content: '';
@@ -1961,23 +2047,9 @@
 
     /* Agent badge in the toolbar — visible while Agent mode is active so
        the user always knows they're talking to an autonomous Helix. */
-    .hx-chat-agent-toolbar-badge {
-      display: none;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      font-family: var(--hx-mono);
-      font-size: 9.5px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--hx-yellow-deep);
-      background: var(--hx-yellow-soft);
-      border: 1px solid color-mix(in srgb, var(--hx-yellow) 35%, var(--hx-line));
-      border-radius: 999px;
-      box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 50%, transparent);
-    }
-    .hx-chat-agent-toolbar-badge.is-on { display: inline-flex; }
+    /* AGENT badge in the toolbar — hidden by user request. The model name
+       itself (Nexus / Prometheus) is enough indication of agent capability. */
+    .hx-chat-agent-toolbar-badge { display: none !important; }
     .hx-chat-agent-toolbar-badge::before {
       content: '';
       width: 5px; height: 5px; border-radius: 50%;
@@ -2527,11 +2599,10 @@
               </select>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </label>
-            <button class="hx-chat-pill" type="button" id="hx-c-clear" title="Delete this conversation">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-              Delete
-            </button>
-            <span class="hx-chat-balance" id="hx-c-balance" title="Available credits">—</span>
+            <!-- Delete moved to each conversation's 3-dots menu in the rail.
+                 Credit balance moved to the workspace/account header (not here). -->
+            <button class="hx-chat-pill" type="button" id="hx-c-clear" hidden aria-hidden="true"></button>
+            <span class="hx-chat-balance" id="hx-c-balance" hidden aria-hidden="true">—</span>
           </div>
 
           <div class="hx-chat-thread" id="hx-c-thread">
@@ -3233,16 +3304,132 @@
           state.conversations.forEach(function (c) {
             var active = state.conversation && state.conversation.id === c.id;
             html += '<div class="hx-chat-item' + (active ? ' is-active' : '') + '" data-id="' + escape(c.id) + '">' +
-              '<span class="hx-chat-item-title">' + escape(c.title || 'Untitled') + '</span>' +
-              '<span class="hx-chat-item-meta">' +
-                '<span>' + escape(relTime(c.updated_at)) + '</span>' +
-              '</span>' +
+              '<div class="hx-chat-item-body">' +
+                '<span class="hx-chat-item-title">' + escape(c.title || 'Untitled') + '</span>' +
+                '<span class="hx-chat-item-meta">' +
+                  '<span>' + escape(relTime(c.updated_at)) + '</span>' +
+                '</span>' +
+              '</div>' +
+              '<button class="hx-chat-item-more" type="button" data-id="' + escape(c.id) + '" aria-label="Conversation options" title="Options">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5"  r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="19" r="1.2"/></svg>' +
+              '</button>' +
             '</div>';
           });
           host.innerHTML = html;
           host.querySelectorAll('.hx-chat-item').forEach(function (el) {
-            el.addEventListener('click', function () { openConversation(el.getAttribute('data-id')); });
+            el.addEventListener('click', function (e) {
+              // Ignore clicks that originated from the more-options button
+              if (e.target.closest('.hx-chat-item-more')) return;
+              openConversation(el.getAttribute('data-id'));
+            });
           });
+          host.querySelectorAll('.hx-chat-item-more').forEach(function (b) {
+            b.addEventListener('click', function (e) {
+              e.stopPropagation();
+              openConversationMenu(b, b.getAttribute('data-id'));
+            });
+          });
+        }
+
+        // ─── Per-conversation context menu (3-dots) ─────────────
+        // Matches the Claude.ai pattern: Open, Rename, Pin, Copy link,
+        // Archive, Delete. Anchored to the dots button, click-outside
+        // and Esc close it.
+        function openConversationMenu(anchorBtn, convId) {
+          closeConversationMenu();
+          var conv = (state.conversations || []).find(function (c) { return c.id === convId; });
+          if (!conv) return;
+          var menu = document.createElement('div');
+          menu.className = 'hx-cmenu';
+          menu.setAttribute('role', 'menu');
+          menu.innerHTML =
+            '<button class="hx-cmenu-item" data-act="open">'   + svgInline('open')   + '<span>Open</span></button>' +
+            '<button class="hx-cmenu-item" data-act="rename">' + svgInline('edit')   + '<span>Rename</span><kbd>R</kbd></button>' +
+            '<button class="hx-cmenu-item" data-act="copy">'   + svgInline('link')   + '<span>Copy link</span><kbd>C</kbd></button>' +
+            '<div class="hx-cmenu-sep"></div>' +
+            '<button class="hx-cmenu-item" data-act="archive">' + svgInline('archive')+ '<span>Archive</span><kbd>A</kbd></button>' +
+            '<button class="hx-cmenu-item is-danger" data-act="delete">' + svgInline('trash') + '<span>Delete</span><kbd>D</kbd></button>';
+          document.body.appendChild(menu);
+          // Position the menu next to the anchor
+          var r = anchorBtn.getBoundingClientRect();
+          var menuW = 220;
+          var top  = r.bottom + 6;
+          var left = Math.min(window.innerWidth - menuW - 12, r.left);
+          menu.style.top  = top  + 'px';
+          menu.style.left = left + 'px';
+          // Wire actions
+          menu.querySelectorAll('[data-act]').forEach(function (it) {
+            it.addEventListener('click', function () {
+              var act = it.getAttribute('data-act');
+              closeConversationMenu();
+              if (act === 'open')    openConversation(convId);
+              else if (act === 'rename') renameConversation(convId, conv.title);
+              else if (act === 'copy')   copyConversationLink(convId);
+              else if (act === 'archive') archiveConversation(convId);
+              else if (act === 'delete')  deleteConversationById(convId);
+            });
+          });
+          // Outside / Esc close
+          setTimeout(function () {
+            document.addEventListener('click', _cmenuOutsideClose, true);
+            document.addEventListener('keydown', _cmenuEscClose);
+          }, 0);
+        }
+        function _cmenuOutsideClose(e) {
+          var m = document.querySelector('.hx-cmenu');
+          if (m && !m.contains(e.target)) closeConversationMenu();
+        }
+        function _cmenuEscClose(e) {
+          if (e.key === 'Escape') closeConversationMenu();
+        }
+        function closeConversationMenu() {
+          var m = document.querySelector('.hx-cmenu');
+          if (m) m.remove();
+          document.removeEventListener('click', _cmenuOutsideClose, true);
+          document.removeEventListener('keydown', _cmenuEscClose);
+        }
+        function svgInline(name) {
+          var paths = {
+            open:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>',
+            edit:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+            link:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+            archive: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>',
+            trash:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>'
+          };
+          return paths[name] || '';
+        }
+        async function renameConversation(id, oldTitle) {
+          var newTitle = (window.prompt('Rename conversation', oldTitle || '') || '').trim();
+          if (!newTitle || newTitle === oldTitle) return;
+          await sb.from('conversations').update({ title: newTitle }).eq('id', id);
+          await refreshList();
+          if (state.conversation && state.conversation.id === id) {
+            state.conversation.title = newTitle;
+            var titleEl = $('hx-c-title'); if (titleEl) titleEl.textContent = newTitle;
+          }
+        }
+        function copyConversationLink(id) {
+          var url = window.location.origin + '/chat.html?c=' + encodeURIComponent(id);
+          if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function(){});
+        }
+        async function archiveConversation(id) {
+          await sb.from('conversations').update({ archived_at: new Date().toISOString() }).eq('id', id);
+          if (state.conversation && state.conversation.id === id) {
+            state.conversation = null;
+            state.messages = [];
+            renderThread();
+          }
+          await refreshList();
+        }
+        async function deleteConversationById(id) {
+          if (!confirm('Delete this conversation? This cannot be undone.')) return;
+          await sb.from('conversations').delete().eq('id', id);
+          if (state.conversation && state.conversation.id === id) {
+            state.conversation = null;
+            state.messages = [];
+            renderThread();
+          }
+          await refreshList();
         }
 
         // ─── Open/close conversation ─────────────────────────
