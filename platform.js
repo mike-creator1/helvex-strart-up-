@@ -386,6 +386,53 @@
     });
   }
 
+  /* ─── Sidebar scroll memory — persist scroll position across navigations
+         so that if the user scrolled to Support (bottom) and clicked it,
+         the sidebar opens on the new page still scrolled to Support,
+         not snapped back to the top. Falls back to scrolling the active
+         item into view if no saved position exists. ─── */
+  function setupSidebarScrollMemory(sidebar) {
+    var KEY = 'hx.sidebar.scroll';
+    // Restore first (before reveal animation kicks in for a smooth load)
+    var saved = null;
+    try { saved = sessionStorage.getItem(KEY); } catch (_) {}
+    var savedNum = saved != null ? parseInt(saved, 10) : NaN;
+    if (!isNaN(savedNum) && savedNum > 0) {
+      // Run on next frame so the DOM has measured itself.
+      requestAnimationFrame(function () { sidebar.scrollTop = savedNum; });
+    } else {
+      // Otherwise: ensure the active item is visible (scroll into view
+      // if it's outside the current viewport of the sidebar).
+      requestAnimationFrame(function () {
+        var active = sidebar.querySelector('.hx-nav-item.active');
+        if (!active) return;
+        var sRect = sidebar.getBoundingClientRect();
+        var aRect = active.getBoundingClientRect();
+        if (aRect.top < sRect.top || aRect.bottom > sRect.bottom) {
+          // 'nearest' keeps the scroll motion minimal; no smooth on initial paint
+          try { active.scrollIntoView({ block: 'nearest' }); } catch (_) { active.scrollIntoView(); }
+        }
+      });
+    }
+    // Save on scroll (throttled with rAF to avoid storage thrash)
+    var pending = false;
+    sidebar.addEventListener('scroll', function () {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function () {
+        pending = false;
+        try { sessionStorage.setItem(KEY, String(sidebar.scrollTop)); } catch (_) {}
+      });
+    }, { passive: true });
+    // Also save right before navigating away from any sidebar link so
+    // the final value is always fresh even if scroll was at rest.
+    sidebar.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a.hx-nav-item');
+      if (!a) return;
+      try { sessionStorage.setItem(KEY, String(sidebar.scrollTop)); } catch (_) {}
+    }, true);
+  }
+
   /* ─── Premium sidebar reveal — staggered fade-in as sections enter
          the sidebar viewport on scroll. Reduced-motion users get an
          instant reveal (matches the CSS @media query). ─── */
@@ -430,6 +477,11 @@
       sidebar.innerHTML = buildSidebar(activeId);
       setupSidebarReveal(sidebar);
       wireWorkspaceMenu();           // workspace pill → dropdown
+      // Persist the sidebar scroll position across page navigations.
+      // Saved per-session in sessionStorage; restored synchronously on load
+      // so the user never sees a flash of the sidebar at top. Active item
+      // is then ensured visible (scrolled into view if it would be hidden).
+      setupSidebarScrollMemory(sidebar);
     }
 
     var topbar = document.querySelector('.hx-topbar');
