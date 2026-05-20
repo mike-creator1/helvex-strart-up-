@@ -3,66 +3,197 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <title>Projects — HelveX</title>
-  <meta name="description" content="HelveX projects — every engagement with current status, owner, and timeline." />
+  <meta name="description" content="HelveX projects — your builds, with deployment status, domain, and latest commit." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/platform.css" />
+  <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css?v=20260520e" />
   <style>
-    /* Active-project banner — same visual language as dashboard.html */
-    .hx-active-bar {
-      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-      padding: 10px 14px; margin: 0 0 14px;
-      background: var(--hx-yellow-soft);
-      border: 1px solid rgba(252, 211, 77, 0.45);
-      border-radius: var(--hx-r);
+    .hx-pj-toolbar {
+      display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+      margin: 18px 0 14px;
     }
-    .hx-active-bar[hidden] { display: none; }
-    .hx-active-bar-kicker {
-      font-family: var(--hx-mono); font-size: 10px; font-weight: 600;
-      letter-spacing: 0.10em; text-transform: uppercase;
-      color: var(--hx-yellow-deep);
+    .hx-pj-search {
+      flex: 1; min-width: 240px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 0 12px; height: 32px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm);
     }
-    .hx-active-bar-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--hx-yellow-deep);
-      display: inline-block;
-      box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.28);
+    .hx-pj-search:focus-within { border-color: var(--hx-text); background: var(--hx-surface); }
+    .hx-pj-search svg { width: 13px; height: 13px; color: var(--hx-text-mid); flex-shrink: 0; }
+    .hx-pj-search input {
+      flex: 1; min-width: 0;
+      border: 0; outline: 0; background: transparent;
+      font: inherit; font-size: 13px; color: var(--hx-text); padding: 0;
     }
-    .hx-active-bar-name {
-      font-size: 13px; font-weight: 600; color: var(--hx-text);
-      flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    .hx-pj-search input::placeholder { color: var(--hx-text-dim); }
+    .hx-pj-sort {
+      padding: 0 10px; height: 32px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm);
+      font: inherit; font-size: 13px;
+      color: var(--hx-text);
+      cursor: pointer;
     }
-    .hx-active-bar-action {
-      font-size: 12px; font-weight: 500; color: var(--hx-text-mid);
-      background: transparent; border: 0; padding: 4px 8px; border-radius: 6px;
-      cursor: pointer; text-decoration: none;
-      transition: color 0.12s, background 0.12s;
+    .hx-pj-tab {
+      padding: 0 12px; height: 32px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm);
+      font: inherit; font-size: 13px;
+      color: var(--hx-text-mid);
+      cursor: pointer;
+      transition: background 0.1s, color 0.1s, border-color 0.1s;
+      display: inline-flex; align-items: center; gap: 6px;
     }
-    .hx-active-bar-action:hover { color: var(--hx-text); background: rgba(0,0,0,0.04); }
+    .hx-pj-tab:hover { color: var(--hx-text); border-color: var(--hx-line-strong); }
+    .hx-pj-tab.is-active { background: var(--hx-text); border-color: var(--hx-text); color: var(--hx-bg); }
+    .hx-pj-tab .count {
+      font-family: var(--hx-mono);
+      font-size: 11px;
+      padding: 1px 5px;
+      background: var(--hx-bg-2);
+      border-radius: 4px;
+      color: var(--hx-text-dim);
+    }
+    .hx-pj-tab.is-active .count {
+      background: rgba(255,255,255,0.18);
+      color: var(--hx-bg);
+    }
 
-    /* Active row in the projects table */
-    .hx-table tr.is-active-project {
-      background: linear-gradient(90deg, rgba(252, 211, 77, 0.10), transparent 60%);
+    /* ── Project grid card (Vercel-tight) ───────────────────────── */
+    .hx-pj-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 14px;
     }
-    .hx-table tr.is-active-project td:first-child::before {
-      content: ''; display: inline-block;
-      width: 3px; height: 14px; border-radius: 2px;
-      background: var(--hx-yellow-deep);
-      margin-right: 8px; vertical-align: -2px;
+    .hx-pj-card {
+      display: block;
+      padding: 18px 20px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r);
+      text-decoration: none;
+      color: var(--hx-text);
+      transition: border-color 0.12s;
     }
-    .hx-active-pill {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-family: var(--hx-mono); font-size: 9.5px; font-weight: 600;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--hx-yellow-deep);
-      background: rgba(252, 211, 77, 0.18);
-      border: 1px solid rgba(252, 211, 77, 0.45);
-      padding: 2px 7px; border-radius: 9999px;
-      margin-left: 8px;
+    .hx-pj-card:hover { border-color: var(--hx-line-strong); }
+    .hx-pj-card .head {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 10px;
     }
+    .hx-pj-card .head .icn {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--hx-text);
+      flex-shrink: 0;
+      font-family: var(--hx-mono);
+      font-size: 12px; font-weight: 600;
+    }
+    .hx-pj-card .head .body { min-width: 0; flex: 1; }
+    .hx-pj-card .head .nm {
+      font-weight: 600; font-size: 14.5px;
+      letter-spacing: -0.005em;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      margin: 0;
+    }
+    .hx-pj-card .head .slug {
+      font-family: var(--hx-mono);
+      font-size: 11px;
+      color: var(--hx-text-dim);
+      margin: 2px 0 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .hx-pj-card .domain {
+      font-family: var(--hx-mono);
+      font-size: 12px;
+      color: var(--hx-text-mid);
+      margin: 0 0 14px;
+      display: flex; align-items: center; gap: 5px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .hx-pj-card .domain svg { width: 11px; height: 11px; flex-shrink: 0; opacity: 0.7; }
+    .hx-pj-card .deploy {
+      display: flex; align-items: center; gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--hx-line-soft);
+      font-size: 11.5px;
+      color: var(--hx-text-mid);
+    }
+    .hx-pj-card .deploy .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .hx-pj-card .deploy .dot.is-ready { background: var(--hx-emerald); }
+    .hx-pj-card .deploy .dot.is-building { background: var(--hx-yellow-deep); }
+    .hx-pj-card .deploy .dot.is-failed { background: var(--hx-red); }
+    .hx-pj-card .deploy .dot.is-idle { background: var(--hx-text-faint); }
+    .hx-pj-card .deploy .msg {
+      font-family: var(--hx-mono);
+      flex: 1; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .hx-pj-card .deploy .time {
+      font-family: var(--hx-mono);
+      color: var(--hx-text-dim);
+      flex-shrink: 0;
+    }
+
+    /* ── Template panel — opens when "Add new" is clicked ─────── */
+    .hx-pj-tmpl-host {
+      margin: 18px 0;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r);
+      overflow: hidden;
+      display: none;
+    }
+    .hx-pj-tmpl-host.is-open { display: block; }
+    .hx-pj-tmpl-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--hx-line);
+    }
+    .hx-pj-tmpl-head h3 { margin: 0; font-size: 14px; font-weight: 600; }
+    .hx-pj-tmpl-head .sub { font-size: 11.5px; color: var(--hx-text-mid); margin: 2px 0 0; }
+    .hx-pj-tmpl-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1px;
+      background: var(--hx-line);
+    }
+    .hx-pj-tmpl {
+      display: block;
+      padding: 16px 18px;
+      background: var(--hx-surface);
+      cursor: pointer;
+      transition: background 0.1s;
+      text-decoration: none;
+      color: var(--hx-text);
+    }
+    .hx-pj-tmpl:hover { background: var(--hx-bg-2); }
+    .hx-pj-tmpl .ic {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--hx-text);
+      margin-bottom: 10px;
+    }
+    .hx-pj-tmpl .ic svg { width: 14px; height: 14px; }
+    .hx-pj-tmpl .nm { font-weight: 600; font-size: 13.5px; }
+    .hx-pj-tmpl .dc { font-size: 11.5px; color: var(--hx-text-mid); margin-top: 3px; line-height: 1.4; }
   </style>
 </head>
 <body data-active="projects">
@@ -73,519 +204,297 @@
       <div class="hx-topbar"></div>
       <main class="hx-main">
 
-        <div class="hx-aura" aria-hidden="true"></div>
         <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Projects · ready</p>
+          <p class="hx-pg-eyebrow">Workspace</p>
           <div class="hx-pg-hero-grid">
             <div>
-              <h1 class="hx-pg-title">Projects <em>·</em></h1>
-              <p class="hx-pg-sub">Every engagement you have running with HelveX. Click a row for its brief, owner, and delivery state.</p>
-              <div class="hx-pg-cta-row">
-                <button id="hx-new-project" class="hx-cta-primary">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  New project
-                </button>
-                <a href="/services.html" class="hx-cta-secondary">Browse services</a>
-              </div>
+              <h1 class="hx-pg-title">Projects</h1>
+              <p class="hx-pg-sub">Every engagement you have running with HelveX. Click a card for deployments, domains, and settings.</p>
             </div>
-            <div class="hx-pg-meta-strip">
-              <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Region</p>
-                <p class="hx-pg-meta-value hx-mono">EU-CH-1</p>
-              </div>
-              <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Retention</p>
-                <p class="hx-pg-meta-value">Forever</p>
-              </div>
-            </div>
+            <button id="hx-new-project" class="hx-cta-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add New
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
           </div>
         </header>
 
-        <!-- Active project banner — shared with chat + overview -->
-        <div class="hx-active-bar" id="hx-active-bar" hidden>
-          <span class="hx-active-bar-dot" aria-hidden="true"></span>
-          <span class="hx-active-bar-kicker">Working on</span>
-          <span class="hx-active-bar-name" id="hx-active-bar-name">—</span>
-          <a href="/chat.html"      class="hx-active-bar-action">Open chat</a>
-          <a href="/dashboard.html" class="hx-active-bar-action">Open overview</a>
-          <button type="button" id="hx-active-bar-clear" class="hx-active-bar-action">Clear</button>
-        </div>
-
-        <div class="hx-grid hx-grid-4">
-          <div class="hx-stat">
-            <p class="hx-stat-label">Active</p>
-            <p class="hx-stat-value hx-mono" id="hx-stat-active">0</p>
-            <p class="hx-stat-meta" id="hx-stat-active-meta">No projects in flight</p>
-          </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Paused</p>
-            <p class="hx-stat-value hx-mono" id="hx-stat-paused">0</p>
-            <p class="hx-stat-meta">Resumed on demand</p>
-          </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Archived</p>
-            <p class="hx-stat-value hx-mono" id="hx-stat-archived">0</p>
-            <p class="hx-stat-meta">All-time</p>
-          </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Total</p>
-            <p class="hx-stat-value hx-mono" id="hx-stat-total">0</p>
-            <p class="hx-stat-meta">Across the workspace</p>
-          </div>
-        </div>
-
-        <div class="hx-section-head">
-          <h2>Your projects</h2>
-          <span class="meta" id="hx-projects-meta">—</span>
-        </div>
-
-        <!-- New-project inline form (hidden by default) -->
-        <div class="hx-card" id="hx-new-form" hidden style="margin-bottom:14px;">
-          <h3 style="margin-top:0;">New project</h3>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
-            <div class="hx-field" style="margin:0;">
-              <label>Name</label>
-              <input type="text" id="hx-new-name" placeholder="Acme inbox triage" maxlength="80" />
+        <!-- Template chooser — appears when Add New is clicked -->
+        <div class="hx-pj-tmpl-host" id="hx-tmpl-host">
+          <div class="hx-pj-tmpl-head">
+            <div>
+              <h3>Start a project</h3>
+              <p class="sub">Pick a template — every one ends in a live URL on your subdomain.</p>
             </div>
-            <div class="hx-field" style="margin:0;">
-              <label>Slug</label>
-              <input type="text" id="hx-new-slug" placeholder="acme-inbox-triage" pattern="[a-z0-9][a-z0-9-]*" />
-              <div class="help">Lowercase letters, digits, dashes. Auto-derived from name.</div>
-            </div>
-            <div class="hx-field" style="margin:0;grid-column:span 2;">
-              <label>Description (optional)</label>
-              <textarea id="hx-new-desc" rows="2" placeholder="What is this project for?"></textarea>
-            </div>
+            <button class="hx-cta-secondary" id="hx-tmpl-close">Close</button>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:14px;">
-            <button class="hx-btn hx-btn-primary" id="hx-new-create">Create project</button>
-            <button class="hx-btn hx-btn-ghost" id="hx-new-cancel">Cancel</button>
-            <p id="hx-new-status" style="margin:0;font-size:12.5px;font-weight:500;"></p>
+          <div class="hx-pj-tmpl-grid">
+            <a class="hx-pj-tmpl" data-tmpl="landing">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg></div>
+              <div class="nm">Landing page</div>
+              <div class="dc">Hero, sections, CTA, form. Brief → live in minutes.</div>
+            </a>
+            <a class="hx-pj-tmpl" data-tmpl="shop">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+              <div class="nm">E-commerce shop</div>
+              <div class="dc">Storefront, product grid, Stripe checkout, admin.</div>
+            </a>
+            <a class="hx-pj-tmpl" data-tmpl="saas">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+              <div class="nm">SaaS dashboard</div>
+              <div class="dc">Auth + dashboard + 3 metric pages, Stripe billing.</div>
+            </a>
+            <a class="hx-pj-tmpl" data-tmpl="booking">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+              <div class="nm">Booking site</div>
+              <div class="dc">Calendar, slots, email confirm, Stripe deposit.</div>
+            </a>
+            <a class="hx-pj-tmpl" data-tmpl="crm">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
+              <div class="nm">CRM</div>
+              <div class="dc">Pipeline, contacts, deals, follow-up reminders.</div>
+            </a>
+            <a class="hx-pj-tmpl" data-tmpl="blog">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="10" y1="4" x2="10" y2="20"/></svg></div>
+              <div class="nm">Blog / Newsletter</div>
+              <div class="dc">Posts, RSS, subscribe form, send via Resend.</div>
+            </a>
+            <a class="hx-pj-tmpl" data-tmpl="portfolio">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <div class="nm">Portfolio / Personal</div>
+              <div class="dc">Bio, projects, contact, custom domain.</div>
+            </a>
+            <a class="hx-pj-tmpl" data-tmpl="internal">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/></svg></div>
+              <div class="nm">Internal tool</div>
+              <div class="dc">Forms, tables, workflow. Auth + role-based access.</div>
+            </a>
+            <a class="hx-pj-tmpl" data-tmpl="blank">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+              <div class="nm">Blank project</div>
+              <div class="dc">Start empty — bring your own brief.</div>
+            </a>
           </div>
         </div>
 
-        <!-- Project list / empty state lives here -->
-        <div id="hx-projects-host"></div>
-
-        <!-- Files for the active project. Operates on whichever project
-             is currently set as active via the existing localStorage
-             pref shared with chat.html and the dashboard banner. -->
-        <div class="hx-section-head" style="margin-top:28px;">
-          <h2>Files</h2>
-          <span class="meta" id="hx-files-meta">—</span>
+        <!-- Toolbar -->
+        <div class="hx-pj-toolbar">
+          <div class="hx-pj-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="hx-pj-q" placeholder="Search projects by name or slug…" />
+          </div>
+          <button class="hx-pj-tab is-active" data-tab="all">All <span class="count" id="hx-pj-c-all">0</span></button>
+          <button class="hx-pj-tab" data-tab="active">Active <span class="count" id="hx-pj-c-active">0</span></button>
+          <button class="hx-pj-tab" data-tab="paused">Paused <span class="count" id="hx-pj-c-paused">0</span></button>
+          <button class="hx-pj-tab" data-tab="archived">Archived <span class="count" id="hx-pj-c-archived">0</span></button>
+          <select class="hx-pj-sort" id="hx-pj-sort">
+            <option value="updated">Sort: Recently updated</option>
+            <option value="created">Sort: Recently created</option>
+            <option value="name">Sort: Name (A → Z)</option>
+          </select>
         </div>
-        <div id="hx-files-host"></div>
+
+        <div id="hx-pj-host"></div>
 
       </main>
     </div>
   </div>
 
-  <script src="/platform.js"></script>
+  <script src="/platform.js?v=20260520e"></script>
   <script>
-    /* Real CRUD on public.projects via Supabase JS. */
     (function () {
       function whenAuthReady(fn) {
         if (window.HX && window.HX.supabase) { fn(); return; }
         document.addEventListener('hx:auth-ready', fn, { once: true });
       }
       var $ = function (id) { return document.getElementById(id); };
-
-      // ─── Active project (shared with chat.html + dashboard.html) ──
-      var ACTIVE_KEY = 'hx_active_project';
-      function getActiveProject() {
-        try { return JSON.parse(localStorage.getItem(ACTIVE_KEY) || 'null'); }
-        catch (e) { return null; }
-      }
-      function setActiveProject(id, name) {
-        try {
-          if (id) localStorage.setItem(ACTIVE_KEY, JSON.stringify({ id: id, name: name || '' }));
-          else    localStorage.removeItem(ACTIVE_KEY);
-        } catch (e) {}
-        try { document.dispatchEvent(new CustomEvent('hx:active-project-changed', { detail: getActiveProject() })); } catch (e) {}
-      }
-      function renderActiveBar() {
-        var bar  = $('hx-active-bar');
-        var name = $('hx-active-bar-name');
-        if (!bar || !name) return;
-        var a = getActiveProject();
-        if (a && a.id) { bar.hidden = false; name.textContent = a.name || 'Unnamed project'; }
-        else { bar.hidden = true; }
-      }
-      function wireActiveBar() {
-        renderActiveBar();
-        var clearBtn = $('hx-active-bar-clear');
-        if (clearBtn) clearBtn.addEventListener('click', function () { setActiveProject(null); renderActiveBar(); });
-        document.addEventListener('hx:active-project-changed', renderActiveBar);
-        window.addEventListener('storage', function (e) { if (e.key === ACTIVE_KEY) renderActiveBar(); });
-      }
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireActiveBar);
-      else wireActiveBar();
-
-      function slugify(s) {
-        return (s || '').toString().toLowerCase().trim()
-          .replace(/[^a-z0-9-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').slice(0, 64);
-      }
-      function fmtDate(iso) {
+      function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+      function relTime(iso) {
         if (!iso) return '—';
-        try { return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); }
-        catch (e) { return '—'; }
+        var d = new Date(iso).getTime();
+        var diff = (Date.now() - d) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff/60) + 'm';
+        if (diff < 86400) return Math.floor(diff/3600) + 'h';
+        return Math.floor(diff/86400) + 'd';
       }
-      function escape(s) {
-        return (s == null ? '' : String(s))
-          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-      }
-      function badge(status) {
-        var c = 'hx-badge-neutral', label = status || 'unknown';
-        if (status === 'active')   c = 'hx-badge-emerald';
-        if (status === 'paused')   c = 'hx-badge-yellow';
-        if (status === 'archived') c = 'hx-badge-neutral';
-        return '<span class="hx-badge ' + c + '"><span class="hx-badge-dot"></span>' + escape(label) + '</span>';
+      async function safeQuery(p) { try { var r = await p; return r && !r.error ? r : { data: null, count: null }; } catch (e) { return { data: null, count: null }; } }
+
+      var STATE = { projects: [], deployments: [], tab: 'all', q: '', sort: 'updated' };
+
+      function statusDot(s) {
+        if (s === 'live' || s === 'ready')   return '<span class="dot is-ready"></span>';
+        if (s === 'building' || s === 'queued') return '<span class="dot is-building"></span>';
+        if (s === 'failed' || s === 'degraded') return '<span class="dot is-failed"></span>';
+        return '<span class="dot is-idle"></span>';
       }
 
-      function renderEmpty(host) {
-        host.innerHTML =
-          '<div class="hx-empty">' +
-            '<div class="icon" aria-hidden="true">' +
-              '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>' +
-            '</div>' +
-            '<h3>No projects yet</h3>' +
-            '<p>Create your first project to organise services, deployments, API keys, and activity in one place.</p>' +
-            '<button class="hx-btn hx-btn-primary" id="hx-empty-new">+ New project</button>' +
-          '</div>';
-        var btn = $('hx-empty-new');
-        if (btn) btn.addEventListener('click', openForm);
-      }
-
-      function renderTable(host, rows) {
-        var active = getActiveProject();
-        var activeId = active && active.id || '';
-        var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr>' +
-          '<th>Name</th><th>Slug</th><th>Status</th><th>Created</th><th class="right">Actions</th>' +
-          '</tr></thead><tbody>';
-        rows.forEach(function (r) {
-          var isActive = r.id === activeId;
-          var canSetActive = r.status === 'active' && !isActive;
-          html += '<tr data-id="' + escape(r.id) + '" data-name="' + escape(r.name) + '"' + (isActive ? ' class="is-active-project"' : '') + '>' +
-            '<td><strong>' + escape(r.name) + '</strong>' +
-              (isActive ? '<span class="hx-active-pill"><span class="hx-active-bar-dot"></span>Active</span>' : '') +
-              (r.description ? '<div style="color:var(--hx-text-mid);font-size:12.5px;margin-top:2px;">' + escape(r.description) + '</div>' : '') +
-            '</td>' +
-            '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.slug) + '</span></td>' +
-            '<td>' + badge(r.status) + '</td>' +
-            '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(r.created_at) + '</span></td>' +
-            '<td class="right">' +
-              (canSetActive
-                ? '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="set-active">Set active</button> '
-                : '') +
-              (isActive
-                ? '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="clear-active">Clear active</button> '
-                : '') +
-              (r.status === 'active'
-                ? '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="pause">Pause</button> '
-                : (r.status === 'paused'
-                    ? '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="resume">Resume</button> '
-                    : '')) +
-              (r.status !== 'archived'
-                ? '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="archive">Archive</button> '
-                : '') +
-              '<button class="hx-btn hx-btn-danger hx-btn-sm" data-act="delete">Delete</button>' +
-            '</td>' +
-          '</tr>';
-        });
-        html += '</tbody></table></div>';
-        host.innerHTML = html;
-      }
-
-      function openForm() {
-        $('hx-new-form').hidden = false;
-        $('hx-new-name').focus();
-      }
-      function closeForm() {
-        $('hx-new-form').hidden = true;
-        $('hx-new-name').value = ''; $('hx-new-slug').value = ''; $('hx-new-desc').value = '';
-        $('hx-new-status').textContent = '';
-      }
-
-      whenAuthReady(function () {
-        var sb = window.HX.supabase;
-        var host = $('hx-projects-host');
-
-        // Auto-open the new-project form when arriving via ?new=1 (used by
-        // CTAs from /services, /workflows, /deployments, /dashboard).
-        try {
-          var qs = new URLSearchParams(window.location.search);
-          if (qs.get('new') === '1') {
-            setTimeout(function () { openForm(); }, 0);
-            // Clean the URL so a refresh doesn't re-trigger
-            try { history.replaceState(null, document.title, window.location.pathname); } catch (e) {}
-          }
-        } catch (e) { /* ignore */ }
-
-        async function refresh() {
-          var r = await sb.from('projects').select('*').order('created_at', { ascending: false });
-          if (r.error) {
-            host.innerHTML = '<div class="hx-empty"><h3>Could not load projects</h3><p>' + escape(r.error.message) + '</p></div>';
-            return;
-          }
-          var rows = r.data || [];
-          // Stats
-          var counts = { active: 0, paused: 0, archived: 0 };
-          rows.forEach(function (p) { counts[p.status] = (counts[p.status] || 0) + 1; });
-          $('hx-stat-active').textContent   = counts.active   || 0;
-          $('hx-stat-paused').textContent   = counts.paused   || 0;
-          $('hx-stat-archived').textContent = counts.archived || 0;
-          $('hx-stat-total').textContent    = rows.length;
-          $('hx-stat-active-meta').textContent = counts.active === 0 ? 'No projects in flight' : counts.active + ' running';
-          $('hx-projects-meta').textContent = rows.length + (rows.length === 1 ? ' project' : ' projects');
-          if (rows.length === 0) renderEmpty(host); else renderTable(host, rows);
+      function filterAndSort() {
+        var rows = STATE.projects.slice();
+        if (STATE.tab !== 'all') rows = rows.filter(function (p) { return (p.status || 'active') === STATE.tab; });
+        if (STATE.q) {
+          var q = STATE.q.toLowerCase();
+          rows = rows.filter(function (p) {
+            return (p.name || '').toLowerCase().indexOf(q) >= 0 ||
+                   (p.slug || '').toLowerCase().indexOf(q) >= 0;
+          });
         }
+        if (STATE.sort === 'updated') rows.sort(function (a, b) { return new Date(b.updated_at) - new Date(a.updated_at); });
+        else if (STATE.sort === 'created') rows.sort(function (a, b) { return new Date(b.created_at) - new Date(a.created_at); });
+        else if (STATE.sort === 'name') rows.sort(function (a, b) { return (a.name || '').localeCompare(b.name || ''); });
+        return rows;
+      }
 
-        // Wire row actions
-        host.addEventListener('click', async function (e) {
-          var btn = e.target.closest && e.target.closest('button[data-act]');
-          if (!btn) return;
-          var tr = btn.closest('tr'); if (!tr) return;
-          var id   = tr.getAttribute('data-id');
-          var name = tr.getAttribute('data-name') || '';
-          var act  = btn.getAttribute('data-act');
-          var active = getActiveProject();
-          btn.disabled = true;
-          try {
-            // Active-project actions don't touch the projects table —
-            // they just persist a localStorage preference shared with
-            // chat.html and dashboard.html.
-            if (act === 'set-active')   { setActiveProject(id, name);            await refresh(); renderFiles(); btn.disabled = false; return; }
-            if (act === 'clear-active') { setActiveProject(null);                await refresh(); renderFiles(); btn.disabled = false; return; }
-
-            if (act === 'pause')   { await sb.from('projects').update({ status: 'paused' }).eq('id', id); await sb.rpc('log_event', { p_kind: 'project.paused', p_payload: { id: id }, p_project_id: id }); }
-            if (act === 'resume')  { await sb.from('projects').update({ status: 'active' }).eq('id', id); await sb.rpc('log_event', { p_kind: 'project.resumed', p_payload: { id: id }, p_project_id: id }); }
-            if (act === 'archive') { await sb.from('projects').update({ status: 'archived' }).eq('id', id); await sb.rpc('log_event', { p_kind: 'project.archived', p_payload: { id: id }, p_project_id: id }); }
-            if (act === 'delete')  {
-              if (btn.dataset.armed !== '1') {
-                btn.dataset.armed = '1';
-                btn.dataset.original = btn.textContent;
-                btn.textContent = 'Click to confirm';
-                btn.classList.add('armed');
-                btn.disabled = false;
-                setTimeout(function () {
-                  if (btn.dataset.armed === '1') {
-                    btn.dataset.armed = '';
-                    btn.textContent = btn.dataset.original || 'Delete';
-                    btn.classList.remove('armed');
-                  }
-                }, 3000);
-                return;
-              }
-              btn.dataset.armed = '';
-              btn.classList.remove('armed');
-              await sb.from('projects').delete().eq('id', id);
-              await sb.rpc('log_event', { p_kind: 'project.deleted', p_payload: { id: id } });
-            }
-            // If the active project just got archived or deleted, drop it
-            // so chat / overview don't keep pointing at a stale ID.
-            if ((act === 'archive' || act === 'delete') && active && active.id === id) {
-              setActiveProject(null);
-            }
-            await refresh();
-          } catch (err) {
-            if (window.cxToast) window.cxToast((err && err.message) || 'Action failed.', 'error');
-          }
+      function paintCounts() {
+        var c = { all: STATE.projects.length, active: 0, paused: 0, archived: 0 };
+        STATE.projects.forEach(function (p) {
+          var s = p.status || 'active';
+          if (c[s] !== undefined) c[s]++;
+          else c.active++;
         });
-
-        // New project form
-        $('hx-new-project').addEventListener('click', openForm);
-        $('hx-new-cancel').addEventListener('click', closeForm);
-        $('hx-new-name').addEventListener('input', function (e) {
-          var slug = $('hx-new-slug');
-          if (!slug.dataset.touched) slug.value = slugify(e.target.value);
+        ['all','active','paused','archived'].forEach(function (k) {
+          var el = $('hx-pj-c-' + k); if (el) el.textContent = c[k];
         });
-        $('hx-new-slug').addEventListener('input', function (e) { e.target.dataset.touched = '1'; });
-        $('hx-new-create').addEventListener('click', async function (e) {
-          e.preventDefault();
-          var name = ($('hx-new-name').value || '').trim();
-          var slug = slugify($('hx-new-slug').value || $('hx-new-name').value);
-          var desc = ($('hx-new-desc').value || '').trim() || null;
-          var status = $('hx-new-status');
-          status.style.color = 'var(--hx-red)';
-          if (!name) { status.textContent = 'Name is required.'; return; }
-          if (!slug) { status.textContent = 'Slug is required.'; return; }
+      }
 
-          var btn = e.currentTarget; var lbl = btn.textContent;
-          btn.disabled = true; btn.textContent = 'Creating…';
-          try {
-            var u = (await sb.auth.getUser()).data.user;
-            var r = await sb.from('projects').insert({
-              owner_id: u.id, name: name, slug: slug, description: desc, status: 'active'
-            }).select().maybeSingle();
-            if (r.error) throw r.error;
-            await sb.rpc('log_event', { p_kind: 'project.created', p_payload: { id: r.data.id, name: name, slug: slug }, p_project_id: r.data.id });
-            closeForm();
-            await refresh();
-          } catch (err) {
-            status.textContent = (err && err.message) || 'Could not create project.';
-          } finally {
-            btn.disabled = false; btn.textContent = lbl;
-          }
-        });
-
-        // ───────────────────────────────────────────────────────────
-        // Files (per active project). Uses Supabase Storage bucket
-        // 'project-files' and the public.project_files index table.
-        // Files only render when there's an active project selected.
-        // ───────────────────────────────────────────────────────────
-        var BUCKET = 'project-files';
-        var MAX_BYTES = 25 * 1024 * 1024; // 25MB cap per file
-
-        function fmtBytes(n) {
-          if (n < 1024) return n + ' B';
-          if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
-          return (n / (1024 * 1024)).toFixed(2) + ' MB';
-        }
-
-        async function renderFiles() {
-          var host = $('hx-files-host');
-          var meta = $('hx-files-meta');
-          var active = getActiveProject();
-          if (!active || !active.id) {
-            host.innerHTML = '<div class="hx-empty"><h3>No active project</h3><p>Set a project as Active (button on each row above) to upload files into it. Files are private and only you can see them.</p></div>';
-            meta.textContent = '—';
-            return;
-          }
-          meta.textContent = 'Project · ' + (active.name || 'active');
-          var r = await sb.from('project_files').select('*').eq('project_id', active.id).order('created_at', { ascending: false });
-          if (r.error) {
-            host.innerHTML = '<div class="hx-empty"><h3>Could not load files</h3><p>' + escape(r.error.message) + '</p></div>';
-            return;
-          }
-          var rows = r.data || [];
-          var dropZone = ''
-            + '<div class="hx-card" style="padding:18px 20px;">'
-            +   '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'
-            +     '<div style="flex:1;min-width:0;">'
-            +       '<p style="margin:0;font-weight:600;font-size:14px;">Upload to ' + escape(active.name || 'this project') + '</p>'
-            +       '<p style="margin:4px 0 0;font-size:12.5px;color:var(--hx-text-mid);">Private to you — files live in EU-CH-1 with managed encryption. 25 MB per file.</p>'
-            +     '</div>'
-            +     '<input type="file" id="hx-file-input" style="display:none;" />'
-            +     '<button class="hx-btn hx-btn-secondary" id="hx-file-pick">Choose file</button>'
-            +     '<button class="hx-btn hx-btn-primary" id="hx-file-upload" disabled>Upload</button>'
-            +   '</div>'
-            +   '<p id="hx-file-status" style="margin:8px 0 0;font-size:12.5px;color:var(--hx-text-mid);"></p>'
-            + '</div>';
-          var listHtml = '';
-          if (rows.length === 0) {
-            listHtml = '<div class="hx-empty" style="margin-top:10px;"><h3>No files yet</h3><p>Upload the first PDF, Word doc, CSV, JSON, or image. Drop them into a brief later as context.</p></div>';
-          } else {
-            listHtml = '<div class="hx-card" style="padding:0;overflow:hidden;margin-top:10px;">';
-            rows.forEach(function (f, i) {
-              listHtml += '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;' + (i > 0 ? 'border-top:1px solid var(--hx-line);' : '') + '">' +
-                '<div style="flex:1;min-width:0;">' +
-                  '<div style="font-size:13.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escape(f.name) + '</div>' +
-                  '<div class="hx-mono" style="font-size:11.5px;color:var(--hx-text-dim);margin-top:2px;">' + fmtBytes(f.size_bytes) + ' · ' + (f.mime_type || 'unknown') + ' · ' + new Date(f.created_at).toLocaleDateString() + '</div>' +
-                '</div>' +
-                '<button class="hx-btn hx-btn-secondary hx-btn-sm" data-file-act="download" data-id="' + escape(f.id) + '" data-path="' + escape(f.storage_path) + '" data-name="' + escape(f.name) + '">Download</button>' +
-                '<button class="hx-btn hx-btn-danger hx-btn-sm" data-file-act="delete" data-id="' + escape(f.id) + '" data-path="' + escape(f.storage_path) + '">Delete</button>' +
-              '</div>';
+      function render() {
+        var host = $('hx-pj-host');
+        var rows = filterAndSort();
+        if (!rows.length) {
+          host.innerHTML =
+            '<div class="hx-card" style="padding:48px 24px;text-align:center;">' +
+              '<p style="margin:0 0 6px;font-size:14px;font-weight:600;color:var(--hx-text);">' +
+                (STATE.projects.length === 0 ? 'No projects yet' : 'No matches for this filter') +
+              '</p>' +
+              '<p style="margin:0 0 16px;font-size:12.5px;color:var(--hx-text-mid);max-width:420px;margin-inline:auto;line-height:1.5;">' +
+                (STATE.projects.length === 0
+                  ? 'A project groups every chat, deployment, artifact and domain under one workspace context. Start with a template or a blank canvas.'
+                  : 'Clear the search or switch the tab to All.') +
+              '</p>' +
+              (STATE.projects.length === 0
+                ? '<button class="hx-cta-primary" id="hx-pj-empty-new">Start a project</button>'
+                : '<button class="hx-cta-secondary" id="hx-pj-empty-clear">Clear filters</button>') +
+            '</div>';
+          var nb = $('hx-pj-empty-new');
+          if (nb) nb.addEventListener('click', openTemplates);
+          var cb = $('hx-pj-empty-clear');
+          if (cb) cb.addEventListener('click', function () {
+            STATE.q = ''; STATE.tab = 'all';
+            $('hx-pj-q').value = '';
+            document.querySelectorAll('.hx-pj-tab').forEach(function (b) {
+              b.classList.toggle('is-active', b.getAttribute('data-tab') === 'all');
             });
-            listHtml += '</div>';
-          }
-          host.innerHTML = dropZone + listHtml;
-          wireFileForm();
-          wireFileRows();
-        }
-
-        function wireFileForm() {
-          var fileInput = $('hx-file-input');
-          var pick = $('hx-file-pick');
-          var up = $('hx-file-upload');
-          var status = $('hx-file-status');
-          if (!fileInput || !pick || !up) return;
-          pick.addEventListener('click', function () { fileInput.click(); });
-          fileInput.addEventListener('change', function () {
-            var f = fileInput.files && fileInput.files[0];
-            if (!f) { up.disabled = true; status.textContent = ''; return; }
-            if (f.size > MAX_BYTES) { up.disabled = true; status.style.color = 'var(--hx-red)'; status.textContent = 'File too large — ' + fmtBytes(f.size) + ' exceeds the 25 MB cap.'; return; }
-            status.style.color = 'var(--hx-text-mid)';
-            status.textContent = 'Ready · ' + f.name + ' · ' + fmtBytes(f.size);
-            up.disabled = false;
+            render();
           });
-          up.addEventListener('click', async function () {
-            var active = getActiveProject(); if (!active || !active.id) return;
-            var f = fileInput.files && fileInput.files[0]; if (!f) return;
-            up.disabled = true; up.textContent = 'Uploading…';
-            status.style.color = 'var(--hx-text-mid)';
-            status.textContent = 'Uploading…';
-            try {
-              var u = (await sb.auth.getUser()).data.user;
-              if (!u) throw new Error('Sign in to upload files.');
-              var path = u.id + '/' + active.id + '/' + Date.now() + '_' + f.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
-              var upRes = await sb.storage.from(BUCKET).upload(path, f, { contentType: f.type, upsert: false });
-              if (upRes.error) throw upRes.error;
-              var ins = await sb.from('project_files').insert({
-                project_id: active.id, owner_id: u.id, name: f.name,
-                size_bytes: f.size, mime_type: f.type || null, storage_path: path,
-              });
-              if (ins.error) throw ins.error;
-              await sb.rpc('log_event', { p_kind: 'project.file_uploaded', p_payload: { name: f.name, size: f.size }, p_project_id: active.id }).catch(function () {});
-              fileInput.value = '';
-              await renderFiles();
-            } catch (err) {
-              up.disabled = false; up.textContent = 'Upload';
-              status.style.color = 'var(--hx-red)';
-              status.textContent = (err && err.message) || 'Upload failed.';
-            }
+          return;
+        }
+        host.innerHTML = '<div class="hx-pj-grid">' +
+          rows.map(function (p) {
+            var initial = (p.name || '?').charAt(0).toUpperCase();
+            var dep = STATE.deployments.find(function (d) { return d.project_id === p.id; });
+            var domain = dep && dep.endpoint_url
+              ? dep.endpoint_url.replace(/^https?:\/\//, '')
+              : (p.slug ? p.slug + '.helvex.app' : 'No domain yet');
+            var depHtml = dep
+              ? '<div class="deploy">' + statusDot(dep.status) +
+                  '<span class="msg">' + esc(dep.version || 'v0') + ' · ' + esc(dep.environment || 'production') + '</span>' +
+                  '<span class="time">' + esc(relTime(dep.created_at)) + '</span>' +
+                '</div>'
+              : '<div class="deploy"><span class="dot is-idle"></span><span class="msg">No deployments</span><span class="time">—</span></div>';
+            return '<a class="hx-pj-card" href="/projects.html#' + esc(p.slug || p.id) + '">' +
+              '<div class="head">' +
+                '<span class="icn">' + esc(initial) + '</span>' +
+                '<div class="body">' +
+                  '<p class="nm">' + esc(p.name) + '</p>' +
+                  '<p class="slug">' + esc(p.slug || '—') + '</p>' +
+                '</div>' +
+              '</div>' +
+              '<div class="domain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>' + esc(domain) + '</div>' +
+              depHtml +
+            '</a>';
+          }).join('') +
+        '</div>';
+      }
+
+      function openTemplates() {
+        $('hx-tmpl-host').classList.add('is-open');
+        try { $('hx-tmpl-host').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) {}
+      }
+      function closeTemplates() { $('hx-tmpl-host').classList.remove('is-open'); }
+
+      // Wire UI immediately
+      function wireUI() {
+        var nb = $('hx-new-project'); if (nb) nb.addEventListener('click', openTemplates);
+        var cl = $('hx-tmpl-close'); if (cl) cl.addEventListener('click', closeTemplates);
+        document.querySelectorAll('.hx-pj-tmpl').forEach(function (t) {
+          t.addEventListener('click', function (e) {
+            e.preventDefault();
+            var tmpl = t.getAttribute('data-tmpl');
+            // For now, prompt the user; the actual generator wizard is the
+            // next thing to build. We at least give a clean entry point.
+            var name = prompt('Project name for the ' + tmpl + ' template?');
+            if (!name) return;
+            createProject(name, tmpl);
           });
-        }
-
-        function wireFileRows() {
-          $('hx-files-host').addEventListener('click', async function (e) {
-            var btn = e.target.closest && e.target.closest('button[data-file-act]');
-            if (!btn) return;
-            var act = btn.getAttribute('data-file-act');
-            var id = btn.getAttribute('data-id');
-            var path = btn.getAttribute('data-path');
-            if (act === 'download') {
-              btn.disabled = true; var orig = btn.textContent; btn.textContent = '…';
-              var signed = await sb.storage.from(BUCKET).createSignedUrl(path, 60);
-              btn.disabled = false; btn.textContent = orig;
-              if (signed.error || !signed.data || !signed.data.signedUrl) {
-                if (window.cxToast) window.cxToast(signed.error ? signed.error.message : 'Could not get download link.', 'error');
-                return;
-              }
-              window.open(signed.data.signedUrl, '_blank', 'noopener');
-              return;
-            }
-            if (act === 'delete') {
-              if (btn.dataset.armed !== '1') {
-                btn.dataset.armed = '1';
-                btn.dataset.original = btn.textContent;
-                btn.textContent = 'Click to confirm';
-                btn.classList.add('armed');
-                setTimeout(function () {
-                  if (btn.dataset.armed === '1') {
-                    btn.dataset.armed = '';
-                    btn.textContent = btn.dataset.original || 'Delete';
-                    btn.classList.remove('armed');
-                  }
-                }, 3000);
-                return;
-              }
-              btn.dataset.armed = ''; btn.classList.remove('armed');
-              await sb.storage.from(BUCKET).remove([path]);
-              await sb.from('project_files').delete().eq('id', id);
-              await renderFiles();
-            }
-          }, { once: true });
-        }
-
-        // Re-render files when the active project changes (cross-tab too).
-        window.addEventListener('storage', function (e) {
-          if (e.key === ACTIVE_KEY) renderFiles();
         });
+        document.querySelectorAll('.hx-pj-tab').forEach(function (b) {
+          b.addEventListener('click', function () {
+            document.querySelectorAll('.hx-pj-tab').forEach(function (x) { x.classList.remove('is-active'); });
+            b.classList.add('is-active');
+            STATE.tab = b.getAttribute('data-tab');
+            render();
+          });
+        });
+        var sortEl = $('hx-pj-sort');
+        if (sortEl) sortEl.addEventListener('change', function () { STATE.sort = sortEl.value; render(); });
+        var qt = null;
+        $('hx-pj-q').addEventListener('input', function (e) {
+          STATE.q = (e.target.value || '').trim();
+          if (qt) clearTimeout(qt);
+          qt = setTimeout(render, 150);
+        });
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', wireUI, { once: true });
+      } else { wireUI(); }
 
-        refresh();
-        renderFiles();
-      });
+      async function createProject(name, template) {
+        var sb = window.HX && window.HX.supabase;
+        if (!sb) return alert('Sign in required.');
+        var u = (await sb.auth.getUser()).data.user;
+        if (!u) return alert('Sign in required.');
+        var slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
+        var r = await sb.from('projects').insert({
+          owner_id: u.id,
+          name: name,
+          slug: slug,
+          status: 'active',
+          description: template === 'blank' ? null : ('Started from the ' + template + ' template.'),
+          template: template
+        }).select().single();
+        if (r.error) { alert(r.error.message); return; }
+        closeTemplates();
+        load();
+      }
+
+      async function load() {
+        var sb = window.HX.supabase;
+        var [projects, deploys] = await Promise.all([
+          safeQuery(sb.from('projects').select('id,name,slug,status,description,template,updated_at,created_at')),
+          safeQuery(sb.from('deployments').select('id,project_id,status,version,region,environment,endpoint_url,created_at').order('created_at', { ascending: false }))
+        ]);
+        STATE.projects = projects.data || [];
+        STATE.deployments = deploys.data || [];
+        paintCounts();
+        render();
+
+        // ?new=1 → auto-open template chooser
+        try {
+          if (new URLSearchParams(window.location.search).get('new') === '1') openTemplates();
+        } catch (_) {}
+      }
+
+      whenAuthReady(load);
     })();
   </script>
 </body>

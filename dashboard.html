@@ -3,678 +3,234 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Overview — HelveX</title>
-  <meta name="description" content="HelveX client portal — your workspace at a glance: credits, recent work, active engagement, and the shortcuts you reach for most." />
+  <meta name="description" content="HelveX — your team workspace overview." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/platform.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css?v=20260520e" />
   <style>
-    /* ═══════════════════════════════════════════════════════════
-       PREMIUM OVERVIEW — Linear × Stripe × Anthropic Console feel
-       Atmospheric backdrop, massive serif numbers, sparklines,
-       layered shadows, glass surfaces, animated counters.
-       ═══════════════════════════════════════════════════════════ */
-
-    /* Ambient backdrop — a soft yellow halo sits behind the hero,
-       a fainter red one further down. Disabled on small screens. */
-    .hx-aura {
-      position: absolute; inset: 0; pointer-events: none;
-      overflow: hidden; z-index: 0;
-    }
-    .hx-aura::before, .hx-aura::after {
-      content: ''; position: absolute;
-      border-radius: 50%; filter: blur(80px); opacity: 0.55;
-      transition: opacity 0.4s;
-    }
-    .hx-aura::before {
-      top: -180px; left: -120px;
-      width: 520px; height: 520px;
-      background: radial-gradient(closest-side, rgba(252, 211, 77, 0.32), transparent 70%);
-    }
-    .hx-aura::after {
-      top: 80px; right: -160px;
-      width: 460px; height: 460px;
-      background: radial-gradient(closest-side, rgba(220, 38, 38, 0.16), transparent 70%);
-    }
-    html[data-theme="dark"] .hx-aura::before { opacity: 0.30; }
-    html[data-theme="dark"] .hx-aura::after  { opacity: 0.18; }
-    @media (max-width: 760px) { .hx-aura { display: none; } }
-    .hx-main { position: relative; }
-
-    /* ─── Hero ─── */
-    .hx-hero {
-      position: relative;
-      padding: 6px 0 28px;
-      margin-bottom: 8px;
-      z-index: 1;
-    }
-    .hx-hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 9px;
-      font-family: var(--hx-mono);
-      font-size: 10.5px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.14em;
-      color: var(--hx-text-mid);
-      margin: 0 0 18px;
-      padding: 5px 11px;
-      background: var(--hx-surface);
-      border: 1px solid var(--hx-line);
-      border-radius: 999px;
-      box-shadow: var(--hx-shadow-xs);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-    .hx-hero-eyebrow-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--hx-emerald);
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18), 0 0 12px rgba(16, 185, 129, 0.55);
-      animation: hx-hero-pulse 2.4s ease-in-out infinite;
-    }
-    @keyframes hx-hero-pulse {
-      0%, 100% { box-shadow: 0 0 0 3px rgba(16,185,129,0.18), 0 0 12px rgba(16,185,129,0.55); }
-      50%      { box-shadow: 0 0 0 7px rgba(16,185,129,0.04), 0 0 18px rgba(16,185,129,0.30); }
-    }
-
-    .hx-hero-grid {
+    /* ── Vercel-style deployment row ────────────────────────────── */
+    .hx-vc-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 28px;
-      align-items: flex-end;
-    }
-    .hx-hero-title {
-      margin: 0;
-      font-size: clamp(36px, 5vw, 56px);
-      font-weight: 600;
-      letter-spacing: -0.028em;
-      line-height: 1.02;
-      color: var(--hx-text);
-    }
-    .hx-hero-title em {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-style: italic;
-      font-weight: 400;
-      letter-spacing: -0.012em;
-      font-size: 1.04em;
-      background: linear-gradient(135deg, var(--hx-text), var(--hx-text-mid));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .hx-hero-sub {
-      margin: 14px 0 0;
-      font-size: 14.5px;
-      color: var(--hx-text-mid);
-      max-width: 580px;
-      line-height: 1.6;
-      letter-spacing: -0.005em;
-    }
-    .hx-hero-meta-strip {
-      display: flex; gap: 0;
-      align-items: stretch;
-      padding: 14px 4px 14px 18px;
-      background: var(--hx-surface);
-      border: 1px solid var(--hx-line);
-      border-radius: var(--hx-r-lg);
-      box-shadow: var(--hx-shadow-sm);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      min-width: 360px;
-    }
-    .hx-hero-meta-item {
-      flex: 1; min-width: 0;
-      padding: 0 18px 0 0;
-      border-right: 1px solid var(--hx-line-soft);
-      display: flex; flex-direction: column; justify-content: center;
-    }
-    .hx-hero-meta-item:last-child { border-right: 0; padding-right: 18px; }
-    .hx-hero-meta-item + .hx-hero-meta-item { padding-left: 18px; }
-    .hx-hero-meta-label {
-      font-family: var(--hx-mono);
-      font-size: 9.5px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.14em;
-      color: var(--hx-text-dim);
-      margin: 0 0 4px;
-    }
-    .hx-hero-meta-value {
-      font-size: 14.5px; font-weight: 600;
-      letter-spacing: -0.012em;
-      color: var(--hx-text);
-      white-space: nowrap;
-    }
-    .hx-hero-meta-value.hx-mono { font-family: var(--hx-mono); font-size: 14px; font-variant-numeric: tabular-nums; }
-
-    .hx-hero-cta-row {
-      display: flex; gap: 10px; flex-wrap: wrap;
-      margin-top: 22px;
-    }
-    .hx-cta-primary {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 0 18px; height: 38px;
-      background: linear-gradient(180deg, var(--hx-text), var(--hx-text-mid));
-      color: var(--hx-bg);
-      border: 1px solid var(--hx-text);
-      border-radius: var(--hx-r-sm);
-      font-size: 13.5px; font-weight: 600;
-      letter-spacing: -0.005em;
-      text-decoration: none;
-      box-shadow: var(--hx-shadow), 0 0 0 1px rgba(0, 0, 0, 0.04) inset;
-      transition: transform 0.14s, box-shadow 0.14s, filter 0.14s;
-    }
-    .hx-cta-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: var(--hx-shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.04) inset;
-      filter: brightness(1.05);
-    }
-    .hx-cta-primary svg { width: 14px; height: 14px; }
-    .hx-cta-secondary {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 0 16px; height: 38px;
-      background: var(--hx-surface);
-      color: var(--hx-text);
-      border: 1px solid var(--hx-line);
-      border-radius: var(--hx-r-sm);
-      font-size: 13.5px; font-weight: 500;
-      text-decoration: none;
-      box-shadow: var(--hx-shadow-xs);
-      transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s;
-    }
-    .hx-cta-secondary:hover {
-      border-color: var(--hx-line-strong);
-      transform: translateY(-1px);
-      box-shadow: var(--hx-shadow-sm);
-    }
-    .hx-cta-secondary svg { width: 14px; height: 14px; }
-
-    @media (max-width: 860px) {
-      .hx-hero-grid { grid-template-columns: 1fr; }
-      .hx-hero-meta-strip { min-width: 0; }
-    }
-
-    /* ─── Section heading (premium mono eyebrow with left rule) ─── */
-    .hx-sec {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 14px; flex-wrap: wrap;
-      margin: 40px 0 16px;
-      border: 0; padding: 0;
-    }
-    .hx-sec:first-of-type { margin-top: 28px; }
-    .hx-sec-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
-    .hx-sec-left::before {
-      content: ''; width: 14px; height: 1px;
-      background: var(--hx-text-dim);
-      flex-shrink: 0;
-    }
-    .hx-sec h2 {
-      margin: 0;
-      font-family: var(--hx-mono);
-      font-size: 11.5px; font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--hx-text);
-    }
-    .hx-sec .sub-meta {
-      font-size: 12.5px;
-      color: var(--hx-text-mid);
-      font-style: italic;
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-size: 14.5px;
-      letter-spacing: -0.005em;
-    }
-    .hx-sec a {
-      font-family: var(--hx-mono);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--hx-text-mid);
-      border-bottom: 1px solid transparent;
-      padding-bottom: 2px;
-      transition: color 0.12s, border-color 0.12s;
-    }
-    .hx-sec a:hover { color: var(--hx-text); border-color: var(--hx-text); }
-
-    /* ─── Premium metric tile ─── */
-    .hx-metric {
-      position: relative;
-      background: var(--hx-surface);
-      border: 1px solid var(--hx-line);
-      border-radius: var(--hx-r-xl);
-      padding: 22px 22px 18px;
-      transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
-      overflow: hidden;
-      isolation: isolate;
-    }
-    .hx-metric::before {
-      content: ''; position: absolute;
-      top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--hx-line-strong), transparent);
-      opacity: 0.5;
-    }
-    .hx-metric::after {
-      content: ''; position: absolute;
-      inset: 0; pointer-events: none;
-      background: radial-gradient(120% 100% at 100% 0%, var(--hx-bg-2), transparent 50%);
-      opacity: 0; transition: opacity 0.24s;
-      z-index: -1;
-    }
-    .hx-metric:hover {
-      border-color: var(--hx-line-strong);
-      transform: translateY(-2px);
-      box-shadow: var(--hx-shadow);
-    }
-    .hx-metric:hover::after { opacity: 1; }
-
-    .hx-metric-label {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 8px;
-      font-family: var(--hx-mono);
-      font-size: 10px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.14em;
-      color: var(--hx-text-dim);
-      margin: 0 0 14px;
-    }
-    .hx-metric-label .ico {
-      width: 26px; height: 26px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3));
-      border: 1px solid var(--hx-line);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--hx-text);
-      box-shadow: var(--hx-shadow-xs), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    }
-    .hx-metric-label .ico svg { width: 13px; height: 13px; }
-
-    .hx-metric-value {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-size: 52px;
-      font-weight: 400;
-      letter-spacing: -0.024em;
-      color: var(--hx-text);
-      line-height: 0.95;
-      margin: 0 0 16px;
-      font-variant-numeric: tabular-nums;
-      display: flex; align-items: baseline; gap: 4px;
-    }
-    .hx-metric-value .suffix {
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--hx-text-mid);
-      letter-spacing: 0;
-      margin-left: 2px;
-      font-style: normal;
-    }
-    .hx-metric-value-text {
-      font-family: 'Inter', sans-serif;
-      font-size: 30px;
-      font-weight: 600;
-      letter-spacing: -0.018em;
-      color: var(--hx-text);
-      line-height: 1.05;
-      margin: 0 0 16px;
-    }
-
-    /* Sparkline strip inside the metric */
-    .hx-metric-spark {
-      height: 28px; width: 100%;
-      margin: 0 0 12px;
-      opacity: 0.78;
-    }
-    .hx-metric-spark path { transition: opacity 0.2s; }
-    .hx-metric:hover .hx-metric-spark { opacity: 1; }
-
-    .hx-metric-foot {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 10px;
-      font-size: 12.5px;
-      color: var(--hx-text-mid);
-      line-height: 1.4;
-    }
-    .hx-metric-delta {
-      display: inline-flex; align-items: center; gap: 3px;
-      font-family: var(--hx-mono);
-      font-size: 10.5px; font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: var(--hx-emerald-soft);
-      color: var(--hx-emerald);
-      text-decoration: none;
-      letter-spacing: 0;
-      flex-shrink: 0;
-    }
-    .hx-metric-delta.is-down { background: var(--hx-red-soft); color: var(--hx-red); }
-    .hx-metric-delta.is-flat { background: var(--hx-bg-2); color: var(--hx-text-mid); }
-    .hx-metric-delta.is-yellow { background: var(--hx-yellow-soft); color: var(--hx-yellow-deep); }
-
-    /* ─── Engagement card (premium, with backdrop halo) ─── */
-    .hx-engagement-card {
-      position: relative;
-      background: var(--hx-surface);
-      border: 1px solid var(--hx-line);
-      border-radius: var(--hx-r-xl);
-      padding: 28px 30px;
-      overflow: hidden;
-      isolation: isolate;
-    }
-    .hx-engagement-card::before {
-      content: ''; position: absolute;
-      top: 0; left: 0; bottom: 0; width: 3px;
-      background: linear-gradient(180deg, var(--hx-yellow), var(--hx-yellow-deep));
-    }
-    .hx-engagement-card::after {
-      content: ''; position: absolute;
-      top: -100px; right: -100px; width: 320px; height: 320px;
-      background: radial-gradient(closest-side, rgba(252, 211, 77, 0.16), transparent 70%);
-      pointer-events: none;
-      z-index: -1;
-    }
-    .hx-engagement-card .kicker {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-family: var(--hx-mono);
-      font-size: 10px; font-weight: 600;
-      letter-spacing: 0.16em; text-transform: uppercase;
-      color: var(--hx-yellow-deep);
-      margin: 0 0 8px;
-    }
-    .hx-engagement-card .kicker::before {
-      content: ''; width: 5px; height: 5px;
-      background: var(--hx-yellow-deep);
-      border-radius: 50%;
-      box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.22);
-    }
-    .hx-engagement-card h3 {
-      margin: 0 0 6px;
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-size: 34px;
-      font-weight: 400;
-      letter-spacing: -0.018em;
-      line-height: 1.05;
-      color: var(--hx-text);
-    }
-    .hx-engagement-card .desc {
-      margin: 10px 0 0;
-      color: var(--hx-text-mid);
-      font-size: 14px;
-      line-height: 1.6;
-      max-width: 720px;
-    }
-    .hx-engagement-card .foot {
-      margin-top: 22px;
-      padding-top: 18px;
-      border-top: 1px solid var(--hx-line-soft);
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 14px; flex-wrap: wrap;
-    }
-    .hx-engagement-card .foot .meta {
-      font-family: var(--hx-mono);
-      font-size: 11.5px;
-      color: var(--hx-text-dim);
-      display: flex; gap: 18px; flex-wrap: wrap;
-    }
-    .hx-engagement-card .foot .meta b { color: var(--hx-text-mid); font-weight: 500; }
-    .hx-engagement-card .foot .actions { display: flex; gap: 8px; flex-shrink: 0; }
-
-    /* ─── Quick-start tile ─── */
-    .hx-qa2 {
-      position: relative;
-      display: block;
-      padding: 22px 22px 20px;
-      background: var(--hx-surface);
-      border: 1px solid var(--hx-line);
-      border-radius: var(--hx-r-xl);
-      text-decoration: none; color: var(--hx-text);
-      transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
-      overflow: hidden;
-      isolation: isolate;
-    }
-    .hx-qa2:hover {
-      border-color: var(--hx-line-strong);
-      transform: translateY(-3px);
-      box-shadow: var(--hx-shadow);
-    }
-    .hx-qa2-ico-wrap {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 18px;
-    }
-    .hx-qa2-ico {
-      width: 42px; height: 42px;
-      border-radius: 11px;
-      background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3));
-      border: 1px solid var(--hx-line);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--hx-text);
-      box-shadow: var(--hx-shadow-xs), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    }
-    .hx-qa2-ico svg { width: 18px; height: 18px; }
-    .hx-qa2-ico.is-yellow {
-      background: linear-gradient(135deg, var(--hx-yellow-soft), rgba(252, 211, 77, 0.04));
-      border-color: rgba(252, 211, 77, 0.32);
-      color: var(--hx-yellow-deep);
-    }
-    .hx-qa2-kbd {
-      font-family: var(--hx-mono);
-      font-size: 10px; font-weight: 600;
-      padding: 3px 7px;
-      background: var(--hx-bg-2);
-      border: 1px solid var(--hx-line);
-      border-radius: 5px;
-      color: var(--hx-text-dim);
-      letter-spacing: 0;
-    }
-    .hx-qa2-title {
-      font-size: 15px; font-weight: 600;
-      letter-spacing: -0.014em;
-      margin: 0 0 5px;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .hx-qa2-title .arrow {
-      color: var(--hx-text-dim);
-      transition: transform 0.18s, color 0.18s;
-      margin-left: auto;
-    }
-    .hx-qa2:hover .hx-qa2-title .arrow {
-      transform: translateX(4px);
-      color: var(--hx-text);
-    }
-    .hx-qa2-desc {
-      font-size: 12.5px;
-      color: var(--hx-text-mid);
-      line-height: 1.55;
-      margin: 0;
-    }
-
-    /* ─── Recent list row ─── */
-    .hx-list-row {
-      display: grid;
-      grid-template-columns: 30px minmax(0, 1fr) auto;
-      gap: 14px;
+      grid-template-columns: 22px minmax(180px, 1.5fr) minmax(140px, 1fr) minmax(100px, 0.8fr) 90px;
+      gap: 16px;
       align-items: center;
       padding: 14px 18px;
       border-top: 1px solid var(--hx-line-soft);
       text-decoration: none;
       color: var(--hx-text);
-      transition: background 0.12s;
+      transition: background 0.1s;
     }
-    .hx-list-row:first-child { border-top: 0; }
-    .hx-list-row:hover { background: var(--hx-bg-2); }
-    .hx-list-row .glyph {
-      width: 30px; height: 30px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3));
+    .hx-vc-row:first-child { border-top: 0; }
+    .hx-vc-row:hover { background: var(--hx-bg-2); }
+    .hx-vc-row .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .hx-vc-row .dot.is-ready { background: var(--hx-emerald); }
+    .hx-vc-row .dot.is-building { background: var(--hx-yellow-deep); animation: hx-blink 1.4s ease-in-out infinite; }
+    .hx-vc-row .dot.is-failed { background: var(--hx-red); }
+    .hx-vc-row .dot.is-idle { background: var(--hx-text-faint); }
+    @keyframes hx-blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .hx-vc-row .project { font-weight: 500; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hx-vc-row .commit {
+      font-family: var(--hx-mono);
+      font-size: 12px;
+      color: var(--hx-text-mid);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .hx-vc-row .commit .hash {
+      font-weight: 500; color: var(--hx-text);
+      margin-right: 6px;
+    }
+    .hx-vc-row .branch {
+      font-family: var(--hx-mono);
+      font-size: 11.5px;
+      color: var(--hx-text-mid);
+      display: inline-flex; align-items: center; gap: 4px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .hx-vc-row .branch svg { width: 11px; height: 11px; flex-shrink: 0; }
+    .hx-vc-row .when {
+      font-family: var(--hx-mono);
+      font-size: 11.5px;
+      color: var(--hx-text-dim);
+      text-align: right;
+    }
+    @media (max-width: 880px) {
+      .hx-vc-row {
+        grid-template-columns: 22px 1fr auto;
+        grid-template-areas: "dot project when" "dot commit when";
+      }
+      .hx-vc-row .dot { grid-area: dot; }
+      .hx-vc-row .project { grid-area: project; }
+      .hx-vc-row .commit { grid-area: commit; font-size: 11px; }
+      .hx-vc-row .branch { display: none; }
+      .hx-vc-row .when { grid-area: when; }
+    }
+
+    /* ── Project card grid (Vercel-tight) ───────────────────────── */
+    .hx-vc-projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .hx-vc-pcard {
+      display: block;
+      padding: 18px 20px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r);
+      text-decoration: none;
+      color: var(--hx-text);
+      transition: border-color 0.12s;
+    }
+    .hx-vc-pcard:hover { border-color: var(--hx-line-strong); }
+    .hx-vc-pcard .head {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 10px;
+    }
+    .hx-vc-pcard .head .icn {
+      width: 24px; height: 24px;
+      border-radius: 6px;
+      background: var(--hx-bg-2);
       border: 1px solid var(--hx-line);
       display: flex; align-items: center; justify-content: center;
       color: var(--hx-text-mid);
       flex-shrink: 0;
-      box-shadow: var(--hx-shadow-xs);
-    }
-    .hx-list-row .glyph svg { width: 13px; height: 13px; }
-    .hx-list-row .body { min-width: 0; }
-    .hx-list-row .ttl {
-      font-size: 13.5px; font-weight: 500;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .hx-list-row .meta {
-      font-size: 11.5px; color: var(--hx-text-mid);
-      margin-top: 2px;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .hx-list-row .time {
       font-family: var(--hx-mono);
-      font-size: 11px; color: var(--hx-text-dim);
-      white-space: nowrap;
+      font-size: 11px; font-weight: 600;
     }
-
-    @media (min-width: 900px) {
-      .hx-recents { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .hx-vc-pcard .head .nm {
+      font-weight: 600; font-size: 14px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-    .hx-recents > .hx-card {
-      padding: 0; overflow: hidden;
-      border-radius: var(--hx-r-xl);
-      box-shadow: var(--hx-shadow-xs);
+    .hx-vc-pcard .domain {
+      font-family: var(--hx-mono);
+      font-size: 12px;
+      color: var(--hx-text-mid);
+      margin: 0 0 14px;
+      display: flex; align-items: center; gap: 5px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-    .hx-recents-head {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 18px 14px;
-      border-bottom: 1px solid var(--hx-line);
-    }
-    .hx-recents-head h3 {
-      margin: 0;
-      font-size: 13.5px;
-      font-weight: 600;
-      letter-spacing: -0.005em;
+    .hx-vc-pcard .domain svg { width: 11px; height: 11px; flex-shrink: 0; opacity: 0.7; }
+    .hx-vc-pcard .deploy {
       display: flex; align-items: center; gap: 8px;
-    }
-    .hx-recents-head h3 .count {
-      font-family: var(--hx-mono);
-      font-size: 10.5px; font-weight: 600;
-      padding: 2px 7px; border-radius: 5px;
-      background: var(--hx-bg-2);
-      border: 1px solid var(--hx-line);
+      padding-top: 12px;
+      border-top: 1px solid var(--hx-line-soft);
+      font-size: 11.5px;
       color: var(--hx-text-mid);
     }
-    .hx-recents-head a {
-      font-family: var(--hx-mono);
-      font-size: 10.5px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--hx-text-mid);
-      border-bottom: 1px solid transparent;
-      transition: color 0.12s, border-color 0.12s;
+    .hx-vc-pcard .deploy .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--hx-emerald);
+      flex-shrink: 0;
     }
-    .hx-recents-head a:hover { color: var(--hx-text); border-color: var(--hx-text); }
-
-    /* ─── Usage tile ─── */
-    .hx-usage-card {
-      background: var(--hx-surface);
-      border: 1px solid var(--hx-line);
-      border-radius: var(--hx-r-xl);
-      padding: 22px;
-      box-shadow: var(--hx-shadow-xs);
-    }
-    .hx-usage-card-label {
+    .hx-vc-pcard .deploy .msg {
       font-family: var(--hx-mono);
-      font-size: 10px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.14em;
+      flex: 1; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .hx-vc-pcard .deploy .time {
+      font-family: var(--hx-mono);
       color: var(--hx-text-dim);
-      margin: 0 0 12px;
+      flex-shrink: 0;
     }
-    .hx-usage-card-value {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-size: 40px;
-      font-weight: 400;
-      letter-spacing: -0.020em;
-      color: var(--hx-text);
-      line-height: 0.96;
-      margin: 0;
-      font-variant-numeric: tabular-nums;
-    }
-    .hx-usage-card-value.is-text {
-      font-family: 'Inter', sans-serif;
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.014em;
-      line-height: 1.2;
-    }
-    .hx-usage-bar {
-      height: 6px;
-      background: var(--hx-bg-2);
-      border: 1px solid var(--hx-line-soft);
-      border-radius: 999px;
-      overflow: hidden;
-      margin: 16px 0 8px;
-    }
-    .hx-usage-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--hx-yellow-deep), var(--hx-yellow));
-      border-radius: 999px;
-      transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-      box-shadow: 0 0 10px rgba(252, 211, 77, 0.4);
-    }
-    .hx-usage-foot {
-      display: flex; justify-content: space-between; align-items: baseline;
-      font-family: var(--hx-mono);
-      font-size: 11px; color: var(--hx-text-mid);
-    }
-    .hx-usage-card-meta {
-      font-size: 12.5px;
-      color: var(--hx-text-mid);
-      margin: 8px 0 0;
-      line-height: 1.45;
-    }
-    .hx-usage-card-link {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-family: var(--hx-mono);
-      font-size: 10.5px; font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--hx-text-mid);
-      margin-top: 14px;
-      border-bottom: 1px solid transparent;
-      transition: color 0.12s, border-color 0.12s, gap 0.12s;
-    }
-    .hx-usage-card-link:hover { color: var(--hx-text); border-color: var(--hx-text); gap: 8px; }
 
-    /* ─── Active project banner ─── */
-    .hx-active-bar {
-      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-      padding: 12px 16px; margin: 16px 0 0;
-      background: linear-gradient(180deg, var(--hx-yellow-soft), rgba(252, 211, 77, 0.04));
-      border: 1px solid rgba(252, 211, 77, 0.42);
-      border-radius: var(--hx-r-lg);
-      box-shadow: var(--hx-shadow-xs);
-    }
-    .hx-active-bar[hidden] { display: none; }
-
-    /* ─── Footer signature ─── */
-    .hx-foot-signature {
-      margin: 56px 0 12px;
-      padding-top: 18px;
-      border-top: 1px solid var(--hx-line);
+    /* ── Section row tighter than .hx-sec-pre ───────────────────── */
+    .hx-vc-sec {
       display: flex; align-items: center; justify-content: space-between;
+      margin: 28px 0 12px;
       gap: 14px; flex-wrap: wrap;
     }
-    .hx-foot-signature .sig-left {
-      font-family: var(--hx-mono);
-      font-size: 11px;
-      color: var(--hx-text-dim);
-      letter-spacing: 0.06em;
-    }
-    .hx-foot-signature .sig-left b { color: var(--hx-text-mid); font-weight: 500; }
-    .hx-foot-signature .sig-right {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-style: italic;
-      font-size: 14.5px;
-      color: var(--hx-text-mid);
+    .hx-vc-sec h2 {
+      margin: 0;
+      font-size: 14px; font-weight: 600;
       letter-spacing: -0.005em;
+      color: var(--hx-text);
+    }
+    .hx-vc-sec a {
+      font-family: var(--hx-mono);
+      font-size: 11.5px; font-weight: 500;
+      color: var(--hx-text-mid);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+      transition: color 0.12s, border-color 0.12s;
+    }
+    .hx-vc-sec a:hover { color: var(--hx-text); border-color: var(--hx-text); }
+
+    /* ── "Add new" menu ─────────────────────────────────────────── */
+    .hx-add-wrap { position: relative; }
+    .hx-add-menu {
+      position: absolute; top: calc(100% + 6px); right: 0;
+      min-width: 220px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r);
+      box-shadow: var(--hx-shadow-lg);
+      padding: 4px;
+      z-index: 30;
+      display: none;
+    }
+    .hx-add-menu.open { display: block; }
+    .hx-add-menu a {
+      display: block;
+      padding: 8px 10px;
+      font-size: 13px;
+      color: var(--hx-text);
+      text-decoration: none;
+      border-radius: var(--hx-r-xs);
+    }
+    .hx-add-menu a:hover { background: var(--hx-bg-2); }
+    .hx-add-menu a .sub {
+      display: block;
+      font-size: 11.5px;
+      color: var(--hx-text-mid);
+      margin-top: 1px;
     }
 
-    @media (max-width: 760px) {
-      .hx-metric-value { font-size: 42px; }
-      .hx-engagement-card h3 { font-size: 28px; }
-      .hx-usage-card-value { font-size: 32px; }
+    /* ── Quick stat strip ───────────────────────────────────────── */
+    .hx-vc-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1px;
+      background: var(--hx-line);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r);
+      overflow: hidden;
+    }
+    .hx-vc-stat {
+      background: var(--hx-surface);
+      padding: 14px 16px;
+    }
+    .hx-vc-stat .lbl {
+      font-family: var(--hx-mono);
+      font-size: 10.5px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--hx-text-dim);
+      margin: 0 0 4px;
+    }
+    .hx-vc-stat .val {
+      font-family: var(--hx-mono);
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--hx-text);
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+      margin: 0;
+    }
+    .hx-vc-stat .delta {
+      font-family: var(--hx-mono);
+      font-size: 10.5px;
+      color: var(--hx-text-mid);
+      margin: 2px 0 0;
     }
   </style>
 </head>
@@ -686,707 +242,234 @@
       <div class="hx-topbar"></div>
       <main class="hx-main">
 
-        <!-- Ambient backdrop -->
-        <div class="hx-aura" aria-hidden="true"></div>
-
-        <!-- ═══════════════ HERO ═══════════════ -->
-        <header class="hx-hero">
-          <p class="hx-hero-eyebrow">
-            <span class="hx-hero-eyebrow-dot" aria-hidden="true"></span>
-            <span id="hx-eyebrow-text">Workspace · ready</span>
-          </p>
-          <div class="hx-hero-grid">
+        <header class="hx-pg-hero">
+          <p class="hx-pg-eyebrow"><span id="hx-team-name">Personal</span></p>
+          <div class="hx-pg-hero-grid">
             <div>
-              <h1 class="hx-hero-title" id="hx-greeting">
-                Good day, <em>there.</em>
-              </h1>
-              <p class="hx-hero-sub" id="hx-hero-sub">A clear view of your workspace — credits, recent work, active engagement, and the shortcuts you reach for most. Everything lives in Switzerland; nothing is mocked.</p>
-              <div class="hx-hero-cta-row">
-                <a href="/chat.html" class="hx-cta-primary">
-                  Open chat
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-                <a href="/services.html" class="hx-cta-secondary">
-                  Browse services
-                </a>
-                <a href="/projects.html?new=1" class="hx-cta-secondary">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  New project
-                </a>
+              <h1 class="hx-pg-title">Overview</h1>
+              <p class="hx-pg-sub">Latest deployments, recent projects, and a quick read on your workspace.</p>
+            </div>
+            <div class="hx-add-wrap">
+              <button class="hx-cta-primary" id="hx-add-btn">
+                Add New...
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="hx-add-menu" id="hx-add-menu">
+                <a href="/projects.html?new=1">Project<span class="sub">A new build with templates</span></a>
+                <a href="/chat.html">Chat conversation<span class="sub">Quick AI session</span></a>
+                <a href="/workbench.html?new=1">Workbench artifact<span class="sub">Code, doc, prompt, snippet</span></a>
+                <a href="/domains.html">Domain<span class="sub">Custom domain for a project</span></a>
               </div>
             </div>
-            <div class="hx-hero-meta-strip">
-              <div class="hx-hero-meta-item">
-                <p class="hx-hero-meta-label">Local time</p>
-                <p class="hx-hero-meta-value hx-mono" id="hx-hero-time">—</p>
-              </div>
-              <div class="hx-hero-meta-item">
-                <p class="hx-hero-meta-label">Workspace</p>
-                <p class="hx-hero-meta-value" id="hx-hero-workspace">—</p>
-              </div>
-              <div class="hx-hero-meta-item">
-                <p class="hx-hero-meta-label">Region</p>
-                <p class="hx-hero-meta-value hx-mono">EU-CH-1</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Active project banner -->
-          <div class="hx-active-bar" id="hx-active-bar" hidden>
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--hx-yellow-deep);box-shadow:0 0 0 3px rgba(252,211,77,0.28);" aria-hidden="true"></span>
-            <span style="font-family:var(--hx-mono);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--hx-yellow-deep);">Scoped to</span>
-            <span id="hx-active-bar-name" style="font-size:13.5px;font-weight:600;color:var(--hx-text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span>
-            <a href="/projects.html" style="font-family:var(--hx-mono);font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--hx-text-mid);padding:4px 8px;text-decoration:none;">Manage</a>
-            <a href="/chat.html"     style="font-family:var(--hx-mono);font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--hx-text-mid);padding:4px 8px;text-decoration:none;">Open chat</a>
-            <button type="button" id="hx-active-bar-clear" style="font-family:var(--hx-mono);font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--hx-text-mid);background:transparent;border:0;padding:4px 8px;cursor:pointer;">Clear</button>
           </div>
         </header>
 
-        <!-- ═══════════════ METRICS ═══════════════ -->
-        <div class="hx-sec">
-          <div class="hx-sec-left">
-            <h2>Snapshot</h2>
-            <span class="sub-meta">live from your account</span>
+        <!-- ═══════════════ QUICK STATS ═══════════════ -->
+        <div class="hx-vc-stats" style="margin-top:18px;">
+          <div class="hx-vc-stat">
+            <p class="lbl">Projects</p>
+            <p class="val" id="hx-stat-projects">0</p>
+            <p class="delta" id="hx-stat-projects-meta">No projects yet</p>
           </div>
-        </div>
-        <div class="hx-grid hx-grid-4">
-          <div class="hx-metric">
-            <p class="hx-metric-label">
-              <span>Credits available</span>
-              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-            </p>
-            <p class="hx-metric-value" id="hx-stat-credits">0<span class="suffix">cr</span></p>
-            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none" id="hx-spark-credits">
-              <path d="M0,18 L25,16 L50,20 L75,14 L100,12 L125,16 L150,10 L175,12 L200,8" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div class="hx-metric-foot">
-              <span id="hx-stat-credits-meta">No active subscription</span>
-              <span class="hx-metric-delta is-flat" id="hx-stat-credits-delta">·</span>
-            </div>
+          <div class="hx-vc-stat">
+            <p class="lbl">Deployments</p>
+            <p class="val" id="hx-stat-deploys">0</p>
+            <p class="delta" id="hx-stat-deploys-meta">Across all projects</p>
           </div>
-          <div class="hx-metric">
-            <p class="hx-metric-label">
-              <span>Active projects</span>
-              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
-            </p>
-            <p class="hx-metric-value" id="hx-stat-projects">0</p>
-            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none">
-              <path d="M0,22 L33,20 L66,18 L100,16 L133,14 L166,12 L200,10" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div class="hx-metric-foot">
-              <span id="hx-stat-projects-meta">Nothing in flight</span>
-              <span class="hx-metric-delta is-flat" id="hx-stat-projects-delta">·</span>
-            </div>
+          <div class="hx-vc-stat">
+            <p class="lbl">Usage (30d)</p>
+            <p class="val" id="hx-stat-usage">0</p>
+            <p class="delta">Credits consumed</p>
           </div>
-          <div class="hx-metric">
-            <p class="hx-metric-label">
-              <span>Subscription</span>
-              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></span>
-            </p>
-            <p class="hx-metric-value-text" id="hx-stat-plan">Free</p>
-            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none">
-              <path d="M0,14 L40,14 L80,14 L120,14 L160,14 L200,14" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 4"/>
-            </svg>
-            <div class="hx-metric-foot">
-              <span id="hx-stat-plan-meta">Pick a plan to get started</span>
-              <a href="/billing.html" class="hx-metric-delta is-yellow" style="text-decoration:none;">Upgrade →</a>
-            </div>
-          </div>
-          <div class="hx-metric">
-            <p class="hx-metric-label">
-              <span>Open invoices</span>
-              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
-            </p>
-            <p class="hx-metric-value" id="hx-stat-invoices">0</p>
-            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none">
-              <path d="M0,18 L40,16 L80,17 L120,15 L160,14 L200,12" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            <div class="hx-metric-foot">
-              <span id="hx-stat-invoices-meta">Nothing due</span>
-              <span class="hx-metric-delta" id="hx-stat-invoices-delta" style="display:none;">Outstanding</span>
-            </div>
+          <div class="hx-vc-stat">
+            <p class="lbl">Plan</p>
+            <p class="val" id="hx-stat-plan">Free</p>
+            <p class="delta" id="hx-stat-plan-meta">EU-CH-1 · CHF</p>
           </div>
         </div>
 
-        <!-- ═══════════════ ACTIVE ENGAGEMENT ═══════════════ -->
-        <div class="hx-sec">
-          <div class="hx-sec-left">
-            <h2>Engagement</h2>
-            <span class="sub-meta">where the work lives</span>
-          </div>
-          <a href="/projects.html">All projects →</a>
+        <!-- ═══════════════ LATEST DEPLOYMENTS ═══════════════ -->
+        <div class="hx-vc-sec">
+          <h2>Latest deployments</h2>
+          <a href="/deployments.html">View all →</a>
         </div>
-        <div id="hx-engagement-host"></div>
-
-        <!-- ═══════════════ QUICK START ═══════════════ -->
-        <div class="hx-sec">
-          <div class="hx-sec-left">
-            <h2>Quick start</h2>
-            <span class="sub-meta">where most days begin</span>
-          </div>
-        </div>
-        <div class="hx-grid hx-grid-4">
-          <a href="/chat.html" class="hx-qa2">
-            <div class="hx-qa2-ico-wrap">
-              <div class="hx-qa2-ico is-yellow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg></div>
-              <span class="hx-qa2-kbd">⌘ K</span>
-            </div>
-            <p class="hx-qa2-title">New chat <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></p>
-            <p class="hx-qa2-desc">Open a fresh conversation. Pick a model and a project to scope it.</p>
-          </a>
-          <a href="/projects.html?new=1" class="hx-qa2">
-            <div class="hx-qa2-ico-wrap">
-              <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
-            </div>
-            <p class="hx-qa2-title">New project <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></p>
-            <p class="hx-qa2-desc">Group chats, memories, and artifacts under one workspace context.</p>
-          </a>
-          <a href="/memory.html?new=1" class="hx-qa2">
-            <div class="hx-qa2-ico-wrap">
-              <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-            </div>
-            <p class="hx-qa2-title">New memory <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></p>
-            <p class="hx-qa2-desc">A single fact the assistant carries into every new conversation.</p>
-          </a>
-          <a href="/services.html" class="hx-qa2">
-            <div class="hx-qa2-ico-wrap">
-              <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-            </div>
-            <p class="hx-qa2-title">Request a service <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></p>
-            <p class="hx-qa2-desc">Brief our engineering team — agents, automation, data tooling.</p>
-          </a>
+        <div class="hx-card" style="padding:0;overflow:hidden;">
+          <div id="hx-deploys-host"></div>
         </div>
 
-        <!-- ═══════════════ RECENT WORK ═══════════════ -->
-        <div class="hx-sec">
-          <div class="hx-sec-left">
-            <h2>Recent work</h2>
-            <span class="sub-meta">chats and artifacts you touched last</span>
-          </div>
+        <!-- ═══════════════ PROJECTS ═══════════════ -->
+        <div class="hx-vc-sec">
+          <h2>Projects</h2>
+          <a href="/projects.html">View all →</a>
         </div>
-        <div class="hx-recents">
-          <div class="hx-card">
-            <div class="hx-recents-head">
-              <h3>Recent chats <span class="count" id="hx-chats-count">0</span></h3>
-              <a href="/chat.html">Open all →</a>
-            </div>
-            <div id="hx-recent-chats-host"></div>
-          </div>
-          <div class="hx-card">
-            <div class="hx-recents-head">
-              <h3>Workbench artifacts <span class="count" id="hx-arts-count">0</span></h3>
-              <a href="/workbench.html">Open workbench →</a>
-            </div>
-            <div id="hx-recent-artifacts-host"></div>
-          </div>
-        </div>
-
-        <!-- ═══════════════ USAGE THIS MONTH ═══════════════ -->
-        <div class="hx-sec">
-          <div class="hx-sec-left">
-            <h2>This month</h2>
-            <span class="sub-meta" id="hx-month-name">—</span>
-          </div>
-          <a href="/usage.html">Full breakdown →</a>
-        </div>
-        <div class="hx-grid hx-grid-3">
-          <div class="hx-usage-card">
-            <p class="hx-usage-card-label">Credits spent</p>
-            <p class="hx-usage-card-value" id="hx-usage-credits">0</p>
-            <div class="hx-usage-bar"><div class="hx-usage-bar-fill" id="hx-usage-credits-bar" style="width:0%;"></div></div>
-            <div class="hx-usage-foot">
-              <span id="hx-usage-credits-used">0 used</span>
-              <span id="hx-usage-credits-cap">— limit</span>
-            </div>
-            <p class="hx-usage-card-meta" id="hx-usage-credits-meta">No usage yet this month.</p>
-          </div>
-          <div class="hx-usage-card">
-            <p class="hx-usage-card-label">Top model</p>
-            <p class="hx-usage-card-value is-text" id="hx-usage-model">—</p>
-            <p class="hx-usage-card-meta" id="hx-usage-model-meta">No requests yet this month.</p>
-            <a href="/usage.html" class="hx-usage-card-link">Model breakdown →</a>
-          </div>
-          <div class="hx-usage-card">
-            <p class="hx-usage-card-label">Requests</p>
-            <p class="hx-usage-card-value" id="hx-usage-requests">0</p>
-            <p class="hx-usage-card-meta">Across every surface — chat, agents, workflows.</p>
-            <a href="/logs.html" class="hx-usage-card-link">Open logs →</a>
-          </div>
-        </div>
+        <div id="hx-projects-host"></div>
 
         <!-- ═══════════════ ACTIVITY ═══════════════ -->
-        <div class="hx-sec">
-          <div class="hx-sec-left">
-            <h2>Recent activity</h2>
-            <span class="sub-meta">every action, with trace</span>
-          </div>
+        <div class="hx-vc-sec">
+          <h2>Recent activity</h2>
           <a href="/activity.html">Activity log →</a>
         </div>
-        <div id="hx-activity-host"></div>
-
-        <!-- ═══════════════ PRACTICE AREAS ═══════════════ -->
-        <div class="hx-sec">
-          <div class="hx-sec-left">
-            <h2>Practice areas</h2>
-            <span class="sub-meta">what we deliver</span>
-          </div>
-          <a href="/services.html">All services →</a>
-        </div>
-        <div class="hx-grid hx-grid-3">
-          <a href="/services.html#ai" class="hx-service-tile">
-            <div class="hx-service-tile-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 11h.01M15 11h.01"/><path d="M12 7V3"/></svg></div>
-            <h3>AI &amp; Automation</h3>
-            <p>Custom agents, workflow automation, document &amp; inbox triage, internal copilots.</p>
-            <div class="meta"><span>7 services</span></div>
-          </a>
-          <a href="/services.html#digital" class="hx-service-tile">
-            <div class="hx-service-tile-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-            <h3>Digital Services</h3>
-            <p>Web apps, dashboards, CRM rebuilds, e-commerce, integrations, and internal tools.</p>
-            <div class="meta"><span>7 services</span></div>
-          </a>
-          <a href="/services.html#consulting" class="hx-service-tile">
-            <div class="hx-service-tile-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 17V11M11 17V7M16 17v-9M21 17v-5"/></svg></div>
-            <h3>Consulting</h3>
-            <p>AI strategy roadmaps, technical due diligence, architecture reviews, fractional leads.</p>
-            <div class="meta"><span>5 services</span></div>
-          </a>
-        </div>
-
-        <!-- ═══════════════ FOOT SIGNATURE ═══════════════ -->
-        <div class="hx-foot-signature">
-          <p class="sig-left"><b>EU-CH-1</b> · AES-256 at rest · TLS 1.3 in transit · written by people</p>
-          <p class="sig-right">— Designed and operated in Switzerland.</p>
+        <div class="hx-card" style="padding:0;overflow:hidden;">
+          <div id="hx-activity-host"></div>
         </div>
 
       </main>
     </div>
   </div>
 
-  <script src="/platform.js"></script>
+  <script src="/platform.js?v=20260520e"></script>
   <script>
-    /* Real dashboard — reads from profiles, projects, credits_balance,
-       subscriptions, invoices, activity_events, chat_conversations,
-       workbench_artifacts, api_usage_log. Every section has a
-       graceful fallback so missing tables don't break the page.    */
     (function () {
       function whenAuthReady(fn) {
         if (window.HX && window.HX.supabase) { fn(); return; }
         document.addEventListener('hx:auth-ready', fn, { once: true });
       }
       var $ = function (id) { return document.getElementById(id); };
-      function escape(s) {
-        return (s == null ? '' : String(s))
-          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-      }
+      function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
       function relTime(iso) {
         if (!iso) return '—';
-        var d = new Date(iso); var diff = (Date.now() - d.getTime()) / 1000;
+        var d = new Date(iso).getTime();
+        var diff = (Date.now() - d) / 1000;
         if (diff < 60) return 'just now';
         if (diff < 3600) return Math.floor(diff/60) + 'm';
         if (diff < 86400) return Math.floor(diff/3600) + 'h';
-        var days = Math.floor(diff/86400);
-        return days + 'd';
-      }
-      function fmtDate(iso) {
-        if (!iso) return '—';
-        try { return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); }
-        catch (e) { return '—'; }
+        return Math.floor(diff/86400) + 'd';
       }
       function labelFor(kind) {
         return (kind || '').split('.').map(function (s) {
           return s.charAt(0).toUpperCase() + s.slice(1).replace(/_/g, ' ');
         }).join(' / ');
       }
-      function iconForKind(kind) {
-        var head = (kind || '').split('.')[0];
-        switch (head) {
-          case 'auth':     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
-          case 'chat':     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg>';
-          case 'project':  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
-          case 'memory':   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>';
-          case 'security': return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
-          case 'billing':  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>';
-          case 'settings': return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/></svg>';
-          case 'team':     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>';
-          default:         return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg>';
+      async function safeQuery(p) { try { var r = await p; return r && !r.error ? r : { data: null, count: null }; } catch (e) { return { data: null, count: null }; } }
+
+      // "Add New..." menu toggle
+      document.addEventListener('click', function (e) {
+        var menu = $('hx-add-menu');
+        if (!menu) return;
+        if (e.target.closest('#hx-add-btn')) {
+          menu.classList.toggle('open');
+        } else if (!e.target.closest('#hx-add-menu')) {
+          menu.classList.remove('open');
         }
+      });
+
+      function statusDot(s) {
+        if (s === 'live' || s === 'ready')   return '<span class="dot is-ready" title="Ready"></span>';
+        if (s === 'building' || s === 'queued') return '<span class="dot is-building" title="Building"></span>';
+        if (s === 'failed' || s === 'degraded') return '<span class="dot is-failed" title="Failed"></span>';
+        return '<span class="dot is-idle" title="Idle"></span>';
       }
 
-      // Animated count-up for the big serif numbers
-      function animateCount(el, target, opts) {
-        opts = opts || {};
-        var duration = opts.duration || 900;
-        var prefix = opts.prefix || '';
-        var suffix = opts.suffix || '';
-        var start = 0; var startTs = performance.now();
-        function ease(t) { return 1 - Math.pow(1 - t, 3); }
-        function tick(now) {
-          var p = Math.min(1, (now - startTs) / duration);
-          var v = Math.round(start + (target - start) * ease(p));
-          el.innerHTML = prefix + v.toLocaleString() + suffix;
-          if (p < 1) requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-      }
-
-      // ─── Time-aware greeting + live clock ──────────────────────
-      function greetingFor(hour) {
-        if (hour < 5)  return 'Still up';
-        if (hour < 12) return 'Good morning';
-        if (hour < 18) return 'Good afternoon';
-        if (hour < 22) return 'Good evening';
-        return 'Up late';
-      }
-      function tickClock(tz) {
-        try {
-          var now = new Date();
-          var fmt = new Intl.DateTimeFormat(undefined, {
-            hour: '2-digit', minute: '2-digit', hour12: false, timeZone: tz || undefined
-          });
-          if ($('hx-hero-time')) $('hx-hero-time').textContent = fmt.format(now);
-        } catch (e) {}
-      }
-      function setupClock(tz) {
-        tickClock(tz);
-        setInterval(function () { tickClock(tz); }, 30000);
-      }
-
-      // ─── Sparkline renderer ────────────────────────────────────
-      function renderSpark(svgEl, points) {
-        if (!svgEl || !points || points.length < 2) return;
-        var w = 200, h = 28, pad = 2;
-        var min = Math.min.apply(null, points);
-        var max = Math.max.apply(null, points);
-        var range = (max - min) || 1;
-        var step = (w - pad * 2) / (points.length - 1);
-        var d = points.map(function (v, i) {
-          var x = (pad + i * step).toFixed(1);
-          var y = (h - pad - ((v - min) / range) * (h - pad * 2)).toFixed(1);
-          return (i === 0 ? 'M' : 'L') + x + ',' + y;
-        }).join(' ');
-        var path = svgEl.querySelector('path');
-        if (path) path.setAttribute('d', d);
-      }
-
-      // ─── Active project banner ────────────────────────────────
-      var ACTIVE_KEY = 'hx_active_project';
-      function getActiveProject() {
-        try { return JSON.parse(localStorage.getItem(ACTIVE_KEY) || 'null'); } catch (e) { return null; }
-      }
-      function clearActiveProject() {
-        try { localStorage.removeItem(ACTIVE_KEY); } catch (e) {}
-        try { document.dispatchEvent(new CustomEvent('hx:active-project-changed', { detail: null })); } catch (e) {}
-      }
-      function renderActiveBar() {
-        var bar  = $('hx-active-bar'); var name = $('hx-active-bar-name');
-        if (!bar || !name) return;
-        var a = getActiveProject();
-        if (a && a.id) { bar.hidden = false; name.textContent = a.name || 'Unnamed project'; }
-        else { bar.hidden = true; }
-      }
-      function wireActiveBar() {
-        renderActiveBar();
-        var clearBtn = $('hx-active-bar-clear');
-        if (clearBtn) clearBtn.addEventListener('click', function () { clearActiveProject(); renderActiveBar(); });
-        document.addEventListener('hx:active-project-changed', renderActiveBar);
-        window.addEventListener('storage', function (e) { if (e.key === ACTIVE_KEY) renderActiveBar(); });
-      }
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireActiveBar);
-      else wireActiveBar();
-
-      whenAuthReady(function () {
+      whenAuthReady(async function () {
         var sb = window.HX.supabase;
+        var u = (await sb.auth.getUser()).data.user; if (!u) return;
 
-        async function safeQuery(promise) {
-          try { var r = await promise; return r && !r.error ? r : { data: null, count: null }; }
-          catch (e) { return { data: null, count: null }; }
+        var since30 = new Date(Date.now() - 30*86400*1000).toISOString();
+        var prof = await safeQuery(sb.from('profiles').select('company').eq('id', u.id).maybeSingle());
+        var company = (prof.data && prof.data.company) || (u.user_metadata && u.user_metadata.company) || 'Personal';
+        if ($('hx-team-name')) $('hx-team-name').textContent = company;
+
+        var [projects, deploys, credits, sub, usage, recent] = await Promise.all([
+          safeQuery(sb.from('projects').select('id,name,slug,status,description,updated_at,created_at').order('updated_at', { ascending: false }).limit(8)),
+          safeQuery(sb.from('deployments').select('id,name,status,version,region,environment,created_at,project_id,endpoint_url').order('created_at', { ascending: false }).limit(6)),
+          safeQuery(sb.from('credits_balance').select('credits_total,credits_used').maybeSingle()),
+          safeQuery(sb.from('subscriptions').select('plan').maybeSingle()),
+          safeQuery(sb.from('usage_events').select('credits_consumed').gte('created_at', since30)),
+          safeQuery(sb.from('activity_events').select('id,kind,created_at,actor_email').order('created_at', { ascending: false }).limit(8))
+        ]);
+
+        // ── Stats strip ──
+        var projRows = projects.data || [];
+        var depRows = deploys.data || [];
+        $('hx-stat-projects').textContent = projRows.length;
+        var active = projRows.filter(function (p) { return p.status === 'active'; }).length;
+        $('hx-stat-projects-meta').textContent = active === 0 ? 'No active builds' : active + ' active';
+
+        $('hx-stat-deploys').textContent = depRows.length;
+        var live = depRows.filter(function (d) { return d.status === 'live'; }).length;
+        $('hx-stat-deploys-meta').textContent = live === 0 ? 'Nothing deployed yet' : live + ' live';
+
+        var usageCredits = (usage.data || []).reduce(function (s, r) { return s + (r.credits_consumed || 0); }, 0);
+        $('hx-stat-usage').textContent = usageCredits.toLocaleString();
+
+        var planName = (sub.data && sub.data.plan) || 'free';
+        $('hx-stat-plan').textContent = planName.charAt(0).toUpperCase() + planName.slice(1);
+
+        // ── Deployments list ──
+        var depHost = $('hx-deploys-host');
+        if (!depRows.length) {
+          depHost.innerHTML =
+            '<div style="padding:48px 24px;text-align:center;">' +
+              '<p style="margin:0 0 4px;font-size:13.5px;font-weight:500;color:var(--hx-text);">No deployments yet</p>' +
+              '<p style="margin:0 0 14px;font-size:12.5px;color:var(--hx-text-mid);">Deploy a project and it appears here with commit, branch, and status.</p>' +
+              '<a href="/projects.html?new=1" class="hx-cta-primary" style="display:inline-flex;">Create a project</a>' +
+            '</div>';
+        } else {
+          depHost.innerHTML = depRows.map(function (d) {
+            var proj = projRows.find(function (p) { return p.id === d.project_id; });
+            var projName = proj ? proj.name : (d.name || 'Untitled');
+            var version = d.version || 'v0';
+            return '<a class="hx-vc-row" href="/deployments.html#' + esc(d.id) + '">' +
+              statusDot(d.status) +
+              '<span class="project">' + esc(projName) + '</span>' +
+              '<span class="commit"><span class="hash">' + esc(version) + '</span> ' + esc(d.environment || 'production') + '</span>' +
+              '<span class="branch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>' + esc(d.region || 'EU-CH-1') + '</span>' +
+              '<span class="when">' + esc(relTime(d.created_at)) + '</span>' +
+            '</a>';
+          }).join('');
         }
 
-        async function loadDashboard() {
-          var res = await sb.auth.getUser();
-          var user = res && res.data ? res.data.user : null;
-          if (!user) return;
-          var meta = user.user_metadata || {};
-
-          var prof = await safeQuery(sb.from('profiles').select('first_name,last_name,company').eq('id', user.id).maybeSingle());
-          var first = (prof.data && prof.data.first_name) || meta.first_name || '';
-          var company = (prof.data && prof.data.company) || meta.company || '';
-          var hour = new Date().getHours();
-          var greet = greetingFor(hour);
-          if ($('hx-greeting')) {
-            $('hx-greeting').innerHTML = first
-              ? greet + ', <em>' + escape(first) + '.</em>'
-              : greet + ', <em>there.</em>';
-          }
-          if ($('hx-eyebrow-text')) {
-            var dayName = new Date().toLocaleDateString(undefined, { weekday: 'long' });
-            $('hx-eyebrow-text').textContent = dayName + ' · workspace ready';
-          }
-          if ($('hx-hero-workspace')) $('hx-hero-workspace').textContent = company || 'Personal';
-          if ($('hx-month-name')) $('hx-month-name').textContent = new Date().toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
-
-          var active = getActiveProject();
-          var firstOfMonth = new Date(); firstOfMonth.setDate(1); firstOfMonth.setHours(0,0,0,0);
-          var firstOfMonthIso = firstOfMonth.toISOString();
-          var sevenDaysAgo = new Date(Date.now() - 7*86400000).toISOString();
-
-          var activityQuery = sb.from('activity_events')
-            .select('id,kind,created_at,payload,project_id')
-            .order('created_at', { ascending: false })
-            .limit(8);
-          if (active && active.id) activityQuery = activityQuery.eq('project_id', active.id);
-
-          var [projects, credits, subs, invoices, recent, chats, artifacts, usage, userSettings] = await Promise.all([
-            safeQuery(sb.from('projects').select('id,name,slug,status,description,updated_at,created_at')),
-            safeQuery(sb.from('credits_balance').select('credits_total,credits_used').maybeSingle()),
-            safeQuery(sb.from('subscriptions').select('plan,status,current_period_end').maybeSingle()),
-            safeQuery(sb.from('invoices').select('id,status', { count: 'exact', head: true }).neq('status', 'paid')),
-            safeQuery(activityQuery),
-            safeQuery(sb.from('chat_conversations').select('id,title,model,project_id,updated_at').order('updated_at', { ascending: false }).limit(5)),
-            safeQuery(sb.from('workbench_artifacts').select('id,title,kind,updated_at').order('updated_at', { ascending: false }).limit(5)),
-            safeQuery(sb.from('api_usage_log').select('model,credits_consumed,created_at').gte('created_at', firstOfMonthIso)),
-            safeQuery(sb.from('user_settings').select('timezone').eq('user_id', user.id).maybeSingle())
-          ]);
-
-          var tz = (userSettings.data && userSettings.data.timezone) || 'Europe/Zurich';
-          setupClock(tz);
-
-          // ── Credits ──
-          if (credits.data) {
-            var available = Math.max(0, (credits.data.credits_total || 0) - (credits.data.credits_used || 0));
-            if ($('hx-stat-credits')) {
-              animateCount($('hx-stat-credits'), available, { suffix: '<span class="suffix">cr</span>' });
-            }
-            $('hx-stat-credits-meta').textContent = (subs.data && subs.data.plan && subs.data.plan !== 'free')
-              ? (subs.data.plan.charAt(0).toUpperCase() + subs.data.plan.slice(1)) + ' plan · refreshes monthly'
-              : 'Free plan — pick a plan to top up';
-            var pctUsed = (credits.data.credits_total || 0) > 0
-              ? Math.round(((credits.data.credits_used || 0) / credits.data.credits_total) * 100) : 0;
-            var d = $('hx-stat-credits-delta');
-            if (d) {
-              if (pctUsed === 0) { d.className = 'hx-metric-delta is-flat'; d.textContent = 'fresh'; }
-              else if (pctUsed < 50) { d.className = 'hx-metric-delta'; d.textContent = pctUsed + '% used'; }
-              else if (pctUsed < 85) { d.className = 'hx-metric-delta is-flat'; d.textContent = pctUsed + '% used'; }
-              else { d.className = 'hx-metric-delta is-down'; d.textContent = pctUsed + '% used'; }
-            }
-          }
-
-          // ── Active projects ──
-          var rows = projects.data || [];
-          var activeCount = rows.filter(function (p) { return p.status === 'active'; }).length;
-          var newThisWeek = rows.filter(function (p) { return p.created_at && new Date(p.created_at) > new Date(sevenDaysAgo); }).length;
-          if ($('hx-stat-projects')) animateCount($('hx-stat-projects'), activeCount);
-          $('hx-stat-projects-meta').textContent = activeCount === 0
-            ? 'Nothing in flight'
-            : (rows.length - activeCount) + ' paused / archived';
-          var pd = $('hx-stat-projects-delta');
-          if (pd) {
-            if (newThisWeek > 0) { pd.className = 'hx-metric-delta'; pd.textContent = '+' + newThisWeek + ' this week'; }
-            else { pd.className = 'hx-metric-delta is-flat'; pd.textContent = 'steady'; }
-          }
-
-          // ── Subscription ──
-          var planRaw = (subs.data && subs.data.plan) || 'free';
-          var planLabel = planRaw.charAt(0).toUpperCase() + planRaw.slice(1);
-          $('hx-stat-plan').textContent = planLabel;
-          $('hx-stat-plan-meta').textContent = planRaw === 'free'
-            ? 'Pick a plan to get started'
-            : (subs.data && subs.data.status === 'active'
-                ? ('Renews ' + (subs.data.current_period_end ? fmtDate(subs.data.current_period_end) : 'soon'))
-                : (subs.data && subs.data.status) || '—');
-
-          // ── Open invoices ──
-          var invCount = (invoices.count) || 0;
-          if ($('hx-stat-invoices')) animateCount($('hx-stat-invoices'), invCount);
-          $('hx-stat-invoices-meta').textContent = invCount ? 'Outstanding — pay from Billing' : 'Nothing due';
-          var id = $('hx-stat-invoices-delta');
-          if (id) {
-            if (invCount > 0) { id.className = 'hx-metric-delta is-down'; id.textContent = 'Due'; id.style.display = ''; }
-            else { id.style.display = 'none'; }
-          }
-
-          // ── Sparklines from real recent usage data ──
-          // Build a 14-point series of credits consumed per day for the past
-          // 14 days. Fall back to a flat line if there's no data yet.
-          var fourteenDaysAgo = new Date(Date.now() - 14*86400000);
-          var dailyUsage = await safeQuery(
-            sb.from('api_usage_log').select('credits_consumed,created_at').gte('created_at', fourteenDaysAgo.toISOString())
-          );
-          var dailyTotals = new Array(14).fill(0);
-          (dailyUsage.data || []).forEach(function (r) {
-            var diff = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 86400000);
-            var idx = 13 - diff;
-            if (idx >= 0 && idx < 14) dailyTotals[idx] += (r.credits_consumed || 0);
-          });
-          if (dailyTotals.some(function (v) { return v > 0; })) {
-            renderSpark($('hx-spark-credits'), dailyTotals);
-          }
-
-          // ── Active engagement panel ──
-          var engHost = $('hx-engagement-host');
-          if (engHost) {
-            if (active && active.id) {
-              var thisProj = rows.find(function (p) { return p.id === active.id; });
-              if (thisProj) {
-                var statusLabel = (thisProj.status || 'active').charAt(0).toUpperCase() + (thisProj.status || 'active').slice(1);
-                engHost.innerHTML =
-                  '<div class="hx-engagement-card">' +
-                    '<p class="kicker">Active engagement</p>' +
-                    '<h3>' + escape(thisProj.name) + '</h3>' +
-                    (thisProj.description ? '<p class="desc">' + escape(thisProj.description) + '</p>' : '') +
-                    '<div class="foot">' +
-                      '<div class="meta">' +
-                        '<span><b>Status</b> · ' + escape(statusLabel) + '</span>' +
-                        '<span><b>Last touched</b> · ' + escape(relTime(thisProj.updated_at)) + '</span>' +
-                        '<span><b>Slug</b> · ' + escape(thisProj.slug || '—') + '</span>' +
-                      '</div>' +
-                      '<div class="actions">' +
-                        '<a href="/chat.html" class="hx-cta-secondary">Open chat</a>' +
-                        '<a href="/projects.html" class="hx-cta-secondary">Manage</a>' +
-                      '</div>' +
-                    '</div>' +
-                  '</div>';
-              } else {
-                engHost.innerHTML = '<div class="hx-empty"><h3>This project was removed</h3><p>Pick a different active project from the chat or projects page.</p></div>';
-              }
-            } else if (rows.length > 0) {
-              engHost.innerHTML =
-                '<div class="hx-empty">' +
-                  '<div class="icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>' +
-                  '<h3>No active project selected</h3>' +
-                  '<p>Pick one of your ' + rows.length + ' projects to scope the chat and this overview to it.</p>' +
-                  '<a href="/projects.html" class="hx-btn hx-btn-primary">Choose a project</a>' +
-                '</div>';
-            } else {
-              engHost.innerHTML =
-                '<div class="hx-empty">' +
-                  '<div class="icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>' +
-                  '<h3>No projects yet</h3>' +
-                  '<p>Create your first project to start chatting and tracking work in one place.</p>' +
-                  '<a href="/projects.html?new=1" class="hx-btn hx-btn-primary">+ New project</a>' +
-                '</div>';
-            }
-          }
-
-          // ── Recent chats list ──
-          var chatRows = (chats.data) || [];
-          if ($('hx-chats-count')) $('hx-chats-count').textContent = chatRows.length;
-          var chatHost = $('hx-recent-chats-host');
-          if (chatHost) {
-            if (chatRows.length) {
-              chatHost.innerHTML = chatRows.map(function (c) {
-                var m = (c.model || 'model') + (c.project_id ? ' · scoped' : '');
-                return '<a class="hx-list-row" href="/chat.html?c=' + encodeURIComponent(c.id) + '">' +
-                  '<span class="glyph">' + iconForKind('chat') + '</span>' +
-                  '<span class="body">' +
-                    '<span class="ttl">' + escape(c.title || 'Untitled chat') + '</span>' +
-                    '<span class="meta">' + escape(m) + '</span>' +
-                  '</span>' +
-                  '<span class="time">' + escape(relTime(c.updated_at)) + '</span>' +
-                '</a>';
-              }).join('');
-            } else {
-              chatHost.innerHTML =
-                '<div style="padding:28px 22px;text-align:center;">' +
-                  '<p style="margin:0 0 6px;font-size:13.5px;font-weight:500;">No chats yet</p>' +
-                  '<p style="margin:0 0 16px;font-size:12.5px;color:var(--hx-text-mid);">Start a conversation and it lands here.</p>' +
-                  '<a href="/chat.html" class="hx-cta-secondary">Open chat</a>' +
-                '</div>';
-            }
-          }
-
-          // ── Workbench artifacts list ──
-          var artRows = (artifacts.data) || [];
-          if ($('hx-arts-count')) $('hx-arts-count').textContent = artRows.length;
-          var artHost = $('hx-recent-artifacts-host');
-          if (artHost) {
-            if (artRows.length) {
-              artHost.innerHTML = artRows.map(function (a) {
-                var kindLabel = a.kind ? a.kind.charAt(0).toUpperCase() + a.kind.slice(1) : 'Artifact';
-                return '<a class="hx-list-row" href="/workbench.html?a=' + encodeURIComponent(a.id) + '">' +
-                  '<span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>' +
-                  '<span class="body">' +
-                    '<span class="ttl">' + escape(a.title || 'Untitled') + '</span>' +
-                    '<span class="meta">' + escape(kindLabel) + '</span>' +
-                  '</span>' +
-                  '<span class="time">' + escape(relTime(a.updated_at)) + '</span>' +
-                '</a>';
-              }).join('');
-            } else {
-              artHost.innerHTML =
-                '<div style="padding:28px 22px;text-align:center;">' +
-                  '<p style="margin:0 0 6px;font-size:13.5px;font-weight:500;">No artifacts yet</p>' +
-                  '<p style="margin:0 0 16px;font-size:12.5px;color:var(--hx-text-mid);">Anything substantial Helix produces in chat lands here automatically.</p>' +
-                  '<a href="/workbench.html" class="hx-cta-secondary">Open workbench</a>' +
-                '</div>';
-            }
-          }
-
-          // ── Usage this month ──
-          var usageRows = (usage.data) || [];
-          var creditsUsedMonth = usageRows.reduce(function (s, r) { return s + (r.credits_consumed || 0); }, 0);
-          var requestsMonth = usageRows.length;
-          var modelCounts = {};
-          usageRows.forEach(function (r) { if (r.model) modelCounts[r.model] = (modelCounts[r.model] || 0) + 1; });
-          var topModel = null; var topCount = 0;
-          Object.keys(modelCounts).forEach(function (k) { if (modelCounts[k] > topCount) { topCount = modelCounts[k]; topModel = k; } });
-
-          var creditsCap = (credits.data && credits.data.credits_total) || 0;
-          var pct = creditsCap > 0 ? Math.min(100, Math.round((creditsUsedMonth / creditsCap) * 100)) : 0;
-          if ($('hx-usage-credits')) animateCount($('hx-usage-credits'), creditsUsedMonth);
-          if ($('hx-usage-credits-meta')) $('hx-usage-credits-meta').textContent = creditsUsedMonth > 0
-            ? ('Spent so far in ' + new Date().toLocaleDateString(undefined, { month: 'long' }))
-            : 'No usage yet this month.';
-          if ($('hx-usage-credits-bar')) {
-            // Tiny delay so the bar visibly animates from 0
-            setTimeout(function () { $('hx-usage-credits-bar').style.width = pct + '%'; }, 60);
-          }
-          if ($('hx-usage-credits-used')) $('hx-usage-credits-used').textContent = creditsUsedMonth.toLocaleString() + ' used';
-          if ($('hx-usage-credits-cap'))  $('hx-usage-credits-cap').textContent  = (creditsCap ? creditsCap.toLocaleString() : '—') + ' limit';
-
-          if ($('hx-usage-model'))      $('hx-usage-model').textContent = topModel || '—';
-          if ($('hx-usage-model-meta')) $('hx-usage-model-meta').textContent = topModel
-            ? topCount + ' request' + (topCount === 1 ? '' : 's') + ' this month'
-            : 'No requests yet this month.';
-
-          if ($('hx-usage-requests')) animateCount($('hx-usage-requests'), requestsMonth);
-
-          // ── Recent activity feed ──
-          var actHost = $('hx-activity-host');
-          if (actHost) {
-            var actRows = (recent.data) || [];
-            if (actRows.length) {
-              actHost.innerHTML = '<div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">' +
-                actRows.map(function (r) {
-                  return '<div class="hx-list-row">' +
-                    '<span class="glyph">' + iconForKind(r.kind) + '</span>' +
-                    '<span class="body">' +
-                      '<span class="ttl">' + escape(labelFor(r.kind)) + '</span>' +
-                    '</span>' +
-                    '<span class="time">' + escape(relTime(r.created_at)) + '</span>' +
-                  '</div>';
-                }).join('') +
-              '</div>';
-            } else {
-              var emptyTitle = (active && active.id) ? 'No activity in this project yet' : 'Nothing has happened yet';
-              var emptyDesc  = (active && active.id)
-                ? 'Once you create chats or make changes inside this project, they will appear here.'
-                : 'Sign-ins, project briefs, deployments, plan changes — every action will be logged here with actor, timestamp, and trace ID.';
-              actHost.innerHTML =
-                '<div class="hx-empty">' +
-                  '<div class="icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>' +
-                  '<h3>' + emptyTitle + '</h3>' +
-                  '<p>' + emptyDesc + '</p>' +
-                '</div>';
-            }
-          }
+        // ── Projects grid ──
+        var projHost = $('hx-projects-host');
+        if (!projRows.length) {
+          projHost.innerHTML =
+            '<div class="hx-card" style="padding:40px 24px;text-align:center;">' +
+              '<p style="margin:0 0 4px;font-size:13.5px;font-weight:500;color:var(--hx-text);">No projects yet</p>' +
+              '<p style="margin:0 0 14px;font-size:12.5px;color:var(--hx-text-mid);max-width:380px;margin-inline:auto;">A project groups every chat, deployment, and artifact under one workspace context. Start with a template or a blank canvas.</p>' +
+              '<a href="/projects.html?new=1" class="hx-cta-primary" style="display:inline-flex;">New project</a>' +
+            '</div>';
+        } else {
+          projHost.innerHTML = '<div class="hx-vc-projects">' +
+            projRows.map(function (p) {
+              var initial = (p.name || '?').charAt(0).toUpperCase();
+              var depForProj = depRows.find(function (d) { return d.project_id === p.id; });
+              var domain = depForProj && depForProj.endpoint_url
+                ? depForProj.endpoint_url.replace(/^https?:\/\//, '')
+                : (p.slug ? p.slug + '.helvex.app' : 'No domain yet');
+              var dep = depForProj
+                ? '<div class="deploy">' +
+                    statusDot(depForProj.status) +
+                    '<span class="msg">' + esc(depForProj.version || 'v0') + ' · ' + esc(depForProj.environment || 'production') + '</span>' +
+                    '<span class="time">' + esc(relTime(depForProj.created_at)) + '</span>' +
+                  '</div>'
+                : '<div class="deploy"><span class="dot is-idle"></span><span class="msg">No deployments</span><span class="time">—</span></div>';
+              return '<a class="hx-vc-pcard" href="/projects.html#' + esc(p.slug || p.id) + '">' +
+                '<div class="head"><span class="icn">' + esc(initial) + '</span><span class="nm">' + esc(p.name) + '</span></div>' +
+                '<div class="domain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>' + esc(domain) + '</div>' +
+                dep +
+              '</a>';
+            }).join('') +
+          '</div>';
         }
 
-        loadDashboard();
-        document.addEventListener('hx:active-project-changed', loadDashboard);
-        window.addEventListener('storage', function (e) { if (e.key === ACTIVE_KEY) loadDashboard(); });
+        // ── Activity feed ──
+        var actHost = $('hx-activity-host');
+        var actRows = recent.data || [];
+        if (!actRows.length) {
+          actHost.innerHTML =
+            '<div style="padding:36px 24px;text-align:center;">' +
+              '<p style="margin:0;font-size:13px;font-weight:500;color:var(--hx-text);">No activity yet</p>' +
+              '<p style="margin:6px 0 0;font-size:12px;color:var(--hx-text-mid);">Every action you take across the workspace is logged here.</p>' +
+            '</div>';
+        } else {
+          actHost.innerHTML = actRows.map(function (r) {
+            return '<div class="hx-vc-row" style="grid-template-columns:22px 1fr auto;">' +
+              '<span class="dot is-ready"></span>' +
+              '<span class="commit"><span class="hash">' + esc(labelFor(r.kind)) + '</span>' + esc(r.actor_email || '') + '</span>' +
+              '<span class="when">' + esc(relTime(r.created_at)) + '</span>' +
+            '</div>';
+          }).join('');
+        }
       });
     })();
   </script>

@@ -27,91 +27,35 @@
     } catch (e) {}
   })();
 
-  // ── Sidebar nav, post-audit ─────────────────────────────────────────
-  // Audit-driven rebuild: 28 items → 19 items. Cuts:
-  //   • Models, Business Assistant, Monitoring, Pricing → DEAD/duplicate
-  //   • Credits/Subscriptions/Invoices/Billing → one /billing surface
-  //   • Profile → folded into Settings
-  // Every remaining item earns its slot (returned-to-weekly use-case).
+  // ── Sidebar nav — Vercel layout ────────────────────────────────────
+  // Single flat list of 9 items. No section labels. This matches
+  // Vercel's team-scope sidebar exactly: Overview / Projects /
+  // Deployments / a couple of utilities / Settings.
+  //
+  // What got folded:
+  //   • CRM, Marketing, Automation, Workbench, Memory → tools
+  //     accessible from inside a Project, not as standalone top-level.
+  //   • Workflows → merged into Deployments (a workflow IS a deploy).
+  //   • Monitoring → merged into Analytics.
+  //   • Services, Consulting → become Project templates / sales CTAs
+  //     inside Projects, not their own nav slots.
+  //   • Notifications, Sessions, Connected, Security, Team, Audit,
+  //     Preferences, API Keys, Integrations, Billing, Support →
+  //     all tabs inside /settings (Vercel's pattern). Each old route
+  //     keeps working as a deep-link.
   var NAV_GROUPS = [
     {
-      label: 'Workspace',
+      label: '',
       items: [
-        { id: 'dashboard',  href: '/dashboard.html',  label: 'Overview',   icon: 'home' },
-        { id: 'chat',       href: '/chat.html',       label: 'Chat',       icon: 'chat' },
-        { id: 'workbench',  href: '/workbench.html',  label: 'Workbench',  icon: 'workbench' },
-        { id: 'memory',     href: '/memory.html',     label: 'Memory',     icon: 'memory' },
-        { id: 'projects',   href: '/projects.html',   label: 'Projects',   icon: 'folder' },
-        { id: 'services',   href: '/services.html',   label: 'Services',   icon: 'grid' },
-        { id: 'consulting', href: '/consulting.html', label: 'Consulting', icon: 'briefcase' }
-      ]
-    },
-    {
-      label: 'Toolkit',
-      items: [
-        // Removed: Business Assistant (duplicate of Chat with a persona dropdown).
-        { id: 'app-crm',         href: '/app-crm',         label: 'CRM',             icon: 'contacts' },
-        { id: 'app-marketing',   href: '/app-marketing',   label: 'Marketing Tools', icon: 'megaphone' },
-        { id: 'app-automation',  href: '/app-automation',  label: 'Automation',      icon: 'flow' }
-      ]
-    },
-    {
-      label: 'Build',
-      items: [
-        // Removed: Models (vanity catalog; chat already picks model).
-        { id: 'workflows',   href: '/workflows.html',   label: 'Workflows',   icon: 'zap' },
-        { id: 'deployments', href: '/deployments.html', label: 'Deployments', icon: 'cloud' }
-      ]
-    },
-    {
-      label: 'Observability',
-      items: [
-        // Removed: Monitoring (re-derived from deployments + usage_events —
-        // same data, no new view).
-        { id: 'activity',   href: '/activity.html',   label: 'Activity',   icon: 'pulse' },
-        { id: 'usage',      href: '/usage.html',      label: 'Usage',      icon: 'chart' },
-        { id: 'logs',       href: '/logs.html',       label: 'Logs',       icon: 'terminal' }
-      ]
-    },
-    {
-      label: 'Developer',
-      items: [
-        { id: 'api-keys',     href: '/api-keys.html',     label: 'API Keys',     icon: 'key' },
-        { id: 'integrations', href: '/integrations.html', label: 'Integrations', icon: 'plug' },
-        { id: 'domains',      href: '/domains.html',      label: 'Domains',      icon: 'globe' }
-      ]
-    },
-    {
-      label: 'Billing',
-      items: [
-        // Merged: 5 sidebar items → one /billing surface with tabs
-        // (Plan · Credits · Invoices · Payment). Pricing dropped —
-        // belongs on the marketing site, not the workspace.
-        { id: 'billing', href: '/billing.html', label: 'Billing & Plan', icon: 'card' }
-      ]
-    },
-    {
-      label: 'Account',
-      items: [
-        // Vercel-grade account surface. Each item is a real settings
-        // page with its own concern — name + avatar, email & push
-        // notifications, active sessions and devices, connected
-        // identities, password + MFA, team members + roles, audit
-        // trail of account actions, language/theme/density, ticket
-        // channel. Nine items because a real product covers nine
-        // concerns; cramming them into a single Settings page is what
-        // makes a platform feel half-baked.
-        { id: 'profile',       href: '/profile.html',         label: 'Profile',           icon: 'user'      },
-        { id: 'notifications', href: '/notifications.html',   label: 'Notifications',     icon: 'bell'      },
-        { id: 'sessions',      href: '/sessions.html',        label: 'Sessions',          icon: 'monitor'   },
-        { id: 'connected',     href: '/connected.html',       label: 'Connected accounts', icon: 'link'     },
-        { id: 'security',      href: '/security.html',        label: 'Password & MFA',    icon: 'shield'    },
-        { id: 'team',          href: '/team.html',            label: 'Team members',      icon: 'users'     },
-        { id: 'audit-log',     href: '/audit-log.html',       label: 'Audit log',         icon: 'history'   },
-        { id: 'settings',      href: '/settings.html',        label: 'Preferences',       icon: 'cog'       },
-        // Support lives INSIDE the platform — never bounce the user out
-        // to the public marketing page from a signed-in surface.
-        { id: 'support',       href: '/tickets.html',         label: 'Support',           icon: 'help'      }
+        { id: 'dashboard',   href: '/dashboard.html',   label: 'Overview',    icon: 'home' },
+        { id: 'projects',    href: '/projects.html',    label: 'Projects',    icon: 'folder' },
+        { id: 'deployments', href: '/deployments.html', label: 'Deployments', icon: 'cloud' },
+        { id: 'chat',        href: '/chat.html',        label: 'Chat',        icon: 'chat' },
+        { id: 'workbench',   href: '/workbench.html',   label: 'Workbench',   icon: 'workbench' },
+        { id: 'usage',       href: '/usage.html',       label: 'Analytics',   icon: 'chart' },
+        { id: 'logs',        href: '/logs.html',        label: 'Logs',        icon: 'terminal' },
+        { id: 'activity',    href: '/activity.html',    label: 'Activity',    icon: 'pulse' },
+        { id: 'settings',    href: '/settings.html',    label: 'Settings',    icon: 'cog' }
       ]
     }
   ];
@@ -490,6 +434,43 @@
       }
     });
     mountCommandPalette();
+
+    // Settings-family tab nav — injected once into <main> for every
+    // page that lives under the "Settings" umbrella. Keeps the IA flat
+    // (one sidebar item) while still surfacing every old account
+    // surface as a clickable tab.
+    (function injectSettingsTabs() {
+      var active = (document.body.getAttribute('data-active') || '').toLowerCase();
+      var SETTINGS_FAMILY = {
+        settings:      { href: '/settings.html',       label: 'General' },
+        profile:       { href: '/profile.html',        label: 'Profile' },
+        team:          { href: '/team.html',           label: 'Members' },
+        notifications: { href: '/notifications.html',  label: 'Notifications' },
+        security:      { href: '/security.html',       label: 'Security' },
+        sessions:      { href: '/sessions.html',       label: 'Sessions' },
+        connected:     { href: '/connected.html',      label: 'Connected' },
+        'api-keys':    { href: '/api-keys.html',       label: 'API Keys' },
+        integrations:  { href: '/integrations.html',   label: 'Integrations' },
+        domains:       { href: '/domains.html',        label: 'Domains' },
+        billing:       { href: '/billing.html',        label: 'Billing' },
+        'audit-log':   { href: '/audit-log.html',      label: 'Audit log' },
+        support:       { href: '/tickets.html',        label: 'Support' }
+      };
+      if (!SETTINGS_FAMILY[active]) return;
+      var main = document.querySelector('.hx-main'); if (!main) return;
+      var bar = document.createElement('nav');
+      bar.className = 'hx-settings-tabs';
+      bar.innerHTML = Object.keys(SETTINGS_FAMILY).map(function (k) {
+        var t = SETTINGS_FAMILY[k];
+        return '<a href="' + t.href + '"' + (k === active ? ' class="is-active"' : '') + '>' + t.label + '</a>';
+      }).join('');
+      // Insert AFTER the hero (so the hero still reads as the page header)
+      // but BEFORE the first real content section.
+      var hero = main.querySelector('.hx-pg-hero');
+      if (hero && hero.nextSibling) main.insertBefore(bar, hero.nextSibling);
+      else if (hero) main.appendChild(bar);
+      else main.insertBefore(bar, main.firstChild);
+    })();
 
     loadAuthScript();
     if (window.HX && window.HX.supabase) hydrateUser();

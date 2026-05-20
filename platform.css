@@ -10,11 +10,8 @@
    • Red reserved for warnings / destructive
    ═══════════════════════════════════════════════════════════ */
 
-/* Instrument Serif — used by .hx-pg-title em, .hx-metric-value,
-   .hx-spotlight h3 and .hx-foot-signature .sig-right. Imported here
-   so every page that loads platform.css gets the premium accent
-   without a per-page <link>. */
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+/* Vercel-style: Inter sans + JetBrains Mono for numerals. Instrument
+   Serif was removed when we stripped the HelveX premium accents. */
 
 /* Dark mode — driven by html[data-theme="dark"] (set by platform.js
    bootstrap from localStorage "hx.theme" which Settings page writes).
@@ -1906,139 +1903,120 @@ html[data-theme="dark"] .hx-cmdp-foot kbd {
      </main>
    ══════════════════════════════════════════════════════════════ */
 
-/* Atmospheric backdrop — two blurred radial gradient orbs */
-.hx-aura {
-  position: absolute; inset: 0; pointer-events: none;
-  overflow: hidden; z-index: 0;
-}
-.hx-aura::before, .hx-aura::after {
-  content: ''; position: absolute;
-  border-radius: 50%; filter: blur(80px); opacity: 0.55;
-  transition: opacity 0.4s;
-}
-.hx-aura::before {
-  top: -180px; left: -120px;
-  width: 520px; height: 520px;
-  background: radial-gradient(closest-side, rgba(252, 211, 77, 0.32), transparent 70%);
-}
-.hx-aura::after {
-  top: 80px; right: -160px;
-  width: 460px; height: 460px;
-  background: radial-gradient(closest-side, rgba(220, 38, 38, 0.16), transparent 70%);
-}
-html[data-theme="dark"] .hx-aura::before { opacity: 0.30; }
-html[data-theme="dark"] .hx-aura::after  { opacity: 0.18; }
-@media (max-width: 760px) { .hx-aura { display: none; } }
+/* Vercel-style: no atmospheric orbs. Aura is now a no-op so existing
+   <div class="hx-aura"> elements don't break anything but contribute
+   nothing visually. The platform reads as a flat black/white surface,
+   not a HelveX marketing page. */
+.hx-aura { display: none; }
 
-/* Hero block */
+/* Hero block — Vercel: a tight title row with optional inline meta.
+   The eyebrow becomes a single muted line (breadcrumb-ish), no pill,
+   no pulse dot, no glow. Vercel writes "Overview" / "Projects" /
+   "Settings" in muted text above the H1 — nothing else. */
 .hx-pg-hero {
   position: relative;
-  padding: 6px 0 28px;
+  padding: 2px 0 18px;
   margin-bottom: 8px;
-  z-index: 1;
+  border-bottom: 1px solid var(--hx-line);
 }
 .hx-pg-eyebrow {
-  display: inline-flex; align-items: center; gap: 9px;
+  display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--hx-mono);
-  font-size: 10.5px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.14em;
-  color: var(--hx-text-mid);
-  margin: 0 0 18px;
-  padding: 5px 11px;
-  background: var(--hx-surface);
-  border: 1px solid var(--hx-line);
-  border-radius: 999px;
-  box-shadow: var(--hx-shadow-xs);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--hx-text-dim);
+  margin: 0 0 6px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 .hx-pg-eyebrow-dot {
-  width: 6px; height: 6px; border-radius: 50%;
+  width: 5px; height: 5px; border-radius: 50%;
   background: var(--hx-emerald);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18), 0 0 12px rgba(16, 185, 129, 0.55);
-  animation: hx-pg-pulse 2.4s ease-in-out infinite;
 }
-.hx-pg-eyebrow-dot.is-yellow {
-  background: var(--hx-yellow-deep);
-  box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.22), 0 0 12px rgba(252, 211, 77, 0.45);
-}
-@keyframes hx-pg-pulse {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(16,185,129,0.18), 0 0 12px rgba(16,185,129,0.55); }
-  50%      { box-shadow: 0 0 0 7px rgba(16,185,129,0.04), 0 0 18px rgba(16,185,129,0.30); }
-}
+.hx-pg-eyebrow-dot.is-yellow { background: var(--hx-yellow-deep); }
 
 .hx-pg-hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 28px;
+  gap: 22px;
   align-items: flex-end;
 }
+/* Vercel-style title: tight, single-weight, sans only. No serif italics,
+   no gradient text — Vercel never decorates the headline. The <em>
+   that pages still use just renders as plain text (or is hidden if
+   it contains only punctuation). */
 .hx-pg-title {
   margin: 0;
-  font-size: clamp(34px, 4.6vw, 52px);
+  font-size: 24px;
   font-weight: 600;
-  letter-spacing: -0.026em;
-  line-height: 1.02;
+  letter-spacing: -0.018em;
+  line-height: 1.2;
   color: var(--hx-text);
 }
 .hx-pg-title em {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.012em;
-  font-size: 1.04em;
-  background: linear-gradient(135deg, var(--hx-text), var(--hx-text-mid));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-style: normal;
+  font-weight: 600;
+  font-family: inherit;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
 }
+/* Hide the standalone "·" em that pages use as a decorator — Vercel
+   uses a clean title with no trailing punctuation. */
+.hx-pg-title em:only-child:empty,
+.hx-pg-title em:last-child:not(:first-child) { display: none; }
 .hx-pg-sub {
-  margin: 14px 0 0;
-  font-size: 14.5px;
+  margin: 6px 0 0;
+  font-size: 13.5px;
   color: var(--hx-text-mid);
-  max-width: 600px;
-  line-height: 1.6;
-  letter-spacing: -0.005em;
+  max-width: 720px;
+  line-height: 1.5;
+  letter-spacing: -0.003em;
 }
+/* Hero meta strip — Vercel: inline labels, no glass card. Plain text
+   beside the title (or below on mobile). No shadow, no backdrop blur. */
 .hx-pg-meta-strip {
-  display: flex; gap: 0;
-  align-items: stretch;
-  padding: 14px 4px 14px 18px;
-  background: var(--hx-surface);
-  border: 1px solid var(--hx-line);
-  border-radius: var(--hx-r-lg);
-  box-shadow: var(--hx-shadow-sm);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  min-width: 360px;
+  display: flex; gap: 22px;
+  align-items: flex-end;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  min-width: 0;
 }
 .hx-pg-meta-item {
-  flex: 1; min-width: 0;
-  padding: 0 18px 0 0;
-  border-right: 1px solid var(--hx-line-soft);
-  display: flex; flex-direction: column; justify-content: center;
+  display: flex; flex-direction: column;
+  padding: 0; border: 0;
+  min-width: 0;
 }
-.hx-pg-meta-item:last-child { border-right: 0; padding-right: 18px; }
-.hx-pg-meta-item + .hx-pg-meta-item { padding-left: 18px; }
+.hx-pg-meta-item:last-child { padding-right: 0; }
+.hx-pg-meta-item + .hx-pg-meta-item { padding-left: 0; }
 .hx-pg-meta-label {
   font-family: var(--hx-mono);
-  font-size: 9.5px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.14em;
+  font-size: 10.5px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.04em;
   color: var(--hx-text-dim);
-  margin: 0 0 4px;
+  margin: 0 0 2px;
 }
 .hx-pg-meta-value {
-  font-size: 14.5px; font-weight: 600;
-  letter-spacing: -0.012em;
+  font-size: 12.5px; font-weight: 500;
+  letter-spacing: -0.005em;
   color: var(--hx-text);
   white-space: nowrap;
   margin: 0;
 }
-.hx-pg-meta-value.hx-mono { font-family: var(--hx-mono); font-size: 14px; font-variant-numeric: tabular-nums; }
+.hx-pg-meta-value.hx-mono { font-family: var(--hx-mono); font-size: 12px; font-variant-numeric: tabular-nums; }
 
 .hx-pg-cta-row {
-  display: flex; gap: 10px; flex-wrap: wrap;
-  margin-top: 22px;
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-top: 14px;
 }
 
 @media (max-width: 860px) {
@@ -2046,47 +2024,46 @@ html[data-theme="dark"] .hx-aura::after  { opacity: 0.18; }
   .hx-pg-meta-strip { min-width: 0; }
 }
 
-/* Premium CTAs */
+/* Vercel CTAs — flat, no gradient, no translate-y on hover. Pure black
+   primary, white secondary with hairline border. */
 .hx-cta-primary {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 0 18px; height: 38px;
-  background: linear-gradient(180deg, var(--hx-text), var(--hx-text-mid));
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 0 12px; height: 32px;
+  background: var(--hx-text);
   color: var(--hx-bg);
   border: 1px solid var(--hx-text);
   border-radius: var(--hx-r-sm);
-  font-size: 13.5px; font-weight: 600;
-  letter-spacing: -0.005em;
+  font-size: 13px; font-weight: 500;
+  letter-spacing: -0.003em;
   text-decoration: none;
-  box-shadow: var(--hx-shadow), 0 0 0 1px rgba(0, 0, 0, 0.04) inset;
-  transition: transform 0.14s, box-shadow 0.14s, filter 0.14s;
+  box-shadow: none;
+  transition: background 0.12s, border-color 0.12s, opacity 0.12s;
   cursor: pointer; font-family: inherit;
 }
 .hx-cta-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--hx-shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.04) inset;
-  filter: brightness(1.05);
+  background: var(--hx-text-mid);
+  border-color: var(--hx-text-mid);
 }
-.hx-cta-primary svg { width: 14px; height: 14px; }
+.hx-cta-primary svg { width: 13px; height: 13px; }
 
 .hx-cta-secondary {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 0 16px; height: 38px;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 0 12px; height: 32px;
   background: var(--hx-surface);
   color: var(--hx-text);
   border: 1px solid var(--hx-line);
   border-radius: var(--hx-r-sm);
-  font-size: 13.5px; font-weight: 500;
+  font-size: 13px; font-weight: 500;
   text-decoration: none;
-  box-shadow: var(--hx-shadow-xs);
-  transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s;
+  box-shadow: none;
+  transition: border-color 0.12s, background 0.12s;
   cursor: pointer; font-family: inherit;
 }
 .hx-cta-secondary:hover {
   border-color: var(--hx-line-strong);
-  transform: translateY(-1px);
-  box-shadow: var(--hx-shadow-sm);
+  background: var(--hx-bg-2);
 }
-.hx-cta-secondary svg { width: 14px; height: 14px; }
+.hx-cta-secondary svg { width: 13px; height: 13px; }
 
 /* Premium section heading — mono uppercase + left rule + italic sub-meta */
 .hx-sec-pre {
@@ -2110,10 +2087,10 @@ html[data-theme="dark"] .hx-aura::after  { opacity: 0.18; }
   color: var(--hx-text);
 }
 .hx-sec-pre .sub-meta {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-style: italic;
-  font-size: 14.5px;
-  letter-spacing: -0.005em;
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-size: 12.5px;
+  letter-spacing: 0;
   color: var(--hx-text-mid);
 }
 .hx-sec-pre a {
@@ -2170,20 +2147,21 @@ html[data-theme="dark"] .hx-aura::after  { opacity: 0.18; }
   box-shadow: var(--hx-shadow-xs), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 .hx-metric-label .ico svg { width: 13px; height: 13px; }
+/* Vercel metric value: 24px Geist/Inter, mono numerals, no serif. */
 .hx-metric-value {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-size: 52px;
-  font-weight: 400;
-  letter-spacing: -0.024em;
+  font-family: var(--hx-mono);
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.012em;
   color: var(--hx-text);
-  line-height: 0.95;
-  margin: 0 0 16px;
+  line-height: 1.1;
+  margin: 0 0 12px;
   font-variant-numeric: tabular-nums;
   display: flex; align-items: baseline; gap: 4px;
 }
 .hx-metric-value .suffix {
   font-family: 'Inter', sans-serif;
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--hx-text-mid);
   letter-spacing: 0;
@@ -2191,12 +2169,12 @@ html[data-theme="dark"] .hx-aura::after  { opacity: 0.18; }
 }
 .hx-metric-value-text {
   font-family: 'Inter', sans-serif;
-  font-size: 30px;
+  font-size: 18px;
   font-weight: 600;
-  letter-spacing: -0.018em;
+  letter-spacing: -0.012em;
   color: var(--hx-text);
-  line-height: 1.05;
-  margin: 0 0 16px;
+  line-height: 1.2;
+  margin: 0 0 12px;
 }
 .hx-metric-spark {
   height: 28px; width: 100%;
@@ -2297,63 +2275,44 @@ html[data-theme="dark"] .hx-aura::after  { opacity: 0.18; }
   margin: 0;
 }
 
-/* Premium engagement / spotlight card with yellow accent strip */
+/* Vercel-flat spotlight — no yellow strip, no halo, no serif. Just a
+   clean elevated card. */
 .hx-spotlight {
   position: relative;
   background: var(--hx-surface);
   border: 1px solid var(--hx-line);
-  border-radius: var(--hx-r-xl);
-  padding: 28px 30px;
+  border-radius: var(--hx-r);
+  padding: 18px 20px;
   overflow: hidden;
-  isolation: isolate;
-}
-.hx-spotlight::before {
-  content: ''; position: absolute;
-  top: 0; left: 0; bottom: 0; width: 3px;
-  background: linear-gradient(180deg, var(--hx-yellow), var(--hx-yellow-deep));
-}
-.hx-spotlight::after {
-  content: ''; position: absolute;
-  top: -100px; right: -100px; width: 320px; height: 320px;
-  background: radial-gradient(closest-side, rgba(252, 211, 77, 0.16), transparent 70%);
-  pointer-events: none;
-  z-index: -1;
 }
 .hx-spotlight .kicker {
   display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--hx-mono);
-  font-size: 10px; font-weight: 600;
-  letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--hx-yellow-deep);
-  margin: 0 0 8px;
-}
-.hx-spotlight .kicker::before {
-  content: ''; width: 5px; height: 5px;
-  background: var(--hx-yellow-deep);
-  border-radius: 50%;
-  box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.22);
+  font-size: 10.5px; font-weight: 500;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--hx-text-dim);
+  margin: 0 0 6px;
 }
 .hx-spotlight h3 {
-  margin: 0 0 6px;
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-size: 34px;
-  font-weight: 400;
-  letter-spacing: -0.018em;
-  line-height: 1.05;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.3;
   color: var(--hx-text);
 }
 .hx-spotlight .desc {
-  margin: 10px 0 0;
+  margin: 6px 0 0;
   color: var(--hx-text-mid);
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 13px;
+  line-height: 1.5;
   max-width: 720px;
 }
 
-/* Signature footer line */
+/* Vercel-flat footer — single mono line, no italic accent. */
 .hx-foot-signature {
-  margin: 56px 0 12px;
-  padding-top: 18px;
+  margin: 48px 0 12px;
+  padding-top: 16px;
   border-top: 1px solid var(--hx-line);
   display: flex; align-items: center; justify-content: space-between;
   gap: 14px; flex-wrap: wrap;
@@ -2362,21 +2321,48 @@ html[data-theme="dark"] .hx-aura::after  { opacity: 0.18; }
   font-family: var(--hx-mono);
   font-size: 11px;
   color: var(--hx-text-dim);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
   margin: 0;
 }
 .hx-foot-signature .sig-left b { color: var(--hx-text-mid); font-weight: 500; }
 .hx-foot-signature .sig-right {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-style: italic;
-  font-size: 14.5px;
-  color: var(--hx-text-mid);
-  letter-spacing: -0.005em;
+  font-family: var(--hx-mono);
+  font-size: 11px;
+  color: var(--hx-text-dim);
+  letter-spacing: 0.02em;
   margin: 0;
 }
 
 /* Need positioning context for absolute .hx-aura */
 .hx-main { position: relative; }
+
+/* ── Settings tab bar (Vercel-style horizontal nav) ──────────── */
+.hx-settings-tabs {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--hx-line);
+  margin: -10px 0 22px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.hx-settings-tabs::-webkit-scrollbar { display: none; }
+.hx-settings-tabs a {
+  position: relative;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--hx-text-mid);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.12s, border-color 0.12s;
+}
+.hx-settings-tabs a:hover { color: var(--hx-text); }
+.hx-settings-tabs a.is-active {
+  color: var(--hx-text);
+  border-bottom-color: var(--hx-text);
+  font-weight: 600;
+}
 
 @media (max-width: 760px) {
   .hx-metric-value { font-size: 42px; }
