@@ -12,6 +12,198 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
   <style>
+    /* ─── Per-model theme tokens ─────────────────────────────────────
+       Each Helix model paints its own accent through --hx-mc-* vars.
+       Body sets data-model="ether|nexus|prometheus" and these cascade
+       through the chat: title accent stripe, user bubble tint, send
+       button gradient, composer focus ring, tools popover highlight,
+       and everything in between. Transitions are global so the swap
+       feels like a single coordinated reshape. */
+    body { --hx-mc:      var(--hx-yellow);
+           --hx-mc-deep: var(--hx-yellow-deep);
+           --hx-mc-soft: var(--hx-yellow-soft);
+           --hx-mc-glow: rgba(201, 162, 39, 0.32); }
+    body[data-model="ether"] { --hx-mc: var(--hx-yellow); --hx-mc-deep: var(--hx-yellow-deep); --hx-mc-soft: var(--hx-yellow-soft); --hx-mc-glow: rgba(201, 162, 39, 0.32); }
+    body[data-model="nexus"] {
+      --hx-mc:      #C2410C;   /* coral-red */
+      --hx-mc-deep: #7C2D12;
+      --hx-mc-soft: rgba(194, 65, 12, 0.13);
+      --hx-mc-glow: rgba(194, 65, 12, 0.30);
+    }
+    body[data-model="prometheus"] {
+      --hx-mc:      #18181B;   /* graphite */
+      --hx-mc-deep: #09090B;
+      --hx-mc-soft: rgba(24, 24, 27, 0.07);
+      --hx-mc-glow: rgba(204, 16, 22, 0.32);  /* flame ember halo */
+    }
+
+    /* Smooth transitions on the elements that swap accent */
+    .hx-chat-title::before,
+    .hx-chat-balance::before,
+    .hx-chat-rail-title::before,
+    .hx-chat-item::before,
+    .hx-msg.is-assistant .hx-msg-meta::before,
+    .hx-chat-blank h2::after,
+    .hx-chat-blank-mark::after,
+    .hx-chat-blank-mark::before,
+    .hx-chat-pane::before,
+    .hx-chat-send,
+    .hx-chat-input-row:focus-within,
+    .hx-chat-blank-chip:hover,
+    .hx-md-list.hx-md-list-num > li::before,
+    .hx-md-h2,
+    .hx-md-quote {
+      transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                  border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                  box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                  color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Override the hardcoded yellow accents to use --hx-mc when on a
+       non-ether model. We do this with selectors so only the right
+       elements re-color. */
+    body[data-model="nexus"] .hx-chat-title::before,
+    body[data-model="prometheus"] .hx-chat-title::before {
+      background: linear-gradient(180deg, transparent 0%, var(--hx-mc) 50%, transparent 100%);
+    }
+    body[data-model="nexus"] .hx-chat-balance::before,
+    body[data-model="prometheus"] .hx-chat-balance::before {
+      background: var(--hx-mc);
+      box-shadow: 0 0 0 2px var(--hx-mc-soft), 0 0 8px var(--hx-mc-glow);
+    }
+    body[data-model="nexus"] .hx-chat-rail-title::before,
+    body[data-model="prometheus"] .hx-chat-rail-title::before {
+      background: var(--hx-mc);
+      box-shadow: 0 0 0 3px var(--hx-mc-soft);
+    }
+    body[data-model="nexus"] .hx-chat-item::before,
+    body[data-model="prometheus"] .hx-chat-item::before {
+      background: linear-gradient(180deg, transparent 0%, var(--hx-mc) 50%, transparent 100%);
+      box-shadow: 0 0 6px var(--hx-mc-glow);
+    }
+    body[data-model="nexus"] .hx-chat-item.is-active,
+    body[data-model="prometheus"] .hx-chat-item.is-active {
+      background: linear-gradient(180deg, var(--hx-mc-soft) 0%, var(--hx-bg-2) 100%);
+    }
+    body[data-model="nexus"] .hx-msg.is-assistant .hx-msg-meta::before,
+    body[data-model="prometheus"] .hx-msg.is-assistant .hx-msg-meta::before {
+      background: var(--hx-mc);
+      box-shadow: 0 0 0 3px var(--hx-mc-soft), 0 0 8px var(--hx-mc-glow);
+    }
+    body[data-model="nexus"] .hx-chat-blank h2::after,
+    body[data-model="prometheus"] .hx-chat-blank h2::after {
+      color: var(--hx-mc);
+    }
+    body[data-model="nexus"] .hx-chat-blank-mark::after,
+    body[data-model="prometheus"] .hx-chat-blank-mark::after {
+      background: var(--hx-mc);
+      box-shadow: 0 0 0 3px var(--hx-mc-soft), 0 0 14px var(--hx-mc-glow);
+    }
+    body[data-model="nexus"] .hx-chat-pane::before,
+    body[data-model="prometheus"] .hx-chat-pane::before {
+      background: radial-gradient(ellipse at center top,
+        color-mix(in srgb, var(--hx-mc) 10%, transparent) 0%, transparent 70%);
+    }
+    body[data-model="nexus"] .hx-md-list.hx-md-list-num > li::before,
+    body[data-model="prometheus"] .hx-md-list.hx-md-list-num > li::before {
+      color: var(--hx-mc);
+    }
+    body[data-model="nexus"] .hx-md-quote,
+    body[data-model="prometheus"] .hx-md-quote {
+      border-left-color: var(--hx-mc);
+      background: linear-gradient(90deg, var(--hx-mc-soft) 0%, transparent 60%);
+    }
+    /* Send button picks up a subtle model-themed ring on hover */
+    body[data-model="nexus"] .hx-chat-send:hover:not(:disabled),
+    body[data-model="prometheus"] .hx-chat-send:hover:not(:disabled) {
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 22%, transparent),
+        0 2px 4px rgba(0,0,0,0.12),
+        0 10px 22px -8px rgba(0,0,0,0.28),
+        0 0 0 4px var(--hx-mc-soft);
+    }
+    /* Composer focus ring takes the model tint */
+    body[data-model="nexus"] .hx-chat-input-row:focus-within,
+    body[data-model="prometheus"] .hx-chat-input-row:focus-within {
+      border-color: color-mix(in srgb, var(--hx-mc) 70%, var(--hx-line));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+        0 0 0 4px color-mix(in srgb, var(--hx-mc) 8%, transparent),
+        0 12px 36px -14px var(--hx-mc-glow);
+    }
+
+    /* ─── MORPH animation overlay — the FIRE ─────────────────────────
+       When the model selector changes, a full-screen radial sweep
+       washes outward, the new model's logo briefly fills the center
+       as a 220px ghost watermark, and the whole chat reshapes its
+       accent in one coordinated motion. */
+    .hx-morph {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 80;
+      opacity: 0;
+    }
+    .hx-morph.is-playing { opacity: 1; }
+    .hx-morph-ripple {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: radial-gradient(circle,
+        var(--hx-mc-soft) 0%,
+        var(--hx-mc-soft) 40%,
+        transparent 70%);
+      filter: blur(4px);
+    }
+    .hx-morph.is-playing .hx-morph-ripple {
+      animation: hx-morph-ripple 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    }
+    @keyframes hx-morph-ripple {
+      0%   { transform: translate(-50%, -50%) scale(0);   opacity: 0; }
+      15%  { opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(60);  opacity: 0; }
+    }
+    .hx-morph-mark {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 220px; height: 220px;
+      transform: translate(-50%, -50%) scale(0.4);
+      opacity: 0;
+      color: var(--hx-mc);
+      display: flex; align-items: center; justify-content: center;
+      filter: drop-shadow(0 0 28px var(--hx-mc-glow));
+    }
+    .hx-morph-mark svg { width: 100%; height: 100%; }
+    .hx-morph.is-playing .hx-morph-mark {
+      animation: hx-morph-mark 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    }
+    .hx-morph.is-prometheus .hx-morph-mark {
+      animation-name: hx-morph-mark-flame;
+    }
+    .hx-morph.is-ether .hx-morph-mark svg { animation: hx-morph-spin 1.4s linear; }
+    @keyframes hx-morph-spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes hx-morph-mark {
+      0%   { transform: translate(-50%, -50%) scale(0.4);  opacity: 0; }
+      30%  { transform: translate(-50%, -50%) scale(1.05); opacity: 0.95; }
+      55%  { transform: translate(-50%, -50%) scale(1);    opacity: 0.9; }
+      100% { transform: translate(-50%, -50%) scale(1.18); opacity: 0; }
+    }
+    @keyframes hx-morph-mark-flame {
+      0%   { transform: translate(-50%, -50%) scale(0.3)  skewX(-4deg);  opacity: 0; }
+      30%  { transform: translate(-50%, -50%) scale(1.1)  skewX(2deg);   opacity: 1; }
+      45%  { transform: translate(-50%, -50%) scale(0.96) skewX(-1deg);  opacity: 0.95; }
+      60%  { transform: translate(-50%, -50%) scale(1.05) skewX(1.5deg); opacity: 0.9; }
+      100% { transform: translate(-50%, -50%) scale(1.3)  skewX(0deg);   opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hx-morph.is-playing .hx-morph-ripple,
+      .hx-morph.is-playing .hx-morph-mark { animation: none; opacity: 0; }
+    }
+
     /* The chat workspace replaces the standard .hx-main scroll with its
        own column-flex layout so the composer stays pinned. */
     body[data-active="chat"] .hx-main {
@@ -3364,12 +3556,58 @@
           if (e.key === 'Escape') closeDrawer();
         });
 
+        // Apply model theme on initial load (Ether by default)
+        applyModelTheme(($('hx-c-model') && $('hx-c-model').value) || 'ether', { silent: true });
+
         $('hx-c-model').addEventListener('change', async function () {
-          if (!state.conversation) return;
           var model = $('hx-c-model').value;
-          await sb.from('conversations').update({ model: model }).eq('id', state.conversation.id);
-          state.conversation.model = model;
+          // Trigger the dramatic morph animation BEFORE the DB update so
+          // the user sees the chat reshape itself instantly.
+          applyModelTheme(model);
+          if (state.conversation) {
+            await sb.from('conversations').update({ model: model }).eq('id', state.conversation.id);
+            state.conversation.model = model;
+          }
         });
+
+        // Switching models reshapes the entire chat: body gets a data-model
+        // attribute that swaps CSS theme variables, a full-screen ripple
+        // sweep washes from the selector outward, and a 200px ghost of the
+        // new model's logo briefly appears in the center of the chat pane.
+        function applyModelTheme(model, opts) {
+          opts = opts || {};
+          var prev = document.body.getAttribute('data-model');
+          document.body.setAttribute('data-model', model);
+          if (opts.silent || prev === model) return;
+
+          // Update the in-toolbar pill if exposed
+          var modelPill = document.querySelector('.hx-chat-pill[title="Model"]');
+          if (modelPill) modelPill.setAttribute('data-model', model);
+
+          // Build the morph overlay if it doesn't exist yet
+          var overlay = document.getElementById('hx-c-morph');
+          if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'hx-c-morph';
+            overlay.className = 'hx-morph';
+            overlay.innerHTML =
+              '<div class="hx-morph-ripple" aria-hidden="true"></div>' +
+              '<div class="hx-morph-mark" aria-hidden="true"></div>';
+            document.body.appendChild(overlay);
+          }
+          // Inject the new model's logo into the watermark spot
+          var markEl = overlay.querySelector('.hx-morph-mark');
+          if (markEl) markEl.innerHTML = modelLogoSvg(model);
+
+          // Reset + replay animations
+          overlay.classList.remove('is-playing', 'is-ether', 'is-nexus', 'is-prometheus');
+          // Force reflow so the animation restart actually fires
+          void overlay.offsetWidth;
+          overlay.classList.add('is-playing', 'is-' + model);
+
+          // Clear the class after the animation finishes so it can replay
+          setTimeout(function () { overlay.classList.remove('is-playing'); }, 1400);
+        }
         // Project switch = full chat-context refresh. Closes the current
         // conversation, persists the new active project, reloads the
         // sidebar filtered to the new project's conversations, and opens
