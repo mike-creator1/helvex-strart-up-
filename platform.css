@@ -153,6 +153,13 @@ html, body {
   letter-spacing: -0.005em;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01', 'ss02', 'ss03';
   text-rendering: optimizeLegibility;
+  /* Disable pinch + double-tap zoom across the whole platform.
+     touch-action: manipulation removes double-tap-to-zoom on iOS,
+     and -webkit-text-size-adjust prevents font scaling. */
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; }

@@ -1436,12 +1436,17 @@
       scroll-behavior: smooth;
       scroll-padding-top: 88px; /* sticky-header offset on anchor jumps */
       -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      touch-action: manipulation;
+      -ms-touch-action: manipulation;
     }
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       background: #ffffff;
       color: #0A0A0A;
       -webkit-font-smoothing: antialiased;
+      touch-action: manipulation;
+      -ms-touch-action: manipulation;
       -moz-osx-font-smoothing: grayscale;
       letter-spacing: -0.011em;
       overflow-x: hidden;
