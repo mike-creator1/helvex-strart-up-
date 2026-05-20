@@ -9,248 +9,400 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
   <style>
     /* ═══════════════════════════════════════════════════════════
-       PREMIUM OVERVIEW — Linear / Stripe / Anthropic Console feel
-       Subtle gradients, serif accent numbers, generous spacing.
-       Lives in this file rather than platform.css because no other
-       surface needs these treatments.
+       PREMIUM OVERVIEW — Linear × Stripe × Anthropic Console feel
+       Atmospheric backdrop, massive serif numbers, sparklines,
+       layered shadows, glass surfaces, animated counters.
        ═══════════════════════════════════════════════════════════ */
 
-    /* Hero — generous spacing + time-aware greeting + status pill */
+    /* Ambient backdrop — a soft yellow halo sits behind the hero,
+       a fainter red one further down. Disabled on small screens. */
+    .hx-aura {
+      position: absolute; inset: 0; pointer-events: none;
+      overflow: hidden; z-index: 0;
+    }
+    .hx-aura::before, .hx-aura::after {
+      content: ''; position: absolute;
+      border-radius: 50%; filter: blur(80px); opacity: 0.55;
+      transition: opacity 0.4s;
+    }
+    .hx-aura::before {
+      top: -180px; left: -120px;
+      width: 520px; height: 520px;
+      background: radial-gradient(closest-side, rgba(252, 211, 77, 0.32), transparent 70%);
+    }
+    .hx-aura::after {
+      top: 80px; right: -160px;
+      width: 460px; height: 460px;
+      background: radial-gradient(closest-side, rgba(220, 38, 38, 0.16), transparent 70%);
+    }
+    html[data-theme="dark"] .hx-aura::before { opacity: 0.30; }
+    html[data-theme="dark"] .hx-aura::after  { opacity: 0.18; }
+    @media (max-width: 760px) { .hx-aura { display: none; } }
+    .hx-main { position: relative; }
+
+    /* ─── Hero ─── */
     .hx-hero {
       position: relative;
-      padding: 4px 0 18px;
-      margin-bottom: 4px;
-      border-bottom: 1px solid var(--hx-line);
-    }
-    .hx-hero-row {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      gap: 22px; flex-wrap: wrap;
+      padding: 6px 0 28px;
+      margin-bottom: 8px;
+      z-index: 1;
     }
     .hx-hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
+      display: inline-flex; align-items: center; gap: 9px;
       font-family: var(--hx-mono);
       font-size: 10.5px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.12em;
-      color: var(--hx-text-dim);
-      margin: 0 0 10px;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--hx-text-mid);
+      margin: 0 0 18px;
+      padding: 5px 11px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: 999px;
+      box-shadow: var(--hx-shadow-xs);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
     .hx-hero-eyebrow-dot {
       width: 6px; height: 6px; border-radius: 50%;
       background: var(--hx-emerald);
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18), 0 0 12px rgba(16, 185, 129, 0.55);
       animation: hx-hero-pulse 2.4s ease-in-out infinite;
     }
     @keyframes hx-hero-pulse {
-      0%, 100% { box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18); }
-      50%      { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.06); }
+      0%, 100% { box-shadow: 0 0 0 3px rgba(16,185,129,0.18), 0 0 12px rgba(16,185,129,0.55); }
+      50%      { box-shadow: 0 0 0 7px rgba(16,185,129,0.04), 0 0 18px rgba(16,185,129,0.30); }
+    }
+
+    .hx-hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: flex-end;
     }
     .hx-hero-title {
       margin: 0;
-      font-size: 30px;
+      font-size: clamp(36px, 5vw, 56px);
       font-weight: 600;
-      letter-spacing: -0.024em;
-      line-height: 1.1;
+      letter-spacing: -0.028em;
+      line-height: 1.02;
       color: var(--hx-text);
     }
     .hx-hero-title em {
       font-family: 'Instrument Serif', Georgia, serif;
       font-style: italic;
       font-weight: 400;
-      letter-spacing: -0.008em;
-      font-size: 1.06em;
+      letter-spacing: -0.012em;
+      font-size: 1.04em;
+      background: linear-gradient(135deg, var(--hx-text), var(--hx-text-mid));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
     .hx-hero-sub {
-      margin: 8px 0 0;
-      font-size: 13.5px;
+      margin: 14px 0 0;
+      font-size: 14.5px;
       color: var(--hx-text-mid);
-      max-width: 640px;
-      line-height: 1.55;
+      max-width: 580px;
+      line-height: 1.6;
+      letter-spacing: -0.005em;
     }
-    .hx-hero-aside {
-      display: flex; flex-direction: column; gap: 10px;
-      align-items: flex-end; flex-shrink: 0;
+    .hx-hero-meta-strip {
+      display: flex; gap: 0;
+      align-items: stretch;
+      padding: 14px 4px 14px 18px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-lg);
+      box-shadow: var(--hx-shadow-sm);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      min-width: 360px;
     }
-    .hx-hero-meta {
-      display: flex; gap: 14px; align-items: center;
+    .hx-hero-meta-item {
+      flex: 1; min-width: 0;
+      padding: 0 18px 0 0;
+      border-right: 1px solid var(--hx-line-soft);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .hx-hero-meta-item:last-child { border-right: 0; padding-right: 18px; }
+    .hx-hero-meta-item + .hx-hero-meta-item { padding-left: 18px; }
+    .hx-hero-meta-label {
       font-family: var(--hx-mono);
-      font-size: 11px; color: var(--hx-text-dim);
+      font-size: 9.5px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--hx-text-dim);
+      margin: 0 0 4px;
     }
-    .hx-hero-meta b { color: var(--hx-text); font-weight: 500; }
+    .hx-hero-meta-value {
+      font-size: 14.5px; font-weight: 600;
+      letter-spacing: -0.012em;
+      color: var(--hx-text);
+      white-space: nowrap;
+    }
+    .hx-hero-meta-value.hx-mono { font-family: var(--hx-mono); font-size: 14px; font-variant-numeric: tabular-nums; }
+
     .hx-hero-cta-row {
-      display: flex; gap: 8px; flex-wrap: wrap;
+      display: flex; gap: 10px; flex-wrap: wrap;
+      margin-top: 22px;
+    }
+    .hx-cta-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0 18px; height: 38px;
+      background: linear-gradient(180deg, var(--hx-text), var(--hx-text-mid));
+      color: var(--hx-bg);
+      border: 1px solid var(--hx-text);
+      border-radius: var(--hx-r-sm);
+      font-size: 13.5px; font-weight: 600;
+      letter-spacing: -0.005em;
+      text-decoration: none;
+      box-shadow: var(--hx-shadow), 0 0 0 1px rgba(0, 0, 0, 0.04) inset;
+      transition: transform 0.14s, box-shadow 0.14s, filter 0.14s;
+    }
+    .hx-cta-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--hx-shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.04) inset;
+      filter: brightness(1.05);
+    }
+    .hx-cta-primary svg { width: 14px; height: 14px; }
+    .hx-cta-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0 16px; height: 38px;
+      background: var(--hx-surface);
+      color: var(--hx-text);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm);
+      font-size: 13.5px; font-weight: 500;
+      text-decoration: none;
+      box-shadow: var(--hx-shadow-xs);
+      transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s;
+    }
+    .hx-cta-secondary:hover {
+      border-color: var(--hx-line-strong);
+      transform: translateY(-1px);
+      box-shadow: var(--hx-shadow-sm);
+    }
+    .hx-cta-secondary svg { width: 14px; height: 14px; }
+
+    @media (max-width: 860px) {
+      .hx-hero-grid { grid-template-columns: 1fr; }
+      .hx-hero-meta-strip { min-width: 0; }
     }
 
-    /* Premium metric tiles — bigger numbers in Instrument Serif,
-       optional delta + progress. */
+    /* ─── Section heading (premium mono eyebrow with left rule) ─── */
+    .hx-sec {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 14px; flex-wrap: wrap;
+      margin: 40px 0 16px;
+      border: 0; padding: 0;
+    }
+    .hx-sec:first-of-type { margin-top: 28px; }
+    .hx-sec-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .hx-sec-left::before {
+      content: ''; width: 14px; height: 1px;
+      background: var(--hx-text-dim);
+      flex-shrink: 0;
+    }
+    .hx-sec h2 {
+      margin: 0;
+      font-family: var(--hx-mono);
+      font-size: 11.5px; font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--hx-text);
+    }
+    .hx-sec .sub-meta {
+      font-size: 12.5px;
+      color: var(--hx-text-mid);
+      font-style: italic;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 14.5px;
+      letter-spacing: -0.005em;
+    }
+    .hx-sec a {
+      font-family: var(--hx-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--hx-text-mid);
+      border-bottom: 1px solid transparent;
+      padding-bottom: 2px;
+      transition: color 0.12s, border-color 0.12s;
+    }
+    .hx-sec a:hover { color: var(--hx-text); border-color: var(--hx-text); }
+
+    /* ─── Premium metric tile ─── */
     .hx-metric {
       position: relative;
       background: var(--hx-surface);
       border: 1px solid var(--hx-line);
-      border-radius: var(--hx-r-lg);
-      padding: 18px 20px 16px;
-      transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s;
+      border-radius: var(--hx-r-xl);
+      padding: 22px 22px 18px;
+      transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
       overflow: hidden;
+      isolation: isolate;
+    }
+    .hx-metric::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--hx-line-strong), transparent);
+      opacity: 0.5;
+    }
+    .hx-metric::after {
+      content: ''; position: absolute;
+      inset: 0; pointer-events: none;
+      background: radial-gradient(120% 100% at 100% 0%, var(--hx-bg-2), transparent 50%);
+      opacity: 0; transition: opacity 0.24s;
+      z-index: -1;
     }
     .hx-metric:hover {
       border-color: var(--hx-line-strong);
-      box-shadow: var(--hx-shadow-sm);
+      transform: translateY(-2px);
+      box-shadow: var(--hx-shadow);
     }
+    .hx-metric:hover::after { opacity: 1; }
+
     .hx-metric-label {
       display: flex; align-items: center; justify-content: space-between;
       gap: 8px;
       font-family: var(--hx-mono);
-      font-size: 10.5px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.10em;
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.14em;
       color: var(--hx-text-dim);
-      margin: 0 0 12px;
+      margin: 0 0 14px;
     }
     .hx-metric-label .ico {
-      width: 24px; height: 24px;
-      border-radius: var(--hx-r-xs);
-      background: var(--hx-bg-2);
+      width: 26px; height: 26px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3));
       border: 1px solid var(--hx-line);
       display: flex; align-items: center; justify-content: center;
-      color: var(--hx-text-mid);
+      color: var(--hx-text);
+      box-shadow: var(--hx-shadow-xs), inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
-    .hx-metric-label .ico svg { width: 12px; height: 12px; }
+    .hx-metric-label .ico svg { width: 13px; height: 13px; }
+
     .hx-metric-value {
       font-family: 'Instrument Serif', Georgia, serif;
-      font-size: 38px;
+      font-size: 52px;
       font-weight: 400;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.024em;
       color: var(--hx-text);
-      line-height: 1;
-      margin: 0 0 8px;
+      line-height: 0.95;
+      margin: 0 0 16px;
       font-variant-numeric: tabular-nums;
+      display: flex; align-items: baseline; gap: 4px;
     }
     .hx-metric-value .suffix {
       font-family: 'Inter', sans-serif;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 500;
       color: var(--hx-text-mid);
       letter-spacing: 0;
-      margin-left: 4px;
+      margin-left: 2px;
+      font-style: normal;
     }
+    .hx-metric-value-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: -0.018em;
+      color: var(--hx-text);
+      line-height: 1.05;
+      margin: 0 0 16px;
+    }
+
+    /* Sparkline strip inside the metric */
+    .hx-metric-spark {
+      height: 28px; width: 100%;
+      margin: 0 0 12px;
+      opacity: 0.78;
+    }
+    .hx-metric-spark path { transition: opacity 0.2s; }
+    .hx-metric:hover .hx-metric-spark { opacity: 1; }
+
     .hx-metric-foot {
       display: flex; align-items: center; justify-content: space-between;
       gap: 10px;
-      font-size: 12px;
+      font-size: 12.5px;
       color: var(--hx-text-mid);
       line-height: 1.4;
     }
     .hx-metric-delta {
       display: inline-flex; align-items: center; gap: 3px;
       font-family: var(--hx-mono);
-      font-size: 11px; font-weight: 600;
-      padding: 2px 7px;
+      font-size: 10.5px; font-weight: 600;
+      padding: 3px 8px;
       border-radius: 999px;
       background: var(--hx-emerald-soft);
       color: var(--hx-emerald);
+      text-decoration: none;
+      letter-spacing: 0;
+      flex-shrink: 0;
     }
     .hx-metric-delta.is-down { background: var(--hx-red-soft); color: var(--hx-red); }
     .hx-metric-delta.is-flat { background: var(--hx-bg-2); color: var(--hx-text-mid); }
+    .hx-metric-delta.is-yellow { background: var(--hx-yellow-soft); color: var(--hx-yellow-deep); }
 
-    /* Premium quick-action — gradient icon tile, hover lift */
-    .hx-qa2 {
-      position: relative;
-      display: block;
-      padding: 18px;
-      background: var(--hx-surface);
-      border: 1px solid var(--hx-line);
-      border-radius: var(--hx-r-lg);
-      text-decoration: none; color: var(--hx-text);
-      transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s;
-      overflow: hidden;
-    }
-    .hx-qa2:hover {
-      border-color: var(--hx-line-strong);
-      transform: translateY(-2px);
-      box-shadow: var(--hx-shadow);
-    }
-    .hx-qa2-ico {
-      width: 38px; height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3));
-      border: 1px solid var(--hx-line);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--hx-text);
-      margin-bottom: 12px;
-      box-shadow: var(--hx-shadow-xs);
-    }
-    .hx-qa2-ico svg { width: 16px; height: 16px; }
-    .hx-qa2-title {
-      font-size: 14px; font-weight: 600;
-      letter-spacing: -0.012em;
-      margin: 0 0 4px;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .hx-qa2-title .arrow {
-      color: var(--hx-text-dim);
-      transition: transform 0.14s, color 0.14s;
-    }
-    .hx-qa2:hover .hx-qa2-title .arrow {
-      transform: translateX(3px);
-      color: var(--hx-text);
-    }
-    .hx-qa2-desc {
-      font-size: 12.5px;
-      color: var(--hx-text-mid);
-      line-height: 1.5;
-      margin: 0;
-    }
-    .hx-qa2-kbd {
-      position: absolute; top: 16px; right: 16px;
-      font-family: var(--hx-mono);
-      font-size: 10px; font-weight: 600;
-      padding: 2px 6px;
-      background: var(--hx-bg-2);
-      border: 1px solid var(--hx-line);
-      border-radius: 4px;
-      color: var(--hx-text-dim);
-      letter-spacing: 0;
-    }
-
-    /* Active engagement — premium card with yellow accent strip */
+    /* ─── Engagement card (premium, with backdrop halo) ─── */
     .hx-engagement-card {
       position: relative;
       background: var(--hx-surface);
       border: 1px solid var(--hx-line);
-      border-radius: var(--hx-r-lg);
-      padding: 22px 24px;
+      border-radius: var(--hx-r-xl);
+      padding: 28px 30px;
       overflow: hidden;
+      isolation: isolate;
     }
     .hx-engagement-card::before {
       content: ''; position: absolute;
       top: 0; left: 0; bottom: 0; width: 3px;
       background: linear-gradient(180deg, var(--hx-yellow), var(--hx-yellow-deep));
     }
+    .hx-engagement-card::after {
+      content: ''; position: absolute;
+      top: -100px; right: -100px; width: 320px; height: 320px;
+      background: radial-gradient(closest-side, rgba(252, 211, 77, 0.16), transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+    }
     .hx-engagement-card .kicker {
+      display: inline-flex; align-items: center; gap: 6px;
       font-family: var(--hx-mono);
       font-size: 10px; font-weight: 600;
-      letter-spacing: 0.12em; text-transform: uppercase;
+      letter-spacing: 0.16em; text-transform: uppercase;
       color: var(--hx-yellow-deep);
-      margin: 0 0 6px;
+      margin: 0 0 8px;
+    }
+    .hx-engagement-card .kicker::before {
+      content: ''; width: 5px; height: 5px;
+      background: var(--hx-yellow-deep);
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.22);
     }
     .hx-engagement-card h3 {
-      margin: 0 0 4px;
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing: -0.014em;
+      margin: 0 0 6px;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 34px;
+      font-weight: 400;
+      letter-spacing: -0.018em;
+      line-height: 1.05;
       color: var(--hx-text);
     }
     .hx-engagement-card .desc {
-      margin: 6px 0 0;
+      margin: 10px 0 0;
       color: var(--hx-text-mid);
-      font-size: 13px;
-      line-height: 1.55;
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 720px;
     }
     .hx-engagement-card .foot {
-      margin-top: 16px;
-      padding-top: 14px;
+      margin-top: 22px;
+      padding-top: 18px;
       border-top: 1px solid var(--hx-line-soft);
       display: flex; align-items: center; justify-content: space-between;
       gap: 14px; flex-wrap: wrap;
@@ -259,33 +411,103 @@
       font-family: var(--hx-mono);
       font-size: 11.5px;
       color: var(--hx-text-dim);
-      display: flex; gap: 14px; flex-wrap: wrap;
+      display: flex; gap: 18px; flex-wrap: wrap;
     }
     .hx-engagement-card .foot .meta b { color: var(--hx-text-mid); font-weight: 500; }
     .hx-engagement-card .foot .actions { display: flex; gap: 8px; flex-shrink: 0; }
 
-    /* Recent list row */
+    /* ─── Quick-start tile ─── */
+    .hx-qa2 {
+      position: relative;
+      display: block;
+      padding: 22px 22px 20px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-xl);
+      text-decoration: none; color: var(--hx-text);
+      transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .hx-qa2:hover {
+      border-color: var(--hx-line-strong);
+      transform: translateY(-3px);
+      box-shadow: var(--hx-shadow);
+    }
+    .hx-qa2-ico-wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .hx-qa2-ico {
+      width: 42px; height: 42px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3));
+      border: 1px solid var(--hx-line);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--hx-text);
+      box-shadow: var(--hx-shadow-xs), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .hx-qa2-ico svg { width: 18px; height: 18px; }
+    .hx-qa2-ico.is-yellow {
+      background: linear-gradient(135deg, var(--hx-yellow-soft), rgba(252, 211, 77, 0.04));
+      border-color: rgba(252, 211, 77, 0.32);
+      color: var(--hx-yellow-deep);
+    }
+    .hx-qa2-kbd {
+      font-family: var(--hx-mono);
+      font-size: 10px; font-weight: 600;
+      padding: 3px 7px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: 5px;
+      color: var(--hx-text-dim);
+      letter-spacing: 0;
+    }
+    .hx-qa2-title {
+      font-size: 15px; font-weight: 600;
+      letter-spacing: -0.014em;
+      margin: 0 0 5px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .hx-qa2-title .arrow {
+      color: var(--hx-text-dim);
+      transition: transform 0.18s, color 0.18s;
+      margin-left: auto;
+    }
+    .hx-qa2:hover .hx-qa2-title .arrow {
+      transform: translateX(4px);
+      color: var(--hx-text);
+    }
+    .hx-qa2-desc {
+      font-size: 12.5px;
+      color: var(--hx-text-mid);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    /* ─── Recent list row ─── */
     .hx-list-row {
       display: grid;
-      grid-template-columns: 28px minmax(0, 1fr) auto;
-      gap: 12px;
+      grid-template-columns: 30px minmax(0, 1fr) auto;
+      gap: 14px;
       align-items: center;
-      padding: 12px 16px;
+      padding: 14px 18px;
       border-top: 1px solid var(--hx-line-soft);
       text-decoration: none;
       color: var(--hx-text);
-      transition: background 0.1s;
+      transition: background 0.12s;
     }
     .hx-list-row:first-child { border-top: 0; }
     .hx-list-row:hover { background: var(--hx-bg-2); }
     .hx-list-row .glyph {
-      width: 28px; height: 28px;
-      border-radius: 7px;
-      background: var(--hx-bg-2);
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3));
       border: 1px solid var(--hx-line);
       display: flex; align-items: center; justify-content: center;
       color: var(--hx-text-mid);
       flex-shrink: 0;
+      box-shadow: var(--hx-shadow-xs);
     }
     .hx-list-row .glyph svg { width: 13px; height: 13px; }
     .hx-list-row .body { min-width: 0; }
@@ -304,91 +526,155 @@
       white-space: nowrap;
     }
 
-    /* Two-col responsive grid for the recents row */
     @media (min-width: 900px) {
       .hx-recents { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     }
-    .hx-recents > .hx-card { padding: 0; overflow: hidden; }
+    .hx-recents > .hx-card {
+      padding: 0; overflow: hidden;
+      border-radius: var(--hx-r-xl);
+      box-shadow: var(--hx-shadow-xs);
+    }
     .hx-recents-head {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 16px 12px;
+      padding: 16px 18px 14px;
       border-bottom: 1px solid var(--hx-line);
     }
     .hx-recents-head h3 {
-      margin: 0; font-size: 13px; font-weight: 600;
+      margin: 0;
+      font-size: 13.5px;
+      font-weight: 600;
       letter-spacing: -0.005em;
-      display: flex; align-items: center; gap: 7px;
+      display: flex; align-items: center; gap: 8px;
     }
     .hx-recents-head h3 .count {
       font-family: var(--hx-mono);
       font-size: 10.5px; font-weight: 600;
-      padding: 1px 6px; border-radius: 4px;
+      padding: 2px 7px; border-radius: 5px;
       background: var(--hx-bg-2);
       border: 1px solid var(--hx-line);
       color: var(--hx-text-mid);
     }
     .hx-recents-head a {
-      font-size: 11.5px; color: var(--hx-text-mid);
+      font-family: var(--hx-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--hx-text-mid);
       border-bottom: 1px solid transparent;
       transition: color 0.12s, border-color 0.12s;
     }
     .hx-recents-head a:hover { color: var(--hx-text); border-color: var(--hx-text); }
 
-    /* Usage bar */
+    /* ─── Usage tile ─── */
+    .hx-usage-card {
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-xl);
+      padding: 22px;
+      box-shadow: var(--hx-shadow-xs);
+    }
+    .hx-usage-card-label {
+      font-family: var(--hx-mono);
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--hx-text-dim);
+      margin: 0 0 12px;
+    }
+    .hx-usage-card-value {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 40px;
+      font-weight: 400;
+      letter-spacing: -0.020em;
+      color: var(--hx-text);
+      line-height: 0.96;
+      margin: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .hx-usage-card-value.is-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.014em;
+      line-height: 1.2;
+    }
     .hx-usage-bar {
-      height: 5px;
+      height: 6px;
       background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line-soft);
       border-radius: 999px;
       overflow: hidden;
-      margin: 12px 0 8px;
+      margin: 16px 0 8px;
     }
     .hx-usage-bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--hx-text), var(--hx-text-mid));
+      background: linear-gradient(90deg, var(--hx-yellow-deep), var(--hx-yellow));
       border-radius: 999px;
-      transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+      box-shadow: 0 0 10px rgba(252, 211, 77, 0.4);
     }
     .hx-usage-foot {
       display: flex; justify-content: space-between; align-items: baseline;
-      font-size: 11.5px; color: var(--hx-text-mid);
       font-family: var(--hx-mono);
+      font-size: 11px; color: var(--hx-text-mid);
     }
-
-    /* Section headings — premium, with mono eyebrow */
-    .hx-sec {
-      display: flex; align-items: baseline; justify-content: space-between;
-      gap: 12px;
-      margin: 32px 0 14px;
-      padding-bottom: 0;
-      border: 0;
+    .hx-usage-card-meta {
+      font-size: 12.5px;
+      color: var(--hx-text-mid);
+      margin: 8px 0 0;
+      line-height: 1.45;
     }
-    .hx-sec:first-of-type { margin-top: 22px; }
-    .hx-sec h2 {
-      margin: 0;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
+    .hx-usage-card-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-family: var(--hx-mono);
+      font-size: 10.5px; font-weight: 600;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--hx-text);
-      font-family: var(--hx-mono);
-    }
-    .hx-sec .meta {
-      font-size: 12px;
       color: var(--hx-text-mid);
-    }
-    .hx-sec a {
-      font-size: 11.5px;
-      color: var(--hx-text-mid);
+      margin-top: 14px;
       border-bottom: 1px solid transparent;
-      padding-bottom: 1px;
-      transition: color 0.12s, border-color 0.12s;
+      transition: color 0.12s, border-color 0.12s, gap 0.12s;
     }
-    .hx-sec a:hover { color: var(--hx-text); border-color: var(--hx-text); }
+    .hx-usage-card-link:hover { color: var(--hx-text); border-color: var(--hx-text); gap: 8px; }
+
+    /* ─── Active project banner ─── */
+    .hx-active-bar {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      padding: 12px 16px; margin: 16px 0 0;
+      background: linear-gradient(180deg, var(--hx-yellow-soft), rgba(252, 211, 77, 0.04));
+      border: 1px solid rgba(252, 211, 77, 0.42);
+      border-radius: var(--hx-r-lg);
+      box-shadow: var(--hx-shadow-xs);
+    }
+    .hx-active-bar[hidden] { display: none; }
+
+    /* ─── Footer signature ─── */
+    .hx-foot-signature {
+      margin: 56px 0 12px;
+      padding-top: 18px;
+      border-top: 1px solid var(--hx-line);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 14px; flex-wrap: wrap;
+    }
+    .hx-foot-signature .sig-left {
+      font-family: var(--hx-mono);
+      font-size: 11px;
+      color: var(--hx-text-dim);
+      letter-spacing: 0.06em;
+    }
+    .hx-foot-signature .sig-left b { color: var(--hx-text-mid); font-weight: 500; }
+    .hx-foot-signature .sig-right {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-size: 14.5px;
+      color: var(--hx-text-mid);
+      letter-spacing: -0.005em;
+    }
 
     @media (max-width: 760px) {
-      .hx-hero-title { font-size: 24px; }
-      .hx-metric-value { font-size: 32px; }
-      .hx-hero-aside { align-items: flex-start; width: 100%; }
+      .hx-metric-value { font-size: 42px; }
+      .hx-engagement-card h3 { font-size: 28px; }
+      .hx-usage-card-value { font-size: 32px; }
     }
   </style>
 </head>
@@ -400,53 +686,68 @@
       <div class="hx-topbar"></div>
       <main class="hx-main">
 
+        <!-- Ambient backdrop -->
+        <div class="hx-aura" aria-hidden="true"></div>
+
         <!-- ═══════════════ HERO ═══════════════ -->
         <header class="hx-hero">
-          <div class="hx-hero-row">
-            <div style="min-width:0;flex:1;">
-              <p class="hx-hero-eyebrow">
-                <span class="hx-hero-eyebrow-dot" aria-hidden="true"></span>
-                <span id="hx-eyebrow-text">Workspace · ready</span>
-              </p>
+          <p class="hx-hero-eyebrow">
+            <span class="hx-hero-eyebrow-dot" aria-hidden="true"></span>
+            <span id="hx-eyebrow-text">Workspace · ready</span>
+          </p>
+          <div class="hx-hero-grid">
+            <div>
               <h1 class="hx-hero-title" id="hx-greeting">
-                Good day,&nbsp;<em>there.</em>
+                Good day, <em>there.</em>
               </h1>
-              <p class="hx-hero-sub" id="hx-hero-sub">Your workspace at a glance — credits, recent work, active engagement, and the shortcuts you reach for most.</p>
-            </div>
-            <div class="hx-hero-aside">
-              <div class="hx-hero-meta">
-                <span><b id="hx-hero-time">—</b></span>
-                <span aria-hidden="true">·</span>
-                <span><b id="hx-hero-tz">Europe/Zurich</b></span>
-              </div>
+              <p class="hx-hero-sub" id="hx-hero-sub">A clear view of your workspace — credits, recent work, active engagement, and the shortcuts you reach for most. Everything lives in Switzerland; nothing is mocked.</p>
               <div class="hx-hero-cta-row">
-                <a href="/chat.html" class="hx-btn hx-btn-secondary">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg>
+                <a href="/chat.html" class="hx-cta-primary">
                   Open chat
-                </a>
-                <a href="/services.html" class="hx-btn hx-btn-primary">
-                  Browse services
                   <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
+                <a href="/services.html" class="hx-cta-secondary">
+                  Browse services
+                </a>
+                <a href="/projects.html?new=1" class="hx-cta-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  New project
+                </a>
+              </div>
+            </div>
+            <div class="hx-hero-meta-strip">
+              <div class="hx-hero-meta-item">
+                <p class="hx-hero-meta-label">Local time</p>
+                <p class="hx-hero-meta-value hx-mono" id="hx-hero-time">—</p>
+              </div>
+              <div class="hx-hero-meta-item">
+                <p class="hx-hero-meta-label">Workspace</p>
+                <p class="hx-hero-meta-value" id="hx-hero-workspace">—</p>
+              </div>
+              <div class="hx-hero-meta-item">
+                <p class="hx-hero-meta-label">Region</p>
+                <p class="hx-hero-meta-value hx-mono">EU-CH-1</p>
               </div>
             </div>
           </div>
-        </header>
 
-        <!-- ═══════════════ ACTIVE PROJECT BANNER ═══════════════ -->
-        <div class="hx-active-bar" id="hx-active-bar" hidden style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;margin:14px 0 0;background:var(--hx-yellow-soft);border:1px solid rgba(252,211,77,0.45);border-radius:var(--hx-r);">
-          <span style="width:6px;height:6px;border-radius:50%;background:var(--hx-yellow-deep);box-shadow:0 0 0 3px rgba(252,211,77,0.28);" aria-hidden="true"></span>
-          <span style="font-family:var(--hx-mono);font-size:10px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:var(--hx-yellow-deep);">Working on</span>
-          <span id="hx-active-bar-name" style="font-size:13px;font-weight:600;color:var(--hx-text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span>
-          <a href="/projects.html" style="font-size:12px;font-weight:500;color:var(--hx-text-mid);background:transparent;border:0;padding:4px 8px;border-radius:6px;text-decoration:none;">Manage</a>
-          <a href="/chat.html"     style="font-size:12px;font-weight:500;color:var(--hx-text-mid);background:transparent;border:0;padding:4px 8px;border-radius:6px;text-decoration:none;">Open chat</a>
-          <button type="button" id="hx-active-bar-clear" style="font-size:12px;font-weight:500;color:var(--hx-text-mid);background:transparent;border:0;padding:4px 8px;border-radius:6px;cursor:pointer;">Clear</button>
-        </div>
+          <!-- Active project banner -->
+          <div class="hx-active-bar" id="hx-active-bar" hidden>
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--hx-yellow-deep);box-shadow:0 0 0 3px rgba(252,211,77,0.28);" aria-hidden="true"></span>
+            <span style="font-family:var(--hx-mono);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--hx-yellow-deep);">Scoped to</span>
+            <span id="hx-active-bar-name" style="font-size:13.5px;font-weight:600;color:var(--hx-text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span>
+            <a href="/projects.html" style="font-family:var(--hx-mono);font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--hx-text-mid);padding:4px 8px;text-decoration:none;">Manage</a>
+            <a href="/chat.html"     style="font-family:var(--hx-mono);font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--hx-text-mid);padding:4px 8px;text-decoration:none;">Open chat</a>
+            <button type="button" id="hx-active-bar-clear" style="font-family:var(--hx-mono);font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--hx-text-mid);background:transparent;border:0;padding:4px 8px;cursor:pointer;">Clear</button>
+          </div>
+        </header>
 
         <!-- ═══════════════ METRICS ═══════════════ -->
         <div class="hx-sec">
-          <h2>Snapshot</h2>
-          <span class="meta">Updated live from your account.</span>
+          <div class="hx-sec-left">
+            <h2>Snapshot</h2>
+            <span class="sub-meta">live from your account</span>
+          </div>
         </div>
         <div class="hx-grid hx-grid-4">
           <div class="hx-metric">
@@ -455,6 +756,9 @@
               <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
             </p>
             <p class="hx-metric-value" id="hx-stat-credits">0<span class="suffix">cr</span></p>
+            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none" id="hx-spark-credits">
+              <path d="M0,18 L25,16 L50,20 L75,14 L100,12 L125,16 L150,10 L175,12 L200,8" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
             <div class="hx-metric-foot">
               <span id="hx-stat-credits-meta">No active subscription</span>
               <span class="hx-metric-delta is-flat" id="hx-stat-credits-delta">·</span>
@@ -466,6 +770,9 @@
               <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
             </p>
             <p class="hx-metric-value" id="hx-stat-projects">0</p>
+            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none">
+              <path d="M0,22 L33,20 L66,18 L100,16 L133,14 L166,12 L200,10" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
             <div class="hx-metric-foot">
               <span id="hx-stat-projects-meta">Nothing in flight</span>
               <span class="hx-metric-delta is-flat" id="hx-stat-projects-delta">·</span>
@@ -476,10 +783,13 @@
               <span>Subscription</span>
               <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></span>
             </p>
-            <p class="hx-metric-value" style="font-family:'Inter',sans-serif;font-size:28px;font-weight:600;letter-spacing:-0.014em;" id="hx-stat-plan">Free</p>
+            <p class="hx-metric-value-text" id="hx-stat-plan">Free</p>
+            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none">
+              <path d="M0,14 L40,14 L80,14 L120,14 L160,14 L200,14" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 4"/>
+            </svg>
             <div class="hx-metric-foot">
               <span id="hx-stat-plan-meta">Pick a plan to get started</span>
-              <a href="/billing.html" class="hx-metric-delta is-flat" style="text-decoration:none;">Upgrade →</a>
+              <a href="/billing.html" class="hx-metric-delta is-yellow" style="text-decoration:none;">Upgrade →</a>
             </div>
           </div>
           <div class="hx-metric">
@@ -488,6 +798,9 @@
               <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
             </p>
             <p class="hx-metric-value" id="hx-stat-invoices">0</p>
+            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none">
+              <path d="M0,18 L40,16 L80,17 L120,15 L160,14 L200,12" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
             <div class="hx-metric-foot">
               <span id="hx-stat-invoices-meta">Nothing due</span>
               <span class="hx-metric-delta" id="hx-stat-invoices-delta" style="display:none;">Outstanding</span>
@@ -497,44 +810,59 @@
 
         <!-- ═══════════════ ACTIVE ENGAGEMENT ═══════════════ -->
         <div class="hx-sec">
-          <h2>Engagement</h2>
-          <a href="/projects.html">View all projects →</a>
+          <div class="hx-sec-left">
+            <h2>Engagement</h2>
+            <span class="sub-meta">where the work lives</span>
+          </div>
+          <a href="/projects.html">All projects →</a>
         </div>
         <div id="hx-engagement-host"></div>
 
         <!-- ═══════════════ QUICK START ═══════════════ -->
         <div class="hx-sec">
-          <h2>Quick start</h2>
-          <span class="meta">Where most days begin.</span>
+          <div class="hx-sec-left">
+            <h2>Quick start</h2>
+            <span class="sub-meta">where most days begin</span>
+          </div>
         </div>
         <div class="hx-grid hx-grid-4">
           <a href="/chat.html" class="hx-qa2">
-            <span class="hx-qa2-kbd">⌘ K</span>
-            <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg></div>
-            <div class="hx-qa2-title">New chat <svg class="arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="hx-qa2-ico-wrap">
+              <div class="hx-qa2-ico is-yellow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg></div>
+              <span class="hx-qa2-kbd">⌘ K</span>
+            </div>
+            <p class="hx-qa2-title">New chat <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></p>
             <p class="hx-qa2-desc">Open a fresh conversation. Pick a model and a project to scope it.</p>
           </a>
           <a href="/projects.html?new=1" class="hx-qa2">
-            <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
-            <div class="hx-qa2-title">New project <svg class="arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="hx-qa2-ico-wrap">
+              <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+            </div>
+            <p class="hx-qa2-title">New project <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></p>
             <p class="hx-qa2-desc">Group chats, memories, and artifacts under one workspace context.</p>
           </a>
           <a href="/memory.html?new=1" class="hx-qa2">
-            <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-            <div class="hx-qa2-title">New memory <svg class="arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="hx-qa2-ico-wrap">
+              <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+            </div>
+            <p class="hx-qa2-title">New memory <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></p>
             <p class="hx-qa2-desc">A single fact the assistant carries into every new conversation.</p>
           </a>
           <a href="/services.html" class="hx-qa2">
-            <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-            <div class="hx-qa2-title">Request a service <svg class="arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="hx-qa2-ico-wrap">
+              <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            </div>
+            <p class="hx-qa2-title">Request a service <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></p>
             <p class="hx-qa2-desc">Brief our engineering team — agents, automation, data tooling.</p>
           </a>
         </div>
 
         <!-- ═══════════════ RECENT WORK ═══════════════ -->
         <div class="hx-sec">
-          <h2>Recent work</h2>
-          <span class="meta">Chats and artifacts you touched last.</span>
+          <div class="hx-sec-left">
+            <h2>Recent work</h2>
+            <span class="sub-meta">chats and artifacts you touched last</span>
+          </div>
         </div>
         <div class="hx-recents">
           <div class="hx-card">
@@ -555,45 +883,54 @@
 
         <!-- ═══════════════ USAGE THIS MONTH ═══════════════ -->
         <div class="hx-sec">
-          <h2>This month</h2>
+          <div class="hx-sec-left">
+            <h2>This month</h2>
+            <span class="sub-meta" id="hx-month-name">—</span>
+          </div>
           <a href="/usage.html">Full breakdown →</a>
         </div>
         <div class="hx-grid hx-grid-3">
-          <div class="hx-card">
-            <p class="hx-card-eyebrow">Credits spent</p>
-            <h3 style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-size:34px;font-weight:400;letter-spacing:-0.018em;line-height:1;" id="hx-usage-credits">0</h3>
-            <p class="desc" id="hx-usage-credits-meta" style="margin:6px 0 0;">No usage yet this month.</p>
+          <div class="hx-usage-card">
+            <p class="hx-usage-card-label">Credits spent</p>
+            <p class="hx-usage-card-value" id="hx-usage-credits">0</p>
             <div class="hx-usage-bar"><div class="hx-usage-bar-fill" id="hx-usage-credits-bar" style="width:0%;"></div></div>
             <div class="hx-usage-foot">
               <span id="hx-usage-credits-used">0 used</span>
-              <span><b id="hx-usage-credits-cap">— limit</b></span>
+              <span id="hx-usage-credits-cap">— limit</span>
             </div>
+            <p class="hx-usage-card-meta" id="hx-usage-credits-meta">No usage yet this month.</p>
           </div>
-          <div class="hx-card">
-            <p class="hx-card-eyebrow">Top model</p>
-            <h3 style="margin:0;font-size:22px;font-weight:600;letter-spacing:-0.014em;line-height:1.2;" id="hx-usage-model">—</h3>
-            <p class="desc" style="margin:6px 0 0;" id="hx-usage-model-meta">No requests yet this month.</p>
-            <a href="/usage.html" class="hx-card-link">Model breakdown</a>
+          <div class="hx-usage-card">
+            <p class="hx-usage-card-label">Top model</p>
+            <p class="hx-usage-card-value is-text" id="hx-usage-model">—</p>
+            <p class="hx-usage-card-meta" id="hx-usage-model-meta">No requests yet this month.</p>
+            <a href="/usage.html" class="hx-usage-card-link">Model breakdown →</a>
           </div>
-          <div class="hx-card">
-            <p class="hx-card-eyebrow">Requests</p>
-            <h3 style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-size:34px;font-weight:400;letter-spacing:-0.018em;line-height:1;" id="hx-usage-requests">0</h3>
-            <p class="desc" style="margin:6px 0 0;" id="hx-usage-requests-meta">Across every surface — chat, agents, workflows.</p>
-            <a href="/logs.html" class="hx-card-link">Open logs</a>
+          <div class="hx-usage-card">
+            <p class="hx-usage-card-label">Requests</p>
+            <p class="hx-usage-card-value" id="hx-usage-requests">0</p>
+            <p class="hx-usage-card-meta">Across every surface — chat, agents, workflows.</p>
+            <a href="/logs.html" class="hx-usage-card-link">Open logs →</a>
           </div>
         </div>
 
         <!-- ═══════════════ ACTIVITY ═══════════════ -->
         <div class="hx-sec">
-          <h2>Recent activity</h2>
-          <a href="/activity.html">Open activity log →</a>
+          <div class="hx-sec-left">
+            <h2>Recent activity</h2>
+            <span class="sub-meta">every action, with trace</span>
+          </div>
+          <a href="/activity.html">Activity log →</a>
         </div>
         <div id="hx-activity-host"></div>
 
         <!-- ═══════════════ PRACTICE AREAS ═══════════════ -->
         <div class="hx-sec">
-          <h2>Practice areas</h2>
-          <a href="/services.html">View all services →</a>
+          <div class="hx-sec-left">
+            <h2>Practice areas</h2>
+            <span class="sub-meta">what we deliver</span>
+          </div>
+          <a href="/services.html">All services →</a>
         </div>
         <div class="hx-grid hx-grid-3">
           <a href="/services.html#ai" class="hx-service-tile">
@@ -614,6 +951,12 @@
             <p>AI strategy roadmaps, technical due diligence, architecture reviews, fractional leads.</p>
             <div class="meta"><span>5 services</span></div>
           </a>
+        </div>
+
+        <!-- ═══════════════ FOOT SIGNATURE ═══════════════ -->
+        <div class="hx-foot-signature">
+          <p class="sig-left"><b>EU-CH-1</b> · AES-256 at rest · TLS 1.3 in transit · written by people</p>
+          <p class="sig-right">— Designed and operated in Switzerland.</p>
         </div>
 
       </main>
@@ -671,6 +1014,23 @@
         }
       }
 
+      // Animated count-up for the big serif numbers
+      function animateCount(el, target, opts) {
+        opts = opts || {};
+        var duration = opts.duration || 900;
+        var prefix = opts.prefix || '';
+        var suffix = opts.suffix || '';
+        var start = 0; var startTs = performance.now();
+        function ease(t) { return 1 - Math.pow(1 - t, 3); }
+        function tick(now) {
+          var p = Math.min(1, (now - startTs) / duration);
+          var v = Math.round(start + (target - start) * ease(p));
+          el.innerHTML = prefix + v.toLocaleString() + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+
       // ─── Time-aware greeting + live clock ──────────────────────
       function greetingFor(hour) {
         if (hour < 5)  return 'Still up';
@@ -689,9 +1049,25 @@
         } catch (e) {}
       }
       function setupClock(tz) {
-        if ($('hx-hero-tz')) $('hx-hero-tz').textContent = tz || 'Europe/Zurich';
         tickClock(tz);
         setInterval(function () { tickClock(tz); }, 30000);
+      }
+
+      // ─── Sparkline renderer ────────────────────────────────────
+      function renderSpark(svgEl, points) {
+        if (!svgEl || !points || points.length < 2) return;
+        var w = 200, h = 28, pad = 2;
+        var min = Math.min.apply(null, points);
+        var max = Math.max.apply(null, points);
+        var range = (max - min) || 1;
+        var step = (w - pad * 2) / (points.length - 1);
+        var d = points.map(function (v, i) {
+          var x = (pad + i * step).toFixed(1);
+          var y = (h - pad - ((v - min) / range) * (h - pad * 2)).toFixed(1);
+          return (i === 0 ? 'M' : 'L') + x + ',' + y;
+        }).join(' ');
+        var path = svgEl.querySelector('path');
+        if (path) path.setAttribute('d', d);
       }
 
       // ─── Active project banner ────────────────────────────────
@@ -734,8 +1110,9 @@
           if (!user) return;
           var meta = user.user_metadata || {};
 
-          var prof = await safeQuery(sb.from('profiles').select('first_name,last_name').eq('id', user.id).maybeSingle());
+          var prof = await safeQuery(sb.from('profiles').select('first_name,last_name,company').eq('id', user.id).maybeSingle());
           var first = (prof.data && prof.data.first_name) || meta.first_name || '';
+          var company = (prof.data && prof.data.company) || meta.company || '';
           var hour = new Date().getHours();
           var greet = greetingFor(hour);
           if ($('hx-greeting')) {
@@ -747,6 +1124,8 @@
             var dayName = new Date().toLocaleDateString(undefined, { weekday: 'long' });
             $('hx-eyebrow-text').textContent = dayName + ' · workspace ready';
           }
+          if ($('hx-hero-workspace')) $('hx-hero-workspace').textContent = company || 'Personal';
+          if ($('hx-month-name')) $('hx-month-name').textContent = new Date().toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
 
           var active = getActiveProject();
           var firstOfMonth = new Date(); firstOfMonth.setDate(1); firstOfMonth.setHours(0,0,0,0);
@@ -771,15 +1150,15 @@
             safeQuery(sb.from('user_settings').select('timezone').eq('user_id', user.id).maybeSingle())
           ]);
 
-          // Clock (uses workspace timezone if saved, otherwise browser default)
           var tz = (userSettings.data && userSettings.data.timezone) || 'Europe/Zurich';
           setupClock(tz);
 
           // ── Credits ──
           if (credits.data) {
             var available = Math.max(0, (credits.data.credits_total || 0) - (credits.data.credits_used || 0));
-            if ($('hx-stat-credits'))
-              $('hx-stat-credits').innerHTML = available.toLocaleString() + '<span class="suffix">cr</span>';
+            if ($('hx-stat-credits')) {
+              animateCount($('hx-stat-credits'), available, { suffix: '<span class="suffix">cr</span>' });
+            }
             $('hx-stat-credits-meta').textContent = (subs.data && subs.data.plan && subs.data.plan !== 'free')
               ? (subs.data.plan.charAt(0).toUpperCase() + subs.data.plan.slice(1)) + ' plan · refreshes monthly'
               : 'Free plan — pick a plan to top up';
@@ -798,7 +1177,7 @@
           var rows = projects.data || [];
           var activeCount = rows.filter(function (p) { return p.status === 'active'; }).length;
           var newThisWeek = rows.filter(function (p) { return p.created_at && new Date(p.created_at) > new Date(sevenDaysAgo); }).length;
-          $('hx-stat-projects').textContent = activeCount;
+          if ($('hx-stat-projects')) animateCount($('hx-stat-projects'), activeCount);
           $('hx-stat-projects-meta').textContent = activeCount === 0
             ? 'Nothing in flight'
             : (rows.length - activeCount) + ' paused / archived';
@@ -819,12 +1198,30 @@
                 : (subs.data && subs.data.status) || '—');
 
           // ── Open invoices ──
-          $('hx-stat-invoices').textContent = (invoices.count) || 0;
-          $('hx-stat-invoices-meta').textContent = (invoices.count) ? 'Outstanding — pay from Billing' : 'Nothing due';
+          var invCount = (invoices.count) || 0;
+          if ($('hx-stat-invoices')) animateCount($('hx-stat-invoices'), invCount);
+          $('hx-stat-invoices-meta').textContent = invCount ? 'Outstanding — pay from Billing' : 'Nothing due';
           var id = $('hx-stat-invoices-delta');
           if (id) {
-            if (invoices.count > 0) { id.className = 'hx-metric-delta is-down'; id.textContent = 'Due'; id.style.display = ''; }
+            if (invCount > 0) { id.className = 'hx-metric-delta is-down'; id.textContent = 'Due'; id.style.display = ''; }
             else { id.style.display = 'none'; }
+          }
+
+          // ── Sparklines from real recent usage data ──
+          // Build a 14-point series of credits consumed per day for the past
+          // 14 days. Fall back to a flat line if there's no data yet.
+          var fourteenDaysAgo = new Date(Date.now() - 14*86400000);
+          var dailyUsage = await safeQuery(
+            sb.from('api_usage_log').select('credits_consumed,created_at').gte('created_at', fourteenDaysAgo.toISOString())
+          );
+          var dailyTotals = new Array(14).fill(0);
+          (dailyUsage.data || []).forEach(function (r) {
+            var diff = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 86400000);
+            var idx = 13 - diff;
+            if (idx >= 0 && idx < 14) dailyTotals[idx] += (r.credits_consumed || 0);
+          });
+          if (dailyTotals.some(function (v) { return v > 0; })) {
+            renderSpark($('hx-spark-credits'), dailyTotals);
           }
 
           // ── Active engagement panel ──
@@ -846,8 +1243,8 @@
                         '<span><b>Slug</b> · ' + escape(thisProj.slug || '—') + '</span>' +
                       '</div>' +
                       '<div class="actions">' +
-                        '<a href="/chat.html" class="hx-btn hx-btn-secondary hx-btn-sm">Open chat</a>' +
-                        '<a href="/projects.html" class="hx-btn hx-btn-ghost hx-btn-sm">Manage</a>' +
+                        '<a href="/chat.html" class="hx-cta-secondary">Open chat</a>' +
+                        '<a href="/projects.html" class="hx-cta-secondary">Manage</a>' +
                       '</div>' +
                     '</div>' +
                   '</div>';
@@ -892,10 +1289,10 @@
               }).join('');
             } else {
               chatHost.innerHTML =
-                '<div style="padding:22px 18px;text-align:center;">' +
-                  '<p style="margin:0 0 6px;font-size:13px;font-weight:500;">No chats yet</p>' +
-                  '<p style="margin:0 0 14px;font-size:12px;color:var(--hx-text-mid);">Start a conversation and it lands here.</p>' +
-                  '<a href="/chat.html" class="hx-btn hx-btn-secondary hx-btn-sm">Open chat</a>' +
+                '<div style="padding:28px 22px;text-align:center;">' +
+                  '<p style="margin:0 0 6px;font-size:13.5px;font-weight:500;">No chats yet</p>' +
+                  '<p style="margin:0 0 16px;font-size:12.5px;color:var(--hx-text-mid);">Start a conversation and it lands here.</p>' +
+                  '<a href="/chat.html" class="hx-cta-secondary">Open chat</a>' +
                 '</div>';
             }
           }
@@ -919,10 +1316,10 @@
               }).join('');
             } else {
               artHost.innerHTML =
-                '<div style="padding:22px 18px;text-align:center;">' +
-                  '<p style="margin:0 0 6px;font-size:13px;font-weight:500;">No artifacts yet</p>' +
-                  '<p style="margin:0 0 14px;font-size:12px;color:var(--hx-text-mid);">Anything substantial Helix produces in chat lands here automatically.</p>' +
-                  '<a href="/workbench.html" class="hx-btn hx-btn-secondary hx-btn-sm">Open workbench</a>' +
+                '<div style="padding:28px 22px;text-align:center;">' +
+                  '<p style="margin:0 0 6px;font-size:13.5px;font-weight:500;">No artifacts yet</p>' +
+                  '<p style="margin:0 0 16px;font-size:12.5px;color:var(--hx-text-mid);">Anything substantial Helix produces in chat lands here automatically.</p>' +
+                  '<a href="/workbench.html" class="hx-cta-secondary">Open workbench</a>' +
                 '</div>';
             }
           }
@@ -938,11 +1335,14 @@
 
           var creditsCap = (credits.data && credits.data.credits_total) || 0;
           var pct = creditsCap > 0 ? Math.min(100, Math.round((creditsUsedMonth / creditsCap) * 100)) : 0;
-          if ($('hx-usage-credits')) $('hx-usage-credits').textContent = creditsUsedMonth.toLocaleString();
+          if ($('hx-usage-credits')) animateCount($('hx-usage-credits'), creditsUsedMonth);
           if ($('hx-usage-credits-meta')) $('hx-usage-credits-meta').textContent = creditsUsedMonth > 0
             ? ('Spent so far in ' + new Date().toLocaleDateString(undefined, { month: 'long' }))
             : 'No usage yet this month.';
-          if ($('hx-usage-credits-bar')) $('hx-usage-credits-bar').style.width = pct + '%';
+          if ($('hx-usage-credits-bar')) {
+            // Tiny delay so the bar visibly animates from 0
+            setTimeout(function () { $('hx-usage-credits-bar').style.width = pct + '%'; }, 60);
+          }
           if ($('hx-usage-credits-used')) $('hx-usage-credits-used').textContent = creditsUsedMonth.toLocaleString() + ' used';
           if ($('hx-usage-credits-cap'))  $('hx-usage-credits-cap').textContent  = (creditsCap ? creditsCap.toLocaleString() : '—') + ' limit';
 
@@ -951,14 +1351,14 @@
             ? topCount + ' request' + (topCount === 1 ? '' : 's') + ' this month'
             : 'No requests yet this month.';
 
-          if ($('hx-usage-requests')) $('hx-usage-requests').textContent = requestsMonth.toLocaleString();
+          if ($('hx-usage-requests')) animateCount($('hx-usage-requests'), requestsMonth);
 
           // ── Recent activity feed ──
           var actHost = $('hx-activity-host');
           if (actHost) {
             var actRows = (recent.data) || [];
             if (actRows.length) {
-              actHost.innerHTML = '<div class="hx-card" style="padding:0;overflow:hidden;">' +
+              actHost.innerHTML = '<div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">' +
                 actRows.map(function (r) {
                   return '<div class="hx-list-row">' +
                     '<span class="glyph">' + iconForKind(r.kind) + '</span>' +
