@@ -21,10 +21,6 @@
       height: calc(100vh - var(--hx-topbar-h));
       min-height: 0;
     }
-    @media (max-width: 900px) {
-      body[data-active="chat"] .hx-main { grid-template-columns: 1fr; }
-      .hx-chat-rail { display: none; }
-    }
 
     /* Left rail — conversation list */
     .hx-chat-rail {
@@ -35,6 +31,60 @@
       min-height: 0;
       overflow: hidden;
       position: relative;
+    }
+
+    /* Mobile: rail becomes a slide-in drawer. Backdrop dims the chat. */
+    @media (max-width: 900px) {
+      body[data-active="chat"] .hx-main { grid-template-columns: 1fr; }
+      .hx-chat-rail {
+        position: fixed;
+        top: var(--hx-topbar-h);
+        left: 0;
+        bottom: 0;
+        width: min(86%, 320px);
+        z-index: 70;
+        border-right: 1px solid var(--hx-line);
+        box-shadow: 0 18px 38px -12px rgba(20,18,12,0.30), 0 4px 10px rgba(20,18,12,0.10);
+        transform: translateX(-100%);
+        transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+      .hx-chat-rail.is-open { transform: translateX(0); }
+      .hx-chat-rail::after { display: none; }
+      .hx-chat-backdrop {
+        position: fixed;
+        top: var(--hx-topbar-h);
+        left: 0; right: 0; bottom: 0;
+        background: rgba(20, 18, 12, 0.35);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        z-index: 65;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.22s ease;
+      }
+      .hx-chat-backdrop.is-visible { opacity: 1; pointer-events: auto; }
+    }
+
+    /* Mobile-only drawer toggle pill in the toolbar */
+    .hx-chat-drawer-toggle {
+      display: none;
+      width: 34px; height: 34px;
+      align-items: center; justify-content: center;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: 10px;
+      color: var(--hx-text);
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+      box-shadow: var(--hx-shadow-xs);
+      transition: background 0.14s ease, border-color 0.14s ease, transform 0.14s ease;
+    }
+    .hx-chat-drawer-toggle:hover { background: var(--hx-bg-2); border-color: var(--hx-line-strong); }
+    .hx-chat-drawer-toggle:active { transform: scale(0.96); }
+    .hx-chat-drawer-toggle svg { width: 16px; height: 16px; }
+    @media (max-width: 900px) {
+      .hx-chat-drawer-toggle { display: inline-flex; }
     }
     .hx-chat-rail::after {
       content: '';
@@ -1091,9 +1141,15 @@
           </div>
         </aside>
 
+        <!-- Mobile drawer backdrop -->
+        <div class="hx-chat-backdrop" id="hx-c-backdrop" aria-hidden="true"></div>
+
         <!-- Main chat pane -->
         <section class="hx-chat-pane">
           <div class="hx-chat-toolbar">
+            <button class="hx-chat-drawer-toggle" id="hx-c-drawer-toggle" type="button" aria-label="Open conversations">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
             <p class="hx-chat-title" id="hx-c-title">New chat</p>
             <label class="hx-chat-pill" title="Model">
               <span style="color:var(--hx-text-dim);font-size:11.5px;">Model</span>
@@ -2059,6 +2115,36 @@
         // ─── Toolbar interactions ────────────────────────────
         $('hx-c-new').addEventListener('click', newConversation);
         $('hx-c-clear').addEventListener('click', deleteCurrent);
+
+        // ─── Mobile drawer (conversations panel) ─────────────
+        var drawerRail    = document.querySelector('.hx-chat-rail');
+        var drawerBackdrop= $('hx-c-backdrop');
+        var drawerToggle  = $('hx-c-drawer-toggle');
+        function openDrawer() {
+          if (drawerRail) drawerRail.classList.add('is-open');
+          if (drawerBackdrop) drawerBackdrop.classList.add('is-visible');
+        }
+        function closeDrawer() {
+          if (drawerRail) drawerRail.classList.remove('is-open');
+          if (drawerBackdrop) drawerBackdrop.classList.remove('is-visible');
+        }
+        if (drawerToggle) drawerToggle.addEventListener('click', openDrawer);
+        if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeDrawer);
+        // Auto-close drawer when user selects a conversation or starts a new one
+        var railList = $('hx-c-list');
+        if (railList) {
+          railList.addEventListener('click', function (e) {
+            // Only close on actual conversation item taps (not on empty space)
+            var t = e.target.closest('.hx-chat-item');
+            if (t) closeDrawer();
+          });
+        }
+        var newBtnEl = $('hx-c-new');
+        if (newBtnEl) newBtnEl.addEventListener('click', closeDrawer);
+        // Close on ESC
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') closeDrawer();
+        });
 
         $('hx-c-model').addEventListener('change', async function () {
           if (!state.conversation) return;
