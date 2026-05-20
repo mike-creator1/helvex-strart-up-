@@ -54,11 +54,11 @@
     .hx-chat-new {
       width: 26px; height: 26px;
       display: inline-flex; align-items: center; justify-content: center;
-      background: var(--hx-text); color: #FFF;
+      background: var(--hx-text); color: var(--hx-bg);
       border: 1px solid var(--hx-text); border-radius: var(--hx-r-sm);
       cursor: pointer; transition: background 0.12s, border-color 0.12s;
     }
-    .hx-chat-new:hover { background: #1F1F1F; border-color: #1F1F1F; }
+    .hx-chat-new:hover { background: var(--hx-text-mid); border-color: var(--hx-text-mid); }
     .hx-chat-new svg { width: 13px; height: 13px; }
 
     .hx-chat-list {
@@ -381,7 +381,7 @@
     .hx-chat-tool-btn:disabled { opacity: 0.45; cursor: not-allowed; }
     .hx-chat-tool-btn svg { width: 16px; height: 16px; }
     .hx-chat-tool-btn.is-active {
-      background: var(--hx-text); color: #FFF; border-color: var(--hx-text);
+      background: var(--hx-text); color: var(--hx-bg); border-color: var(--hx-text);
     }
     .hx-chat-tool-btn.is-active::before {
       content: ''; position: absolute; width: 32px; height: 32px;
@@ -429,12 +429,12 @@
     .hx-chat-send {
       width: 32px; height: 32px;
       display: inline-flex; align-items: center; justify-content: center;
-      background: var(--hx-text); color: #FFF;
+      background: var(--hx-text); color: var(--hx-bg);
       border: 1px solid var(--hx-text); border-radius: var(--hx-r-sm);
       cursor: pointer; flex-shrink: 0;
       transition: background 0.12s, opacity 0.12s;
     }
-    .hx-chat-send:hover:not(:disabled) { background: #1F1F1F; }
+    .hx-chat-send:hover:not(:disabled) { background: var(--hx-text-mid); border-color: var(--hx-text-mid); }
     .hx-chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
     .hx-chat-send svg { width: 14px; height: 14px; }
 

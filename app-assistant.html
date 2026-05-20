@@ -19,8 +19,8 @@
 
     .hx-thread-pane { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); display: flex; flex-direction: column; overflow: hidden; }
     .hx-thread-head { padding: 12px 12px 10px; border-bottom: 1px solid var(--hx-line); display: flex; gap: 8px; }
-    .hx-thread-new { flex: 1; padding: 8px 12px; background: var(--hx-text); color: #fff; border: 0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: background 0.12s; }
-    .hx-thread-new:hover { background: #000; }
+    .hx-thread-new { flex: 1; padding: 8px 12px; background: var(--hx-text); color: var(--hx-bg); border: 0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: background 0.12s; }
+    .hx-thread-new:hover { background: var(--hx-text-mid); }
     .hx-thread-search-wrap { padding: 8px 12px; border-bottom: 1px solid var(--hx-line); }
     .hx-thread-search { width: 100%; padding: 7px 10px; border: 1px solid var(--hx-line); border-radius: 8px; font: inherit; font-size: 12.5px; outline: none; }
     .hx-thread-search:focus { border-color: var(--hx-yellow-deep); }
@@ -48,8 +48,8 @@
     .hxai-chat-input-row { display: flex; gap: 8px; }
     .hxai-chat-input-row textarea { flex: 1; min-height: 44px; max-height: 160px; padding: 12px 14px; border: 1px solid var(--hx-line); border-radius: 12px; font: inherit; font-size: 13.5px; resize: vertical; line-height: 1.5; }
     .hxai-chat-input-row textarea:focus { outline: none; border-color: var(--hx-yellow-deep); box-shadow: 0 0 0 3px rgba(252,211,77,0.18); }
-    .hxai-chat-send { padding: 0 18px; background: var(--hx-text); color: #fff; border: 0; border-radius: 12px; font-weight: 600; font-size: 13px; cursor: pointer; transition: background 0.12s; }
-    .hxai-chat-send:hover:not(:disabled) { background: #000; }
+    .hxai-chat-send { padding: 0 18px; background: var(--hx-text); color: var(--hx-bg); border: 0; border-radius: 12px; font-weight: 600; font-size: 13px; cursor: pointer; transition: background 0.12s; }
+    .hxai-chat-send:hover:not(:disabled) { background: var(--hx-text-mid); }
     .hxai-chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .hx-chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--hx-text-mid); padding: 28px; }
