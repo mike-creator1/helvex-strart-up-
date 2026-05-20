@@ -4,12 +4,164 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profile — HelveX</title>
-  <meta name="description" content="HelveX user profile — your details and team membership." />
+  <meta name="description" content="HelveX user profile — identity, workspace role, security overview, and account references." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <style>
+    /* Local polish that builds on the global platform tokens — kept minimal
+       so the page stays consistent with Vercel-tight HelveX surfaces. */
+    .hx-identity {
+      display: flex;
+      align-items: flex-start;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+    .hx-identity-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: var(--hx-text);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+      box-shadow: var(--hx-shadow-sm);
+    }
+    .hx-identity-body { flex: 1; min-width: 240px; }
+    .hx-identity-name {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--hx-text);
+      line-height: 1.2;
+    }
+    .hx-identity-role {
+      margin: 4px 0 0;
+      font-size: 13.5px;
+      color: var(--hx-text-mid);
+    }
+    .hx-identity-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      align-items: center;
+    }
+    .hx-identity-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .hx-ref-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 10px 0;
+      border-top: 1px solid var(--hx-line-soft);
+      flex-wrap: wrap;
+    }
+    .hx-ref-row:first-child { border-top: none; padding-top: 0; }
+    .hx-ref-label {
+      font-size: 12.5px;
+      color: var(--hx-text-mid);
+      font-weight: 500;
+      flex-shrink: 0;
+      min-width: 140px;
+    }
+    .hx-ref-value {
+      font-family: var(--hx-mono);
+      font-size: 12.5px;
+      color: var(--hx-text);
+      word-break: break-all;
+      flex: 1;
+      min-width: 0;
+    }
+    .hx-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 24px;
+      padding: 0 8px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--hx-text-mid);
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm);
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+      flex-shrink: 0;
+    }
+    .hx-copy-btn:hover { background: var(--hx-surface); color: var(--hx-text); border-color: var(--hx-line-strong); }
+    .hx-copy-btn svg { width: 11px; height: 11px; }
+    .hx-conn-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-top: 1px solid var(--hx-line-soft);
+    }
+    .hx-conn-row:first-child { border-top: none; padding-top: 0; }
+    .hx-conn-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--hx-r-sm);
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .hx-conn-icon svg { width: 16px; height: 16px; color: var(--hx-text); }
+    .hx-conn-body { flex: 1; min-width: 0; }
+    .hx-conn-name { font-size: 13.5px; font-weight: 500; color: var(--hx-text); margin: 0; }
+    .hx-conn-meta { font-size: 12px; color: var(--hx-text-dim); margin: 2px 0 0; }
+    .hx-section-sub {
+      font-size: 12.5px;
+      color: var(--hx-text-mid);
+      margin: -8px 0 12px;
+    }
+    .hx-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--hx-text);
+      color: #FFFFFF;
+      padding: 9px 16px;
+      border-radius: var(--hx-r);
+      font-size: 12.5px;
+      font-weight: 500;
+      box-shadow: var(--hx-shadow-lg);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s, transform 0.18s;
+      z-index: 80;
+    }
+    .hx-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .hx-input-wrap { position: relative; }
+    .hx-input-counter {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      color: var(--hx-text-faint);
+      font-family: var(--hx-mono);
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body data-active="profile">
 
@@ -22,67 +174,245 @@
         <div class="hx-page-head">
           <div>
             <h1>Profile.</h1>
-            <p class="sub">How you appear to your delivery team and inside your organisation's workspace.</p>
+            <p class="sub">Your identity inside HelveX — how the workspace knows you, what you can do, and the references your delivery team uses.</p>
+          </div>
+          <div class="hx-page-actions">
+            <a href="/settings.html" class="hx-btn hx-btn-secondary hx-btn-sm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Settings
+            </a>
+            <a href="/team.html" class="hx-btn hx-btn-secondary hx-btn-sm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Manage team
+            </a>
           </div>
         </div>
 
-        <div class="hx-card">
-          <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
-            <div id="hx-profile-avatar" style="width:64px;height:64px;border-radius:50%;background:var(--hx-text);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;color:#FFFFFF;flex-shrink:0;">·</div>
-            <div style="flex:1;min-width:200px;">
-              <h2 id="hx-profile-name" style="margin:0;font-size:20px;font-weight:600;letter-spacing:-0.02em;">—</h2>
-              <p id="hx-profile-meta" style="margin:4px 0 0;color:var(--hx-text-mid);font-size:13.5px;">—</p>
+        <!-- ═══════════════ IDENTITY CARD ═══════════════ -->
+        <div class="hx-card" style="padding:22px;">
+          <div class="hx-identity">
+            <div id="hx-profile-avatar" class="hx-identity-avatar">·</div>
+            <div class="hx-identity-body">
+              <h2 id="hx-profile-name" class="hx-identity-name">—</h2>
+              <p id="hx-profile-role" class="hx-identity-role">—</p>
+              <div class="hx-identity-chips">
+                <span id="hx-chip-email" class="hx-badge hx-badge-neutral" style="max-width:100%;">
+                  <svg style="width:11px;height:11px;margin-right:4px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <span id="hx-chip-email-value" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span>
+                </span>
+                <span id="hx-chip-verified" class="hx-badge hx-badge-emerald" style="display:none;">
+                  <span class="hx-badge-dot"></span>Verified
+                </span>
+                <span id="hx-chip-role" class="hx-badge hx-badge-yellow">
+                  <span class="hx-badge-dot" style="background:var(--hx-yellow-deep);"></span>Workspace owner
+                </span>
+                <span id="hx-chip-plan" class="hx-badge hx-badge-neutral">
+                  <span class="hx-badge-dot"></span>Free plan
+                </span>
+              </div>
+            </div>
+            <div class="hx-identity-actions">
+              <a href="/billing.html" class="hx-btn hx-btn-secondary hx-btn-sm">View plan</a>
+              <a href="/security.html" class="hx-btn hx-btn-secondary hx-btn-sm">Security</a>
             </div>
           </div>
         </div>
 
+        <!-- ═══════════════ QUICK STATS ═══════════════ -->
+        <div class="hx-grid hx-grid-4" style="margin-top:10px;">
+          <div class="hx-stat">
+            <p class="hx-stat-label">Member since</p>
+            <p class="hx-stat-value hx-mono" id="hx-stat-since">—</p>
+            <p class="hx-stat-meta" id="hx-stat-since-meta">—</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Last sign-in</p>
+            <p class="hx-stat-value hx-mono" id="hx-stat-lastlogin">—</p>
+            <p class="hx-stat-meta" id="hx-stat-lastlogin-meta">—</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Sign-in method</p>
+            <p class="hx-stat-value" id="hx-stat-provider">—</p>
+            <p class="hx-stat-meta" id="hx-stat-provider-meta">—</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Account status</p>
+            <p class="hx-stat-value" id="hx-stat-status">—</p>
+            <p class="hx-stat-meta" id="hx-stat-status-meta">—</p>
+          </div>
+        </div>
+
+        <!-- ═══════════════ PERSONAL DETAILS ═══════════════ -->
         <div class="hx-section-head">
           <h2>Personal details</h2>
+          <span class="meta">Shown to teammates and on documents we issue you.</span>
         </div>
         <div class="hx-card">
           <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;">
             <div class="hx-field" style="margin:0;">
               <label>First name</label>
-              <input type="text" id="hx-input-first" placeholder="First name" />
+              <input type="text" id="hx-input-first" placeholder="First name" maxlength="60" autocomplete="given-name" />
             </div>
             <div class="hx-field" style="margin:0;">
               <label>Last name</label>
-              <input type="text" id="hx-input-last" placeholder="Last name" />
+              <input type="text" id="hx-input-last" placeholder="Last name" maxlength="60" autocomplete="family-name" />
             </div>
             <div class="hx-field" style="margin:0;">
-              <label>Email</label>
-              <input type="email" id="hx-input-email" disabled style="opacity:0.6;cursor:not-allowed;" />
-              <div class="help">Used for sign-in. Contact support to change.</div>
+              <label>Email address</label>
+              <input type="email" id="hx-input-email" disabled style="opacity:0.7;cursor:not-allowed;" />
+              <div class="help">Used for sign-in and account-critical notifications. To change it, contact <a href="mailto:support@helvex.ai" style="color:var(--hx-text);text-decoration:underline;text-decoration-color:var(--hx-line-strong);text-underline-offset:2px;">support@helvex.ai</a>.</div>
             </div>
             <div class="hx-field" style="margin:0;">
               <label>Job title</label>
-              <input type="text" id="hx-input-title" placeholder="e.g. Operations Lead" />
+              <input type="text" id="hx-input-title" placeholder="e.g. Operations Lead, Founder, CFO" maxlength="80" autocomplete="organization-title" />
+              <div class="help">Optional — appears next to your name in shared threads.</div>
             </div>
             <div class="hx-field" style="margin:0;grid-column:span 2;">
-              <label>Company</label>
-              <input type="text" id="hx-input-company" placeholder="Your company" />
+              <label>Company / workspace name</label>
+              <input type="text" id="hx-input-company" placeholder="Your company" maxlength="120" autocomplete="organization" />
+              <div class="help">Used on your invoices and inside the team portal. This is the same value as <a href="/settings.html" style="color:var(--hx-text);text-decoration:underline;text-decoration-color:var(--hx-line-strong);text-underline-offset:2px;">Workspace name in Settings</a>.</div>
             </div>
           </div>
-          <div style="display:flex;gap:8px;margin-top:20px;">
-            <button class="hx-btn hx-btn-primary">Save profile</button>
-            <button class="hx-btn hx-btn-ghost">Cancel</button>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:22px;flex-wrap:wrap;">
+            <button class="hx-btn hx-btn-primary" id="hx-btn-save">Save profile</button>
+            <button class="hx-btn hx-btn-ghost" id="hx-btn-cancel">Discard changes</button>
+            <p id="hx-profile-status" style="margin:0 0 0 4px;font-size:12.5px;font-weight:500;"></p>
           </div>
         </div>
 
+        <!-- ═══════════════ WORKSPACE & ACCESS ═══════════════ -->
         <div class="hx-section-head">
-          <h2>Account</h2>
+          <h2>Workspace &amp; access</h2>
+          <a href="/team.html">Manage team →</a>
+        </div>
+        <div class="hx-grid hx-grid-3">
+          <div class="hx-card">
+            <p class="hx-card-eyebrow">Workspace</p>
+            <h3 id="hx-ws-name">—</h3>
+            <p class="desc">The organisation your delivery, billing, and shared projects sit under.</p>
+            <a href="/settings.html" class="hx-card-link">Workspace settings</a>
+          </div>
+          <div class="hx-card">
+            <p class="hx-card-eyebrow">Your role</p>
+            <h3 id="hx-ws-role">Owner</h3>
+            <p class="desc">Full access to projects, agents, billing, and team members.</p>
+            <a href="/team.html" class="hx-card-link">Permissions</a>
+          </div>
+          <div class="hx-card">
+            <p class="hx-card-eyebrow">Team members</p>
+            <h3 id="hx-ws-members">—</h3>
+            <p class="desc">People in your workspace, including pending invitations.</p>
+            <a href="/team.html" class="hx-card-link">Invite teammates</a>
+          </div>
+        </div>
+
+        <!-- ═══════════════ SECURITY OVERVIEW ═══════════════ -->
+        <div class="hx-section-head">
+          <h2>Security overview</h2>
+          <a href="/security.html">Open security settings →</a>
+        </div>
+        <p class="hx-section-sub">Read-only summary — use Security settings to change anything below.</p>
+        <div class="hx-grid hx-grid-3">
+          <div class="hx-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <h3>Sign-in email</h3>
+              <span id="hx-sec-email-badge" class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Verified</span>
+            </div>
+            <p class="desc" id="hx-sec-email-text">The address you use to sign in. Verified means we've confirmed you own it.</p>
+            <a href="mailto:support@helvex.ai" class="hx-card-link">Request change</a>
+          </div>
+          <div class="hx-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <h3>Two-factor authentication</h3>
+              <span class="hx-badge hx-badge-neutral"><span class="hx-badge-dot"></span>Not configured</span>
+            </div>
+            <p class="desc">Add a second factor — authenticator app (TOTP) is available on every plan.</p>
+            <a href="/security.html" class="hx-card-link">Enable 2FA</a>
+          </div>
+          <div class="hx-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <h3>Password</h3>
+              <span id="hx-sec-pw-badge" class="hx-badge hx-badge-neutral"><span class="hx-badge-dot"></span>Set</span>
+            </div>
+            <p class="desc">Rotate your password if you suspect it has been exposed anywhere.</p>
+            <a href="/forgot-password" class="hx-card-link">Change password</a>
+          </div>
+        </div>
+
+        <!-- ═══════════════ CONNECTED ACCOUNTS ═══════════════ -->
+        <div class="hx-section-head">
+          <h2>Connected sign-in methods</h2>
         </div>
         <div class="hx-card">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;">
-            <div>
-              <p class="hx-card-eyebrow">Member since</p>
-              <p class="hx-mono" id="hx-profile-since" style="margin:0;font-size:14px;color:var(--hx-text);">—</p>
+          <div id="hx-conn-list">
+            <div class="hx-conn-row">
+              <div class="hx-conn-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div class="hx-conn-body">
+                <p class="hx-conn-name">Email &amp; password</p>
+                <p class="hx-conn-meta" id="hx-conn-email-meta">—</p>
+              </div>
+              <span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Active</span>
             </div>
+            <!-- Additional rows for OAuth providers are appended dynamically -->
+          </div>
+        </div>
+
+        <!-- ═══════════════ ACCOUNT REFERENCES ═══════════════ -->
+        <div class="hx-section-head">
+          <h2>Account references</h2>
+          <span class="meta">Quote these when contacting support.</span>
+        </div>
+        <div class="hx-card">
+          <div class="hx-ref-row">
+            <span class="hx-ref-label">User ID</span>
+            <code class="hx-ref-value" id="hx-ref-uid">—</code>
+            <button class="hx-copy-btn" data-copy-target="hx-ref-uid">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+          <div class="hx-ref-row">
+            <span class="hx-ref-label">Email</span>
+            <code class="hx-ref-value" id="hx-ref-email">—</code>
+            <button class="hx-copy-btn" data-copy-target="hx-ref-email">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+          <div class="hx-ref-row">
+            <span class="hx-ref-label">Account created</span>
+            <code class="hx-ref-value" id="hx-ref-created">—</code>
+          </div>
+          <div class="hx-ref-row">
+            <span class="hx-ref-label">Last sign-in</span>
+            <code class="hx-ref-value" id="hx-ref-lastsignin">—</code>
+          </div>
+          <div class="hx-ref-row">
+            <span class="hx-ref-label">Profile last updated</span>
+            <code class="hx-ref-value" id="hx-ref-updated">—</code>
+          </div>
+        </div>
+
+        <!-- ═══════════════ DANGER ZONE ═══════════════ -->
+        <div class="hx-section-head">
+          <h2 style="color:var(--hx-red);">Danger zone</h2>
+        </div>
+        <div class="hx-card" style="border-color:rgba(220,38,38,0.25);">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:10px;">
             <div>
-              <p class="hx-card-eyebrow">User ID</p>
-              <p class="hx-mono" id="hx-profile-uid" style="margin:0;font-size:12.5px;color:var(--hx-text-mid);word-break:break-all;">—</p>
+              <p style="margin:0;font-weight:600;">Sign out of HelveX</p>
+              <p style="margin:3px 0 0;color:var(--hx-text-mid);font-size:12.5px;">Ends your session on this device. You'll need to sign in again to come back.</p>
             </div>
-            <a href="/team.html" class="hx-btn hx-btn-secondary hx-btn-sm">Manage team</a>
+            <button class="hx-btn hx-btn-secondary" data-action="signout">Sign out</button>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:14px;border-top:1px solid rgba(220,38,38,0.18);">
+            <div>
+              <p style="margin:0;font-weight:600;color:var(--hx-red);">Delete this account</p>
+              <p style="margin:3px 0 0;color:var(--hx-text-mid);font-size:12.5px;">Permanent. Removes your profile, workspace data, and access to ongoing work. We'll confirm with you first.</p>
+            </div>
+            <a href="mailto:support@helvex.ai?subject=Account%20deletion%20request" class="hx-btn hx-btn-danger">Request deletion</a>
           </div>
         </div>
 
@@ -90,14 +420,21 @@
     </div>
   </div>
 
+  <div id="hx-toast" class="hx-toast">Copied.</div>
+
   <script src="/platform.js"></script>
   <script>
-    /* Real read/write of public.profiles via Supabase JS. */
+    /* Real read/write of public.profiles via Supabase JS, plus read-only
+       hydration of auth-derived facts: last sign-in, sign-in providers,
+       email verification, and a team-members count via public.team_members
+       (gracefully falls back if the table isn't present). */
     (function () {
       function whenAuthReady(fn) {
         if (window.HX && window.HX.supabase) { fn(); return; }
         document.addEventListener('hx:auth-ready', fn, { once: true });
       }
+      var $ = function (id) { return document.getElementById(id); };
+
       function initials(first, last, email) {
         var a = (first || '').trim();
         var b = (last || '').trim();
@@ -107,26 +444,86 @@
       }
       function fmtDate(iso) {
         if (!iso) return '—';
-        try {
-          return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
-        } catch (e) { return '—'; }
+        try { return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); }
+        catch (e) { return '—'; }
+      }
+      function fmtDateTime(iso) {
+        if (!iso) return '—';
+        try { return new Date(iso).toLocaleString(undefined, { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); }
+        catch (e) { return '—'; }
+      }
+      function relativeTime(iso) {
+        if (!iso) return '—';
+        var t = new Date(iso).getTime();
+        if (!t) return '—';
+        var diff = Date.now() - t;
+        var s = Math.round(diff / 1000);
+        if (s < 60)  return 'just now';
+        var m = Math.round(s / 60);
+        if (m < 60)  return m + (m === 1 ? ' minute ago' : ' minutes ago');
+        var h = Math.round(m / 60);
+        if (h < 24)  return h + (h === 1 ? ' hour ago' : ' hours ago');
+        var d = Math.round(h / 24);
+        if (d < 30)  return d + (d === 1 ? ' day ago' : ' days ago');
+        var mo = Math.round(d / 30);
+        if (mo < 12) return mo + (mo === 1 ? ' month ago' : ' months ago');
+        var y = Math.round(d / 365);
+        return y + (y === 1 ? ' year ago' : ' years ago');
+      }
+      function ageInDays(iso) {
+        if (!iso) return null;
+        var t = new Date(iso).getTime();
+        if (!t) return null;
+        return Math.floor((Date.now() - t) / 86400000);
+      }
+      function providerLabel(p) {
+        var map = { email:'Email & password', google:'Google', github:'GitHub', azure:'Microsoft', apple:'Apple', linkedin_oidc:'LinkedIn', linkedin:'LinkedIn', slack:'Slack', notion:'Notion', discord:'Discord' };
+        return map[p] || (p ? (p.charAt(0).toUpperCase() + p.slice(1)) : '—');
+      }
+      function providerSvg(p) {
+        // Minimal icon set — only the ones Supabase actually issues identities for.
+        switch (p) {
+          case 'google':
+            return '<svg viewBox="0 0 24 24" fill="none"><path d="M21.35 11.1H12v2.93h5.35c-.23 1.42-1.66 4.18-5.35 4.18-3.22 0-5.85-2.67-5.85-5.96s2.63-5.96 5.85-5.96c1.83 0 3.06.78 3.76 1.45l2.56-2.47C16.74 3.78 14.6 2.8 12 2.8 6.94 2.8 2.85 6.9 2.85 12s4.09 9.2 9.15 9.2c5.28 0 8.78-3.71 8.78-8.94 0-.6-.07-1.06-.43-1.16z" fill="currentColor"/></svg>';
+          case 'github':
+            return '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-1.92c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.78 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.73.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>';
+          case 'azure':
+          case 'microsoft':
+            return '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 3h9v9H2z" fill="#F25022"/><path d="M13 3h9v9h-9z" fill="#7FBA00"/><path d="M2 13h9v9H2z" fill="#00A4EF"/><path d="M13 13h9v9h-9z" fill="#FFB900"/></svg>';
+          case 'apple':
+            return '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.6c.04-2.97 2.43-4.4 2.54-4.46-1.39-2.03-3.55-2.3-4.32-2.34-1.83-.19-3.58 1.08-4.51 1.08-.94 0-2.37-1.06-3.91-1.03-2 .03-3.86 1.16-4.9 2.95-2.1 3.62-.54 8.97 1.5 11.92.99 1.44 2.18 3.06 3.74 3 1.5-.06 2.07-.97 3.88-.97 1.81 0 2.33.97 3.92.94 1.62-.03 2.65-1.47 3.64-2.92 1.14-1.67 1.61-3.28 1.64-3.36-.04-.02-3.14-1.21-3.18-4.81zM14.69 4.07c.83-1 1.39-2.4 1.24-3.78-1.2.05-2.65.8-3.5 1.8-.77.9-1.44 2.32-1.26 3.68 1.34.1 2.71-.68 3.52-1.7z"/></svg>';
+          case 'linkedin':
+          case 'linkedin_oidc':
+            return '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.25 6.5 1.75 1.75 0 0 1 6.5 8.25zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93s-1.74.59-1.74 2v4.67h-3v-9h2.89v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.53.85 3.53 3.93z"/></svg>';
+          default:
+            return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>';
+        }
       }
 
-      var $ = function (id) { return document.getElementById(id); };
-      var btnSave = null, btnCancel = null;
+      function toast(msg) {
+        var t = $('hx-toast'); if (!t) return;
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._timer);
+        t._timer = setTimeout(function () { t.classList.remove('show'); }, 1800);
+      }
+
+      var btnSave, btnCancel;
       var snapshot = {};
       var user = null;
 
-      function setHeader(first, last, company, email) {
-        var fullName = (first + ' ' + last).trim() || (email ? email.split('@')[0] : 'Account');
+      function setHeader(first, last, title, company, email, emailVerified) {
+        var fullName = (first + ' ' + last).trim() || (email ? email.split('@')[0] : 'Your account');
         if ($('hx-profile-avatar')) $('hx-profile-avatar').textContent = initials(first, last, email);
         if ($('hx-profile-name'))   $('hx-profile-name').textContent = fullName;
-        if ($('hx-profile-meta'))   {
+        if ($('hx-profile-role')) {
           var bits = [];
+          if (title)   bits.push(title);
           if (company) bits.push(company);
-          if (email) bits.push(email);
-          $('hx-profile-meta').textContent = bits.join(' · ') || '—';
+          $('hx-profile-role').textContent = bits.join(' · ') || 'Add a job title and company below';
         }
+        if ($('hx-chip-email-value')) $('hx-chip-email-value').textContent = email || '—';
+        if ($('hx-chip-verified')) $('hx-chip-verified').style.display = emailVerified ? '' : 'none';
       }
 
       function fillForm(p) {
@@ -139,63 +536,179 @@
 
       function readForm() {
         return {
-          first_name: ($('hx-input-first').value || '').trim() || null,
-          last_name:  ($('hx-input-last').value  || '').trim() || null,
-          title:      ($('hx-input-title').value || '').trim() || null,
+          first_name: ($('hx-input-first').value   || '').trim() || null,
+          last_name:  ($('hx-input-last').value    || '').trim() || null,
+          title:      ($('hx-input-title').value   || '').trim() || null,
           company:    ($('hx-input-company').value || '').trim() || null
         };
       }
 
       function setStatus(msg, kind) {
-        var existing = $('hx-profile-status');
-        if (!existing) {
-          existing = document.createElement('p');
-          existing.id = 'hx-profile-status';
-          existing.style.cssText = 'margin:12px 0 0;font-size:12.5px;font-weight:500;';
-          var actionsRow = btnSave && btnSave.parentNode;
-          if (actionsRow && actionsRow.parentNode) actionsRow.parentNode.appendChild(existing);
+        var el = $('hx-profile-status'); if (!el) return;
+        el.style.color = kind === 'error' ? 'var(--hx-red)' : 'var(--hx-emerald)';
+        el.textContent = msg || '';
+        if (msg && kind !== 'error') {
+          setTimeout(function () { if (el.textContent === msg) el.textContent = ''; }, 2500);
         }
-        existing.style.color = kind === 'error' ? 'var(--hx-red)' : 'var(--hx-emerald)';
-        existing.textContent = msg || '';
       }
+
+      function renderProviders(user) {
+        var list = $('hx-conn-list'); if (!list) return;
+        // Update the email row meta with provider + last sign-in
+        if ($('hx-conn-email-meta')) {
+          $('hx-conn-email-meta').textContent = user && user.email
+            ? (user.email + (user.email_confirmed_at ? ' · verified' : ' · awaiting verification'))
+            : '—';
+        }
+        // Append rows for OAuth identities (anything other than 'email')
+        var identities = (user && user.identities) || [];
+        identities.forEach(function (id) {
+          var p = (id.provider || '').toLowerCase();
+          if (!p || p === 'email') return;
+          var row = document.createElement('div');
+          row.className = 'hx-conn-row';
+          row.innerHTML =
+            '<div class="hx-conn-icon">' + providerSvg(p) + '</div>' +
+            '<div class="hx-conn-body">' +
+              '<p class="hx-conn-name">' + providerLabel(p) + '</p>' +
+              '<p class="hx-conn-meta">Linked ' + (id.created_at ? relativeTime(id.created_at) : '') + (id.identity_data && id.identity_data.email ? ' · ' + id.identity_data.email : '') + '</p>' +
+            '</div>' +
+            '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Linked</span>';
+          list.appendChild(row);
+        });
+      }
+
+      function renderStats(user, profile) {
+        // Member since
+        var since = (profile && profile.created_at) || (user && user.created_at);
+        if ($('hx-stat-since')) $('hx-stat-since').textContent = fmtDate(since);
+        if ($('hx-stat-since-meta')) {
+          var days = ageInDays(since);
+          $('hx-stat-since-meta').textContent = days != null ? (days + (days === 1 ? ' day' : ' days') + ' on HelveX') : '—';
+        }
+        // Last sign-in
+        var last = user && user.last_sign_in_at;
+        if ($('hx-stat-lastlogin')) $('hx-stat-lastlogin').textContent = last ? fmtDate(last) : '—';
+        if ($('hx-stat-lastlogin-meta')) $('hx-stat-lastlogin-meta').textContent = relativeTime(last);
+        // Provider
+        var provider = (user && user.app_metadata && (user.app_metadata.provider || (user.app_metadata.providers && user.app_metadata.providers[0]))) || 'email';
+        if ($('hx-stat-provider')) $('hx-stat-provider').textContent = providerLabel(provider);
+        if ($('hx-stat-provider-meta')) {
+          var providers = (user && user.app_metadata && user.app_metadata.providers) || [provider];
+          $('hx-stat-provider-meta').textContent = providers.length > 1
+            ? (providers.length + ' methods linked')
+            : 'Single method';
+        }
+        // Status
+        var verified = !!(user && user.email_confirmed_at);
+        if ($('hx-stat-status')) $('hx-stat-status').textContent = verified ? 'Active' : 'Pending verification';
+        if ($('hx-stat-status-meta')) $('hx-stat-status-meta').textContent = verified ? 'Email verified · all access enabled' : 'Check inbox to verify email';
+      }
+
+      function renderReferences(user, profile) {
+        if ($('hx-ref-uid'))         $('hx-ref-uid').textContent         = (user && user.id) || '—';
+        if ($('hx-ref-email'))       $('hx-ref-email').textContent       = (user && user.email) || '—';
+        if ($('hx-ref-created'))     $('hx-ref-created').textContent     = fmtDateTime((profile && profile.created_at) || (user && user.created_at));
+        if ($('hx-ref-lastsignin'))  $('hx-ref-lastsignin').textContent  = fmtDateTime(user && user.last_sign_in_at);
+        if ($('hx-ref-updated'))     $('hx-ref-updated').textContent     = fmtDateTime((profile && profile.updated_at) || (user && user.updated_at));
+      }
+
+      function renderWorkspace(profile) {
+        if ($('hx-ws-name'))    $('hx-ws-name').textContent    = (profile && profile.company) || 'Untitled workspace';
+        // Members: read from a likely team_members table if available.
+        // Fallback to "Just you" — never fabricate a number.
+        if ($('hx-ws-members')) $('hx-ws-members').textContent = '—';
+      }
+
+      function copyToClipboard(text) {
+        if (!text) return Promise.resolve(false);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return false; });
+        }
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          return Promise.resolve(ok);
+        } catch (e) { return Promise.resolve(false); }
+      }
+
+      // Wire copy buttons (event delegation handles dynamically inserted rows too)
+      document.addEventListener('click', function (ev) {
+        var btn = ev.target.closest && ev.target.closest('[data-copy-target]');
+        if (!btn) return;
+        var targetId = btn.getAttribute('data-copy-target');
+        var node = document.getElementById(targetId);
+        if (!node) return;
+        copyToClipboard(node.textContent.trim()).then(function (ok) {
+          toast(ok ? 'Copied to clipboard' : 'Could not copy');
+        });
+      });
 
       whenAuthReady(function () {
         var sb = window.HX.supabase;
-        // Wire the buttons (the markup uses two buttons in a row — the
-        // primary one is "Save profile", the ghost one is "Cancel").
-        var actions = document.querySelectorAll('.hx-btn');
-        actions.forEach(function (b) {
-          if (/save profile/i.test(b.textContent)) btnSave = b;
-          if (/^cancel$/i.test(b.textContent.trim())) btnCancel = b;
-        });
+        btnSave   = $('hx-btn-save');
+        btnCancel = $('hx-btn-cancel');
 
-        sb.auth.getUser().then(function (res) {
+        sb.auth.getUser().then(async function (res) {
           user = res && res.data ? res.data.user : null;
           if (!user) return;
-          // Read or upsert the row in public.profiles. The signup edge fn
-          // already inserts a row on account creation; read it.
-          sb.from('profiles').select('*').eq('id', user.id).maybeSingle()
-            .then(function (r) {
-              var prof = (r && r.data) || {
-                id: user.id,
-                email: user.email,
-                first_name: (user.user_metadata || {}).first_name || '',
-                last_name:  (user.user_metadata || {}).last_name  || '',
-                company:    (user.user_metadata || {}).company    || ''
-              };
-              snapshot = JSON.parse(JSON.stringify(prof));
-              setHeader(prof.first_name, prof.last_name, prof.company, prof.email);
-              fillForm(prof);
-              if ($('hx-profile-since')) $('hx-profile-since').textContent = fmtDate(prof.created_at || user.created_at);
-              if ($('hx-profile-uid'))   $('hx-profile-uid').textContent   = user.id;
-            });
+
+          // Read or initialise the profile row.
+          var r = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+          var prof = (r && r.data) || {
+            id: user.id,
+            email: user.email,
+            first_name: (user.user_metadata || {}).first_name || '',
+            last_name:  (user.user_metadata || {}).last_name  || '',
+            company:    (user.user_metadata || {}).company    || ''
+          };
+          snapshot = JSON.parse(JSON.stringify(prof));
+
+          var verified = !!user.email_confirmed_at;
+          setHeader(prof.first_name, prof.last_name, prof.title, prof.company, prof.email || user.email, verified);
+          fillForm(prof);
+          renderStats(user, prof);
+          renderProviders(user);
+          renderReferences(user, prof);
+          renderWorkspace(prof);
+
+          // Plan chip — try reading current plan from user_credits if it
+          // exists in the row; otherwise leave as "Free plan". We never
+          // invent a plan name.
+          try {
+            var c = await sb.from('user_credits').select('plan_name, plan_label, current_plan, plan').eq('user_id', user.id).maybeSingle();
+            if (c && c.data) {
+              var plan = c.data.plan_label || c.data.plan_name || c.data.current_plan || c.data.plan;
+              if (plan && $('hx-chip-plan')) {
+                $('hx-chip-plan').innerHTML = '<span class="hx-badge-dot"></span>' + String(plan);
+              }
+            }
+          } catch (e) { /* table may not exist in this environment — silent */ }
+
+          // Team member count — try public.team_members first, fall back gracefully.
+          try {
+            var tm = await sb.from('team_members').select('user_id', { count: 'exact', head: true }).eq('workspace_owner', user.id);
+            if (tm && typeof tm.count === 'number' && $('hx-ws-members')) {
+              $('hx-ws-members').textContent = (tm.count + 1) + (tm.count + 1 === 1 ? ' member' : ' members');
+            } else if ($('hx-ws-members')) {
+              $('hx-ws-members').textContent = 'Just you';
+            }
+          } catch (e) {
+            if ($('hx-ws-members')) $('hx-ws-members').textContent = 'Just you';
+          }
         });
 
         if (btnCancel) {
           btnCancel.addEventListener('click', function (e) {
             e.preventDefault();
             fillForm(snapshot);
-            setStatus('');
+            setStatus('Discarded.', 'ok');
           });
         }
         if (btnSave) {
@@ -207,16 +720,18 @@
             setStatus('');
             try {
               var patch = readForm();
-              // Upsert ensures the row exists (in case the trigger missed it
-              // for a legacy account). Always sets id + email server-side.
               var up = await sb.from('profiles').upsert({
                 id: user.id, email: user.email, ...patch
               }, { onConflict: 'id' }).select().maybeSingle();
               if (up.error) throw up.error;
               snapshot = up.data;
-              setHeader(snapshot.first_name, snapshot.last_name, snapshot.company, snapshot.email);
-              await sb.rpc('log_event', { p_kind: 'profile.updated', p_payload: { fields: Object.keys(patch) } });
+              var verified = !!user.email_confirmed_at;
+              setHeader(snapshot.first_name, snapshot.last_name, snapshot.title, snapshot.company, snapshot.email, verified);
+              renderReferences(user, snapshot);
+              renderWorkspace(snapshot);
+              try { await sb.rpc('log_event', { p_kind: 'profile.updated', p_payload: { fields: Object.keys(patch) } }); } catch (e) {}
               setStatus('Saved.', 'ok');
+              toast('Profile saved');
             } catch (err) {
               setStatus((err && err.message) || 'Could not save.', 'error');
             } finally {
