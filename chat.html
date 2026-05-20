@@ -701,6 +701,113 @@
       z-index: 0;
     }
     .hx-chat-pane > * { position: relative; z-index: 1; }
+
+    /* ─── Per-model ambient atmosphere ───────────────────────────────
+       A subtle particle layer that sets the mood per model. Lives
+       inside the chat pane, behind all content, very low opacity so it
+       never distracts from the conversation. Activated based on the
+       body[data-model] attribute so the morph animation also smoothly
+       reshapes the ambience. */
+    .hx-chat-ambient {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body[data-model="ether"]      .hx-chat-ambient.is-ether,
+    body[data-model="nexus"]      .hx-chat-ambient.is-nexus,
+    body[data-model="prometheus"] .hx-chat-ambient.is-prometheus {
+      opacity: 1;
+    }
+    .hx-chat-ambient i {
+      position: absolute;
+      display: block;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    /* Ether — golden electrons drifting in slow horizontal arcs */
+    .hx-chat-ambient.is-ether i {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--hx-yellow);
+      box-shadow: 0 0 10px var(--hx-yellow-soft), 0 0 20px var(--hx-yellow-soft);
+      opacity: 0;
+      animation: hx-ether-drift var(--d, 14s) linear infinite var(--delay, 0s);
+    }
+    @keyframes hx-ether-drift {
+      0%   { transform: translate(-20px, 0) scale(0.6);   opacity: 0; }
+      10%  { opacity: 0.55; }
+      50%  { transform: translate(50vw, -40px) scale(1);  opacity: 0.85; }
+      90%  { opacity: 0.4; }
+      100% { transform: translate(110vw, -10px) scale(0.6); opacity: 0; }
+    }
+
+    /* Nexus — slow drifting red diamonds (rotated squares) */
+    .hx-chat-ambient.is-nexus i {
+      width: 5px; height: 5px;
+      background: var(--hx-red);
+      transform: rotate(45deg);
+      box-shadow: 0 0 12px color-mix(in srgb, var(--hx-red) 50%, transparent),
+                  0 0 22px color-mix(in srgb, var(--hx-red) 25%, transparent);
+      opacity: 0;
+      animation: hx-nexus-drift var(--d, 18s) ease-in-out infinite var(--delay, 0s);
+    }
+    @keyframes hx-nexus-drift {
+      0%   { transform: translate(0, 110vh) rotate(45deg)  scale(0.5); opacity: 0; }
+      15%  { opacity: 0.6; }
+      50%  { transform: translate(20px, 50vh) rotate(225deg) scale(1); opacity: 0.85; }
+      85%  { opacity: 0.45; }
+      100% { transform: translate(-10px, -20vh) rotate(405deg) scale(0.5); opacity: 0; }
+    }
+
+    /* Prometheus — embers rising from the bottom with a slight wobble */
+    .hx-chat-ambient.is-prometheus i {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #FFB347 0%, #DC2626 60%, transparent 100%);
+      box-shadow: 0 0 8px rgba(220, 38, 38, 0.6),
+                  0 0 16px rgba(220, 38, 38, 0.35),
+                  0 0 28px rgba(255, 140, 0, 0.25);
+      opacity: 0;
+      animation: hx-prom-ember var(--d, 9s) ease-out infinite var(--delay, 0s);
+      filter: blur(0.4px);
+    }
+    .hx-chat-ambient.is-prometheus i::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 100, 0, 0.4) 0%, transparent 70%);
+    }
+    @keyframes hx-prom-ember {
+      0%   { transform: translate(0, 110vh) scale(1);   opacity: 0; }
+      10%  { opacity: 1; }
+      50%  { transform: translate(12px, 50vh) scale(0.9); opacity: 0.95; }
+      80%  { transform: translate(-8px, 15vh) scale(0.5); opacity: 0.5; }
+      100% { transform: translate(8px, -10vh) scale(0.1); opacity: 0; }
+    }
+    /* Faint horizontal heat shimmer near the bottom for Prometheus */
+    body[data-model="prometheus"] .hx-chat-pane::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 200px;
+      background: radial-gradient(ellipse at center bottom,
+        rgba(220, 38, 38, 0.10) 0%,
+        rgba(220, 38, 38, 0.04) 40%,
+        transparent 75%);
+      pointer-events: none;
+      z-index: 0;
+      animation: hx-prom-shimmer 4s ease-in-out infinite;
+    }
+    @keyframes hx-prom-shimmer {
+      0%, 100% { opacity: 0.55; transform: scaleY(1); }
+      50%      { opacity: 1;    transform: scaleY(1.08); }
+    }
     .hx-chat-toolbar {
       display: flex;
       align-items: center;
@@ -1340,7 +1447,7 @@
     }
     .hx-thinking-solo.is-ether {
       color: var(--hx-yellow-deep);
-      filter: drop-shadow(0 0 10px var(--hx-yellow-soft));
+      filter: drop-shadow(0 0 10px var(--hx-yellow-soft)) drop-shadow(0 0 22px var(--hx-yellow-soft));
     }
     .hx-thinking-solo.is-ether svg {
       animation: hx-solo-ether 2.4s linear infinite;
@@ -1348,31 +1455,45 @@
     @keyframes hx-solo-ether {
       to { transform: rotate(360deg); }
     }
+    /* Nexus — coral burst spins COUNTER-clockwise while glow breathes */
     .hx-thinking-solo.is-nexus {
       color: var(--hx-red);
-      filter: drop-shadow(0 0 10px var(--hx-red-soft));
     }
     .hx-thinking-solo.is-nexus svg {
-      animation: hx-solo-nexus 1.8s ease-in-out infinite;
+      animation: hx-solo-nexus 3.2s linear infinite;
     }
     @keyframes hx-solo-nexus {
-      0%, 100% { transform: scale(0.92); opacity: 0.85; }
-      50%      { transform: scale(1.08); opacity: 1; }
+      to { transform: rotate(-360deg); }
     }
+    .hx-thinking-solo.is-nexus {
+      animation: hx-solo-fade-in 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both,
+                 hx-solo-nexus-breathe 1.8s ease-in-out infinite 0.3s;
+    }
+    @keyframes hx-solo-nexus-breathe {
+      0%, 100% { filter: drop-shadow(0 0 8px  var(--hx-red-soft)) drop-shadow(0 0 14px var(--hx-red-soft)); }
+      50%      { filter: drop-shadow(0 0 20px var(--hx-red-soft)) drop-shadow(0 0 32px var(--hx-red-soft)); }
+    }
+    /* Prometheus — flame rotates slowly + flickers (glow pulses irregularly) */
     .hx-thinking-solo.is-prometheus {
       color: var(--hx-text);
-      filter: drop-shadow(0 0 12px var(--hx-mc-glow));
-      transform-origin: 16px 26px;
+      transform-origin: 50% 50%;
     }
     .hx-thinking-solo.is-prometheus svg {
-      animation: hx-solo-prometheus 1.3s ease-in-out infinite;
-      transform-origin: 12px 20px;
+      animation: hx-solo-prom-spin 4s linear infinite;
+      transform-origin: 50% 50%;
     }
-    @keyframes hx-solo-prometheus {
-      0%, 100% { transform: scale(1)   skewX(0deg);  }
-      25%      { transform: scale(1.06) skewX(-1.5deg); }
-      50%      { transform: scale(0.95) skewX(1deg); }
-      75%      { transform: scale(1.05) skewX(-0.5deg); }
+    @keyframes hx-solo-prom-spin {
+      to { transform: rotate(360deg); }
+    }
+    .hx-thinking-solo.is-prometheus {
+      animation: hx-solo-fade-in 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both,
+                 hx-solo-prom-flicker 1.2s ease-in-out infinite 0.3s;
+    }
+    @keyframes hx-solo-prom-flicker {
+      0%, 100% { filter: drop-shadow(0 0 10px var(--hx-mc-glow)) drop-shadow(0 0 18px var(--hx-mc-glow)); opacity: 1; }
+      30%      { filter: drop-shadow(0 0 22px var(--hx-mc-glow)) drop-shadow(0 0 36px var(--hx-mc-glow)); opacity: 0.92; }
+      55%      { filter: drop-shadow(0 0 14px var(--hx-mc-glow)) drop-shadow(0 0 22px var(--hx-mc-glow)); opacity: 1; }
+      80%      { filter: drop-shadow(0 0 24px var(--hx-mc-glow)) drop-shadow(0 0 40px var(--hx-mc-glow)); opacity: 0.95; }
     }
 
     /* The old pill thinking indicator (.hx-thinking, .hx-thinking-mark,
@@ -2302,6 +2423,10 @@
 
         <!-- Main chat pane -->
         <section class="hx-chat-pane">
+          <!-- Per-model ambient atmosphere layers — particles tied to data-model -->
+          <div class="hx-chat-ambient is-ether"      id="hx-c-ambient-ether"      aria-hidden="true"></div>
+          <div class="hx-chat-ambient is-nexus"      id="hx-c-ambient-nexus"      aria-hidden="true"></div>
+          <div class="hx-chat-ambient is-prometheus" id="hx-c-ambient-prometheus" aria-hidden="true"></div>
           <div class="hx-chat-toolbar">
             <button class="hx-chat-drawer-toggle" id="hx-c-drawer-toggle" type="button" aria-label="Open conversations">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -3774,6 +3899,30 @@
         document.addEventListener('keydown', function (e) {
           if (e.key === 'Escape') closeDrawer();
         });
+
+        // Seed the per-model ambient particle layers once at load.
+        // Each layer gets 14 particles scattered horizontally, with
+        // randomized delays + durations so the motion never feels canned.
+        (function seedAmbient() {
+          var layers = ['ether', 'nexus', 'prometheus'];
+          layers.forEach(function (m) {
+            var host = document.getElementById('hx-c-ambient-' + m);
+            if (!host || host.childElementCount > 0) return;
+            var count = 14;
+            var html = '';
+            for (var i = 0; i < count; i++) {
+              var left = Math.round((i * 100 / count) + (Math.random() * 8 - 4));
+              var delay = (Math.random() * 12).toFixed(1);
+              var dur;
+              if (m === 'ether')      dur = (10 + Math.random() * 8).toFixed(1);  // 10-18s
+              else if (m === 'nexus') dur = (16 + Math.random() * 10).toFixed(1); // 16-26s
+              else                    dur = (6  + Math.random() * 5).toFixed(1);  // 6-11s embers
+              var topStyle = (m === 'ether') ? ('top:' + (10 + Math.random() * 70).toFixed(0) + '%;') : '';
+              html += '<i style="left:' + left + '%;' + topStyle + '--d:' + dur + 's;--delay:-' + delay + 's;"></i>';
+            }
+            host.innerHTML = html;
+          });
+        })();
 
         // Apply model theme on initial load (Ether by default)
         applyModelTheme(($('hx-c-model') && $('hx-c-model').value) || 'ether', { silent: true });
