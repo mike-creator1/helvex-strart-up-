@@ -966,30 +966,109 @@
     .hx-chat-tool-btn.is-active {
       background: var(--hx-text); color: var(--hx-bg); border-color: var(--hx-text);
     }
-    /* Web search tool button — when enabled, glows gold to show the model
-       will browse the web. Persists between messages until the user turns it off. */
-    #hx-c-web[aria-pressed="true"] {
+    /* Consolidated Tools popover — declutters the composer by hiding
+       web_search + code_execution behind a single elegant menu. */
+    .hx-chat-tools-wrap { position: relative; flex-shrink: 0; }
+    #hx-c-tools-btn { position: relative; }
+    #hx-c-tools-btn[aria-expanded="true"] {
+      background: var(--hx-bg-2);
+      color: var(--hx-text);
+      border-color: var(--hx-line);
+    }
+    #hx-c-tools-btn.has-active {
+      color: var(--hx-yellow-deep);
+    }
+    .hx-chat-tools-count {
+      position: absolute;
+      top: -2px; right: -2px;
+      min-width: 14px; height: 14px;
+      padding: 0 4px;
+      border-radius: 7px;
+      background: var(--hx-yellow);
+      color: var(--hx-bg);
+      font: 700 9px/14px var(--hx-mono);
+      text-align: center;
+      box-shadow: 0 0 0 2px var(--hx-surface);
+    }
+    .hx-chat-tools-menu {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: -8px;
+      min-width: 280px;
+      padding: 6px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: 14px;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+        0 18px 38px -12px rgba(20,18,12,0.18),
+        0 4px 10px rgba(20,18,12,0.05);
+      z-index: 20;
+      animation: hx-tools-in 0.18s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    .hx-chat-tools-menu[hidden] { display: none; }
+    @keyframes hx-tools-in {
+      from { opacity: 0; transform: translateY(6px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .hx-chat-tools-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 10px 12px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      font: inherit;
+      color: var(--hx-text);
+      text-align: left;
+      transition: background 0.14s ease, border-color 0.14s ease;
+    }
+    .hx-chat-tools-item:hover { background: var(--hx-bg-2); }
+    .hx-chat-tools-item[aria-checked="true"] {
+      background: linear-gradient(180deg, var(--hx-yellow-soft) 0%, transparent 100%);
+      border-color: color-mix(in srgb, var(--hx-yellow) 22%, var(--hx-line));
+    }
+    .hx-chat-tools-ico {
+      width: 32px; height: 32px;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: 9px;
+      color: var(--hx-text-mid);
+    }
+    .hx-chat-tools-item[aria-checked="true"] .hx-chat-tools-ico {
       background: var(--hx-yellow-soft);
       color: var(--hx-yellow-deep);
       border-color: color-mix(in srgb, var(--hx-yellow) 35%, var(--hx-line));
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--hx-yellow) 12%, transparent);
     }
-    #hx-c-web[aria-pressed="true"] svg { animation: hx-web-spin 14s linear infinite; }
-    @keyframes hx-web-spin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
+    .hx-chat-tools-ico svg { width: 15px; height: 15px; }
+    .hx-chat-tools-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .hx-chat-tools-title { font-size: 13px; font-weight: 600; color: var(--hx-text); }
+    .hx-chat-tools-desc  { font-size: 11.5px; color: var(--hx-text-dim); }
+    .hx-chat-tools-check {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 1.5px solid var(--hx-line);
+      flex-shrink: 0;
+      position: relative;
+      transition: border-color 0.14s ease, background 0.14s ease;
     }
-    /* Code execution toggle — when on, glows emerald to differentiate from web search */
-    #hx-c-code[aria-pressed="true"] {
-      background: var(--hx-emerald-soft);
-      color: var(--hx-emerald);
-      border-color: color-mix(in srgb, var(--hx-emerald) 35%, var(--hx-line));
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--hx-emerald) 12%, transparent);
+    .hx-chat-tools-item[aria-checked="true"] .hx-chat-tools-check {
+      background: var(--hx-yellow-deep);
+      border-color: var(--hx-yellow-deep);
     }
-    #hx-c-code[aria-pressed="true"] svg { animation: hx-code-pulse 2.2s ease-in-out infinite; }
-    @keyframes hx-code-pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%      { opacity: 0.7; transform: scale(0.92); }
+    .hx-chat-tools-item[aria-checked="true"] .hx-chat-tools-check::after {
+      content: '';
+      position: absolute;
+      left: 3px; top: 5px;
+      width: 6px; height: 3px;
+      border-left: 1.5px solid #fff;
+      border-bottom: 1.5px solid #fff;
+      transform: rotate(-45deg);
     }
     .hx-chat-tool-btn.is-active::before {
       content: ''; position: absolute; width: 32px; height: 32px;
@@ -1429,24 +1508,41 @@
                     rows="1"
                     autocomplete="off"
                     spellcheck="true"></textarea>
-                  <button
-                    class="hx-chat-tool-btn"
-                    id="hx-c-web"
-                    type="button"
-                    aria-pressed="false"
-                    aria-label="Web search"
-                    title="Browse the web for fresh info">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg>
-                  </button>
-                  <button
-                    class="hx-chat-tool-btn"
-                    id="hx-c-code"
-                    type="button"
-                    aria-pressed="false"
-                    aria-label="Code execution"
-                    title="Run Python · charts · data analysis · math">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                  </button>
+                  <div class="hx-chat-tools-wrap">
+                    <button
+                      class="hx-chat-tool-btn"
+                      id="hx-c-tools-btn"
+                      type="button"
+                      aria-haspopup="menu"
+                      aria-expanded="false"
+                      aria-label="Tools"
+                      title="Web search · code execution">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg>
+                      <span class="hx-chat-tools-count" id="hx-c-tools-count" hidden>0</span>
+                    </button>
+                    <div class="hx-chat-tools-menu" id="hx-c-tools-menu" role="menu" hidden>
+                      <button class="hx-chat-tools-item" id="hx-c-web" type="button" role="menuitemcheckbox" aria-checked="false">
+                        <span class="hx-chat-tools-ico">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg>
+                        </span>
+                        <span class="hx-chat-tools-body">
+                          <span class="hx-chat-tools-title">Browse the web</span>
+                          <span class="hx-chat-tools-desc">Fresh info, current news, live data</span>
+                        </span>
+                        <span class="hx-chat-tools-check" aria-hidden="true"></span>
+                      </button>
+                      <button class="hx-chat-tools-item" id="hx-c-code" type="button" role="menuitemcheckbox" aria-checked="false">
+                        <span class="hx-chat-tools-ico">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        </span>
+                        <span class="hx-chat-tools-body">
+                          <span class="hx-chat-tools-title">Run code</span>
+                          <span class="hx-chat-tools-desc">Python · math · data analysis · charts</span>
+                        </span>
+                        <span class="hx-chat-tools-check" aria-hidden="true"></span>
+                      </button>
+                    </div>
+                  </div>
                   <button
                     class="hx-chat-tool-btn"
                     id="hx-c-mic"
@@ -3153,30 +3249,63 @@
 
         micBtn.addEventListener('click', toggleVoice);
 
-        // Web search toggle — when on, the model gets Anthropic's server-side
-        // web_search tool and will browse for current info when needed.
-        var webBtn = $('hx-c-web');
-        if (webBtn) {
-          webBtn.addEventListener('click', function () {
+        // Consolidated Tools popover — one elegant button that toggles
+        // the web_search + code_execution menu. Keeps the composer clean
+        // while exposing the model's superpowers behind a single tap.
+        var toolsBtn   = $('hx-c-tools-btn');
+        var toolsMenu  = $('hx-c-tools-menu');
+        var toolsCount = $('hx-c-tools-count');
+        var webItem    = $('hx-c-web');
+        var codeItem   = $('hx-c-code');
+        function refreshToolsUI() {
+          var active = (state.webEnabled ? 1 : 0) + (state.codeEnabled ? 1 : 0);
+          if (toolsCount) {
+            toolsCount.textContent = String(active);
+            toolsCount.hidden = active === 0;
+          }
+          if (toolsBtn) toolsBtn.classList.toggle('has-active', active > 0);
+        }
+        function openToolsMenu() {
+          if (!toolsMenu || !toolsBtn) return;
+          toolsMenu.hidden = false;
+          toolsBtn.setAttribute('aria-expanded', 'true');
+        }
+        function closeToolsMenu() {
+          if (!toolsMenu || !toolsBtn) return;
+          toolsMenu.hidden = true;
+          toolsBtn.setAttribute('aria-expanded', 'false');
+        }
+        if (toolsBtn) {
+          toolsBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (toolsBtn.getAttribute('aria-expanded') === 'true') closeToolsMenu();
+            else openToolsMenu();
+          });
+        }
+        if (webItem) {
+          webItem.addEventListener('click', function () {
             state.webEnabled = !state.webEnabled;
-            webBtn.setAttribute('aria-pressed', state.webEnabled ? 'true' : 'false');
-            webBtn.setAttribute('title', state.webEnabled
-              ? 'Web search ON — Helix will browse for current info'
-              : 'Browse the web for fresh info');
+            webItem.setAttribute('aria-checked', state.webEnabled ? 'true' : 'false');
+            refreshToolsUI();
           });
         }
-        // Code execution toggle — when on, Helix can run Python in a
-        // sandbox: math, data analysis, chart generation, CSV processing.
-        var codeBtn = $('hx-c-code');
-        if (codeBtn) {
-          codeBtn.addEventListener('click', function () {
+        if (codeItem) {
+          codeItem.addEventListener('click', function () {
             state.codeEnabled = !state.codeEnabled;
-            codeBtn.setAttribute('aria-pressed', state.codeEnabled ? 'true' : 'false');
-            codeBtn.setAttribute('title', state.codeEnabled
-              ? 'Code execution ON — Helix can run Python, analyze data, draw charts'
-              : 'Run Python · charts · data analysis · math');
+            codeItem.setAttribute('aria-checked', state.codeEnabled ? 'true' : 'false');
+            refreshToolsUI();
           });
         }
+        // Tap anywhere else (or Esc) closes the menu
+        document.addEventListener('click', function (e) {
+          if (!toolsMenu || !toolsBtn) return;
+          if (toolsBtn.contains(e.target) || toolsMenu.contains(e.target)) return;
+          closeToolsMenu();
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') closeToolsMenu();
+        });
+        refreshToolsUI();
 
         if (voiceDoneBtn) {
           voiceDoneBtn.addEventListener('click', function () {
