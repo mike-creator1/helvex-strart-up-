@@ -171,21 +171,10 @@ p, h1, h2, h3, h4, h5, h6, li, td, th {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
-/* Defensive mobile guard: if any page has a wide custom grid row that
-   forgot its responsive @media rule, let it scroll horizontally inside
-   the card surface instead of pushing the whole viewport sideways. */
-@media (max-width: 720px) {
-  .hx-card,
-  .hx-table-wrap,
-  [class*='-list'],
-  [class*='-table'] {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  /* Stop hardcoded inline grid templates from overflowing the body —
-     content rows with many fixed columns should not push past the pane. */
-  .hx-main { overflow-x: hidden; }
-}
+/* Defensive mobile guard removed: the broad [class*='-list'] selector
+   was matching .hx-chat-list and other unrelated elements, and the
+   .hx-main { overflow-x: hidden } combined with min-width: 0 children
+   was clipping content. Per-page @media rules handle responsive grids. */
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; }
 
@@ -2447,27 +2436,10 @@ html[data-theme="dark"] .hx-cmdp-foot kbd {
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  /* Visual hint that the row scrolls horizontally — soft fade on the
-     right edge so users know more tabs exist past the viewport. */
-  mask-image: linear-gradient(90deg,
-    #000 0%,
-    #000 calc(100% - 36px),
-    transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg,
-    #000 0%,
-    #000 calc(100% - 36px),
-    transparent 100%);
-  position: relative;
 }
 .hx-settings-tabs::-webkit-scrollbar { display: none; }
 @media (max-width: 720px) {
-  /* On mobile the fade is the only affordance, so make it tighter and
-     wider so the swipe hint is unmissable. */
-  .hx-settings-tabs {
-    margin: -6px 0 18px;
-    mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 48px), transparent 100%);
-    -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 48px), transparent 100%);
-  }
+  .hx-settings-tabs { margin: -6px 0 18px; }
   .hx-settings-tabs a { padding: 10px 12px; font-size: 12.5px; }
 }
 .hx-settings-tabs a {
