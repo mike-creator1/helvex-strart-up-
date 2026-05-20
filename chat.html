@@ -2463,16 +2463,6 @@
                     title="Attach an image or document">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
                   </button>
-                  <button
-                    class="hx-chat-agent-btn"
-                    id="hx-c-agent"
-                    type="button"
-                    aria-pressed="false"
-                    aria-label="Agent mode"
-                    title="Agent mode — Helix plans and executes autonomously">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.5L12 14.77 7.06 17.4 8 11.9 4 8l5.61-1.16L12 2z"/></svg>
-                    <span class="hx-chat-agent-label">Agent</span>
-                  </button>
                   <input
                     type="file"
                     id="hx-c-file"
@@ -2968,8 +2958,13 @@
         attachments: [],       // composer's pending attachments
         webEnabled: false,     // when true, model gets Anthropic web_search tool
         codeEnabled: false,    // when true, model gets Anthropic code_execution tool
-        agentEnabled: false,   // when true, model gets agent system prompt + ALL tools
       };
+
+      // Agent capability is derived from the model — not a separate toggle.
+      // Ether: real-time, no agent. Nexus: reasoning agent. Prometheus:
+      // flagship agent. The system prompt + tool defaults flow from this.
+      function isAgentModel(m) { return m === 'nexus' || m === 'prometheus'; }
+      function currentlyAgentic() { return isAgentModel(($('hx-c-model') && $('hx-c-model').value) || 'ether'); }
 
       // ─── Global active project (shared across pages via localStorage) ──
       // The project dropdown on this page persists the user's "working
@@ -3277,7 +3272,7 @@
             // doing its signature animation. No pill, no labels, no dots.
             html += '<div class="hx-msg is-assistant hx-msg-thinking">' +
               '<div class="hx-msg-body">' +
-                '<span class="hx-thinking-solo is-' + activeModel + '" aria-label="' + (state.agentEnabled ? 'Planning' : 'Thinking') + '">' +
+                '<span class="hx-thinking-solo is-' + activeModel + '" aria-label="' + (isAgentModel(activeModel) ? 'Planning' : 'Thinking') + '">' +
                   modelLogoSvg(activeModel) +
                 '</span>' +
               '</div>' +
@@ -3691,16 +3686,15 @@
               body: JSON.stringify({
                 model:           $('hx-c-model').value || 'ether',
                 conversation_id: state.conversation.id,
-                system:          HELIX_SYSTEM + (state.agentEnabled ? HELIX_AGENT_SYSTEM : ''),
+                system:          HELIX_SYSTEM + (currentlyAgentic() ? HELIX_AGENT_SYSTEM : ''),
                 messages:        send_msgs,
                 user_attachments: persistAttachs,
-                max_tokens:      state.agentEnabled ? 8192 : 2048,
+                max_tokens:      currentlyAgentic() ? 8192 : 2048,
                 stream:          true,
                 tools:           {
-                  // Agent mode auto-enables web_search only. Code execution
-                  // can run long and occasionally stalls the sandbox — the
-                  // user opts in explicitly via the Tools popover when needed.
-                  web:  !!(state.webEnabled  || state.agentEnabled),
+                  // Agent-class models (Nexus/Prometheus) auto-enable
+                  // web_search. Code execution stays opt-in via Tools.
+                  web:  !!(state.webEnabled || currentlyAgentic()),
                   code: !!state.codeEnabled,
                 },
               }),
@@ -3877,6 +3871,7 @@
           // Trigger the dramatic morph animation BEFORE the DB update so
           // the user sees the chat reshape itself instantly.
           applyModelTheme(model);
+          refreshAgentBadge();
           if (state.conversation) {
             await sb.from('conversations').update({ model: model }).eq('id', state.conversation.id);
             state.conversation.model = model;
@@ -4596,22 +4591,22 @@
         // - Force-enables web_search + code_execution server-side tools
         // - Shows a yellow "AGENT" badge in the toolbar so the user always
         //   knows they're talking to an autonomous Helix.
-        var agentBtn = $('hx-c-agent');
+        // Agent badge in the toolbar — toggles automatically based on the
+        // active model. Nexus/Prometheus = on, Ether = off. No user toggle.
         var agentBadge = document.createElement('span');
         agentBadge.className = 'hx-chat-agent-toolbar-badge';
-        agentBadge.textContent = 'Agent';
-        // Insert right after the chat title in the toolbar so it sits next to "New chat"
         var toolbarTitle = $('hx-c-title');
         if (toolbarTitle && toolbarTitle.parentNode) {
           toolbarTitle.parentNode.insertBefore(agentBadge, toolbarTitle.nextSibling);
         }
-        if (agentBtn) {
-          agentBtn.addEventListener('click', function () {
-            state.agentEnabled = !state.agentEnabled;
-            agentBtn.setAttribute('aria-pressed', state.agentEnabled ? 'true' : 'false');
-            agentBadge.classList.toggle('is-on', state.agentEnabled);
-          });
+        function refreshAgentBadge() {
+          var m = ($('hx-c-model') && $('hx-c-model').value) || 'ether';
+          if (m === 'prometheus')      agentBadge.textContent = 'Agent · Deep';
+          else if (m === 'nexus')      agentBadge.textContent = 'Agent';
+          else                         agentBadge.textContent = '';
+          agentBadge.classList.toggle('is-on', isAgentModel(m));
         }
+        refreshAgentBadge();
 
         // Consolidated Tools popover — one elegant button that toggles
         // the web_search + code_execution menu. Keeps the composer clean
