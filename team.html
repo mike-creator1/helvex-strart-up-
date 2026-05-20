@@ -3,13 +3,75 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Team — HelveX</title>
-  <meta name="description" content="HelveX team — invite collaborators, scope roles, audit who shipped what." />
+  <title>Team members — HelveX</title>
+  <meta name="description" content="HelveX team — invite collaborators, scope roles, audit who shipped what, and manage seats." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <style>
+    .hx-member-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 110px 110px 96px;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 16px;
+      border-top: 1px solid var(--hx-line);
+    }
+    .hx-member-row:first-child { border-top: 0; }
+    .hx-member-row .av {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--hx-text);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em;
+      flex-shrink: 0;
+    }
+    .hx-member-row .body { min-width: 0; }
+    .hx-member-row .body .name { font-size: 13.5px; font-weight: 600; color: var(--hx-text); }
+    .hx-member-row .body .email { font-size: 12.5px; color: var(--hx-text-mid); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hx-member-row .time { font-family: var(--hx-mono); font-size: 12px; color: var(--hx-text-dim); }
+    @media (max-width: 720px) {
+      .hx-member-row {
+        grid-template-columns: 40px 1fr auto;
+        grid-template-areas: "av body badge" "av body status";
+        row-gap: 4px;
+      }
+      .hx-member-row .av     { grid-area: av; }
+      .hx-member-row .body   { grid-area: body; }
+      .hx-member-row .role   { grid-area: badge; justify-self: end; }
+      .hx-member-row .status { grid-area: status; justify-self: end; }
+      .hx-member-row .time   { display: none; }
+    }
+
+    .hx-role-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .hx-role-table th, .hx-role-table td {
+      padding: 12px 14px;
+      border-top: 1px solid var(--hx-line);
+      text-align: left;
+      vertical-align: middle;
+    }
+    .hx-role-table thead th {
+      background: var(--hx-bg-2);
+      border-top: 0;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--hx-text-mid);
+    }
+    .hx-role-table tbody td.ch {
+      text-align: center;
+      width: 96px;
+    }
+    .hx-role-table tbody td.ch svg.yes { color: #15803d; }
+    .hx-role-table tbody td.ch svg.no  { color: var(--hx-text-faint); }
+  </style>
 </head>
 <body data-active="team">
 
@@ -21,20 +83,25 @@
 
         <div class="hx-page-head">
           <div>
-            <h1>Team.</h1>
-            <p class="sub">Invite collaborators to your HelveX workspace, scope what they can see and ship, and keep an audit trail of every action.</p>
+            <h1>Team members.</h1>
+            <p class="sub">Invite collaborators to your HelveX workspace, scope what they can see and ship, and keep an audit trail of every action they take.</p>
           </div>
           <div class="hx-page-actions">
-            <a href="/pricing.html" class="hx-btn hx-btn-secondary">View plans</a>
-            <button id="hx-invite-open" class="hx-btn hx-btn-primary">+ Invite member</button>
+            <a href="/audit-log" class="hx-btn hx-btn-secondary hx-btn-sm">Audit trail</a>
+            <a href="/billing" class="hx-btn hx-btn-secondary hx-btn-sm">Plan &amp; seats</a>
+            <button id="hx-invite-open" class="hx-btn hx-btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Invite member
+            </button>
           </div>
         </div>
 
+        <!-- ═══════════════ HERO STATS ═══════════════ -->
         <div class="hx-grid hx-grid-4">
           <div class="hx-stat">
-            <p class="hx-stat-label">Members</p>
+            <p class="hx-stat-label">Active members</p>
             <p class="hx-stat-value hx-mono" id="hx-stat-members">1</p>
-            <p class="hx-stat-meta">You + active members</p>
+            <p class="hx-stat-meta" id="hx-stat-members-meta">You + active teammates</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Pending invites</p>
@@ -42,21 +109,22 @@
             <p class="hx-stat-meta" id="hx-stat-pending-meta">None waiting</p>
           </div>
           <div class="hx-stat">
-            <p class="hx-stat-label">Roles</p>
-            <p class="hx-stat-value" style="font-size:18px;">3</p>
-            <p class="hx-stat-meta">Owner · Admin · Member</p>
+            <p class="hx-stat-label">Seats used</p>
+            <p class="hx-stat-value" style="font-size:17px;" id="hx-stat-seats">—</p>
+            <p class="hx-stat-meta" id="hx-stat-seats-meta">—</p>
           </div>
           <div class="hx-stat">
             <p class="hx-stat-label">Plan</p>
-            <p class="hx-stat-value" id="hx-stat-plan" style="font-size:18px;color:var(--hx-text-dim);">Free</p>
-            <p class="hx-stat-meta">SSO on Scale</p>
+            <p class="hx-stat-value" id="hx-stat-plan" style="font-size:17px;color:var(--hx-text-dim);">Free</p>
+            <p class="hx-stat-meta">SSO &amp; SCIM on Scale</p>
           </div>
         </div>
 
-        <!-- Invite form -->
-        <div class="hx-card" id="hx-invite-form" hidden style="margin-bottom:14px;">
+        <!-- Invite form (hidden until trigger) -->
+        <div class="hx-card" id="hx-invite-form" hidden style="margin-top:10px;">
           <h3 style="margin-top:0;">Invite a team member</h3>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+          <p class="desc" style="margin-bottom:14px;">They'll get a one-time signup link by email. The link expires after 7 days. Members can be deactivated any time without losing audit history.</p>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;">
             <div class="hx-field" style="margin:0;">
               <label>Email</label>
               <input type="email" id="hx-invite-email" placeholder="colleague@company.com" autocomplete="email" />
@@ -67,46 +135,55 @@
                 <option value="member">Member — brief projects, view shared deployments</option>
                 <option value="admin">Admin — also rotate keys and manage members</option>
               </select>
+              <div class="help">You can change a role any time after the invite is accepted.</div>
             </div>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:14px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap;">
             <button class="hx-btn hx-btn-primary" id="hx-invite-create">Send invite</button>
-            <button class="hx-btn hx-btn-ghost" id="hx-invite-cancel">Cancel</button>
-            <p id="hx-invite-status" style="margin:0;font-size:12.5px;font-weight:500;"></p>
+            <button class="hx-btn hx-btn-ghost"   id="hx-invite-cancel">Cancel</button>
+            <p id="hx-invite-status" style="margin:0 0 0 4px;font-size:12.5px;font-weight:500;"></p>
           </div>
         </div>
 
+        <!-- ═══════════════ MEMBERS ═══════════════ -->
         <div class="hx-section-head">
           <h2>Members</h2>
           <span class="meta" id="hx-members-meta">—</span>
         </div>
         <div id="hx-members-host"></div>
 
+        <!-- ═══════════════ PENDING INVITES ═══════════════ -->
         <div class="hx-section-head">
           <h2>Pending invitations</h2>
           <span class="meta" id="hx-invites-meta">—</span>
         </div>
         <div id="hx-invites-host"></div>
 
+        <!-- ═══════════════ ROLE MATRIX ═══════════════ -->
         <div class="hx-section-head">
-          <h2>Roles</h2>
+          <h2>Roles &amp; permissions</h2>
+          <span class="meta">Three roles cover every common workflow. Custom roles arrive on Scale.</span>
         </div>
-        <div class="hx-grid hx-grid-3">
-          <div class="hx-card">
-            <p class="hx-card-eyebrow">Owner</p>
-            <h3>Full control</h3>
-            <p class="desc">Billing, plan changes, member management, project deletion, API key issuance. One per workspace.</p>
-          </div>
-          <div class="hx-card">
-            <p class="hx-card-eyebrow">Admin</p>
-            <h3>Operate everything</h3>
-            <p class="desc">Brief projects, manage deployments, rotate keys, view billing — but cannot change the plan or remove the owner.</p>
-          </div>
-          <div class="hx-card">
-            <p class="hx-card-eyebrow">Member</p>
-            <h3>Build &amp; ship</h3>
-            <p class="desc">Brief projects, view their own deployments, read shared logs. No access to billing or member management.</p>
-          </div>
+        <div class="hx-card" style="padding:0;overflow:hidden;">
+          <table class="hx-role-table">
+            <thead>
+              <tr>
+                <th>Permission</th>
+                <th style="text-align:center;">Owner</th>
+                <th style="text-align:center;">Admin</th>
+                <th style="text-align:center;">Member</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Brief and run projects</strong><div class="desc" style="font-size:12px;margin-top:2px;">Create chats, projects, agents, runs.</div></td><td class="ch">✓</td><td class="ch">✓</td><td class="ch">✓</td></tr>
+              <tr><td><strong>View shared deployments &amp; logs</strong></td><td class="ch">✓</td><td class="ch">✓</td><td class="ch">✓</td></tr>
+              <tr><td><strong>Manage API keys</strong><div class="desc" style="font-size:12px;margin-top:2px;">Issue, rotate, revoke.</div></td><td class="ch">✓</td><td class="ch">✓</td><td class="ch" style="color:var(--hx-text-faint);">—</td></tr>
+              <tr><td><strong>Invite &amp; remove members</strong></td><td class="ch">✓</td><td class="ch">✓</td><td class="ch" style="color:var(--hx-text-faint);">—</td></tr>
+              <tr><td><strong>View billing &amp; invoices</strong></td><td class="ch">✓</td><td class="ch">✓</td><td class="ch" style="color:var(--hx-text-faint);">—</td></tr>
+              <tr><td><strong>Change plan &amp; payment method</strong></td><td class="ch">✓</td><td class="ch" style="color:var(--hx-text-faint);">—</td><td class="ch" style="color:var(--hx-text-faint);">—</td></tr>
+              <tr><td><strong>Transfer ownership &amp; delete workspace</strong></td><td class="ch">✓</td><td class="ch" style="color:var(--hx-text-faint);">—</td><td class="ch" style="color:var(--hx-text-faint);">—</td></tr>
+            </tbody>
+          </table>
         </div>
 
       </main>
@@ -127,10 +204,22 @@
         if (!iso) return '—';
         try { return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); } catch (e) { return '—'; }
       }
+      function initials(first, last, email) {
+        var a = (first || '').trim();
+        var b = (last || '').trim();
+        if (a || b) return ((a[0] || '') + (b[0] || '')).toUpperCase();
+        var e = (email || '').trim();
+        return e ? e[0].toUpperCase() : '·';
+      }
       function status(elId, msg, kind) {
         var el = $(elId); if (!el) return;
         el.style.color = kind === 'error' ? 'var(--hx-red)' : 'var(--hx-emerald)';
         el.textContent = msg || '';
+      }
+      function planSeats(plan) {
+        // The seat allowance per plan tier — kept simple, mirrors pricing.
+        var map = { free: 2, starter: 5, scale: 25, enterprise: 999 };
+        return map[(plan || 'free').toLowerCase()] || 2;
       }
 
       whenAuthReady(function () {
@@ -141,66 +230,94 @@
           var u = (await sb.auth.getUser()).data.user;
           if (!u) return;
 
-          var [members, invites, sub] = await Promise.all([
+          var [members, invites, sub, prof] = await Promise.all([
             sb.from('team_members').select('*').order('joined_at', { ascending: false, nullsFirst: false }),
             sb.from('invitations').select('*').is('accepted_at', null).order('created_at', { ascending: false }),
-            sb.from('subscriptions').select('plan').maybeSingle()
+            sb.from('subscriptions').select('plan').maybeSingle(),
+            sb.from('profiles').select('first_name, last_name, email').eq('id', u.id).maybeSingle()
           ]);
 
-          var memberRows = members.data || [];
-          var inviteRows = invites.data || [];
+          var memberRows = (members && members.data) || [];
+          var inviteRows = (invites && invites.data) || [];
+          var profData = (prof && prof.data) || {};
 
-          // Header includes the owner themselves (always +1)
-          $('hx-stat-members').textContent = (memberRows.filter(function (m) { return m.status === 'active'; }).length + 1);
+          var activeMembers = memberRows.filter(function (m) { return m.status === 'active'; }).length + 1; // +1 for owner
+          $('hx-stat-members').textContent = activeMembers;
+          $('hx-stat-members-meta').textContent = activeMembers === 1 ? 'Just you so far' : 'Including you';
           $('hx-stat-pending').textContent = inviteRows.length;
           $('hx-stat-pending-meta').textContent = inviteRows.length ? 'Waiting on accept' : 'None waiting';
 
-          if (sub && sub.data && sub.data.plan) {
-            var planLabel = sub.data.plan.charAt(0).toUpperCase() + sub.data.plan.slice(1);
-            $('hx-stat-plan').textContent = planLabel;
-            $('hx-stat-plan').style.color = sub.data.plan === 'free' ? 'var(--hx-text-dim)' : 'var(--hx-text)';
-          }
+          var planName = (sub && sub.data && sub.data.plan) || 'free';
+          var planLabel = planName.charAt(0).toUpperCase() + planName.slice(1);
+          $('hx-stat-plan').textContent = planLabel;
+          $('hx-stat-plan').style.color = planName === 'free' ? 'var(--hx-text-dim)' : 'var(--hx-text)';
+          var seatCap = planSeats(planName);
+          $('hx-stat-seats').textContent = (activeMembers + inviteRows.length) + ' / ' + (seatCap === 999 ? '∞' : seatCap);
+          var seatsLeft = seatCap === 999 ? '∞' : Math.max(0, seatCap - (activeMembers + inviteRows.length));
+          $('hx-stat-seats-meta').textContent = seatCap === 999
+            ? 'Unlimited on Enterprise'
+            : (seatsLeft + ' seat' + (seatsLeft === 1 ? '' : 's') + ' available');
 
-          // Members list — always include the owner row first
-          var firstName = (u.user_metadata && u.user_metadata.first_name) || '';
-          var lastName = (u.user_metadata && u.user_metadata.last_name) || '';
-          var ownerName = (firstName + ' ' + lastName).trim() || (u.email || 'You');
-          var memberHtml = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr>' +
-            '<th>Member</th><th>Role</th><th>Joined</th><th>Status</th>' +
-          '</tr></thead><tbody>';
-          memberHtml += '<tr>' +
-            '<td><strong>' + escape(ownerName) + ' (you)</strong><div style="color:var(--hx-text-mid);font-size:12.5px;">' + escape(u.email) + '</div></td>' +
-            '<td><span class="hx-badge hx-badge-yellow">Owner</span></td>' +
-            '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(u.created_at) + '</span></td>' +
-            '<td><span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Active</span></td>' +
-          '</tr>';
+          // Owner identity
+          var firstName = profData.first_name || (u.user_metadata && u.user_metadata.first_name) || '';
+          var lastName  = profData.last_name  || (u.user_metadata && u.user_metadata.last_name)  || '';
+          var ownerName = (firstName + ' ' + lastName).trim() || (u.email ? u.email.split('@')[0] : 'You');
+          var ownerInitials = initials(firstName, lastName, u.email);
+
+          // Members list
+          var memberHtml = '<div class="hx-card" style="padding:0;overflow:hidden;">';
+          memberHtml +=
+            '<div class="hx-member-row">' +
+              '<div class="av">' + escape(ownerInitials) + '</div>' +
+              '<div class="body">' +
+                '<div class="name">' + escape(ownerName) + ' <span style="color:var(--hx-text-dim);font-weight:400;font-size:12px;">(you)</span></div>' +
+                '<div class="email">' + escape(u.email || '—') + '</div>' +
+              '</div>' +
+              '<div class="role"><span class="hx-badge hx-badge-yellow"><span class="hx-badge-dot" style="background:var(--hx-yellow-deep);"></span>Owner</span></div>' +
+              '<div class="time">' + escape(fmtDate(u.created_at)) + '</div>' +
+              '<div class="status"><span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Active</span></div>' +
+            '</div>';
           memberRows.forEach(function (m) {
-            memberHtml += '<tr data-id="' + escape(m.id) + '">' +
-              '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(m.member_id.slice(0, 8)) + '…</span></td>' +
-              '<td><span class="hx-badge hx-badge-neutral">' + escape(m.role) + '</span></td>' +
-              '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + (m.joined_at ? fmtDate(m.joined_at) : '—') + '</span></td>' +
-              '<td>' + (m.status === 'active'
-                ? '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Active</span>'
-                : '<span class="hx-badge hx-badge-neutral">' + escape(m.status) + '</span>') +
-              '</td>' +
-            '</tr>';
+            var inits = (m.member_id || '·').slice(0, 2).toUpperCase();
+            memberHtml +=
+              '<div class="hx-member-row" data-id="' + escape(m.id) + '">' +
+                '<div class="av" style="background:var(--hx-text-mid);">' + escape(inits) + '</div>' +
+                '<div class="body">' +
+                  '<div class="name"><span class="hx-mono" style="font-size:12px;">' + escape((m.member_id || '').slice(0, 8)) + '…</span></div>' +
+                  '<div class="email">Member ID — full profile after first sign-in</div>' +
+                '</div>' +
+                '<div class="role"><span class="hx-badge hx-badge-neutral">' + escape(m.role || 'member') + '</span></div>' +
+                '<div class="time">' + escape(m.joined_at ? fmtDate(m.joined_at) : '—') + '</div>' +
+                '<div class="status">' + (m.status === 'active'
+                  ? '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Active</span>'
+                  : '<span class="hx-badge hx-badge-neutral">' + escape(m.status || '—') + '</span>') +
+                '</div>' +
+              '</div>';
           });
-          memberHtml += '</tbody></table></div>';
+          memberHtml += '</div>';
           $('hx-members-host').innerHTML = memberHtml;
-          $('hx-members-meta').textContent = (memberRows.length + 1) + (memberRows.length === 0 ? ' member' : ' members');
+          $('hx-members-meta').textContent = activeMembers + (activeMembers === 1 ? ' member' : ' members');
 
           // Invites list
           if (inviteRows.length === 0) {
             $('hx-invites-host').innerHTML =
-              '<div class="hx-empty"><div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7L13.03 12.7a2 2 0 0 1-2.06 0L2 7"/></svg></div><h3>No pending invitations</h3><p>Invitations you send appear here until the recipient accepts.</p></div>';
+              '<div class="hx-empty">' +
+                '<div class="icon" aria-hidden="true">' +
+                  '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7L13.03 12.7a2 2 0 0 1-2.06 0L2 7"/></svg>' +
+                '</div>' +
+                '<h3>No pending invitations</h3>' +
+                '<p>Invites you send appear here until the recipient accepts. Each one expires after 7 days and can be revoked any time.</p>' +
+              '</div>';
             $('hx-invites-meta').textContent = '0 pending';
           } else {
-            var ihtml = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Email</th><th>Role</th><th>Sent</th><th>Expires</th><th>Invite link</th><th class="right">Actions</th></tr></thead><tbody>';
+            var ihtml = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr>' +
+              '<th>Email</th><th>Role</th><th>Sent</th><th>Expires</th><th>Invite link</th><th class="right">Actions</th>' +
+            '</tr></thead><tbody>';
             inviteRows.forEach(function (inv) {
               var url = origin + '/signup.html?invite=' + encodeURIComponent(inv.token);
               ihtml += '<tr data-id="' + escape(inv.id) + '">' +
                 '<td><strong>' + escape(inv.email) + '</strong></td>' +
-                '<td><span class="hx-badge hx-badge-neutral">' + escape(inv.role) + '</span></td>' +
+                '<td><span class="hx-badge hx-badge-neutral">' + escape(inv.role || '—') + '</span></td>' +
                 '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(inv.created_at) + '</span></td>' +
                 '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(inv.expires_at) + '</span></td>' +
                 '<td><button class="hx-btn hx-btn-ghost hx-btn-sm" data-act="copy" data-url="' + escape(url) + '">Copy link</button></td>' +
@@ -209,11 +326,11 @@
             });
             ihtml += '</tbody></table></div>';
             $('hx-invites-host').innerHTML = ihtml;
-            $('hx-invites-meta').textContent = inviteRows.length + ' pending';
+            $('hx-invites-meta').textContent = inviteRows.length + (inviteRows.length === 1 ? ' pending' : ' pending');
           }
         }
 
-        // Wire actions
+        // Wire actions on the invite table
         $('hx-invites-host').addEventListener('click', async function (e) {
           var btn = e.target.closest && e.target.closest('button[data-act]');
           if (!btn) return;
@@ -230,28 +347,30 @@
               btn.dataset.armed = '1';
               btn.dataset.original = btn.textContent;
               btn.textContent = 'Click to confirm';
-              btn.classList.add('armed');
               setTimeout(function () {
                 if (btn.dataset.armed === '1') {
                   btn.dataset.armed = '';
                   btn.textContent = btn.dataset.original || 'Revoke';
-                  btn.classList.remove('armed');
                 }
               }, 3000);
               return;
             }
             btn.dataset.armed = '';
-            btn.classList.remove('armed');
             await sb.from('invitations').delete().eq('id', id);
-            await sb.rpc('log_event', { p_kind: 'team.invitation_revoked', p_payload: { id: id } });
+            try { await sb.rpc('log_event', { p_kind: 'team.invitation_revoked', p_payload: { id: id } }); } catch (e) {}
             await refresh();
           }
         });
 
-        $('hx-invite-open').addEventListener('click', function () { $('hx-invite-form').hidden = false; $('hx-invite-email').focus(); });
+        $('hx-invite-open').addEventListener('click', function () {
+          $('hx-invite-form').hidden = false;
+          setTimeout(function () { $('hx-invite-email').focus(); }, 50);
+          $('hx-invite-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
         $('hx-invite-cancel').addEventListener('click', function () {
           $('hx-invite-form').hidden = true;
-          $('hx-invite-email').value = ''; status('hx-invite-status', '');
+          $('hx-invite-email').value = '';
+          status('hx-invite-status', '');
         });
         $('hx-invite-create').addEventListener('click', async function (e) {
           e.preventDefault();
@@ -262,8 +381,6 @@
           var btn = e.currentTarget; var lbl = btn.textContent;
           btn.disabled = true; btn.textContent = 'Sending…';
           try {
-            // send-invitation edge fn creates the invitations row (with a
-            // 7-day token) AND emails the recipient via Resend.
             var sess = (await sb.auth.getSession()).data.session;
             if (!sess || !sess.access_token) throw new Error('Please sign in again.');
             var resp = await fetch('https://yjmpallrtpeinpdilptj.supabase.co/functions/v1/send-invitation', {

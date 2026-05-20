@@ -3,13 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Settings — HelveX</title>
-  <meta name="description" content="HelveX account settings — workspace, security, notifications, and integrations." />
+  <title>Preferences — HelveX</title>
+  <meta name="description" content="HelveX preferences — workspace identity, locale, display, data residency, and the hub for security, notifications, and team." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <style>
+    .hx-seg {
+      display: inline-flex;
+      padding: 3px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm);
+      gap: 2px;
+    }
+    .hx-seg button {
+      padding: 5px 12px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--hx-text-mid);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+    }
+    .hx-seg button:hover { color: var(--hx-text); }
+    .hx-seg button.is-active {
+      background: var(--hx-surface);
+      color: var(--hx-text);
+      border-color: var(--hx-line);
+      box-shadow: var(--hx-shadow-xs);
+    }
+    .hx-hub-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r);
+      background: var(--hx-surface);
+      text-decoration: none;
+      color: var(--hx-text);
+      transition: border-color 0.12s, transform 0.12s;
+    }
+    .hx-hub-link:hover { border-color: var(--hx-line-strong); transform: translateY(-1px); }
+    .hx-hub-link .ico {
+      width: 34px; height: 34px;
+      border-radius: var(--hx-r-sm);
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .hx-hub-link .ico svg { width: 15px; height: 15px; color: var(--hx-text); }
+    .hx-hub-link .body { flex: 1; min-width: 0; }
+    .hx-hub-link .ttl { font-size: 13.5px; font-weight: 600; }
+    .hx-hub-link .desc { font-size: 12px; color: var(--hx-text-mid); margin-top: 2px; }
+    .hx-hub-link .arr { color: var(--hx-text-dim); transition: transform 0.12s, color 0.12s; }
+    .hx-hub-link:hover .arr { color: var(--hx-text); transform: translateX(2px); }
+  </style>
 </head>
 <body data-active="settings">
 
@@ -21,20 +76,50 @@
 
         <div class="hx-page-head">
           <div>
-            <h1>Settings.</h1>
-            <p class="sub">Workspace, security, and account controls. Changes apply immediately.</p>
+            <h1>Preferences.</h1>
+            <p class="sub">Workspace identity, locale, display, and the hub for the rest of your account controls. Changes save instantly and propagate to every device.</p>
+          </div>
+          <div class="hx-page-actions">
+            <a href="/profile.html" class="hx-btn hx-btn-secondary hx-btn-sm">Profile</a>
+            <a href="/team.html" class="hx-btn hx-btn-secondary hx-btn-sm">Team</a>
           </div>
         </div>
 
+        <!-- ═══════════════ HERO STATS ═══════════════ -->
+        <div class="hx-grid hx-grid-4">
+          <div class="hx-stat">
+            <p class="hx-stat-label">Workspace</p>
+            <p class="hx-stat-value" style="font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="hx-stat-ws">—</p>
+            <p class="hx-stat-meta">Shown on invoices &amp; in the team portal</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Locale</p>
+            <p class="hx-stat-value" style="font-size:17px;" id="hx-stat-locale">—</p>
+            <p class="hx-stat-meta" id="hx-stat-locale-meta">—</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Theme</p>
+            <p class="hx-stat-value" style="font-size:17px;" id="hx-stat-theme">—</p>
+            <p class="hx-stat-meta" id="hx-stat-theme-meta">Applies on every device</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Region</p>
+            <p class="hx-stat-value hx-mono" style="font-size:15px;">EU-CH-1</p>
+            <p class="hx-stat-meta">Data stays in Switzerland</p>
+          </div>
+        </div>
+
+        <!-- ═══════════════ WORKSPACE IDENTITY ═══════════════ -->
         <div class="hx-section-head">
-          <h2>Workspace</h2>
+          <h2>Workspace identity</h2>
+          <span class="meta">The name and locale your team and invoices use.</span>
         </div>
         <div class="hx-card">
           <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;">
-            <div class="hx-field" style="margin:0;">
+            <div class="hx-field" style="margin:0;grid-column:span 2;">
               <label>Workspace name</label>
-              <input type="text" id="hx-ws-name-input" placeholder="Your company name" />
-              <div class="help">Shown on invoices and in your team's portal.</div>
+              <input type="text" id="hx-ws-name-input" placeholder="Your company name" maxlength="120" autocomplete="organization" />
+              <div class="help">Same value as <a href="/profile.html" style="color:var(--hx-text);text-decoration:underline;text-decoration-color:var(--hx-line-strong);text-underline-offset:2px;">Company on your Profile</a>. Editing here updates both.</div>
             </div>
             <div class="hx-field" style="margin:0;">
               <label>Default time zone</label>
@@ -45,10 +130,19 @@
                 <option value="Europe/London">Europe / London (UTC)</option>
                 <option value="Europe/Paris">Europe / Paris (UTC+1)</option>
                 <option value="Europe/Rome">Europe / Rome (UTC+1)</option>
+                <option value="Europe/Madrid">Europe / Madrid (UTC+1)</option>
+                <option value="Europe/Vienna">Europe / Vienna (UTC+1)</option>
+                <option value="Europe/Amsterdam">Europe / Amsterdam (UTC+1)</option>
                 <option value="America/New_York">America / New York (UTC−5)</option>
+                <option value="America/Chicago">America / Chicago (UTC−6)</option>
                 <option value="America/Los_Angeles">America / Los Angeles (UTC−8)</option>
+                <option value="America/Sao_Paulo">America / São Paulo (UTC−3)</option>
+                <option value="Asia/Dubai">Asia / Dubai (UTC+4)</option>
+                <option value="Asia/Singapore">Asia / Singapore (UTC+8)</option>
                 <option value="Asia/Tokyo">Asia / Tokyo (UTC+9)</option>
+                <option value="Australia/Sydney">Australia / Sydney (UTC+10)</option>
               </select>
+              <div class="help">Used for digest scheduling, quiet hours, and timestamps in shared threads.</div>
             </div>
             <div class="hx-field" style="margin:0;">
               <label>Language</label>
@@ -58,87 +152,126 @@
                 <option value="el">Ελληνικά</option>
                 <option value="fr">Français</option>
                 <option value="it">Italiano</option>
+                <option value="es">Español</option>
               </select>
-            </div>
-            <div class="hx-field" style="margin:0;">
-              <label>Theme</label>
-              <select id="hx-ws-theme">
-                <option value="system">System</option>
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-              </select>
+              <div class="help">UI language. Applies on save and on every future sign-in.</div>
             </div>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-top:22px;flex-wrap:wrap;">
             <button class="hx-btn hx-btn-primary" id="hx-ws-save">Save workspace</button>
-            <p id="hx-ws-status" style="margin:0;font-size:12.5px;font-weight:500;"></p>
+            <button class="hx-btn hx-btn-ghost"   id="hx-ws-cancel">Cancel</button>
+            <p id="hx-ws-status" style="margin:0 0 0 4px;font-size:12.5px;font-weight:500;"></p>
           </div>
         </div>
 
+        <!-- ═══════════════ DISPLAY ═══════════════ -->
         <div class="hx-section-head">
-          <h2>Email notifications</h2>
+          <h2>Display</h2>
+          <span class="meta">Visual preferences for this account. Stored on the server — same on every device.</span>
         </div>
         <div class="hx-card">
-          <div style="display:grid;gap:14px;">
-            <label style="display:flex;align-items:center;gap:12px;cursor:pointer;">
-              <input type="checkbox" id="hx-notif-product" style="width:16px;height:16px;accent-color:var(--hx-text);" />
-              <span>
-                <span style="display:block;font-weight:500;">Product updates</span>
-                <span style="display:block;color:var(--hx-text-mid);font-size:12.5px;">Releases, new platform sections, and roadmap changes.</span>
-              </span>
-            </label>
-            <label style="display:flex;align-items:center;gap:12px;cursor:pointer;">
-              <input type="checkbox" id="hx-notif-security" style="width:16px;height:16px;accent-color:var(--hx-text);" />
-              <span>
-                <span style="display:block;font-weight:500;">Security alerts</span>
-                <span style="display:block;color:var(--hx-text-mid);font-size:12.5px;">New sign-ins, password changes, API key issuance.</span>
-              </span>
-            </label>
-            <label style="display:flex;align-items:center;gap:12px;cursor:pointer;">
-              <input type="checkbox" id="hx-notif-billing" style="width:16px;height:16px;accent-color:var(--hx-text);" />
-              <span>
-                <span style="display:block;font-weight:500;">Billing &amp; invoices</span>
-                <span style="display:block;color:var(--hx-text-mid);font-size:12.5px;">Receipts, plan changes, credit top-ups.</span>
-              </span>
-            </label>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--hx-line-soft);">
+            <div style="flex:1;min-width:200px;">
+              <p style="margin:0;font-weight:600;font-size:13.5px;">Theme</p>
+              <p style="margin:3px 0 0;font-size:12.5px;color:var(--hx-text-mid);">Light is the HelveX default. Dark is calibrated for low-light rooms.</p>
+            </div>
+            <div class="hx-seg" role="group" aria-label="Theme">
+              <button type="button" data-theme="light"  id="hx-theme-light">Light</button>
+              <button type="button" data-theme="dark"   id="hx-theme-dark">Dark</button>
+              <button type="button" data-theme="system" id="hx-theme-system">System</button>
+            </div>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:18px;">
-            <button class="hx-btn hx-btn-primary" id="hx-notif-save">Save preferences</button>
-            <p id="hx-notif-status" style="margin:0;font-size:12.5px;font-weight:500;"></p>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:14px 0 8px;">
+            <div style="flex:1;min-width:200px;">
+              <p style="margin:0;font-weight:600;font-size:13.5px;">Density</p>
+              <p style="margin:3px 0 0;font-size:12.5px;color:var(--hx-text-mid);">Compact tightens spacing across tables and lists for power-user workflows.</p>
+            </div>
+            <div class="hx-seg" role="group" aria-label="Density">
+              <button type="button" data-density="comfortable" id="hx-density-comfortable">Comfortable</button>
+              <button type="button" data-density="compact"     id="hx-density-compact">Compact</button>
+            </div>
           </div>
         </div>
 
+        <!-- ═══════════════ HUB ═══════════════ -->
         <div class="hx-section-head">
-          <h2>Security</h2>
+          <h2>Account controls</h2>
+          <span class="meta">Each surface has its own page — keeps every setting one click deep.</span>
+        </div>
+        <div class="hx-grid hx-grid-2">
+          <a href="/notifications" class="hx-hub-link">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+            <div class="body"><div class="ttl">Notifications</div><div class="desc">Per-category toggles, digest schedule, quiet hours.</div></div>
+            <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </a>
+          <a href="/sessions" class="hx-hub-link">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+            <div class="body"><div class="ttl">Sessions</div><div class="desc">Live devices, fingerprint, refresh tokens, revoke.</div></div>
+            <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </a>
+          <a href="/connected" class="hx-hub-link">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+            <div class="body"><div class="ttl">Connected accounts</div><div class="desc">Link Google, GitHub, or Apple as backup sign-in.</div></div>
+            <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </a>
+          <a href="/security" class="hx-hub-link">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="body"><div class="ttl">Password &amp; MFA</div><div class="desc">Rotate password, enrol an authenticator, recovery.</div></div>
+            <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </a>
+          <a href="/team" class="hx-hub-link">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="body"><div class="ttl">Team members</div><div class="desc">Invite collaborators, scope roles, audit edits.</div></div>
+            <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </a>
+          <a href="/audit-log" class="hx-hub-link">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/><line x1="12" y1="7" x2="12" y2="12"/><line x1="12" y1="12" x2="15" y2="14"/></svg></div>
+            <div class="body"><div class="ttl">Audit log</div><div class="desc">Account-impacting actions with actor, IP, timestamp.</div></div>
+            <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </a>
+        </div>
+
+        <!-- ═══════════════ DATA & PRIVACY ═══════════════ -->
+        <div class="hx-section-head">
+          <h2>Data &amp; privacy</h2>
+          <span class="meta">Switzerland-only residency. Your data does not leave EU-CH-1.</span>
         </div>
         <div class="hx-grid hx-grid-2">
           <div class="hx-card">
-            <h3>Password</h3>
-            <p class="desc">Change the password used to sign in to your HelveX account.</p>
-            <div style="display:flex;gap:8px;margin-top:18px;">
-              <a href="/forgot-password" class="hx-btn hx-btn-secondary">Change password</a>
+            <p class="hx-card-eyebrow">Export</p>
+            <h3>Download your account data</h3>
+            <p class="desc">A signed JSON archive with your profile, settings, team membership, audit events, and support history. Generated on demand — usually ready in under 60 seconds.</p>
+            <div style="display:flex;gap:8px;margin-top:14px;align-items:center;flex-wrap:wrap;">
+              <button class="hx-btn hx-btn-secondary" id="hx-export-btn" type="button">Request export</button>
+              <span id="hx-export-status" style="font-size:12.5px;font-weight:500;color:var(--hx-text-mid);"></span>
             </div>
           </div>
           <div class="hx-card">
-            <h3>Two-factor authentication</h3>
-            <p class="desc">Add a second factor on every sign-in. Authenticator app (TOTP) on every plan.</p>
-            <div style="display:flex;align-items:center;gap:10px;margin-top:18px;">
-              <span class="hx-badge hx-badge-neutral"><span class="hx-badge-dot"></span>Not configured</span>
-              <a href="/security.html" class="hx-btn hx-btn-secondary hx-btn-sm">Manage</a>
-            </div>
+            <p class="hx-card-eyebrow">Residency</p>
+            <h3>Swiss-only data plane</h3>
+            <p class="desc">Prompts, embeddings, logs, and model weights stay in EU-CH-1. No US, no UK, no shadow replication. Encryption is AES-256 at rest, TLS 1.3 in transit, per-tenant KMS envelope keys.</p>
+            <a href="/trust-center" class="hx-card-link">Trust center</a>
           </div>
         </div>
 
+        <!-- ═══════════════ DANGER ZONE ═══════════════ -->
         <div class="hx-section-head">
-          <h2 style="color:#DC2626;">Danger zone</h2>
+          <h2 style="color:var(--hx-red);">Danger zone</h2>
         </div>
         <div class="hx-card" style="border-color:rgba(220,38,38,0.25);">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:10px;">
             <div>
               <p style="margin:0;font-weight:600;">Sign out of HelveX</p>
-              <p style="margin:3px 0 0;color:var(--hx-text-mid);font-size:12.5px;">Ends your session on this device.</p>
+              <p style="margin:3px 0 0;color:var(--hx-text-mid);font-size:12.5px;">Ends your session on this device only. Other devices stay signed in — manage them in <a href="/sessions" style="color:var(--hx-text);text-decoration:underline;text-decoration-color:var(--hx-line-strong);text-underline-offset:2px;">Sessions</a>.</p>
             </div>
             <button class="hx-btn hx-btn-secondary" data-action="signout">Sign out</button>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:14px;border-top:1px solid rgba(220,38,38,0.18);">
+            <div>
+              <p style="margin:0;font-weight:600;color:var(--hx-red);">Delete this account</p>
+              <p style="margin:3px 0 0;color:var(--hx-text-mid);font-size:12.5px;">Permanent. Removes your profile, workspace data, audit history. We confirm with you first and honour a 30-day grace period.</p>
+            </div>
+            <a href="mailto:support@helvex.ai?subject=Account%20deletion%20request" class="hx-btn hx-btn-danger">Request deletion</a>
           </div>
         </div>
 
@@ -148,22 +281,16 @@
 
   <script src="/platform.js"></script>
   <script>
-    /* Real read/write of public.profiles.company + public.user_settings. */
+    /* Workspace identity → profiles.company.
+       Locale + theme + density → user_settings (new "density" column,
+       optional — falls back silently if the column doesn't exist).         */
     (function () {
       function whenAuthReady(fn) {
         if (window.HX && window.HX.supabase) { fn(); return; }
         document.addEventListener('hx:auth-ready', fn, { once: true });
       }
       var $ = function (id) { return document.getElementById(id); };
-      function status(elId, msg, kind) {
-        var el = $(elId); if (!el) return;
-        el.style.color = kind === 'error' ? 'var(--hx-red)' : 'var(--hx-emerald)';
-        el.textContent = msg || '';
-        if (msg) setTimeout(function () { if (el.textContent === msg) el.textContent = ''; }, 3000);
-      }
 
-      // Applying theme + language to the document so the choice is visible
-      // immediately, not just stored in the database.
       function applyTheme(theme) {
         var root = document.documentElement;
         var resolved = theme;
@@ -180,6 +307,37 @@
       }
       function applyTimezone(tz) {
         if (tz) try { localStorage.setItem('hx.timezone', tz); } catch (e) {}
+      }
+      function applyDensity(d) {
+        document.documentElement.setAttribute('data-density', d || 'comfortable');
+        try { localStorage.setItem('hx.density', d || 'comfortable'); } catch (e) {}
+      }
+
+      function statusMsg(elId, msg, kind) {
+        var el = $(elId); if (!el) return;
+        el.style.color = kind === 'error' ? 'var(--hx-red)' : 'var(--hx-emerald)';
+        el.textContent = msg || '';
+        if (msg && kind !== 'error') {
+          setTimeout(function () { if (el.textContent === msg) el.textContent = ''; }, 2400);
+        }
+      }
+
+      function setSegActive(group, value) {
+        document.querySelectorAll('.hx-seg button[data-' + group + ']').forEach(function (b) {
+          b.classList.toggle('is-active', b.getAttribute('data-' + group) === value);
+        });
+      }
+
+      function setStatThemeLabel(theme) {
+        var label = theme === 'dark' ? 'Dark' : theme === 'system' ? 'System' : 'Light';
+        $('hx-stat-theme').textContent = label;
+      }
+
+      function setStatLocaleLabel(lang, tz) {
+        var langMap = { en: 'English', de: 'Deutsch', el: 'Ελληνικά', fr: 'Français', it: 'Italiano', es: 'Español' };
+        $('hx-stat-locale').textContent = langMap[lang] || (lang || '—');
+        var tzShort = tz ? tz.split('/').slice(-1)[0].replace(/_/g, ' ') : '—';
+        $('hx-stat-locale-meta').textContent = tz ? tzShort + ' · ' + tz : '—';
       }
 
       // React to OS theme changes when theme === 'system'
@@ -198,84 +356,126 @@
       whenAuthReady(function () {
         var sb = window.HX.supabase;
         var uid = null;
+        var snapshot = {};
 
         sb.auth.getUser().then(async function (res) {
           var user = res && res.data ? res.data.user : null;
           if (!user) return;
           uid = user.id;
 
-          // Load profile (workspace name lives in profiles.company)
           var p = await sb.from('profiles').select('company').eq('id', uid).maybeSingle();
-          if (p && p.data && p.data.company) $('hx-ws-name-input').value = p.data.company;
-          else if (user.user_metadata && user.user_metadata.company) $('hx-ws-name-input').value = user.user_metadata.company;
+          var company = (p && p.data && p.data.company) || (user.user_metadata && user.user_metadata.company) || '';
+          $('hx-ws-name-input').value = company;
+          $('hx-stat-ws').textContent = company || 'Untitled workspace';
 
-          // Load user_settings (the bootstrap trigger creates a row on signup)
           var s = await sb.from('user_settings').select('*').eq('user_id', uid).maybeSingle();
-          var st = (s && s.data) || { language:'en', timezone:'Europe/Zurich', theme:'system', email_product:true, email_security:true, email_billing:true };
+          var st = (s && s.data) || { language:'en', timezone:'Europe/Zurich', theme:'system', density:'comfortable' };
           $('hx-ws-timezone').value = st.timezone || 'Europe/Zurich';
           $('hx-ws-language').value = st.language || 'en';
-          $('hx-ws-theme').value    = st.theme || 'system';
-          $('hx-notif-product').checked  = st.email_product  !== false;
-          $('hx-notif-security').checked = st.email_security !== false;
-          $('hx-notif-billing').checked  = st.email_billing  !== false;
+          var theme   = st.theme || 'system';
+          var density = st.density || 'comfortable';
+          setSegActive('theme',   theme);
+          setSegActive('density', density);
+          setStatThemeLabel(theme);
+          setStatLocaleLabel(st.language || 'en', st.timezone || 'Europe/Zurich');
 
-          // Apply the loaded preferences immediately so the user sees them.
-          applyTheme(st.theme || 'system');
+          snapshot = { company: company, timezone: $('hx-ws-timezone').value, language: $('hx-ws-language').value, theme: theme, density: density };
+
+          applyTheme(theme);
           applyLanguage(st.language || 'en');
           applyTimezone(st.timezone || 'Europe/Zurich');
+          applyDensity(density);
         });
 
-        // Live preview as the user changes any selector — feels responsive.
-        $('hx-ws-theme').addEventListener('change',    function () { applyTheme($('hx-ws-theme').value); });
-        $('hx-ws-language').addEventListener('change', function () { applyLanguage($('hx-ws-language').value); });
-        $('hx-ws-timezone').addEventListener('change', function () { applyTimezone($('hx-ws-timezone').value); });
+        // Live preview as the user changes locale selectors
+        $('hx-ws-language').addEventListener('change', function () {
+          applyLanguage($('hx-ws-language').value);
+          setStatLocaleLabel($('hx-ws-language').value, $('hx-ws-timezone').value);
+        });
+        $('hx-ws-timezone').addEventListener('change', function () {
+          applyTimezone($('hx-ws-timezone').value);
+          setStatLocaleLabel($('hx-ws-language').value, $('hx-ws-timezone').value);
+        });
+        $('hx-ws-name-input').addEventListener('input', function () {
+          $('hx-stat-ws').textContent = $('hx-ws-name-input').value.trim() || 'Untitled workspace';
+        });
 
-        // Save workspace (company → profiles, timezone/lang/theme → user_settings)
+        // Theme segmented control — saves immediately
+        document.querySelectorAll('.hx-seg button[data-theme]').forEach(function (b) {
+          b.addEventListener('click', async function () {
+            var t = b.getAttribute('data-theme');
+            setSegActive('theme', t);
+            setStatThemeLabel(t);
+            applyTheme(t);
+            if (uid) {
+              try { await sb.from('user_settings').upsert({ user_id: uid, theme: t }, { onConflict: 'user_id' }); } catch (e) {}
+            }
+          });
+        });
+        // Density segmented control — saves immediately, falls back if the
+        // column isn't present in this environment.
+        document.querySelectorAll('.hx-seg button[data-density]').forEach(function (b) {
+          b.addEventListener('click', async function () {
+            var d = b.getAttribute('data-density');
+            setSegActive('density', d);
+            applyDensity(d);
+            if (uid) {
+              try { await sb.from('user_settings').upsert({ user_id: uid, density: d }, { onConflict: 'user_id' }); } catch (e) {}
+            }
+          });
+        });
+
+        // Save workspace identity
         $('hx-ws-save').addEventListener('click', async function (e) {
           e.preventDefault();
           if (!uid) return;
           var btn = e.currentTarget; var lbl = btn.textContent;
           btn.disabled = true; btn.textContent = 'Saving…';
           try {
+            var email = (await sb.auth.getUser()).data.user.email;
             var company = ($('hx-ws-name-input').value || '').trim() || null;
             var tz = $('hx-ws-timezone').value;
             var lg = $('hx-ws-language').value;
-            var th = $('hx-ws-theme').value;
-            var p1 = sb.from('profiles').upsert({ id: uid, email: (await sb.auth.getUser()).data.user.email, company: company }, { onConflict: 'id' });
-            var p2 = sb.from('user_settings').upsert({ user_id: uid, timezone: tz, language: lg, theme: th }, { onConflict: 'user_id' });
-            var [r1, r2] = await Promise.all([p1, p2]);
+            var [r1, r2] = await Promise.all([
+              sb.from('profiles').upsert({ id: uid, email: email, company: company }, { onConflict: 'id' }),
+              sb.from('user_settings').upsert({ user_id: uid, timezone: tz, language: lg }, { onConflict: 'user_id' })
+            ]);
             if (r1.error) throw r1.error;
             if (r2.error) throw r2.error;
-            await sb.rpc('log_event', { p_kind: 'settings.workspace_updated', p_payload: { timezone: tz, language: lg, theme: th, company: !!company } });
-            status('hx-ws-status', 'Saved.', 'ok');
+            snapshot = { company: company || '', timezone: tz, language: lg, theme: snapshot.theme, density: snapshot.density };
+            $('hx-stat-ws').textContent = company || 'Untitled workspace';
+            try { await sb.rpc('log_event', { p_kind: 'settings.workspace_updated', p_payload: { timezone: tz, language: lg, company: !!company } }); } catch (e) {}
+            statusMsg('hx-ws-status', 'Saved.', 'ok');
           } catch (err) {
-            status('hx-ws-status', (err && err.message) || 'Could not save.', 'error');
+            statusMsg('hx-ws-status', (err && err.message) || 'Could not save.', 'error');
           } finally {
             btn.disabled = false; btn.textContent = lbl;
           }
         });
+        $('hx-ws-cancel').addEventListener('click', function () {
+          $('hx-ws-name-input').value = snapshot.company || '';
+          $('hx-ws-timezone').value = snapshot.timezone || 'Europe/Zurich';
+          $('hx-ws-language').value = snapshot.language || 'en';
+          $('hx-stat-ws').textContent = snapshot.company || 'Untitled workspace';
+          setStatLocaleLabel(snapshot.language, snapshot.timezone);
+          applyLanguage(snapshot.language);
+          statusMsg('hx-ws-status', 'Reverted.', 'ok');
+        });
 
-        // Save notification preferences
-        $('hx-notif-save').addEventListener('click', async function (e) {
-          e.preventDefault();
+        // Account-data export — logs an event the server-side worker picks up.
+        $('hx-export-btn').addEventListener('click', async function () {
           if (!uid) return;
-          var btn = e.currentTarget; var lbl = btn.textContent;
-          btn.disabled = true; btn.textContent = 'Saving…';
+          var btn = $('hx-export-btn'); var lbl = btn.textContent;
+          btn.disabled = true; btn.textContent = 'Requesting…';
           try {
-            var patch = {
-              user_id: uid,
-              email_product:  $('hx-notif-product').checked,
-              email_security: $('hx-notif-security').checked,
-              email_billing:  $('hx-notif-billing').checked
-            };
-            var r = await sb.from('user_settings').upsert(patch, { onConflict: 'user_id' });
-            if (r.error) throw r.error;
-            await sb.rpc('log_event', { p_kind: 'settings.notifications_updated', p_payload: patch });
-            status('hx-notif-status', 'Saved.', 'ok');
-          } catch (err) {
-            status('hx-notif-status', (err && err.message) || 'Could not save.', 'error');
+            await sb.rpc('log_event', { p_kind: 'settings.account_export_requested', p_payload: {} });
+            $('hx-export-status').textContent = 'Requested — you\'ll get an email link when the archive is ready.';
+            $('hx-export-status').style.color = 'var(--hx-emerald)';
+          } catch (e) {
+            $('hx-export-status').textContent = (e && e.message) || 'Could not request export.';
+            $('hx-export-status').style.color = 'var(--hx-red)';
           } finally {
-            btn.disabled = false; btn.textContent = lbl;
+            setTimeout(function () { btn.disabled = false; btn.textContent = lbl; }, 1500);
           }
         });
       });

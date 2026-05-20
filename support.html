@@ -2,838 +2,496 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
-  <title>Contact support — HelveX</title>
-  <meta name="description" content="Open a written request with HelveX support. We reply within one business day during active engagements." />
-  <meta property="og:title" content="Contact support — HelveX" />
-  <meta property="og:description" content="Send a written request to the HelveX support team." />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="HelveX" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="theme-color" content="#FFFFFF" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support — HelveX</title>
+  <meta name="description" content="HelveX support — open a written request, see your ticket history, and reach the right team directly." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { theme: { extend: { colors: { ink: '#0A0A0A', 'ink-soft': '#171717', 'ink-mid': '#525252', 'ink-light': '#A3A3A3', 'ink-faint': '#D4D4D4', line: '#E5E5E5', 'line-soft': '#F0EFEC', cream: '#FAFAF7', beige: '#F4EFE6', red: '#DC2626', 'red-deep': '#991B1B', 'red-soft': '#FEE2E2', yellow: '#FCD34D', 'yellow-deep': '#F59E0B', 'yellow-soft': '#FEF3C7' }, fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'], serif: ['"Instrument Serif"', 'Georgia', 'serif'] } } } };
-  </script>
-
-  <link rel="stylesheet" href="/helvex.css" />
-
-  <!-- Per-page accent: red utility tier -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
   <style>
-    .hx-doc-page {
-      --accent: #DC2626;
-      --accent-text: #991B1B;
-      --accent-bg: #FEE2E2;
-      --accent-glow: rgba(220,38,38,0.22);
-      --accent-shadow: rgba(220,38,38,0.16);
-      --accent-from: #991B1B;
-      --accent-mid: #DC2626;
-      --accent-to: #7F1D1D;
-    }
-
-    /* ─── Support form — refined inputs, premium focus state ─── */
-    .hx-support-form { max-width: 680px; margin: 0; }
-    .hx-support-row {
+    .hx-tkt-row {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 18px;
-    }
-    @media (min-width: 640px) {
-      .hx-support-row.two { grid-template-columns: 1fr 1fr; }
-    }
-    .hx-support-field {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 20px;
-    }
-    .hx-support-field label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: 'Inter', sans-serif;
-      font-size: 12.5px;
-      font-weight: 600;
-      letter-spacing: -0.005em;
-      color: rgba(10, 10, 10, 0.70);
-      margin-bottom: 8px;
-    }
-    .hx-support-field label .req {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(220, 38, 38, 0.75);
-    }
-    .hx-support-field input,
-    .hx-support-field select,
-    .hx-support-field textarea {
-      width: 100%;
-      padding: 12px 16px;
-      background: #FFFFFF;
-      border: 1px solid rgba(10, 10, 10, 0.10);
-      border-radius: 11px;
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      color: #0A0A0A;
-      letter-spacing: -0.005em;
-      box-shadow:
-        0 1px 0 rgba(255, 255, 255, 1) inset,
-        0 1px 2px rgba(15, 15, 16, 0.025);
-      transition: border-color .25s cubic-bezier(.22,1,.36,1),
-                  box-shadow .25s cubic-bezier(.22,1,.36,1),
-                  background .25s ease;
-    }
-    .hx-support-field input,
-    .hx-support-field select { height: 48px; }
-    .hx-support-field textarea {
-      min-height: 180px;
-      resize: vertical;
-      line-height: 1.6;
-    }
-    .hx-support-field input::placeholder,
-    .hx-support-field textarea::placeholder {
-      color: rgba(10, 10, 10, 0.32);
-      font-weight: 400;
-    }
-    .hx-support-field input:hover,
-    .hx-support-field select:hover,
-    .hx-support-field textarea:hover {
-      border-color: rgba(10, 10, 10, 0.18);
-    }
-    .hx-support-field input:focus,
-    .hx-support-field select:focus,
-    .hx-support-field textarea:focus {
-      outline: none;
-      border-color: rgba(220, 38, 38, 0.45);
-      box-shadow:
-        0 1px 0 rgba(255, 255, 255, 1) inset,
-        0 0 0 4px rgba(220, 38, 38, 0.08),
-        0 4px 12px -4px rgba(220, 38, 38, 0.12);
-    }
-    .hx-support-field select {
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A0A0A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
-      background-size: 16px;
-      padding-right: 44px;
-      cursor: pointer;
-    }
-
-    .hx-support-help {
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      line-height: 1.5;
-      color: rgba(10, 10, 10, 0.48);
-      margin: 8px 0 0;
-      letter-spacing: -0.003em;
-    }
-    .hx-support-help a {
-      color: #991B1B;
-      border-bottom: 1px solid rgba(153, 27, 27, 0.25);
-      transition: color .25s, border-color .25s;
-    }
-    .hx-support-help a:hover { color: #7F1D1D; border-bottom-color: #7F1D1D; }
-
-    .hx-support-counter {
-      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-      font-size: 11px;
-      letter-spacing: 0.04em;
-      color: rgba(10, 10, 10, 0.40);
-      margin-top: 6px;
-      text-align: right;
-    }
-
-    /* Submit button — premium dark pill */
-    .hx-support-submit {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      padding: 14px 26px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, #2A2A2E 0%, #0F0F12 55%, #05050A 100%);
-      color: #FFFFFF;
-      font-family: 'Inter', sans-serif;
-      font-size: 13.5px;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      cursor: pointer;
-      overflow: hidden;
-      isolation: isolate;
-      box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-        0 1px 0 rgba(255, 255, 255, 0.22) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.4) inset,
-        0 6px 16px -4px rgba(10, 10, 10, 0.40),
-        0 14px 32px -10px rgba(220, 38, 38, 0.24);
-      transition: transform .3s cubic-bezier(.22,1,.36,1),
-                  box-shadow .3s ease;
-    }
-    .hx-support-submit::after {
-      content: "";
-      position: absolute;
-      top: 1px; left: 8%; right: 8%; height: 40%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.14), transparent);
-      border-radius: 999px;
-      pointer-events: none;
-      z-index: 1;
-    }
-    .hx-support-submit::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.20) 50%, transparent 70%);
-      transform: translateX(-130%);
-      transition: transform .9s cubic-bezier(.22,1,.36,1);
-      z-index: 1;
-    }
-    .hx-support-submit > * { position: relative; z-index: 2; }
-    .hx-support-submit:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.06) inset,
-        0 1px 0 rgba(255, 255, 255, 0.24) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.4) inset,
-        0 10px 22px -4px rgba(10, 10, 10, 0.46),
-        0 20px 44px -10px rgba(220, 38, 38, 0.44);
-    }
-    .hx-support-submit:hover:not(:disabled)::before { transform: translateX(130%); }
-    .hx-support-submit:disabled { opacity: 0.65; cursor: wait; }
-    .hx-support-submit svg { width: 13px; height: 13px; transition: transform .3s ease; }
-    .hx-support-submit:hover:not(:disabled) svg { transform: translateX(3px); }
-
-    .hx-support-footer {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      align-items: flex-start;
-      margin-top: 12px;
-    }
-    .hx-support-footer-note {
-      font-family: 'Inter', sans-serif;
-      font-size: 12.5px;
-      line-height: 1.55;
-      color: rgba(10, 10, 10, 0.55);
-      max-width: 540px;
-      margin: 0;
-    }
-    .hx-support-footer-note a {
-      color: #991B1B;
-      border-bottom: 1px solid rgba(153, 27, 27, 0.25);
-      transition: color .25s, border-color .25s;
-    }
-    .hx-support-footer-note a:hover { color: #7F1D1D; border-bottom-color: #7F1D1D; }
-
-    /* Helpful links grid */
-    .hx-support-links {
-      display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 80px minmax(240px, 1.6fr) 110px 110px 90px;
       gap: 14px;
+      align-items: center;
+      padding: 12px 16px;
+      border-top: 1px solid var(--hx-line);
+      transition: background 0.1s;
     }
-    @media (min-width: 768px) {
-      .hx-support-links { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .hx-tkt-row:first-child { border-top: 0; }
+    .hx-tkt-row:hover { background: var(--hx-bg-2); }
+    .hx-tkt-row .ref { font-family: var(--hx-mono); font-size: 11.5px; color: var(--hx-text-dim); }
+    .hx-tkt-row .subj { font-size: 13.5px; font-weight: 500; color: var(--hx-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hx-tkt-row .subj .cat { display: block; font-size: 11.5px; font-weight: 400; color: var(--hx-text-mid); margin-top: 2px; }
+    .hx-tkt-row .time { font-family: var(--hx-mono); font-size: 11.5px; color: var(--hx-text-dim); }
+    @media (max-width: 720px) {
+      .hx-tkt-row {
+        grid-template-columns: 1fr auto;
+        grid-template-areas: "subj status" "ref time";
+        gap: 6px 14px;
+      }
+      .hx-tkt-row .subj { grid-area: subj; }
+      .hx-tkt-row .ref { grid-area: ref; }
+      .hx-tkt-row .time { grid-area: time; text-align: right; }
+      .hx-tkt-row .status { grid-area: status; justify-self: end; }
     }
-    .hx-support-link {
+    .hx-quick-link {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding: 22px 24px;
-      background: #FFFFFF;
-      border: 1px solid #ECECEC;
-      border-radius: 14px;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-top: 1px solid var(--hx-line-soft);
       text-decoration: none;
-      box-shadow:
-        0 1px 0 rgba(255, 255, 255, 1) inset,
-        0 1px 2px rgba(10, 10, 10, 0.02),
-        0 8px 20px -10px rgba(10, 10, 10, 0.06);
-      transition: transform .4s cubic-bezier(.22,1,.36,1),
-                  border-color .4s ease,
-                  box-shadow .4s ease;
+      color: var(--hx-text);
+      transition: background 0.1s;
     }
-    .hx-support-link:hover {
-      transform: translateY(-2px);
-      border-color: rgba(220, 38, 38, 0.18);
-      box-shadow:
-        0 1px 0 rgba(255, 255, 255, 1) inset,
-        0 1px 2px rgba(10, 10, 10, 0.02),
-        0 20px 36px -14px rgba(10, 10, 10, 0.10),
-        0 0 36px -10px rgba(220, 38, 38, 0.12);
+    .hx-quick-link:first-child { border-top: 0; }
+    .hx-quick-link:hover { background: var(--hx-bg-2); }
+    .hx-quick-link .ico {
+      width: 32px; height: 32px;
+      border-radius: var(--hx-r-sm);
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
-    .hx-support-link-title {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: 'Inter', sans-serif;
-      font-size: 14.5px;
-      font-weight: 600;
-      letter-spacing: -0.012em;
-      color: #0A0A0A;
-    }
-    .hx-support-link-title svg {
-      width: 13px; height: 13px;
-      color: rgba(10, 10, 10, 0.35);
-      transition: color .3s, transform .3s;
-    }
-    .hx-support-link:hover .hx-support-link-title svg {
-      color: #DC2626;
-      transform: translate(2px, -2px);
-    }
-    .hx-support-link-desc {
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      line-height: 1.55;
-      color: rgba(10, 10, 10, 0.55);
-    }
+    .hx-quick-link .ico svg { width: 14px; height: 14px; color: var(--hx-text); }
+    .hx-quick-link .body { flex: 1; min-width: 0; }
+    .hx-quick-link .ttl { font-size: 13.5px; font-weight: 500; }
+    .hx-quick-link .desc { font-size: 12px; color: var(--hx-text-mid); margin-top: 2px; }
+    .hx-quick-link .arr { color: var(--hx-text-dim); flex-shrink: 0; transition: transform 0.12s, color 0.12s; }
+    .hx-quick-link:hover .arr { color: var(--hx-text); transform: translateX(2px); }
 
-    /* Response-time meta strip */
-    .hx-support-meta {
-      display: inline-flex;
+    .hx-addr-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 11px 0;
+      border-top: 1px solid var(--hx-line-soft);
       flex-wrap: wrap;
-      gap: 10px 22px;
-      margin-top: 32px;
-      padding: 14px 20px;
-      border-radius: 999px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(254, 250, 245, 0.85));
-      border: 1px solid rgba(10, 10, 10, 0.06);
-      box-shadow:
-        0 1px 0 rgba(255,255,255,1) inset,
-        0 6px 18px -10px rgba(10,10,10,0.08);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
     }
-    .hx-support-meta-item {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: 'Inter', sans-serif;
-      font-size: 12.5px;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      color: rgba(10, 10, 10, 0.68);
-    }
-    .hx-support-meta-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #10B981;
-      box-shadow: 0 0 0 1px rgba(16,185,129,0.30), 0 0 6px rgba(16,185,129,0.55);
-    }
-    .hx-support-meta-key {
-      font-size: 10px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: rgba(10, 10, 10, 0.42);
-    }
-    .hx-support-meta-sep {
-      width: 1px; height: 14px;
-      background: rgba(10,10,10,0.12);
-    }
-    @media (max-width: 640px) {
-      .hx-support-meta-sep { display: none; }
-      .hx-support-meta { display: flex; }
-    }
-
-    /* Inline alerts */
-    .hx-support-alert {
-      display: none;
-      padding: 14px 18px;
-      border-radius: 12px;
-      margin-bottom: 22px;
-      font-family: 'Inter', sans-serif;
-      font-size: 13.5px;
-      line-height: 1.55;
-    }
-    .hx-support-alert.show { display: block; }
-    .hx-support-alert.is-success {
-      background: linear-gradient(180deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.04));
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      color: #047857;
-    }
-    .hx-support-alert.is-error {
-      background: linear-gradient(180deg, rgba(220, 38, 38, 0.06), rgba(220, 38, 38, 0.03));
-      border: 1px solid rgba(220, 38, 38, 0.22);
-      color: #991B1B;
-    }
-    .hx-support-alert a { color: inherit; font-weight: 600; border-bottom: 1px solid currentColor; }
-
-    /* Direct-address email links */
-    .hx-doc-specs a {
-      color: #991B1B;
-      border-bottom: 1px solid rgba(153, 27, 27, 0.25);
-      transition: color .25s, border-color .25s;
-    }
-    .hx-doc-specs a:hover { color: #7F1D1D; border-bottom-color: #7F1D1D; }
+    .hx-addr-row:first-child { border-top: 0; padding-top: 0; }
+    .hx-addr-row .key { font-size: 12.5px; color: var(--hx-text-mid); font-weight: 500; min-width: 160px; flex-shrink: 0; }
+    .hx-addr-row .val { font-family: var(--hx-mono); font-size: 12.5px; color: var(--hx-text); flex: 1; min-width: 0; }
+    .hx-addr-row .val a { color: var(--hx-text); border-bottom: 1px solid var(--hx-line-strong); transition: border-color 0.12s; }
+    .hx-addr-row .val a:hover { border-color: var(--hx-text); }
+    .hx-addr-row .note { font-size: 11.5px; color: var(--hx-text-dim); }
   </style>
 </head>
-<body class="hx-doc-page antialiased">
+<body data-active="support">
 
-  <!-- Premium header (canonical) -->
-  <header class="hx-header">
-    <nav class="max-w-[1520px] mx-auto pl-4 pr-5 sm:pl-6 sm:pr-8 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-5 lg:gap-8">
-        <a href="/" class="brand-mark flex items-center flex-shrink-0">
-          <span class="brand-logo"><img src="/helvex-logo.png" alt="HelveX" class="w-auto" /></span>
-        </a>
-        <div class="hidden lg:flex items-center gap-1" id="nav-main">
-          <a href="/" class="nav-link">Home</a>
-          <div class="nav-dropdown relative group">
-            <button type="button" class="nav-link nav-link-dropdown" aria-haspopup="true" aria-expanded="false">
-              Services
-              <svg class="w-3 h-3 ml-0.5 text-ink-light group-hover:text-ink transition-all group-hover:rotate-180" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="nav-dropdown-menu absolute top-full left-0 pt-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-all duration-200 z-50">
-              <div class="w-72 bg-white border border-line rounded-2xl shadow-[0_24px_60px_-20px_rgba(10,10,10,0.18)] p-2.5">
-                <a href="/ai-automation.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-yellow flex items-center justify-center"><svg class="w-3.5 h-3.5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 11h.01M15 11h.01"/><path d="M12 7V3"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">AI &amp; Automation</span><span class="block text-[11px] text-ink-mid">Agents that handle the work</span></span>
-                </a>
-                <a href="/business-consulting.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-red flex items-center justify-center"><svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M6 17V11M11 17V7M16 17v-9M21 17v-5"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Business Consulting</span><span class="block text-[11px] text-ink-mid">Plan before anything is built</span></span>
-                </a>
-                <a href="/digital-services.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-ink flex items-center justify-center"><svg class="w-3.5 h-3.5 text-yellow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Digital Services</span><span class="block text-[11px] text-ink-mid">Sites · CRM · APIs · cloud</span></span>
-                </a>
-                <a href="/growth-marketing.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-yellow flex items-center justify-center"><svg class="w-3.5 h-3.5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Growth &amp; Marketing</span><span class="block text-[11px] text-ink-mid">Systems that compound</span></span>
-                </a>
-                <a href="/enterprise.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-red flex items-center justify-center"><svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Enterprise</span><span class="block text-[11px] text-ink-mid">Internal AI · secure · audited</span></span>
-                </a>
+  <div class="hx-app">
+    <aside class="hx-sidebar"></aside>
+    <div>
+      <div class="hx-topbar"></div>
+      <main class="hx-main">
+
+        <div class="hx-page-head">
+          <div>
+            <h1>Support.</h1>
+            <p class="sub">Open a written request, browse your ticket history, or reach the right team directly. Replies come from a person — written and signed — never a bot.</p>
+          </div>
+          <div class="hx-page-actions">
+            <a href="/help-center" class="hx-btn hx-btn-secondary hx-btn-sm">Help center</a>
+            <a href="/status" class="hx-btn hx-btn-secondary hx-btn-sm">
+              <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--hx-emerald);box-shadow:0 0 0 2px rgba(16,185,129,0.18);margin-right:6px;"></span>
+              All systems operational
+            </a>
+          </div>
+        </div>
+
+        <!-- ═══════════════ QUICK STATS ═══════════════ -->
+        <div class="hx-grid hx-grid-4">
+          <div class="hx-stat">
+            <p class="hx-stat-label">Your open tickets</p>
+            <p class="hx-stat-value hx-mono" id="hx-sup-stat-open">—</p>
+            <p class="hx-stat-meta" id="hx-sup-stat-open-meta">—</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Response target</p>
+            <p class="hx-stat-value" style="font-size:17px;">1 business day</p>
+            <p class="hx-stat-meta">During active engagements</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Hours</p>
+            <p class="hx-stat-value" style="font-size:17px;" id="hx-sup-hours">Mon–Fri</p>
+            <p class="hx-stat-meta" id="hx-sup-hours-meta">Zurich · 09:00–18:00 CET</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Channel</p>
+            <p class="hx-stat-value" style="font-size:17px;">Written</p>
+            <p class="hx-stat-meta">Email replies from a real person</p>
+          </div>
+        </div>
+
+        <!-- ═══════════════ NEW REQUEST ═══════════════ -->
+        <div class="hx-section-head">
+          <h2>Open a request</h2>
+          <span class="meta">Five fields. We'll route automatically.</span>
+        </div>
+        <div class="hx-card">
+          <form id="hx-sup-form" novalidate>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;">
+              <div class="hx-field" style="margin:0;">
+                <label>Your name</label>
+                <input type="text" id="hx-sup-name" placeholder="Your full name" autocomplete="name" required maxlength="100" />
+              </div>
+              <div class="hx-field" style="margin:0;">
+                <label>Reply email</label>
+                <input type="email" id="hx-sup-email" placeholder="you@company.com" autocomplete="email" required />
+                <div class="help">Defaults to your account email — change if you want the reply elsewhere.</div>
+              </div>
+              <div class="hx-field" style="margin:0;">
+                <label>Subject</label>
+                <input type="text" id="hx-sup-subject" placeholder="One-line summary" required maxlength="120" />
+              </div>
+              <div class="hx-field" style="margin:0;">
+                <label>Category</label>
+                <select id="hx-sup-category" required>
+                  <option value="" disabled selected>Pick the closest match</option>
+                  <option value="account">Account &amp; access</option>
+                  <option value="billing">Billing &amp; invoices</option>
+                  <option value="technical">Technical issue</option>
+                  <option value="ai-output">AI output</option>
+                  <option value="security">Security disclosure</option>
+                  <option value="legal">Legal / contracts</option>
+                  <option value="feedback">Product feedback</option>
+                </select>
+              </div>
+              <div class="hx-field" style="margin:0;grid-column:span 2;">
+                <label>Message</label>
+                <textarea id="hx-sup-message" placeholder="Describe what you're trying to do, what you've tried, and any specific errors, project IDs, or screenshots we should look at." rows="6" required minlength="20" maxlength="4000"></textarea>
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-top:8px;flex-wrap:wrap;">
+                  <div class="help" style="margin:0;flex:1;min-width:200px;">
+                    Don't include passwords, API keys, or payment details here. For security disclosures, email <a href="mailto:security@helvex.ai" style="color:var(--hx-text);text-decoration:underline;text-decoration-color:var(--hx-line-strong);text-underline-offset:2px;">security@helvex.ai</a>.
+                  </div>
+                  <div class="hx-mono" style="font-size:11px;color:var(--hx-text-faint);"><span id="hx-sup-count">0</span> / 4000</div>
+                </div>
               </div>
             </div>
-          </div>
-          <a href="/models" class="nav-link">Models</a>
-          <a href="/workspace" class="nav-link">Workspace</a>
-          <a href="/research" class="nav-link">Research</a>
-          <a href="/customer-stories" class="nav-link">Customers</a>
-          <a href="/resources" class="nav-link">Resources</a>
-        </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <a href="/signup.html" class="hx-signin hidden sm:inline-flex">Sign in</a>
-        <a href="/signup.html" class="btn-primary">
-          <span>Try HeliX</span>
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
-    </nav>
-  </header>
-
-  <!-- Ambient backdrop -->
-  <div class="hx-doc-bg" aria-hidden="true">
-    <div class="hx-doc-bg-grid"></div>
-    <div class="hx-doc-bg-glow hx-doc-bg-glow-1"></div>
-    <div class="hx-doc-bg-glow hx-doc-bg-glow-2"></div>
-  </div>
-
-  <main class="hx-doc-wrap">
-
-    <!-- ════════ HERO ════════ -->
-    <section class="hx-doc-hero">
-      <div class="hx-doc-hero-inner">
-        <p class="hx-doc-eyebrow">
-          <span class="hx-doc-eyebrow-dot"></span>
-          Support · Contact
-        </p>
-        <h1 class="hx-doc-title">
-          Contact support
-          <span class="hx-doc-title-italic">We reply in writing.</span>
-        </h1>
-        <p class="hx-doc-lede">
-          Send a written request and your message reaches the support team. Replies are written by people, not bots. For the fastest path, give us enough context to act on the first response.
-        </p>
-
-        <div class="hx-support-meta">
-          <span class="hx-support-meta-item">
-            <span class="hx-support-meta-dot"></span>
-            <span class="hx-support-meta-key">Active engagement</span>
-            within one business day
-          </span>
-          <span class="hx-support-meta-sep" aria-hidden="true"></span>
-          <span class="hx-support-meta-item">
-            <span class="hx-support-meta-key">Other</span>
-            within 2–3 business days
-          </span>
-          <span class="hx-support-meta-sep" aria-hidden="true"></span>
-          <span class="hx-support-meta-item">
-            <span class="hx-support-meta-key">Hours</span>
-            Mon–Fri, Zurich time
-          </span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ════════ FORM ════════ -->
-    <section class="hx-doc-section">
-      <div class="hx-doc-section-inner">
-        <p class="hx-doc-section-eyebrow">Open a request</p>
-        <h2 class="hx-doc-section-title">A few details and we'll take it from here.</h2>
-        <p class="hx-doc-section-desc">Five fields. The more context you give us, the better the first reply lands.</p>
-
-        <form class="hx-support-form" id="support-form" novalidate>
-
-          <div class="hx-support-alert is-success" id="support-alert-success" role="status">
-            Your request was received. We'll reply by email shortly.
-          </div>
-          <div class="hx-support-alert is-error" id="support-alert-error" role="alert">
-            Something went wrong. Please try again, or email <a href="mailto:support@helvex.ai">support@helvex.ai</a> directly.
-          </div>
-
-          <div class="hx-support-row two">
-            <div class="hx-support-field">
-              <label for="sup-name">Name <span class="req">Required</span></label>
-              <input type="text" id="sup-name" name="name" placeholder="Alex Müller" required autocomplete="name" />
+            <div style="display:flex;align-items:center;gap:10px;margin-top:22px;flex-wrap:wrap;">
+              <button class="hx-btn hx-btn-primary" id="hx-sup-submit" type="submit">Send request</button>
+              <button class="hx-btn hx-btn-ghost" id="hx-sup-reset" type="button">Clear</button>
+              <p id="hx-sup-status" style="margin:0 0 0 4px;font-size:12.5px;font-weight:500;"></p>
             </div>
-            <div class="hx-support-field">
-              <label for="sup-email">Email <span class="req">Required</span></label>
-              <input type="email" id="sup-email" name="email" placeholder="you@company.com" required autocomplete="email" />
-            </div>
-          </div>
-
-          <div class="hx-support-row two">
-            <div class="hx-support-field">
-              <label for="sup-subject">Subject <span class="req">Required</span></label>
-              <input type="text" id="sup-subject" name="subject" placeholder="One-line summary" required maxlength="120" />
-            </div>
-            <div class="hx-support-field">
-              <label for="sup-category">Category <span class="req">Required</span></label>
-              <select id="sup-category" name="category" required>
-                <option value="" disabled selected>Select a category</option>
-                <option value="account">Account</option>
-                <option value="billing">Billing</option>
-                <option value="technical">Technical issue</option>
-                <option value="ai-output">AI output</option>
-                <option value="security">Security</option>
-                <option value="legal">Legal</option>
-                <option value="feedback">Feedback</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="hx-support-field">
-            <label for="sup-message">Message <span class="req">Required</span></label>
-            <textarea id="sup-message" name="message" placeholder="Describe what you're trying to do, what you've tried, and any specific errors, identifiers, or screenshots we should look at. Sensitive data — credentials, payment info — should not be included here." required minlength="20" maxlength="4000"></textarea>
-            <p class="hx-support-help">
-              Don't include passwords, API keys, or payment details in this message. For security-sensitive disclosures, email <a href="mailto:security@helvex.ai">security@helvex.ai</a>.
-            </p>
-            <p class="hx-support-counter"><span id="sup-msg-count">0</span> / 4000</p>
-          </div>
-
-          <div class="hx-support-footer">
-            <button type="submit" class="hx-support-submit" id="sup-submit">
-              <span>Send request</span>
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <p class="hx-support-footer-note">
-              By sending, you confirm you've read our <a href="/privacy">Privacy policy</a> and agree to its handling of your message. We only use the information you provide here to respond to your request.
-            </p>
-          </div>
-
-        </form>
-      </div>
-    </section>
-
-    <!-- ════════ HELPFUL LINKS ════════ -->
-    <section class="hx-doc-section">
-      <div class="hx-doc-section-inner">
-        <p class="hx-doc-section-eyebrow">Before you reach out</p>
-        <h2 class="hx-doc-section-title">Things you can answer in writing.</h2>
-        <p class="hx-doc-section-desc">Most questions are covered in our documentation and policies. If the answer is there, you'll get to it faster than waiting on a reply.</p>
-
-        <div class="hx-support-links">
-          <a href="/help-center" class="hx-support-link">
-            <span class="hx-support-link-title">
-              Help center
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
-            </span>
-            <span class="hx-support-link-desc">Docs, FAQs, and how-tos organised by surface — account, models, agents, integrations, security.</span>
-          </a>
-          <a href="/privacy" class="hx-support-link">
-            <span class="hx-support-link-title">
-              Privacy policy
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
-            </span>
-            <span class="hx-support-link-desc">How we collect, use, store, and delete your data, with your rights under GDPR and Swiss FADP spelled out.</span>
-          </a>
-          <a href="/terms" class="hx-support-link">
-            <span class="hx-support-link-title">
-              Terms of Service
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
-            </span>
-            <span class="hx-support-link-desc">The contract governing your account, AI outputs, hosted applications, billing, and termination.</span>
-          </a>
-          <a href="/security-page" class="hx-support-link">
-            <span class="hx-support-link-title">
-              Security
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
-            </span>
-            <span class="hx-support-link-desc">Encryption, access control, sandboxing, incident response, and how to report a vulnerability.</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ════════ DIRECT ADDRESSES ════════ -->
-    <section class="hx-doc-section">
-      <div class="hx-doc-section-inner">
-        <p class="hx-doc-section-eyebrow">Direct addresses</p>
-        <h2 class="hx-doc-section-title">For specific routing.</h2>
-        <p class="hx-doc-section-desc">If your message belongs to one of the addresses below, sending it there gets it to the right team faster than the general form.</p>
-
-        <ul class="hx-doc-specs">
-          <li>
-            <span class="hx-doc-specs-key">General support</span>
-            <span class="hx-doc-specs-val"><a href="mailto:support@helvex.ai">support@helvex.ai</a></span>
-          </li>
-          <li>
-            <span class="hx-doc-specs-key">Security disclosures</span>
-            <span class="hx-doc-specs-val"><a href="mailto:security@helvex.ai">security@helvex.ai</a> · 90-day coordinated disclosure · PGP available on request</span>
-          </li>
-          <li>
-            <span class="hx-doc-specs-key">Legal</span>
-            <span class="hx-doc-specs-val"><a href="mailto:legal@helvex.ai">legal@helvex.ai</a></span>
-          </li>
-          <li>
-            <span class="hx-doc-specs-key">Privacy / DPO</span>
-            <span class="hx-doc-specs-val"><a href="mailto:dpo@helvex.ai">dpo@helvex.ai</a> · GDPR / Swiss FADP requests</span>
-          </li>
-          <li>
-            <span class="hx-doc-specs-key">Abuse / DMCA</span>
-            <span class="hx-doc-specs-val"><a href="mailto:abuse@helvex.ai">abuse@helvex.ai</a></span>
-          </li>
-          <li>
-            <span class="hx-doc-specs-key">Press</span>
-            <span class="hx-doc-specs-val"><a href="mailto:press@helvex.ai">press@helvex.ai</a></span>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- ════════ CLOSING ════════ -->
-    <section class="hx-doc-closing">
-      <span class="hx-doc-closing-mark">End of page</span>
-      <p>We write back. The same person who reads your request is usually the one who replies.</p>
-    </section>
-
-  </main>
-
-  <!-- Premium dark footer (canonical) -->
-  <footer class="hx-footer">
-    <div class="hx-footer-bg" aria-hidden="true">
-      <div class="hx-footer-grid"></div>
-      <div class="hx-footer-glow hx-footer-glow-1"></div>
-      <div class="hx-footer-glow hx-footer-glow-2"></div>
-      <div class="hx-footer-glow hx-footer-glow-3"></div>
-    </div>
-
-    <div class="relative max-w-7xl mx-auto px-6 sm:px-8 pt-20 sm:pt-28 pb-10">
-
-      <div class="hx-footer-top">
-
-        <div class="hx-footer-brand-col">
-          <a href="/" class="hx-footer-brand">
-            <span class="hx-footer-brand-halo" aria-hidden="true"></span>
-            <img src="/helvex-logo.png" alt="HelveX" />
-          </a>
-          <p class="hx-footer-tagline">
-            Ether, Nexus, Prometheus — and the workspace around them. Designed and built in Switzerland.
-          </p>
-
-          <form class="hx-footer-form" onsubmit="event.preventDefault(); this.classList.add('is-sent'); this.querySelector('button span').textContent='Subscribed';">
-            <span class="hx-footer-form-label">Monthly digest</span>
-            <div class="hx-footer-form-row">
-              <input type="email" required placeholder="you@company.com" />
-              <button type="submit"><span>Subscribe</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            </div>
-            <p class="hx-footer-form-meta">Senior-engineer notes, model updates, no spam. Unsubscribe anytime.</p>
           </form>
         </div>
 
-        <div class="hx-footer-col">
-          <p class="hx-footer-col-eyebrow"><span class="hx-footer-col-dot" style="--c:#F5C863"></span>Product</p>
-          <ul>
-            <li><a href="/models"><span class="hx-footer-link-title">Models</span><span class="hx-footer-link-desc">Three frontier models, one runtime</span></a></li>
-            <li><a href="/ether"><span class="hx-footer-link-title">Ether</span><span class="hx-footer-link-desc">Real-time, lowest cost, streaming-first</span></a></li>
-            <li><a href="/nexus"><span class="hx-footer-link-title">Nexus</span><span class="hx-footer-link-desc">Balanced reasoning, longest context</span></a></li>
-            <li><a href="/prometheus"><span class="hx-footer-link-title">Prometheus</span><span class="hx-footer-link-desc">Deepest reasoning, agentic, computer use</span></a></li>
-            <li><a href="/workspace"><span class="hx-footer-link-title">Workspace</span><span class="hx-footer-link-desc">Six surfaces, one operating layer</span></a></li>
-          </ul>
+        <!-- ═══════════════ TICKET HISTORY ═══════════════ -->
+        <div class="hx-section-head">
+          <h2>Your requests</h2>
+          <span class="meta" id="hx-sup-history-meta">—</span>
+        </div>
+        <div id="hx-sup-history-host"></div>
+
+        <!-- ═══════════════ HELPFUL LINKS ═══════════════ -->
+        <div class="hx-section-head">
+          <h2>Before you reach out</h2>
+          <span class="meta">Faster than waiting on a reply.</span>
+        </div>
+        <div class="hx-grid hx-grid-2">
+          <div class="hx-card" style="padding:0;overflow:hidden;">
+            <a href="/help-center" class="hx-quick-link">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <div class="body">
+                <div class="ttl">Help center</div>
+                <div class="desc">Docs, FAQs, how-tos by surface.</div>
+              </div>
+              <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </a>
+            <a href="/best-practices" class="hx-quick-link">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div class="body">
+                <div class="ttl">Best practices</div>
+                <div class="desc">Patterns we recommend, anti-patterns to avoid.</div>
+              </div>
+              <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </a>
+            <a href="/tutorials" class="hx-quick-link">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+              <div class="body">
+                <div class="ttl">Tutorials</div>
+                <div class="desc">Long-form guides with screenshots.</div>
+              </div>
+              <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </a>
+          </div>
+          <div class="hx-card" style="padding:0;overflow:hidden;">
+            <a href="/security-page" class="hx-quick-link">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+              <div class="body">
+                <div class="ttl">Security &amp; compliance</div>
+                <div class="desc">Encryption, controls, vulnerability disclosure.</div>
+              </div>
+              <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </a>
+            <a href="/privacy" class="hx-quick-link">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+              <div class="body">
+                <div class="ttl">Privacy policy</div>
+                <div class="desc">How we handle your data — GDPR &amp; Swiss FADP.</div>
+              </div>
+              <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </a>
+            <a href="/terms" class="hx-quick-link">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9-2.42 0-4.62-.96-6.24-2.52L3 21l2.52-2.76A8.96 8.96 0 0 1 3 12c0-4.97 4.03-9 9-9s9 4.03 9 9z"/></svg></div>
+              <div class="body">
+                <div class="ttl">Terms of service</div>
+                <div class="desc">Service agreement, billing, termination.</div>
+              </div>
+              <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </a>
+          </div>
         </div>
 
-        <div class="hx-footer-col">
-          <p class="hx-footer-col-eyebrow"><span class="hx-footer-col-dot" style="--c:#DC2626"></span>Company</p>
-          <ul>
-            <li><a href="/about"><span class="hx-footer-link-title">About</span><span class="hx-footer-link-desc">Built in Switzerland, 2024</span></a></li>
-            <li><a href="/research"><span class="hx-footer-link-title">Research</span><span class="hx-footer-link-desc">Methodology, evals, open notes</span></a></li>
-            <li><a href="/careers"><span class="hx-footer-link-title">Careers</span><span class="hx-footer-link-desc">Senior engineers, written-first culture</span></a></li>
-            <li><a href="/press"><span class="hx-footer-link-title">Press</span><span class="hx-footer-link-desc">Fact sheet, contact, brand kit</span></a></li>
-            <li><a href="/brand"><span class="hx-footer-link-title">Brand</span><span class="hx-footer-link-desc">Wordmark, palette, voice</span></a></li>
-          </ul>
+        <!-- ═══════════════ DIRECT ADDRESSES ═══════════════ -->
+        <div class="hx-section-head">
+          <h2>Direct addresses</h2>
+          <span class="meta">For specific routing — faster than the form.</span>
+        </div>
+        <div class="hx-card">
+          <div class="hx-addr-row">
+            <span class="key">General support</span>
+            <span class="val"><a href="mailto:support@helvex.ai">support@helvex.ai</a></span>
+            <span class="note">Default — anything not covered below</span>
+          </div>
+          <div class="hx-addr-row">
+            <span class="key">Security disclosures</span>
+            <span class="val"><a href="mailto:security@helvex.ai">security@helvex.ai</a></span>
+            <span class="note">90-day coordinated disclosure · PGP on request</span>
+          </div>
+          <div class="hx-addr-row">
+            <span class="key">Legal / contracts</span>
+            <span class="val"><a href="mailto:legal@helvex.ai">legal@helvex.ai</a></span>
+            <span class="note">DPA, MSA, NDA</span>
+          </div>
+          <div class="hx-addr-row">
+            <span class="key">Privacy / DPO</span>
+            <span class="val"><a href="mailto:dpo@helvex.ai">dpo@helvex.ai</a></span>
+            <span class="note">GDPR &amp; Swiss FADP rights</span>
+          </div>
+          <div class="hx-addr-row">
+            <span class="key">Abuse / DMCA</span>
+            <span class="val"><a href="mailto:abuse@helvex.ai">abuse@helvex.ai</a></span>
+            <span class="note">Misuse, takedown notices</span>
+          </div>
+          <div class="hx-addr-row">
+            <span class="key">Press &amp; partnerships</span>
+            <span class="val"><a href="mailto:press@helvex.ai">press@helvex.ai</a></span>
+            <span class="note">Quotes, interviews, brand</span>
+          </div>
         </div>
 
-        <div class="hx-footer-col">
-          <p class="hx-footer-col-eyebrow"><span class="hx-footer-col-dot" style="--c:#F0B852"></span>Resources</p>
-          <ul>
-            <li><a href="/quickstart"><span class="hx-footer-link-title">Quickstart</span><span class="hx-footer-link-desc">From zero to first agent in 30 min</span></a></li>
-            <li><a href="/tutorials"><span class="hx-footer-link-title">Tutorials</span><span class="hx-footer-link-desc">Long-form guides, with screenshots</span></a></li>
-            <li><a href="/workflows"><span class="hx-footer-link-title">Workflow library</span><span class="hx-footer-link-desc">Reusable playbooks for common shapes</span></a></li>
-            <li><a href="/model-picker"><span class="hx-footer-link-title">Model picker</span><span class="hx-footer-link-desc">Pick the model for the moment</span></a></li>
-            <li><a href="/use-cases"><span class="hx-footer-link-title">Use cases</span><span class="hx-footer-link-desc">Patterns we ship most often</span></a></li>
-            <li><a href="/best-practices"><span class="hx-footer-link-title">Best practices</span><span class="hx-footer-link-desc">Engineering principles, anti-patterns</span></a></li>
-            <li><a href="/customer-stories"><span class="hx-footer-link-title">Customer stories</span><span class="hx-footer-link-desc">Engagement shapes and outcomes</span></a></li>
-            <li><a href="/help-center"><span class="hx-footer-link-title">Help center</span><span class="hx-footer-link-desc">Docs, FAQs, and how-tos</span></a></li>
-          </ul>
-        </div>
-
-        <div class="hx-footer-col">
-          <p class="hx-footer-col-eyebrow"><span class="hx-footer-col-dot" style="--c:#D4D4D8"></span>Legal</p>
-          <ul>
-            <li><a href="/trust-center"><span class="hx-footer-link-title">Trust center</span><span class="hx-footer-link-desc">Security posture and audit pathway</span></a></li>
-            <li><a href="/privacy"><span class="hx-footer-link-title">Privacy</span><span class="hx-footer-link-desc">How we handle your data</span></a></li>
-            <li><a href="/terms"><span class="hx-footer-link-title">Terms</span><span class="hx-footer-link-desc">Service agreement</span></a></li>
-            <li><a href="/security-page"><span class="hx-footer-link-title">Security</span><span class="hx-footer-link-desc">Architecture, controls, certifications</span></a></li>
-            <li><a href="/dpa"><span class="hx-footer-link-title">DPA</span><span class="hx-footer-link-desc">Data processing addendum</span></a></li>
-          </ul>
-        </div>
-
-      </div>
-
-      <div class="hx-footer-trust">
-        <span class="hx-footer-trust-item">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="hx-footer-trust-flag"><rect width="24" height="24" rx="3" fill="#DC2626"/><rect x="10" y="5" width="4" height="14" fill="#FFFFFF"/><rect x="5" y="10" width="14" height="4" fill="#FFFFFF"/></svg>
-          Built in Switzerland
-        </span>
-        <span class="hx-footer-trust-sep" aria-hidden="true"></span>
-        <span class="hx-footer-trust-item hx-footer-trust-status">
-          <span class="hx-footer-status-dot"></span>
-          All systems operational
-        </span>
-      </div>
-
-      <div class="hx-footer-bottom">
-        <p class="hx-footer-copy">© 2026 HelveX AG · Zurich, Switzerland · All rights reserved.</p>
-        <div class="hx-footer-social">
-          <a href="https://x.com/helvex" target="_blank" rel="noopener" aria-label="X / Twitter">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          </a>
-          <a href="https://www.linkedin.com/company/helvex" target="_blank" rel="noopener" aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 0H5a5 5 0 00-5 5v14a5 5 0 005 5h14a5 5 0 005-5V5a5 5 0 00-5-5zM8 19H5V8h3v11zm-1.5-12.3a1.7 1.7 0 110-3.4 1.7 1.7 0 010 3.4zM20 19h-3v-5.6c0-1.4-.5-2.4-1.7-2.4-1 0-1.6.7-1.8 1.3-.1.2-.1.5-.1.8V19h-3V8h3v1.3c.4-.6 1.1-1.5 2.7-1.5 2 0 3.5 1.3 3.5 4.1V19z"/></svg>
-          </a>
-          <a href="https://github.com/helvex" target="_blank" rel="noopener" aria-label="GitHub">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.36-3.87-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.78 1.19 1.78 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 015.8 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
-          </a>
-        </div>
-      </div>
-
+      </main>
     </div>
-  </footer>
+  </div>
 
-  <script src="/helvex.js" defer></script>
-  <script src="/auth.js"></script>
+  <script src="/platform.js"></script>
   <script>
+    /* Real read/write of public.support_requests via Supabase Edge Function.
+       The send-support-email fn persists the row + emails support@helvex.ai
+       (Resend). On this page we also list the requesting user's own
+       tickets, latest first, with status/category badges.                 */
     (function () {
-      var form = document.getElementById('support-form');
-      var counter = document.getElementById('sup-msg-count');
-      var msg = document.getElementById('sup-message');
-      var btn = document.getElementById('sup-submit');
-      var success = document.getElementById('support-alert-success');
-      var error = document.getElementById('support-alert-error');
-
-      function updateCount() {
-        if (msg && counter) counter.textContent = msg.value.length;
+      function whenAuthReady(fn) {
+        if (window.HX && window.HX.supabase) { fn(); return; }
+        document.addEventListener('hx:auth-ready', fn, { once: true });
       }
-      if (msg) {
-        msg.addEventListener('input', updateCount);
-        updateCount();
+      var $ = function (id) { return document.getElementById(id); };
+      function escape(s) {
+        return (s == null ? '' : String(s))
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      function fmtDate(iso) {
+        if (!iso) return '—';
+        try { return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); } catch (e) { return '—'; }
+      }
+      function relTime(iso) {
+        if (!iso) return '—';
+        var diff = (Date.now() - new Date(iso).getTime()) / 1000;
+        if (diff < 60)   return 'just now';
+        if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+        var d = Math.floor(diff/86400);
+        return d + (d === 1 ? ' day ago' : ' days ago');
+      }
+      function status(msg, kind) {
+        var el = $('hx-sup-status'); if (!el) return;
+        el.style.color = kind === 'error' ? 'var(--hx-red)' : 'var(--hx-emerald)';
+        el.textContent = msg || '';
+        if (msg && kind !== 'error') {
+          setTimeout(function () { if (el.textContent === msg) el.textContent = ''; }, 3000);
+        }
+      }
+      function statusBadge(s) {
+        var k = (s || '').toLowerCase();
+        if (k === 'resolved' || k === 'closed') return '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Resolved</span>';
+        if (k === 'in_progress' || k === 'in-progress' || k === 'pending') return '<span class="hx-badge hx-badge-yellow"><span class="hx-badge-dot" style="background:var(--hx-yellow-deep);"></span>In progress</span>';
+        if (k === 'waiting' || k === 'on_user' || k === 'waiting-on-user') return '<span class="hx-badge hx-badge-neutral"><span class="hx-badge-dot"></span>Waiting on you</span>';
+        return '<span class="hx-badge hx-badge-neutral"><span class="hx-badge-dot"></span>Open</span>';
+      }
+      function categoryLabel(c) {
+        var map = {
+          'account': 'Account', 'billing': 'Billing', 'technical': 'Technical',
+          'ai-output': 'AI output', 'security': 'Security', 'legal': 'Legal', 'feedback': 'Feedback'
+        };
+        return map[c] || (c ? c.charAt(0).toUpperCase() + c.slice(1) : '—');
       }
 
-      function clearAlerts() {
-        success.classList.remove('show');
-        error.classList.remove('show');
+      // Character counter
+      var msgEl = $('hx-sup-message');
+      var countEl = $('hx-sup-count');
+      if (msgEl && countEl) {
+        msgEl.addEventListener('input', function () { countEl.textContent = msgEl.value.length; });
       }
 
-      if (form) {
-        form.addEventListener('submit', function (ev) {
+      whenAuthReady(function () {
+        var sb = window.HX.supabase;
+        var currentUser = null;
+
+        function renderHistory(rows) {
+          var host = $('hx-sup-history-host');
+          var meta = $('hx-sup-history-meta');
+          var openCount = rows.filter(function (r) {
+            var k = (r.status || 'open').toLowerCase();
+            return k !== 'resolved' && k !== 'closed';
+          }).length;
+          $('hx-sup-stat-open').textContent = String(openCount);
+          $('hx-sup-stat-open-meta').textContent = openCount === 0
+            ? 'No tickets awaiting reply'
+            : (openCount + (openCount === 1 ? ' ticket' : ' tickets') + ' awaiting reply');
+
+          if (!rows.length) {
+            host.innerHTML =
+              '<div class="hx-empty">' +
+                '<div class="icon" aria-hidden="true">' +
+                  '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7L13.03 12.7a2 2 0 0 1-2.06 0L2 7"/></svg>' +
+                '</div>' +
+                '<h3>No support requests yet</h3>' +
+                '<p>Anything you send from this page lands here with a ticket reference. Status updates appear automatically as we work through it.</p>' +
+              '</div>';
+            meta.textContent = '0 tickets';
+            return;
+          }
+          var html = '<div class="hx-card" style="padding:0;overflow:hidden;">';
+          rows.forEach(function (r) {
+            var ref = r.id ? ('#' + String(r.id).slice(0, 8).toUpperCase()) : '—';
+            html += '<div class="hx-tkt-row" data-id="' + escape(r.id || '') + '">' +
+              '<div class="ref">' + escape(ref) + '</div>' +
+              '<div class="subj">' +
+                escape(r.subject || '(no subject)') +
+                '<span class="cat">' + escape(categoryLabel(r.category)) + '</span>' +
+              '</div>' +
+              '<div class="status">' + statusBadge(r.status) + '</div>' +
+              '<div class="time" title="' + escape(fmtDate(r.created_at)) + '">' + escape(relTime(r.created_at)) + '</div>' +
+              '<div style="text-align:right;"><a class="hx-btn hx-btn-ghost hx-btn-sm" href="mailto:support@helvex.ai?subject=' + encodeURIComponent('Re: ' + (r.subject || ref)) + '">Reply</a></div>' +
+            '</div>';
+          });
+          html += '</div>';
+          host.innerHTML = html;
+          meta.textContent = rows.length + (rows.length === 1 ? ' ticket' : ' tickets');
+        }
+
+        async function refresh() {
+          if (!currentUser) return;
+          // Try the canonical table first; fall back gracefully if it isn't
+          // present in this environment yet.
+          try {
+            var r = await sb.from('support_requests')
+              .select('id, subject, category, status, created_at')
+              .eq('user_id', currentUser.id)
+              .order('created_at', { ascending: false })
+              .limit(50);
+            if (r.error) throw r.error;
+            renderHistory(r.data || []);
+          } catch (e) {
+            // Show empty state without an error — the table may not exist
+            // yet, which is fine; the form still works via the edge fn.
+            renderHistory([]);
+          }
+        }
+
+        async function submitForm(ev) {
           ev.preventDefault();
-          clearAlerts();
-
-          var name = document.getElementById('sup-name').value.trim();
-          var email = document.getElementById('sup-email').value.trim();
-          var subject = document.getElementById('sup-subject').value.trim();
-          var category = document.getElementById('sup-category').value;
-          var message = document.getElementById('sup-message').value.trim();
+          var name     = ($('hx-sup-name').value     || '').trim();
+          var email    = ($('hx-sup-email').value    || '').trim();
+          var subject  = ($('hx-sup-subject').value  || '').trim();
+          var category = $('hx-sup-category').value;
+          var message  = ($('hx-sup-message').value  || '').trim();
 
           if (!name || !email || !subject || !category || !message) {
-            error.textContent = 'All five fields are required. Please fill them in and try again.';
-            error.classList.add('show');
-            error.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            status('All five fields are required.', 'error');
             return;
           }
           if (message.length < 20) {
-            error.textContent = 'Please give us a bit more context — at least 20 characters in the message.';
-            error.classList.add('show');
+            status('Please give us a bit more context — at least 20 characters.', 'error');
             return;
           }
 
-          // Real submission — POST to send-support-email edge function.
-          // The function persists the request to public.support_requests and
-          // emails support@swissupport.com via Resend.
-          var label = btn.querySelector('span');
-          btn.disabled = true;
-          if (label) label.textContent = 'Sending…';
-
-          (async function () {
-            try {
-              // Need a Supabase session to authenticate the request.
-              var sb = (window.HX && window.HX.supabase) || null;
-              if (!sb) {
-                // SDK not loaded yet on the public-facing page — fall back to
-                // anon insert via the REST API once the SDK hydrates.
-                throw new Error('Auth client not ready. Please refresh and try again.');
-              }
-              var sess = (await sb.auth.getSession()).data.session;
-              if (!sess || !sess.access_token) {
-                // Unauthenticated visitor — bounce to sign-up so they can come back.
-                window.location.href = '/signup?return=' + encodeURIComponent('/support');
-                return;
-              }
-              var resp = await fetch('https://yjmpallrtpeinpdilptj.supabase.co/functions/v1/send-support-email', {
-                method: 'POST',
-                headers: { 'content-type': 'application/json', authorization: 'Bearer ' + sess.access_token },
-                body: JSON.stringify({ name: name, email: email, subject: subject, category: category, message: message })
-              });
-              var body = null; try { body = await resp.json(); } catch (e) {}
-              if (!resp.ok || !body || body.error) {
-                throw new Error((body && (body.message || body.error)) || ('Send failed (HTTP ' + resp.status + ').'));
-              }
-              success.textContent = body.delivered
-                ? "Got it — we'll reply to " + email + " within one business day. (Trace: " + body.trace_id + ")"
-                : "Request saved (trace " + body.trace_id + "). Email delivery is currently offline; our team will pick it up from the dashboard within one business day.";
-              success.classList.add('show');
-              success.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              form.reset();
-              updateCount();
-            } catch (err) {
-              error.textContent = (err && err.message) || 'Could not send your request. Please try again.';
-              error.classList.add('show');
-              error.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } finally {
-              btn.disabled = false;
-              if (label) label.textContent = 'Send another';
+          var btn = $('hx-sup-submit'); var lbl = btn.textContent;
+          btn.disabled = true; btn.textContent = 'Sending…';
+          status('');
+          try {
+            var sess = (await sb.auth.getSession()).data.session;
+            if (!sess || !sess.access_token) throw new Error('Please sign in again.');
+            var resp = await fetch('https://yjmpallrtpeinpdilptj.supabase.co/functions/v1/send-support-email', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json', authorization: 'Bearer ' + sess.access_token },
+              body: JSON.stringify({ name: name, email: email, subject: subject, category: category, message: message })
+            });
+            var body = null; try { body = await resp.json(); } catch (e) {}
+            if (!resp.ok || !body || body.error) {
+              throw new Error((body && (body.message || body.error)) || ('Send failed (HTTP ' + resp.status + ').'));
             }
-          })();
+            status(body.delivered
+              ? 'Sent — reply lands in ' + email + ' within one business day.'
+              : 'Saved — our team picks it up from the dashboard. (Trace: ' + body.trace_id + ')');
+            $('hx-sup-subject').value = '';
+            $('hx-sup-message').value = '';
+            $('hx-sup-category').selectedIndex = 0;
+            if ($('hx-sup-count')) $('hx-sup-count').textContent = '0';
+            try { await sb.rpc('log_event', { p_kind: 'support.request_sent', p_payload: { category: category, subject: subject } }); } catch (e) {}
+            refresh();
+          } catch (err) {
+            status((err && err.message) || 'Could not send your request.', 'error');
+          } finally {
+            btn.disabled = false; btn.textContent = lbl;
+          }
+        }
+
+        $('hx-sup-form').addEventListener('submit', submitForm);
+        $('hx-sup-reset').addEventListener('click', function () {
+          $('hx-sup-subject').value = '';
+          $('hx-sup-message').value = '';
+          $('hx-sup-category').selectedIndex = 0;
+          if ($('hx-sup-count')) $('hx-sup-count').textContent = '0';
+          status('Cleared.', 'ok');
         });
-      }
+
+        sb.auth.getUser().then(async function (res) {
+          currentUser = res && res.data ? res.data.user : null;
+          if (!currentUser) return;
+          // Pre-fill name + email from the profile
+          try {
+            var p = await sb.from('profiles').select('first_name, last_name, email').eq('id', currentUser.id).maybeSingle();
+            var prof = (p && p.data) || {};
+            var fullName = ((prof.first_name || '') + ' ' + (prof.last_name || '')).trim();
+            if (fullName) $('hx-sup-name').value = fullName;
+            else if (currentUser.user_metadata) {
+              var mn = ((currentUser.user_metadata.first_name || '') + ' ' + (currentUser.user_metadata.last_name || '')).trim();
+              if (mn) $('hx-sup-name').value = mn;
+            }
+            $('hx-sup-email').value = prof.email || currentUser.email || '';
+          } catch (e) {
+            $('hx-sup-email').value = currentUser.email || '';
+          }
+          refresh();
+        });
+      });
     })();
   </script>
 </body>

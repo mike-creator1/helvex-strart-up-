@@ -3,13 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Security — HelveX</title>
-  <meta name="description" content="HelveX security — two-factor, sessions, audit log, and the controls that protect your workspace." />
+  <title>Password &amp; MFA — HelveX</title>
+  <meta name="description" content="HelveX security — password rotation, two-factor authentication, recovery, sign-in alerts, and the controls that protect your workspace." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <style>
+    .hx-toggle { position: relative; display: inline-block; width: 36px; height: 20px; flex-shrink: 0; }
+    .hx-toggle input { opacity: 0; width: 0; height: 0; }
+    .hx-toggle .track {
+      position: absolute; inset: 0; background: var(--hx-bg-3); border: 1px solid var(--hx-line);
+      border-radius: 999px; transition: background 0.15s, border-color 0.15s; cursor: pointer;
+    }
+    .hx-toggle .thumb {
+      position: absolute; left: 2px; top: 2px; width: 14px; height: 14px;
+      background: #fff; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+      transition: transform 0.15s ease;
+    }
+    .hx-toggle input:checked + .track { background: var(--hx-text); border-color: var(--hx-text); }
+    .hx-toggle input:checked + .track .thumb { transform: translateX(16px); }
+    .hx-toggle input:disabled + .track { opacity: 0.5; cursor: not-allowed; }
+
+    .hx-rule-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      padding: 12px 0; border-top: 1px solid var(--hx-line-soft);
+    }
+    .hx-rule-row:first-child { border-top: 0; padding-top: 0; }
+    .hx-rule-row .info { flex: 1; min-width: 0; }
+    .hx-rule-row .info .ttl { font-size: 13.5px; font-weight: 500; }
+    .hx-rule-row .info .desc { font-size: 12px; color: var(--hx-text-mid); margin-top: 2px; }
+  </style>
 </head>
 <body data-active="security">
 
@@ -21,55 +46,59 @@
 
         <div class="hx-page-head">
           <div>
-            <h1>Security.</h1>
-            <p class="sub">Two-factor authentication, active sessions, audit log, and the controls that protect your workspace and your data.</p>
+            <h1>Password &amp; MFA.</h1>
+            <p class="sub">The locks on your account — password, second factor, recovery paths, and the alerts that tell you when someone uses them.</p>
           </div>
           <div class="hx-page-actions">
-            <a href="/profile.html" class="hx-btn hx-btn-secondary">Profile</a>
-            <a href="/support.html" class="hx-btn hx-btn-primary">Report a security issue</a>
+            <a href="/sessions" class="hx-btn hx-btn-secondary hx-btn-sm">Sessions</a>
+            <a href="/audit-log" class="hx-btn hx-btn-secondary hx-btn-sm">Audit log</a>
+            <a href="mailto:security@helvex.ai" class="hx-btn hx-btn-primary hx-btn-sm">Report an issue</a>
           </div>
         </div>
 
+        <!-- ═══════════════ HERO STATS ═══════════════ -->
         <div class="hx-grid hx-grid-4">
           <div class="hx-stat">
             <p class="hx-stat-label">Two-factor</p>
-            <p class="hx-stat-value" id="hx-sec-tfa" style="font-size:18px;color:var(--hx-text-dim);">Not configured</p>
+            <p class="hx-stat-value" id="hx-sec-tfa" style="font-size:17px;color:var(--hx-text-dim);">Not configured</p>
             <p class="hx-stat-meta" id="hx-sec-tfa-meta">Recommended</p>
           </div>
           <div class="hx-stat">
+            <p class="hx-stat-label">Password</p>
+            <p class="hx-stat-value" id="hx-sec-pwd" style="font-size:17px;">—</p>
+            <p class="hx-stat-meta" id="hx-sec-pwd-meta">—</p>
+          </div>
+          <div class="hx-stat">
+            <p class="hx-stat-label">Recovery methods</p>
+            <p class="hx-stat-value hx-mono" id="hx-sec-recovery">—</p>
+            <p class="hx-stat-meta" id="hx-sec-recovery-meta">—</p>
+          </div>
+          <div class="hx-stat">
             <p class="hx-stat-label">Email verified</p>
-            <p class="hx-stat-value" id="hx-sec-email" style="font-size:18px;">—</p>
+            <p class="hx-stat-value" id="hx-sec-email" style="font-size:17px;">—</p>
             <p class="hx-stat-meta" id="hx-sec-email-meta">—</p>
-          </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Region</p>
-            <p class="hx-stat-value" style="font-size:18px;">EU-CH-1</p>
-            <p class="hx-stat-meta">Data stays in Switzerland</p>
-          </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Account since</p>
-            <p class="hx-stat-value" id="hx-sec-since" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta" id="hx-sec-since-meta">—</p>
           </div>
         </div>
 
+        <!-- ═══════════════ TWO-FACTOR ═══════════════ -->
         <div class="hx-section-head">
-          <h2>Authentication</h2>
+          <h2>Two-factor authentication</h2>
+          <span class="meta">Authenticator app (TOTP) on every plan. Phishable factors like SMS are not supported.</span>
         </div>
         <div class="hx-card" id="hx-tfa-card">
           <div class="hx-card-head">
             <div>
-              <p class="hx-card-eyebrow">Two-factor</p>
-              <h3>Authenticator app (TOTP)</h3>
+              <p class="hx-card-eyebrow">Authenticator app</p>
+              <h3>Six-digit codes from a TOTP app</h3>
             </div>
-            <span class="hx-badge hx-badge-neutral" id="hx-tfa-state-badge">Off</span>
+            <span class="hx-badge hx-badge-neutral" id="hx-tfa-state-badge"><span class="hx-badge-dot"></span>Off</span>
           </div>
-          <p class="desc">Bind a 6-digit code from an authenticator app to every sign-in. Strongly recommended — phishable factors like SMS are not supported.</p>
+          <p class="desc">Bind a 6-digit code from an authenticator app (1Password, Bitwarden, Google Authenticator, Authy) to every sign-in. The code rotates every 30 seconds and is checked offline — no SMS, no carrier dependency.</p>
 
           <!-- Factor list (visible when 2FA is enabled) -->
           <div id="hx-tfa-factors" style="display:none;margin-top:14px;"></div>
 
-          <!-- Enrollment UI (revealed once user clicks Enable) -->
+          <!-- Enrollment UI -->
           <div id="hx-tfa-enroll" hidden style="margin-top:14px;border-top:1px solid var(--hx-line);padding-top:14px;">
             <div style="display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;">
               <img id="hx-tfa-qr" alt="Scan with your authenticator app" style="width:160px;height:160px;background:#fff;padding:8px;border:1px solid var(--hx-line);border-radius:8px;" />
@@ -77,7 +106,7 @@
                 <p style="margin:0 0 6px;font-size:13.5px;font-weight:500;">Scan this QR with your authenticator app</p>
                 <p class="desc" style="margin:0 0 12px;">Or paste this secret: <code class="hx-mono" id="hx-tfa-secret" style="background:var(--hx-bg-2);padding:2px 6px;border-radius:4px;font-size:12px;"></code></p>
                 <label style="font-size:12.5px;color:var(--hx-text-mid);">Enter the 6-digit code your app shows</label>
-                <div style="display:flex;gap:8px;margin-top:8px;">
+                <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
                   <input type="text" id="hx-tfa-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="000000" style="font-family:var(--hx-mono);letter-spacing:6px;text-align:center;width:140px;padding:8px 10px;border:1px solid var(--hx-line);border-radius:6px;background:var(--hx-surface);color:var(--hx-text);" />
                   <button class="hx-btn hx-btn-primary" id="hx-tfa-verify">Verify &amp; enable</button>
                   <button class="hx-btn hx-btn-ghost"   id="hx-tfa-cancel">Cancel</button>
@@ -87,24 +116,91 @@
             </div>
           </div>
 
-          <!-- Action buttons (default state) -->
           <div id="hx-tfa-actions" style="margin-top:14px;">
             <button class="hx-btn hx-btn-primary"  id="hx-tfa-enable"  type="button">Enable 2FA</button>
             <button class="hx-btn hx-btn-danger"   id="hx-tfa-disable" type="button" style="display:none;">Disable 2FA</button>
           </div>
         </div>
 
+        <!-- ═══════════════ PASSWORD ═══════════════ -->
         <div class="hx-section-head">
-          <h2>Current session</h2>
+          <h2>Password</h2>
         </div>
-        <div class="hx-empty">
-          <div class="icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <div class="hx-grid hx-grid-2">
+          <div class="hx-card">
+            <div class="hx-card-head">
+              <div>
+                <p class="hx-card-eyebrow">Account password</p>
+                <h3>The lock you set at sign-up</h3>
+              </div>
+              <span class="hx-badge hx-badge-emerald" id="hx-pwd-state-badge"><span class="hx-badge-dot"></span>Set</span>
+            </div>
+            <p class="desc">Minimum 12 characters, scored against the breached-password list before acceptance. Rotation is recommended every 90 days, mandatory if a breach is detected.</p>
+            <p class="desc" id="hx-pwd-last-changed" style="margin-top:8px;font-size:12px;color:var(--hx-text-dim);">Last changed: —</p>
+            <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+              <a href="/forgot-password" class="hx-btn hx-btn-secondary">Change password</a>
+              <a href="/sessions" class="hx-btn hx-btn-ghost hx-btn-sm">Then sign out other sessions</a>
+            </div>
           </div>
-          <h3>This browser</h3>
-          <p>Sign-ins from new devices are flagged in <a href="/activity.html" style="color:var(--hx-text);text-decoration:underline;">Activity</a> with IP, region, and timestamp. To end the session on another device, sign out from there directly.</p>
+          <div class="hx-card">
+            <div class="hx-card-head">
+              <div>
+                <p class="hx-card-eyebrow">Backup recovery</p>
+                <h3>If you ever lose your password</h3>
+              </div>
+              <span class="hx-badge hx-badge-neutral" id="hx-recovery-badge"><span class="hx-badge-dot"></span>—</span>
+            </div>
+            <p class="desc">Verified email recovers your account, but a connected sign-in method (Google, GitHub, Apple) is faster and survives email outages. We strongly recommend at least one backup.</p>
+            <a href="/connected" class="hx-card-link">Manage connected accounts</a>
+          </div>
         </div>
 
+        <!-- ═══════════════ SIGN-IN ALERTS ═══════════════ -->
+        <div class="hx-section-head">
+          <h2>Sign-in alerts</h2>
+          <span class="meta">Notify you the moment something account-impacting happens.</span>
+        </div>
+        <div class="hx-card">
+          <label class="hx-rule-row" style="cursor:pointer;">
+            <div class="info">
+              <div class="ttl">Email me on every new sign-in</div>
+              <div class="desc">Includes device, browser, and IP region. Bypasses notification preferences — you get this either way, but you can ack it from here.</div>
+            </div>
+            <span class="hx-toggle"><input type="checkbox" id="hx-alert-signin" checked disabled /><span class="track"><span class="thumb"></span></span></span>
+          </label>
+          <label class="hx-rule-row" style="cursor:pointer;">
+            <div class="info">
+              <div class="ttl">Email me on password &amp; MFA changes</div>
+              <div class="desc">Password rotation, factor enrollment, factor removal, and recovery use — always email, never optional.</div>
+            </div>
+            <span class="hx-toggle"><input type="checkbox" id="hx-alert-security" checked disabled /><span class="track"><span class="thumb"></span></span></span>
+          </label>
+          <label class="hx-rule-row" style="cursor:pointer;">
+            <div class="info">
+              <div class="ttl">Email me on API-key issuance</div>
+              <div class="desc">When a new key is minted from this account. Toggle off only if you mint keys programmatically and the noise is too much.</div>
+            </div>
+            <span class="hx-toggle"><input type="checkbox" id="hx-alert-keys" /><span class="track"><span class="thumb"></span></span></span>
+          </label>
+          <p id="hx-alerts-status" style="margin:14px 0 0;font-size:12.5px;font-weight:500;"></p>
+        </div>
+
+        <!-- ═══════════════ ACTIVE SESSIONS ═══════════════ -->
+        <div class="hx-section-head">
+          <h2>Active sessions</h2>
+          <a href="/sessions">Open Sessions →</a>
+        </div>
+        <div class="hx-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+            <div>
+              <p style="margin:0;font-weight:600;font-size:13.5px;">This browser is currently signed in</p>
+              <p id="hx-sec-this-session" style="margin:3px 0 0;color:var(--hx-text-mid);font-size:12.5px;">—</p>
+            </div>
+            <a href="/sessions" class="hx-btn hx-btn-secondary hx-btn-sm">Review devices</a>
+          </div>
+        </div>
+
+        <!-- ═══════════════ WORKSPACE CONTROLS ═══════════════ -->
         <div class="hx-section-head">
           <h2>Workspace controls</h2>
         </div>
@@ -122,19 +218,22 @@
           <div class="hx-card">
             <p class="hx-card-eyebrow">Audit</p>
             <h3>Every action logged</h3>
-            <p class="desc">Sign-ins, key rotations, project briefs, plan changes — all recorded with actor, IP, and timestamp in <a href="/activity.html" style="color:var(--hx-text);text-decoration:underline;">Activity</a>.</p>
+            <p class="desc">Sign-ins, key rotations, project briefs, plan changes — all recorded with actor, IP, and timestamp.</p>
+            <a href="/audit-log" class="hx-card-link">Open audit log</a>
           </div>
         </div>
 
+        <!-- ═══════════════ BEST PRACTICES ═══════════════ -->
         <div class="hx-section-head">
           <h2>Best practices</h2>
         </div>
         <div class="hx-card">
           <ul style="margin:0;padding:0;list-style:none;">
-            <li style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--hx-line);"><span class="hx-mono" style="color:var(--hx-text-dim);min-width:24px;">01</span><span>Enable 2FA before you brief your first project — it locks the workspace before there's anything worth stealing.</span></li>
-            <li style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--hx-line);"><span class="hx-mono" style="color:var(--hx-text-dim);min-width:24px;">02</span><span>Rotate API keys on a schedule, not just when something goes wrong. Every key change is zero-downtime.</span></li>
-            <li style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--hx-line);"><span class="hx-mono" style="color:var(--hx-text-dim);min-width:24px;">03</span><span>Use scoped integrations — give a connector only the permissions the workflow needs, never workspace-wide.</span></li>
-            <li style="display:flex;gap:10px;padding:8px 0;"><span class="hx-mono" style="color:var(--hx-text-dim);min-width:24px;">04</span><span>Review <a href="/activity.html" style="color:var(--hx-text);text-decoration:underline;">Activity</a> after onboarding new members. Trust and verify.</span></li>
+            <li style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--hx-line-soft);"><span class="hx-mono" style="color:var(--hx-text-dim);min-width:24px;">01</span><span><strong>Enable 2FA before you brief your first project.</strong> It locks the workspace before there's anything worth stealing.</span></li>
+            <li style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--hx-line-soft);"><span class="hx-mono" style="color:var(--hx-text-dim);min-width:24px;">02</span><span><strong>Link a backup sign-in method.</strong> A connected provider survives a forgotten password without involving support.</span></li>
+            <li style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--hx-line-soft);"><span class="hx-mono" style="color:var(--hx-text-dim);min-width:24px;">03</span><span><strong>Rotate API keys on a schedule</strong>, not just when something goes wrong. Every key change is zero-downtime.</span></li>
+            <li style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--hx-line-soft);"><span class="hx-mono" style="color:var(--hx-text-dim);min-width:24px;">04</span><span><strong>Use scoped integrations.</strong> Give a connector only the permissions the workflow needs, never workspace-wide.</span></li>
+            <li style="display:flex;gap:10px;padding:10px 0;"><span class="hx-mono" style="color:var(--hx-text-dim);min-width:24px;">05</span><span><strong>Review <a href="/audit-log" style="color:var(--hx-text);text-decoration:underline;text-decoration-color:var(--hx-line-strong);text-underline-offset:2px;">the audit log</a> after onboarding new members.</strong> Trust and verify.</span></li>
           </ul>
         </div>
 
@@ -149,31 +248,87 @@
         if (window.HX && window.HX.supabase) { fn(); return; }
         document.addEventListener('hx:auth-ready', fn, { once: true });
       }
+      var $ = function (id) { return document.getElementById(id); };
       function fmtDate(iso) {
         if (!iso) return '—';
         try { return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); }
         catch (e) { return '—'; }
       }
+      function fmtTime(iso) {
+        if (!iso) return '—';
+        try { return new Date(iso).toLocaleString(undefined, { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); }
+        catch (e) { return '—'; }
+      }
+      function relTime(iso) {
+        if (!iso) return '—';
+        var diff = (Date.now() - new Date(iso).getTime()) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+        var d = Math.floor(diff/86400);
+        return d + (d === 1 ? ' day ago' : ' days ago');
+      }
+
       whenAuthReady(function () {
         var sb = window.HX.supabase;
+
         sb.auth.getUser().then(function (res) {
           var u = res && res.data ? res.data.user : null;
           if (!u) return;
+
           // Email verified
           var verified = !!u.email_confirmed_at;
-          var emailEl = document.getElementById('hx-sec-email');
-          var emailMeta = document.getElementById('hx-sec-email-meta');
-          if (emailEl) { emailEl.textContent = verified ? 'Verified' : 'Pending'; emailEl.style.color = verified ? '#15803d' : 'var(--hx-text-dim)'; }
-          if (emailMeta) emailMeta.textContent = u.email || '';
-          // Account since
-          var sinceEl = document.getElementById('hx-sec-since');
-          var sinceMeta = document.getElementById('hx-sec-since-meta');
-          if (sinceEl) sinceEl.textContent = fmtDate(u.created_at);
-          if (sinceMeta) sinceMeta.textContent = u.created_at ? 'Joined HelveX' : '—';
+          $('hx-sec-email').textContent = verified ? 'Verified' : 'Pending';
+          $('hx-sec-email').style.color = verified ? '#15803d' : 'var(--hx-text-dim)';
+          $('hx-sec-email-meta').textContent = u.email || '';
+
+          // Password (always set if email/password is in identities)
+          var identities = u.identities || [];
+          var hasPassword = identities.some(function (i) { return i.provider === 'email'; });
+          $('hx-sec-pwd').textContent = hasPassword ? 'Set' : 'Not set';
+          $('hx-sec-pwd').style.color = hasPassword ? 'var(--hx-text)' : 'var(--hx-text-dim)';
+          $('hx-pwd-state-badge').className = hasPassword ? 'hx-badge hx-badge-emerald' : 'hx-badge hx-badge-neutral';
+          $('hx-pwd-state-badge').innerHTML = '<span class="hx-badge-dot"></span>' + (hasPassword ? 'Set' : 'Not set');
+          $('hx-sec-pwd-meta').textContent = hasPassword ? 'Email + password sign-in' : 'OAuth-only account';
+
+          // Last-changed timestamp — auth.users.updated_at is the closest
+          // signal we have (Supabase doesn't expose a dedicated column).
+          var lastChanged = u.updated_at || u.created_at;
+          if (lastChanged) {
+            $('hx-pwd-last-changed').textContent = 'Last changed: ' + fmtDate(lastChanged) + ' · ' + relTime(lastChanged);
+          }
+
+          // Recovery methods = linked OAuth providers + verified email + 2FA
+          var oauthCount = identities.filter(function (i) { return i.provider && i.provider !== 'email'; }).length;
+          $('hx-sec-recovery').textContent = String(oauthCount + (verified ? 1 : 0));
+          $('hx-sec-recovery-meta').textContent = oauthCount === 0
+            ? 'Email only — add a provider as backup'
+            : oauthCount + ' provider' + (oauthCount === 1 ? '' : 's') + ' + email';
+          $('hx-recovery-badge').className = oauthCount > 0 ? 'hx-badge hx-badge-emerald' : 'hx-badge hx-badge-neutral';
+          $('hx-recovery-badge').innerHTML = '<span class="hx-badge-dot"></span>' + (oauthCount > 0 ? oauthCount + ' linked' : 'None linked');
+
+          // Current session summary
+          var ua = navigator.userAgent || '';
+          var brName =
+            /Edg\//.test(ua)              ? 'Edge'
+            : /OPR\//.test(ua)            ? 'Opera'
+            : /Chrome\//.test(ua)         ? 'Chrome'
+            : /Firefox\//.test(ua)        ? 'Firefox'
+            : /Safari\//.test(ua)         ? 'Safari'
+            : 'this browser';
+          var osName =
+            /Windows/.test(ua)            ? 'Windows'
+            : /Mac OS X/.test(ua)         ? 'macOS'
+            : /iPhone|iPad/.test(ua)      ? 'iOS'
+            : /Android/.test(ua)          ? 'Android'
+            : /Linux/.test(ua)            ? 'Linux'
+            : 'this device';
+          var since = u.last_sign_in_at ? 'signed in ' + relTime(u.last_sign_in_at) : 'active now';
+          $('hx-sec-this-session').textContent = brName + ' on ' + osName + ' · ' + since;
         });
-        // 2FA — real enrollment via Supabase MFA
-        var $ = function (id) { return document.getElementById(id); };
-        var enrollState = null; // { factorId, secret, qr }
+
+        // ───── 2FA enrollment (TOTP via Supabase MFA) ─────
+        var enrollState = null;
 
         function status(msg, kind) {
           var el = $('hx-tfa-status'); if (!el) return;
@@ -183,36 +338,33 @@
 
         function paintFactors(factors) {
           var on = factors.length > 0;
-          var tfaEl = $('hx-sec-tfa');
-          var tfaMeta = $('hx-sec-tfa-meta');
-          if (tfaEl) { tfaEl.textContent = on ? 'Enabled' : 'Not configured'; tfaEl.style.color = on ? '#15803d' : 'var(--hx-text-dim)'; }
-          if (tfaMeta) tfaMeta.textContent = on ? factors.length + ' factor' + (factors.length === 1 ? '' : 's') + ' enrolled' : 'Recommended';
+          $('hx-sec-tfa').textContent = on ? 'Enabled' : 'Not configured';
+          $('hx-sec-tfa').style.color = on ? '#15803d' : 'var(--hx-text-dim)';
+          $('hx-sec-tfa-meta').textContent = on ? factors.length + ' factor' + (factors.length === 1 ? '' : 's') + ' enrolled' : 'Recommended';
           var badge = $('hx-tfa-state-badge');
-          if (badge) {
-            badge.textContent = on ? 'On' : 'Off';
-            badge.className = on ? 'hx-badge hx-badge-emerald' : 'hx-badge hx-badge-neutral';
-          }
+          badge.textContent = ''; // reset
+          var dot = document.createElement('span'); dot.className = 'hx-badge-dot'; badge.appendChild(dot);
+          badge.appendChild(document.createTextNode(on ? 'On' : 'Off'));
+          badge.className = on ? 'hx-badge hx-badge-emerald' : 'hx-badge hx-badge-neutral';
           var host = $('hx-tfa-factors');
-          if (host) {
-            if (on) {
-              host.style.display = '';
-              host.innerHTML = factors.map(function (f) {
-                return '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--hx-line);">' +
-                  '<div><div style="font-size:13px;font-weight:500;">' + (f.friendly_name || 'Authenticator') + '</div><div class="hx-mono" style="font-size:11.5px;color:var(--hx-text-dim);">' + f.id.slice(0, 8) + '… · enrolled ' + (f.created_at ? new Date(f.created_at).toLocaleDateString() : '—') + '</div></div>' +
-                  '<button class="hx-btn hx-btn-danger hx-btn-sm" data-act="unenroll" data-id="' + f.id + '">Remove</button>' +
-                '</div>';
-              }).join('');
-            } else {
-              host.style.display = 'none';
-              host.innerHTML = '';
-            }
+          if (on) {
+            host.style.display = '';
+            host.innerHTML = factors.map(function (f) {
+              return '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--hx-line-soft);">' +
+                '<div><div style="font-size:13.5px;font-weight:500;">' + (f.friendly_name || 'Authenticator') + '</div><div class="hx-mono" style="font-size:11.5px;color:var(--hx-text-dim);">' + f.id.slice(0, 8) + '… · enrolled ' + (f.created_at ? fmtDate(f.created_at) : '—') + '</div></div>' +
+                '<button class="hx-btn hx-btn-danger hx-btn-sm" data-act="unenroll" data-id="' + f.id + '">Remove</button>' +
+              '</div>';
+            }).join('');
+          } else {
+            host.style.display = 'none';
+            host.innerHTML = '';
           }
           $('hx-tfa-enable').style.display  = on ? 'none' : '';
           $('hx-tfa-disable').style.display = on ? '' : 'none';
         }
 
         async function refreshFactors() {
-          if (!sb.auth.mfa || !sb.auth.mfa.listFactors) return;
+          if (!sb.auth.mfa || !sb.auth.mfa.listFactors) return [];
           try {
             var r = await sb.auth.mfa.listFactors();
             var factors = (r && r.data && r.data.totp) || [];
@@ -224,7 +376,7 @@
         async function beginEnrollment() {
           status('');
           if (!sb.auth.mfa || !sb.auth.mfa.enroll) {
-            status('Your Supabase client doesn\'t support MFA. Update the SDK.', 'error');
+            status('Your Supabase client doesn\'t support MFA. Update the page.', 'error');
             return;
           }
           var btn = $('hx-tfa-enable');
@@ -232,11 +384,7 @@
           try {
             var res = await sb.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Authenticator · ' + new Date().toLocaleDateString() });
             if (res.error) throw res.error;
-            enrollState = {
-              factorId: res.data.id,
-              secret:   res.data.totp.secret,
-              qr:       res.data.totp.qr_code,
-            };
+            enrollState = { factorId: res.data.id, secret: res.data.totp.secret, qr: res.data.totp.qr_code };
             $('hx-tfa-qr').src = enrollState.qr;
             $('hx-tfa-secret').textContent = enrollState.secret;
             $('hx-tfa-enroll').hidden = false;
@@ -259,7 +407,7 @@
             if (ch.error) throw ch.error;
             var ver = await sb.auth.mfa.verify({ factorId: enrollState.factorId, challengeId: ch.data.id, code: code });
             if (ver.error) throw ver.error;
-            await sb.rpc('log_event', { p_kind: 'security.tfa_enabled', p_payload: { factor_id: enrollState.factorId } });
+            try { await sb.rpc('log_event', { p_kind: 'security.tfa_enabled', p_payload: { factor_id: enrollState.factorId } }); } catch (e) {}
             enrollState = null;
             $('hx-tfa-enroll').hidden = true;
             $('hx-tfa-actions').style.display = '';
@@ -292,7 +440,7 @@
           for (var i = 0; i < factors.length; i++) {
             try { await sb.auth.mfa.unenroll({ factorId: factors[i].id }); } catch (e) {}
           }
-          await sb.rpc('log_event', { p_kind: 'security.tfa_disabled', p_payload: {} });
+          try { await sb.rpc('log_event', { p_kind: 'security.tfa_disabled', p_payload: {} }); } catch (e) {}
           await refreshFactors();
         }
 
@@ -306,6 +454,37 @@
           if (!confirm('Remove this authenticator?')) return;
           try { await sb.auth.mfa.unenroll({ factorId: b.getAttribute('data-id') }); } catch (err) {}
           await refreshFactors();
+        });
+
+        // ───── Sign-in alert toggles (read/write user_settings) ─────
+        function alertStatus(msg, kind) {
+          var el = $('hx-alerts-status'); if (!el) return;
+          el.style.color = kind === 'error' ? 'var(--hx-red)' : 'var(--hx-emerald)';
+          el.textContent = msg || '';
+          if (msg && kind !== 'error') {
+            setTimeout(function () { if (el.textContent === msg) el.textContent = ''; }, 2200);
+          }
+        }
+
+        sb.auth.getUser().then(async function (res) {
+          var u = res && res.data ? res.data.user : null;
+          if (!u) return;
+          try {
+            var r = await sb.from('user_settings').select('email_keys_issued').eq('user_id', u.id).maybeSingle();
+            if (r && r.data && typeof r.data.email_keys_issued === 'boolean') {
+              $('hx-alert-keys').checked = r.data.email_keys_issued;
+            }
+          } catch (e) {}
+
+          $('hx-alert-keys').addEventListener('change', async function () {
+            try {
+              var r = await sb.from('user_settings').upsert({ user_id: u.id, email_keys_issued: $('hx-alert-keys').checked }, { onConflict: 'user_id' });
+              if (r.error) throw r.error;
+              alertStatus('Saved.', 'ok');
+            } catch (err) {
+              alertStatus((err && err.message) || 'Could not save.', 'error');
+            }
+          });
         });
 
         refreshFactors();
