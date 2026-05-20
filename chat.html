@@ -848,23 +848,63 @@
       display: flex; flex-direction: column; gap: 10px;
     }
     .hx-chat-input-row {
-      display: flex; flex-direction: column; gap: 8px;
-      background: linear-gradient(180deg, var(--hx-surface) 0%, color-mix(in srgb, var(--hx-surface) 92%, var(--hx-bg-2)) 100%);
+      display: flex; flex-direction: column; gap: 6px;
+      background: linear-gradient(180deg, var(--hx-surface) 0%, color-mix(in srgb, var(--hx-surface) 94%, var(--hx-bg-2)) 100%);
       border: 1px solid var(--hx-line);
-      border-radius: 18px;
-      padding: 11px 13px;
+      border-radius: 22px;
+      padding: 14px 16px 8px;
       transition: border-color 0.16s ease, box-shadow 0.18s ease, transform 0.16s ease;
       box-shadow:
         inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
-        var(--hx-shadow-xs);
+        0 1px 2px rgba(20,18,12,0.04),
+        0 12px 32px -16px rgba(20,18,12,0.10);
     }
     .hx-chat-input-row:hover { border-color: var(--hx-line-strong); }
     .hx-chat-input-row:focus-within {
-      border-color: var(--hx-text);
+      border-color: color-mix(in srgb, var(--hx-text) 70%, var(--hx-line));
       box-shadow:
         inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
-        0 0 0 4px color-mix(in srgb, var(--hx-text) 7%, transparent),
-        var(--hx-shadow-sm);
+        0 0 0 4px color-mix(in srgb, var(--hx-text) 5%, transparent),
+        0 12px 36px -14px rgba(20,18,12,0.14);
+    }
+    /* Inline keyboard hint INSIDE the composer card (Claude.ai pattern) */
+    .hx-chat-inline-hint {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      padding: 2px 4px 0;
+      font-size: 10.5px;
+      letter-spacing: 0.01em;
+      color: var(--hx-text-faint);
+      user-select: none;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+    }
+    .hx-chat-input-row:not(:focus-within) .hx-chat-inline-hint { opacity: 0.55; }
+    .hx-chat-inline-hint .hx-kbd {
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 5px;
+      font-family: var(--hx-mono);
+      font-size: 9.5px;
+      font-weight: 600;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: 4px;
+      color: var(--hx-text-mid);
+      margin: 0 2px;
+      line-height: 1.4;
+    }
+    .hx-chat-inline-hint .hx-kbd-plus {
+      font-family: var(--hx-mono);
+      font-size: 9.5px;
+      color: var(--hx-text-faint);
+      margin: 0 1px;
+    }
+    .hx-chat-inline-hint-sep { color: var(--hx-text-faint); opacity: 0.6; }
+    @media (max-width: 700px) {
+      .hx-chat-inline-hint { display: none; }
     }
     .hx-chat-input-row.is-drag-over {
       border-color: var(--hx-yellow, var(--hx-text));
@@ -946,12 +986,16 @@
       border: none; outline: none;
       background: transparent;
       resize: none;
-      font: inherit; font-size: 14px; line-height: 1.55;
+      font: inherit; font-size: 15px; line-height: 1.55;
       color: var(--hx-text);
-      max-height: 200px; min-height: 22px;
-      padding: 6px 0;
+      max-height: 240px; min-height: 28px;
+      padding: 8px 4px;
+      letter-spacing: -0.005em;
     }
-    .hx-chat-textarea::placeholder { color: var(--hx-text-faint); }
+    .hx-chat-textarea::placeholder {
+      color: var(--hx-text-faint);
+      font-style: normal;
+    }
 
     /* Round icon buttons inside the composer (attach + mic) */
     .hx-chat-tool-btn {
@@ -1510,7 +1554,7 @@
                   <textarea
                     id="hx-c-input"
                     class="hx-chat-textarea"
-                    placeholder="Ask anything…"
+                    placeholder="Reply to Helix…"
                     rows="1"
                     autocomplete="off"
                     spellcheck="true"></textarea>
@@ -1561,6 +1605,13 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                   </button>
                 </div>
+
+                <!-- Inline hint inside the composer card (Claude.ai-style) -->
+                <div class="hx-chat-inline-hint" aria-hidden="true">
+                  <span><span class="hx-kbd">Enter</span> to send</span>
+                  <span class="hx-chat-inline-hint-sep">·</span>
+                  <span><span class="hx-kbd">Shift</span><span class="hx-kbd-plus">+</span><span class="hx-kbd">Enter</span> for new line</span>
+                </div>
               </div>
               <div class="hx-chat-foot">
                 <span id="hx-c-listening" class="hx-voice-status" style="display:none;" aria-live="polite">
@@ -1568,7 +1619,6 @@
                 </span>
                 <span id="hx-c-voice-err" class="hx-voice-error" style="display:none;" aria-live="polite"></span>
                 <span class="hx-mono" id="hx-c-trace" style="display:none;">—</span>
-                <span style="margin-left:auto;"><span class="hx-kbd">Enter</span> to send <span style="opacity:0.6;margin:0 4px;">&middot;</span> <span class="hx-kbd">Shift</span>+<span class="hx-kbd">Enter</span> for new line</span>
               </div>
             </div>
           </div>
