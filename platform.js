@@ -36,13 +36,14 @@
     {
       label: 'Workspace',
       items: [
-        { id: 'dashboard',  href: '/dashboard.html',  label: 'Overview',   icon: 'home' },
-        { id: 'chat',       href: '/chat.html',       label: 'Chat',       icon: 'chat' },
-        { id: 'workbench',  href: '/workbench.html',  label: 'Workbench',  icon: 'workbench' },
-        { id: 'memory',     href: '/memory.html',     label: 'Memory',     icon: 'memory' },
-        { id: 'projects',   href: '/projects.html',   label: 'Projects',   icon: 'folder' },
-        { id: 'services',   href: '/services.html',   label: 'Services',   icon: 'grid' },
-        { id: 'consulting', href: '/consulting.html', label: 'Consulting', icon: 'briefcase' }
+        { id: 'dashboard',   href: '/dashboard.html',   label: 'Overview',    icon: 'home' },
+        { id: 'chat',        href: '/chat.html',        label: 'Chat',        icon: 'chat' },
+        { id: 'workbench',   href: '/workbench.html',   label: 'Workbench',   icon: 'workbench' },
+        { id: 'memory',      href: '/memory.html',      label: 'Memory',      icon: 'memory' },
+        { id: 'projects',    href: '/projects.html',    label: 'Projects',    icon: 'folder' },
+        { id: 'deployments', href: '/deployments.html', label: 'Deployments', icon: 'cloud' },
+        { id: 'services',    href: '/services.html',    label: 'Services',    icon: 'grid' },
+        { id: 'consulting',  href: '/consulting.html',  label: 'Consulting',  icon: 'briefcase' }
       ]
     },
     {
@@ -56,8 +57,7 @@
     {
       label: 'Build',
       items: [
-        { id: 'workflows',   href: '/workflows.html',   label: 'Workflows',   icon: 'zap' },
-        { id: 'deployments', href: '/deployments.html', label: 'Deployments', icon: 'cloud' }
+        { id: 'workflows',   href: '/workflows.html',   label: 'Workflows',   icon: 'zap' }
       ]
     },
     {
