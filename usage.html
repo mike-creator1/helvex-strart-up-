@@ -4,12 +4,102 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Usage — HelveX</title>
-  <meta name="description" content="HelveX usage — credits spent, model calls, throughput across your deployments." />
+  <meta name="description" content="HelveX usage — credits spent, model calls, throughput, latency, and cost projection across your active deployments." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <style>
+    .hx-range-bar {
+      display: inline-flex;
+      padding: 3px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm);
+      gap: 2px;
+    }
+    .hx-range-bar button {
+      padding: 5px 12px;
+      font-size: 12px; font-weight: 500;
+      color: var(--hx-text-mid);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+      font-family: var(--hx-mono);
+      letter-spacing: 0.04em;
+    }
+    .hx-range-bar button:hover { color: var(--hx-text); }
+    .hx-range-bar button.is-active {
+      background: var(--hx-surface);
+      color: var(--hx-text);
+      border-color: var(--hx-line);
+      box-shadow: var(--hx-shadow-xs);
+    }
+
+    .hx-chart {
+      width: 100%; height: 220px;
+      display: block;
+    }
+    .hx-chart .grid { stroke: var(--hx-line-soft); stroke-width: 0.5; }
+    .hx-chart .axis { fill: var(--hx-text-dim); font-family: var(--hx-mono); font-size: 10px; }
+    .hx-chart .bar { fill: var(--hx-text); opacity: 0.85; transition: opacity 0.15s; }
+    .hx-chart .bar:hover { opacity: 1; fill: var(--hx-yellow-deep); }
+    .hx-chart .line { fill: none; stroke: var(--hx-text); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .hx-chart .area { fill: var(--hx-text); opacity: 0.06; }
+    .hx-chart .pt { fill: var(--hx-text); }
+
+    .hx-model-row {
+      display: grid;
+      grid-template-columns: 36px minmax(180px, 1fr) repeat(4, minmax(90px, 1fr)) 110px;
+      gap: 14px; align-items: center;
+      padding: 14px 16px;
+      border-top: 1px solid var(--hx-line-soft);
+    }
+    .hx-model-row:first-child { border-top: 0; }
+    .hx-model-row:hover { background: var(--hx-bg-2); }
+    .hx-model-row .ico {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3));
+      border: 1px solid var(--hx-line);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--hx-text);
+      font-family: var(--hx-mono); font-size: 11px; font-weight: 700;
+    }
+    .hx-model-row .name { font-weight: 600; font-size: 13.5px; }
+    .hx-model-row .name-sub { font-size: 11.5px; color: var(--hx-text-mid); margin-top: 2px; }
+    .hx-model-row .num { font-family: var(--hx-mono); font-size: 13px; font-variant-numeric: tabular-nums; text-align: right; }
+    .hx-model-row .pct { display: flex; align-items: center; gap: 8px; }
+    .hx-model-row .pct-bar { flex: 1; height: 4px; background: var(--hx-bg-2); border-radius: 999px; overflow: hidden; }
+    .hx-model-row .pct-fill { height: 100%; background: linear-gradient(90deg, var(--hx-yellow-deep), var(--hx-yellow)); border-radius: 999px; transition: width 0.4s; }
+    .hx-model-row .pct-val { font-family: var(--hx-mono); font-size: 11.5px; color: var(--hx-text-mid); }
+    @media (max-width: 1100px) {
+      .hx-model-row { grid-template-columns: 36px 1fr auto; grid-template-areas: "ico name pct"; }
+      .hx-model-row .ico { grid-area: ico; }
+      .hx-model-row .body { grid-area: name; }
+      .hx-model-row > .num:not(.is-keep) { display: none; }
+      .hx-model-row .pct { grid-area: pct; }
+    }
+
+    .hx-th-head {
+      display: grid;
+      grid-template-columns: 36px minmax(180px, 1fr) repeat(4, minmax(90px, 1fr)) 110px;
+      gap: 14px;
+      padding: 11px 16px;
+      background: var(--hx-bg-2);
+      border-bottom: 1px solid var(--hx-line);
+      font-family: var(--hx-mono);
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.10em;
+      color: var(--hx-text-dim);
+    }
+    .hx-th-head .right { text-align: right; }
+    @media (max-width: 1100px) {
+      .hx-th-head { display: none; }
+    }
+  </style>
 </head>
 <body data-active="usage">
 
@@ -21,60 +111,195 @@
 
         <div class="hx-aura" aria-hidden="true"></div>
         <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Usage · live</p>
+          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Usage · streaming live</p>
           <div class="hx-pg-hero-grid">
             <div>
               <h1 class="hx-pg-title">Usage <em>·</em></h1>
-              <p class="hx-pg-sub">Credits spent, model calls, and throughput across your active deployments. Updated in real time, retained for 365 days.</p>
+              <p class="hx-pg-sub">Credits spent, model calls, latency, and throughput across every surface — chat, agents, workflows, automations. Updated in real time, retained for 365 days, billed in CHF.</p>
               <div class="hx-pg-cta-row">
-                <a href="/pricing.html" class="hx-cta-primary">
-                  Choose a plan
+                <a href="/billing.html" class="hx-cta-primary">
+                  Billing &amp; plan
                   <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
+                <a href="/logs.html" class="hx-cta-secondary">Open logs</a>
                 <a href="/credits.html" class="hx-cta-secondary">Credit balance</a>
               </div>
             </div>
             <div class="hx-pg-meta-strip">
               <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Region</p>
-                <p class="hx-pg-meta-value hx-mono">EU-CH-1</p>
+                <p class="hx-pg-meta-label">Currency</p>
+                <p class="hx-pg-meta-value hx-mono">CHF</p>
               </div>
               <div class="hx-pg-meta-item">
                 <p class="hx-pg-meta-label">Retention</p>
                 <p class="hx-pg-meta-value">365 days</p>
               </div>
+              <div class="hx-pg-meta-item">
+                <p class="hx-pg-meta-label">Region</p>
+                <p class="hx-pg-meta-value hx-mono">EU-CH-1</p>
+              </div>
             </div>
           </div>
         </header>
 
+        <!-- ═══════════════ METRICS ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Snapshot</h2>
+            <span class="sub-meta" id="hx-range-label">last 30 days</span>
+          </div>
+          <div class="hx-range-bar" id="hx-range">
+            <button data-d="7"  type="button">7 D</button>
+            <button data-d="30" type="button" class="is-active">30 D</button>
+            <button data-d="90" type="button">90 D</button>
+          </div>
+        </div>
         <div class="hx-grid hx-grid-4">
-          <div class="hx-stat">
-            <p class="hx-stat-label">Credits used</p>
-            <p class="hx-stat-value hx-mono" id="hx-u-credits">0</p>
-            <p class="hx-stat-meta">This billing period</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Credits spent</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-stat-credits">0</p>
+            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none" id="hx-spark-credits">
+              <path d="" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div class="hx-metric-foot">
+              <span id="hx-stat-credits-meta">No usage yet</span>
+              <span class="hx-metric-delta is-flat" id="hx-stat-credits-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Model calls</p>
-            <p class="hx-stat-value hx-mono" id="hx-u-calls">0</p>
-            <p class="hx-stat-meta">Last 30 days</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Requests</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-stat-calls">0</p>
+            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none" id="hx-spark-calls">
+              <path d="" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div class="hx-metric-foot">
+              <span id="hx-stat-calls-meta">Across every surface</span>
+              <span class="hx-metric-delta is-flat" id="hx-stat-calls-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Avg p50 latency</p>
-            <p class="hx-stat-value" id="hx-u-latency" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta">Across all models</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>p50 latency</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-stat-p50">—<span class="suffix">ms</span></p>
+            <div class="hx-metric-foot">
+              <span id="hx-stat-p50-meta">All models</span>
+              <span class="hx-metric-delta is-flat" id="hx-stat-p50-delta">p95 —</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Error rate</p>
-            <p class="hx-stat-value" id="hx-u-errrate" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta">Last 24 hours</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Error rate</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-stat-err">—<span class="suffix">%</span></p>
+            <div class="hx-metric-foot">
+              <span id="hx-stat-err-meta">Across all requests</span>
+              <span class="hx-metric-delta is-flat" id="hx-stat-err-delta">·</span>
+            </div>
           </div>
         </div>
 
-        <div class="hx-section-head">
-          <h2>Usage by model</h2>
-          <span class="meta" id="hx-u-meta">—</span>
+        <!-- ═══════════════ TIME-SERIES CHART ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Spend over time</h2>
+            <span class="sub-meta">credits consumed per day</span>
+          </div>
+          <span class="hx-mono" style="font-size:11px;color:var(--hx-text-dim);" id="hx-chart-total">—</span>
         </div>
-        <div id="hx-u-host"></div>
+        <div class="hx-card" style="border-radius:var(--hx-r-xl);padding:22px 18px 14px;">
+          <svg class="hx-chart" id="hx-chart" viewBox="0 0 720 220" preserveAspectRatio="none">
+            <!-- rendered from JS -->
+          </svg>
+          <div style="display:flex;justify-content:space-between;padding:8px 4px 0;font-family:var(--hx-mono);font-size:10.5px;color:var(--hx-text-dim);" id="hx-chart-labels"></div>
+        </div>
+
+        <!-- ═══════════════ MODEL BREAKDOWN ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>By model</h2>
+            <span class="sub-meta" id="hx-models-meta">—</span>
+          </div>
+          <a href="/models.html">View models →</a>
+        </div>
+        <div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">
+          <div class="hx-th-head">
+            <span></span>
+            <span>Model</span>
+            <span class="right">Calls</span>
+            <span class="right">Prompt tokens</span>
+            <span class="right">Completion tokens</span>
+            <span class="right">Errors</span>
+            <span class="right">Share</span>
+          </div>
+          <div id="hx-models-host"></div>
+        </div>
+
+        <!-- ═══════════════ COST PROJECTION + SURFACE BREAKDOWN ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Forecast</h2>
+            <span class="sub-meta">where this month is heading</span>
+          </div>
+        </div>
+        <div class="hx-grid hx-grid-3">
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">Month-end projection</p>
+            <h3 style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-size:34px;font-weight:400;letter-spacing:-0.018em;line-height:1;" id="hx-proj-credits">0</h3>
+            <p class="desc" style="margin:6px 0 0;" id="hx-proj-meta">Based on your current daily run-rate.</p>
+            <p class="hx-mono" style="margin:14px 0 0;font-size:11px;color:var(--hx-text-dim);" id="hx-proj-cap">— of cap</p>
+          </div>
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">Avg credits / request</p>
+            <h3 style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-size:34px;font-weight:400;letter-spacing:-0.018em;line-height:1;" id="hx-avg-credits">0</h3>
+            <p class="desc" style="margin:6px 0 0;">Lower is cheaper. Switching models or shortening prompts moves this.</p>
+            <a href="/best-practices" target="_blank" rel="noopener" class="hx-card-link" style="margin-top:14px;">Tips to reduce →</a>
+          </div>
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">Where it goes</p>
+            <h3 style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-size:34px;font-weight:400;letter-spacing:-0.018em;line-height:1;" id="hx-top-surface">—</h3>
+            <p class="desc" style="margin:6px 0 0;" id="hx-top-surface-meta">Top consumer this period.</p>
+            <a href="/logs.html" class="hx-card-link" style="margin-top:14px;">Open logs →</a>
+          </div>
+        </div>
+
+        <!-- ═══════════════ HOW IT WORKS ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>How credits work</h2>
+            <span class="sub-meta">no surprises, no rounding tricks</span>
+          </div>
+        </div>
+        <div class="hx-grid hx-grid-3">
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">01 · Per call</p>
+            <h3>Tokens × model rate</h3>
+            <p class="desc">Each request bills the exact prompt + completion tokens at the model's published rate. No tier bands, no rounding up.</p>
+          </div>
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">02 · Per plan</p>
+            <h3>Monthly cap refreshes</h3>
+            <p class="desc">Your plan grants a monthly credit pool. Unused credits don't carry over; top-up packs do, and they never expire while you're active.</p>
+          </div>
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">03 · Per second</p>
+            <h3>Logged with trace ID</h3>
+            <p class="desc">Every debit lands in the audit log with the request's trace ID — so you can always reconcile the bill back to the exact call.</p>
+          </div>
+        </div>
+
+        <footer class="hx-foot-signature">
+          <p class="sig-left"><b>EU-CH-1</b> · billed in CHF · trace-ID per debit · 365-day retention</p>
+          <p class="sig-right">— Designed and operated in Switzerland.</p>
+        </footer>
 
       </main>
     </div>
@@ -82,7 +307,6 @@
 
   <script src="/platform.js"></script>
   <script>
-    /* Real usage_events aggregation. */
     (function () {
       function whenAuthReady(fn) {
         if (window.HX && window.HX.supabase) { fn(); return; }
@@ -90,74 +314,234 @@
       }
       var $ = function (id) { return document.getElementById(id); };
       function escape(s) { return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+      async function safeQuery(p) { try { var r = await p; return r && !r.error ? r : { data: null, count: null }; } catch (e) { return { data: null, count: null }; } }
+
+      var STATE = { days: 30 };
+
+      function renderChart(daily) {
+        var svg = $('hx-chart');
+        var labels = $('hx-chart-labels');
+        if (!svg) return;
+        var w = 720, h = 220;
+        var max = Math.max.apply(null, daily.length ? daily : [0]) || 1;
+        var step = (w - 24) / Math.max(1, daily.length - 1);
+        var bars = '';
+        var barW = Math.max(2, step * 0.7);
+        // Render as bars for clarity
+        var x0 = 12;
+        for (var i = 0; i < daily.length; i++) {
+          var v = daily[i] || 0;
+          var barH = (v / max) * (h - 40);
+          var x = x0 + i * step - barW / 2;
+          var y = h - 20 - barH;
+          bars += '<rect class="bar" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barW.toFixed(1) + '" height="' + barH.toFixed(1) + '" rx="2"><title>' + v.toLocaleString() + ' cr</title></rect>';
+        }
+        // Y-axis grid lines
+        var grid = '';
+        for (var g = 0; g <= 4; g++) {
+          var gy = 20 + g * ((h - 40) / 4);
+          grid += '<line class="grid" x1="0" y1="' + gy + '" x2="' + w + '" y2="' + gy + '"/>';
+        }
+        // Y-axis labels
+        var axis = '';
+        for (var g2 = 0; g2 <= 4; g2++) {
+          var v2 = Math.round(max * (1 - g2 / 4));
+          var ay = 20 + g2 * ((h - 40) / 4) + 3;
+          axis += '<text class="axis" x="4" y="' + ay + '">' + v2.toLocaleString() + '</text>';
+        }
+        svg.innerHTML = grid + bars + axis;
+
+        // X-axis labels (sparse)
+        if (labels) {
+          var html = '';
+          var spots = [0, Math.floor(daily.length / 2), daily.length - 1];
+          spots.forEach(function (i) {
+            var d = new Date(); d.setDate(d.getDate() - (daily.length - 1 - i));
+            html += '<span>' + d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + '</span>';
+          });
+          labels.innerHTML = html;
+        }
+
+        // Spark for top metric
+        var spark = $('hx-spark-credits');
+        if (spark) {
+          var path = spark.querySelector('path');
+          var step2 = 200 / Math.max(1, daily.length - 1);
+          var d = daily.map(function (v, i) {
+            var x = (i * step2).toFixed(1);
+            var y = (28 - (v / max) * 20 - 2).toFixed(1);
+            return (i === 0 ? 'M' : 'L') + x + ',' + y;
+          }).join(' ');
+          if (path) path.setAttribute('d', d);
+        }
+      }
+
+      function renderModelsTable(byModel, totalCalls) {
+        var host = $('hx-models-host');
+        if (!host) return;
+        var models = Object.keys(byModel).sort(function (a, b) { return byModel[b].calls - byModel[a].calls; });
+        if (!models.length) {
+          host.innerHTML =
+            '<div class="hx-empty" style="border:0;background:transparent;padding:48px 24px;">' +
+              '<h3>No model calls yet</h3>' +
+              '<p>Make one AI call and this page starts breaking down spend per model. Every call is debited within seconds.</p>' +
+              '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;">' +
+                '<a href="/app-assistant.html" class="hx-cta-primary">Open Business Assistant</a>' +
+                '<a href="/chat.html" class="hx-cta-secondary">Open chat</a>' +
+              '</div>' +
+            '</div>';
+          $('hx-models-meta').textContent = '0 models';
+          return;
+        }
+        $('hx-models-meta').textContent = models.length + (models.length === 1 ? ' model in use' : ' models in use');
+        host.innerHTML = models.map(function (m) {
+          var b = byModel[m];
+          var share = totalCalls > 0 ? Math.round((b.calls / totalCalls) * 100) : 0;
+          var initial = m.charAt(0).toUpperCase();
+          return '<div class="hx-model-row">' +
+            '<div class="ico">' + escape(initial) + '</div>' +
+            '<div class="body"><div class="name">' + escape(m) + '</div><div class="name-sub">' + b.errors + ' error' + (b.errors === 1 ? '' : 's') + ' · ' + b.calls + ' total</div></div>' +
+            '<div class="num">' + b.calls.toLocaleString() + '</div>' +
+            '<div class="num">' + b.prompt.toLocaleString() + '</div>' +
+            '<div class="num">' + b.completion.toLocaleString() + '</div>' +
+            '<div class="num">' + b.errors + '</div>' +
+            '<div class="pct"><div class="pct-bar"><div class="pct-fill" style="width:' + share + '%;"></div></div><span class="pct-val">' + share + '%</span></div>' +
+          '</div>';
+        }).join('');
+      }
 
       whenAuthReady(function () {
         var sb = window.HX.supabase;
-        sb.auth.getUser().then(async function (res) {
-          var u = res && res.data ? res.data.user : null; if (!u) return;
-          var since30 = new Date(Date.now() - 30*86400*1000).toISOString();
+
+        async function load() {
+          var u = (await sb.auth.getUser()).data.user; if (!u) return;
+          var d = STATE.days;
+          var sinceN = new Date(Date.now() - d*86400*1000).toISOString();
           var since24 = new Date(Date.now() - 24*3600*1000).toISOString();
-          var [credits, last30, last24errs, last24total] = await Promise.all([
-            sb.from('credits_balance').select('credits_used').maybeSingle(),
-            sb.from('usage_events').select('model,latency_ms,status,prompt_tokens,completion_tokens').gte('created_at', since30),
-            sb.from('usage_events').select('id', { count: 'exact', head: true }).neq('status', 'ok').gte('created_at', since24),
-            sb.from('usage_events').select('id', { count: 'exact', head: true }).gte('created_at', since24)
+          var firstOfMonth = new Date(); firstOfMonth.setDate(1); firstOfMonth.setHours(0,0,0,0);
+
+          $('hx-range-label').textContent = 'last ' + d + ' days';
+
+          var [credits, events, sub, since24Total, since24Err] = await Promise.all([
+            safeQuery(sb.from('credits_balance').select('credits_total,credits_used').maybeSingle()),
+            safeQuery(sb.from('usage_events').select('model,latency_ms,status,prompt_tokens,completion_tokens,credits_consumed,surface,created_at').gte('created_at', sinceN)),
+            safeQuery(sb.from('subscriptions').select('plan,credits_cap').maybeSingle()),
+            safeQuery(sb.from('usage_events').select('id', { count: 'exact', head: true }).gte('created_at', since24)),
+            safeQuery(sb.from('usage_events').select('id', { count: 'exact', head: true }).neq('status', 'ok').gte('created_at', since24))
           ]);
 
-          $('hx-u-credits').textContent = ((credits && credits.data && credits.data.credits_used) || 0).toLocaleString();
-          var rows = last30.data || [];
-          $('hx-u-calls').textContent = rows.length.toLocaleString();
+          var rows = events.data || [];
+          var totalCalls = rows.length;
+          var totalCredits = rows.reduce(function (s, r) { return s + (r.credits_consumed || 0); }, 0);
 
-          if (rows.length) {
-            var lats = rows.map(function (r) { return r.latency_ms || 0; }).sort(function (a,b) { return a-b; });
-            var p50 = lats[Math.floor(lats.length / 2)] || 0;
-            $('hx-u-latency').textContent = p50 + ' ms';
-            $('hx-u-latency').style.color = 'var(--hx-text)';
-          }
+          // Daily aggregation for chart
+          var daily = new Array(d).fill(0);
+          rows.forEach(function (r) {
+            var diff = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 86400000);
+            var idx = (d - 1) - diff;
+            if (idx >= 0 && idx < d) daily[idx] += (r.credits_consumed || 0);
+          });
 
-          var totalErr = (last24errs && last24errs.count) || 0;
-          var totalAll = (last24total && last24total.count) || 0;
-          if (totalAll > 0) {
-            var pct = ((totalErr / totalAll) * 100).toFixed(2);
-            $('hx-u-errrate').textContent = pct + '%';
-            $('hx-u-errrate').style.color = totalErr === 0 ? 'var(--hx-emerald)' : (pct > 1 ? 'var(--hx-red)' : 'var(--hx-text)');
-          }
+          // Latency p50/p95
+          var lats = rows.map(function (r) { return r.latency_ms || 0; }).filter(function (v) { return v > 0; }).sort(function (a, b) { return a - b; });
+          var p50 = lats.length ? lats[Math.floor(lats.length / 2)] : 0;
+          var p95 = lats.length ? lats[Math.floor(lats.length * 0.95)] : 0;
 
-          // Per-model breakdown
+          // Error rate
+          var errCount = rows.filter(function (r) { return r.status !== 'ok'; }).length;
+          var errRate = totalCalls > 0 ? (errCount / totalCalls) * 100 : 0;
+
+          // Per-model
           var byModel = {};
           rows.forEach(function (r) {
             var m = r.model || 'unknown';
-            if (!byModel[m]) byModel[m] = { calls: 0, prompt: 0, completion: 0, errors: 0 };
+            if (!byModel[m]) byModel[m] = { calls: 0, prompt: 0, completion: 0, errors: 0, credits: 0 };
             byModel[m].calls++;
             byModel[m].prompt += r.prompt_tokens || 0;
             byModel[m].completion += r.completion_tokens || 0;
+            byModel[m].credits += r.credits_consumed || 0;
             if (r.status !== 'ok') byModel[m].errors++;
           });
-          var models = Object.keys(byModel);
-          $('hx-u-meta').textContent = models.length + (models.length === 1 ? ' model' : ' models');
 
-          var host = $('hx-u-host');
-          if (models.length === 0) {
-            host.innerHTML =
-              '<div class="hx-empty">' +
-                '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg></div>' +
-                '<h3>No usage to display</h3>' +
-                '<p>Make one AI call and this page starts breaking down spend per model, per project, and per workflow. Every call is debited from your credits and logged here within seconds.</p>' +
-                '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">' +
-                  '<a href="/app-assistant.html" class="hx-btn hx-btn-primary">Open Business Assistant</a>' +
-                  '<a href="/models.html" class="hx-btn hx-btn-secondary">Run the playground</a>' +
-                '</div>' +
-              '</div>';
-          } else {
-            var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Model</th><th class="right">Calls</th><th class="right">Prompt tokens</th><th class="right">Completion tokens</th><th class="right">Errors</th></tr></thead><tbody>';
-            models.forEach(function (m) {
-              var b = byModel[m];
-              html += '<tr><td><strong>' + escape(m) + '</strong></td><td class="right hx-mono">' + b.calls.toLocaleString() + '</td><td class="right hx-mono">' + b.prompt.toLocaleString() + '</td><td class="right hx-mono">' + b.completion.toLocaleString() + '</td><td class="right hx-mono">' + b.errors + '</td></tr>';
-            });
-            html += '</tbody></table></div>';
-            host.innerHTML = html;
+          // Per-surface
+          var bySurface = {};
+          rows.forEach(function (r) {
+            var s = r.surface || 'unknown';
+            bySurface[s] = (bySurface[s] || 0) + (r.credits_consumed || 0);
+          });
+          var topSurface = null; var topVal = 0;
+          Object.keys(bySurface).forEach(function (k) { if (bySurface[k] > topVal) { topVal = bySurface[k]; topSurface = k; } });
+
+          // Headlines
+          $('hx-stat-credits').textContent = totalCredits.toLocaleString();
+          $('hx-stat-credits-meta').textContent = totalCredits > 0 ? ('Spent in last ' + d + ' days') : 'No usage yet';
+          $('hx-stat-calls').textContent = totalCalls.toLocaleString();
+          $('hx-stat-calls-meta').textContent = totalCalls > 0 ? 'Across every surface' : 'No requests yet';
+          $('hx-stat-p50').innerHTML = (p50 || '—') + '<span class="suffix">ms</span>';
+          $('hx-stat-p50-meta').textContent = p50 ? 'p50 — median request' : 'No data yet';
+          var p50d = $('hx-stat-p50-delta'); if (p50d) p50d.textContent = p95 ? ('p95 ' + p95 + 'ms') : 'p95 —';
+          $('hx-stat-err').innerHTML = (totalCalls > 0 ? errRate.toFixed(2) : '—') + '<span class="suffix">%</span>';
+          $('hx-stat-err-meta').textContent = totalCalls > 0 ? errCount + ' / ' + totalCalls + ' requests' : 'No data yet';
+          var ed = $('hx-stat-err-delta');
+          if (ed) {
+            if (totalCalls === 0) { ed.className = 'hx-metric-delta is-flat'; ed.textContent = 'no data'; }
+            else if (errRate === 0) { ed.className = 'hx-metric-delta'; ed.textContent = 'clean'; }
+            else if (errRate < 1) { ed.className = 'hx-metric-delta is-flat'; ed.textContent = 'within SLO'; }
+            else { ed.className = 'hx-metric-delta is-down'; ed.textContent = 'above target'; }
           }
+
+          // Delta pills
+          var creditsDelta = $('hx-stat-credits-delta');
+          if (creditsDelta) {
+            if (totalCredits === 0) { creditsDelta.className = 'hx-metric-delta is-flat'; creditsDelta.textContent = 'idle'; }
+            else { creditsDelta.className = 'hx-metric-delta'; creditsDelta.textContent = 'active'; }
+          }
+          var callsDelta = $('hx-stat-calls-delta');
+          if (callsDelta) {
+            if (totalCalls === 0) { callsDelta.className = 'hx-metric-delta is-flat'; callsDelta.textContent = 'idle'; }
+            else { callsDelta.className = 'hx-metric-delta'; callsDelta.textContent = 'active'; }
+          }
+
+          // Chart
+          renderChart(daily);
+          if ($('hx-chart-total')) $('hx-chart-total').textContent = totalCredits.toLocaleString() + ' cr in window';
+
+          // Models table
+          renderModelsTable(byModel, totalCalls);
+
+          // Forecast
+          var daysSoFar = (Date.now() - firstOfMonth.getTime()) / 86400000;
+          var daysInMonth = new Date(firstOfMonth.getFullYear(), firstOfMonth.getMonth() + 1, 0).getDate();
+          var monthlyEvents = rows.filter(function (r) { return new Date(r.created_at) >= firstOfMonth; });
+          var monthlyCredits = monthlyEvents.reduce(function (s, r) { return s + (r.credits_consumed || 0); }, 0);
+          var projection = daysSoFar > 0 ? Math.round((monthlyCredits / daysSoFar) * daysInMonth) : 0;
+          $('hx-proj-credits').textContent = projection.toLocaleString();
+          $('hx-proj-meta').textContent = monthlyCredits > 0
+            ? monthlyCredits.toLocaleString() + ' cr spent so far in ' + firstOfMonth.toLocaleDateString(undefined, { month: 'long' })
+            : 'Run-rate kicks in after the first call.';
+          var cap = (sub.data && sub.data.credits_cap) || (credits.data && credits.data.credits_total) || 0;
+          if ($('hx-proj-cap')) $('hx-proj-cap').textContent = cap > 0 ? Math.round((projection / cap) * 100) + '% of ' + cap.toLocaleString() + ' cap' : 'no cap set';
+
+          var avgPerReq = totalCalls > 0 ? (totalCredits / totalCalls).toFixed(2) : '0';
+          $('hx-avg-credits').textContent = avgPerReq;
+
+          if ($('hx-top-surface')) $('hx-top-surface').textContent = topSurface || '—';
+          if ($('hx-top-surface-meta')) $('hx-top-surface-meta').textContent = topSurface
+            ? topVal.toLocaleString() + ' cr from this surface'
+            : 'No surface dominates yet.';
+        }
+
+        // Range buttons
+        $('hx-range').addEventListener('click', function (e) {
+          var b = e.target.closest('button[data-d]');
+          if (!b) return;
+          document.querySelectorAll('#hx-range button').forEach(function (x) { x.classList.remove('is-active'); });
+          b.classList.add('is-active');
+          STATE.days = parseInt(b.getAttribute('data-d'), 10) || 30;
+          load();
         });
+
+        load();
       });
     })();
   </script>

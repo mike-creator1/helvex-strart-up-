@@ -10,6 +10,82 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <style>
+    .hx-dep-row {
+      display: grid;
+      grid-template-columns: 36px minmax(220px, 1.6fr) minmax(180px, 1.4fr) 110px 90px 110px 100px;
+      gap: 14px; align-items: center;
+      padding: 14px 16px;
+      border-top: 1px solid var(--hx-line-soft);
+    }
+    .hx-dep-row:first-child { border-top: 0; }
+    .hx-dep-row:hover { background: var(--hx-bg-2); }
+    .hx-dep-row .icn {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3));
+      border: 1px solid var(--hx-line);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--hx-text);
+      flex-shrink: 0;
+    }
+    .hx-dep-row .icn svg { width: 14px; height: 14px; }
+    .hx-dep-row .name { font-weight: 600; font-size: 13.5px; }
+    .hx-dep-row .name-sub { font-size: 11.5px; color: var(--hx-text-mid); margin-top: 2px; }
+    .hx-dep-row .ep { font-family: var(--hx-mono); font-size: 11.5px; color: var(--hx-text-mid); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hx-dep-row .ver, .hx-dep-row .reg, .hx-dep-row .time { font-family: var(--hx-mono); font-size: 11.5px; color: var(--hx-text-mid); }
+    .hx-dep-spark { height: 28px; opacity: 0.7; }
+    @media (max-width: 1100px) {
+      .hx-dep-row { grid-template-columns: 36px 1fr auto; grid-template-areas: "icn name status" "icn meta time"; }
+      .hx-dep-row .icn { grid-area: icn; }
+      .hx-dep-row .body { grid-area: name; min-width: 0; }
+      .hx-dep-row .ep, .hx-dep-row .ver, .hx-dep-row .reg { display: none; }
+      .hx-dep-row .time { grid-area: time; }
+      .hx-dep-row .status { grid-area: status; justify-self: end; }
+    }
+
+    .hx-chip-bar {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      padding: 12px 4px;
+    }
+    .hx-dep-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--hx-text-mid);
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+    }
+    .hx-dep-chip:hover { background: var(--hx-bg-2); }
+    .hx-dep-chip.is-active { background: var(--hx-text); border-color: var(--hx-text); color: var(--hx-bg); }
+    .hx-dep-chip .count {
+      font-family: var(--hx-mono);
+      font-size: 11px; opacity: 0.7;
+    }
+
+    .hx-env-card {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+      border-top: 1px solid var(--hx-line-soft);
+    }
+    .hx-env-card:first-child { border-top: 0; }
+    .hx-env-card .left { display: flex; align-items: center; gap: 12px; }
+    .hx-env-card .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--hx-emerald);
+      box-shadow: 0 0 0 3px rgba(16,185,129,0.18);
+    }
+    .hx-env-card .dot.is-yellow { background: var(--hx-yellow-deep); box-shadow: 0 0 0 3px rgba(252,211,77,0.22); }
+    .hx-env-card .dot.is-red { background: var(--hx-red); box-shadow: 0 0 0 3px rgba(220,38,38,0.22); }
+    .hx-env-card .dot.is-gray { background: var(--hx-text-faint); box-shadow: 0 0 0 3px var(--hx-bg-2); }
+    .hx-env-card .lbl { font-size: 13.5px; font-weight: 500; }
+    .hx-env-card .lbl-sub { font-size: 11.5px; color: var(--hx-text-mid); margin-top: 1px; }
+    .hx-env-card .val { font-family: var(--hx-mono); font-size: 13px; color: var(--hx-text); font-variant-numeric: tabular-nums; }
+  </style>
 </head>
 <body data-active="deployments">
 
@@ -21,18 +97,18 @@
 
         <div class="hx-aura" aria-hidden="true"></div>
         <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Deployments · live</p>
+          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Deployments · <span id="hx-hero-state">live</span></p>
           <div class="hx-pg-hero-grid">
             <div>
               <h1 class="hx-pg-title">Deployments <em>·</em></h1>
-              <p class="hx-pg-sub">Every live agent, copilot, and automation HelveX has shipped into your stack — with version, region, and current status.</p>
+              <p class="hx-pg-sub">Every live agent, copilot, and automation HelveX has shipped into your stack — with endpoint, version, region, status, and rollback history. Updates streamed in real time.</p>
               <div class="hx-pg-cta-row">
                 <a href="/projects.html?new=1" class="hx-cta-primary">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  Create project
+                  New project
                 </a>
-                <a href="/projects.html" class="hx-cta-secondary">View projects</a>
                 <a href="/monitoring.html" class="hx-cta-secondary">Monitoring</a>
+                <a href="/logs.html" class="hx-cta-secondary">Logs</a>
               </div>
             </div>
             <div class="hx-pg-meta-strip">
@@ -44,38 +120,212 @@
                 <p class="hx-pg-meta-label">Runtime</p>
                 <p class="hx-pg-meta-value">Containerised</p>
               </div>
+              <div class="hx-pg-meta-item">
+                <p class="hx-pg-meta-label">Rollback</p>
+                <p class="hx-pg-meta-value">Instant</p>
+              </div>
             </div>
           </div>
         </header>
 
+        <!-- ═══════════════ METRICS ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Snapshot</h2>
+            <span class="sub-meta">live status across every environment</span>
+          </div>
+        </div>
         <div class="hx-grid hx-grid-4">
-          <div class="hx-stat">
-            <p class="hx-stat-label">Live</p>
-            <p class="hx-stat-value hx-mono" id="hx-dep-live">0</p>
-            <p class="hx-stat-meta" id="hx-dep-live-meta">Nothing deployed yet</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Live</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-dep-live">0</p>
+            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none">
+              <path d="M0,22 L33,20 L66,16 L100,14 L133,12 L166,10 L200,8" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div class="hx-metric-foot">
+              <span id="hx-dep-live-meta">Nothing deployed yet</span>
+              <span class="hx-metric-delta is-flat" id="hx-dep-live-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Region</p>
-            <p class="hx-stat-value" style="font-size:18px;">EU-CH-1</p>
-            <p class="hx-stat-meta">Default Swiss region</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Total deployments</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-dep-total">0</p>
+            <div class="hx-metric-foot">
+              <span id="hx-dep-total-meta">Across all states</span>
+              <span class="hx-metric-delta is-flat" id="hx-dep-total-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Total</p>
-            <p class="hx-stat-value hx-mono" id="hx-dep-total">0</p>
-            <p class="hx-stat-meta">Across all states</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Uptime (30 d)</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-dep-uptime">—<span class="suffix">%</span></p>
+            <div class="hx-metric-foot">
+              <span>SLO target: 99.9%</span>
+              <span class="hx-metric-delta is-flat" id="hx-dep-uptime-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Errors (24 h)</p>
-            <p class="hx-stat-value hx-mono" id="hx-dep-errors">0</p>
-            <p class="hx-stat-meta" id="hx-dep-errors-meta">From log_events</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Errors (24 h)</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-dep-errors">0</p>
+            <div class="hx-metric-foot">
+              <span id="hx-dep-errors-meta">From log_events</span>
+              <span class="hx-metric-delta is-flat" id="hx-dep-errors-delta">·</span>
+            </div>
           </div>
         </div>
 
-        <div class="hx-section-head">
-          <h2>Active deployments</h2>
-          <span class="meta" id="hx-dep-meta">—</span>
+        <!-- ═══════════════ DEPLOYMENT LIST ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Deployments</h2>
+            <span class="sub-meta" id="hx-dep-meta">—</span>
+          </div>
+          <a href="/projects.html">Manage projects →</a>
         </div>
-        <div id="hx-dep-host"></div>
+        <div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">
+          <div class="hx-chip-bar" id="hx-dep-filter" style="padding:14px 16px 8px;border-bottom:1px solid var(--hx-line-soft);">
+            <button class="hx-dep-chip is-active" data-status="all">All <span class="count" id="hx-c-all">0</span></button>
+            <button class="hx-dep-chip" data-status="live">Live <span class="count" id="hx-c-live">0</span></button>
+            <button class="hx-dep-chip" data-status="degraded">Degraded <span class="count" id="hx-c-degraded">0</span></button>
+            <button class="hx-dep-chip" data-status="failed">Failed <span class="count" id="hx-c-failed">0</span></button>
+            <button class="hx-dep-chip" data-status="stopped">Stopped <span class="count" id="hx-c-stopped">0</span></button>
+            <button class="hx-dep-chip" data-status="pending">Pending <span class="count" id="hx-c-pending">0</span></button>
+          </div>
+          <div id="hx-dep-host"></div>
+        </div>
+
+        <!-- ═══════════════ ENVIRONMENTS + REGIONS ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Topology</h2>
+            <span class="sub-meta">where and how your work runs</span>
+          </div>
+        </div>
+        <div class="hx-grid hx-grid-2">
+          <div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">
+            <div style="padding:14px 16px 12px;border-bottom:1px solid var(--hx-line);display:flex;align-items:center;justify-content:space-between;">
+              <h3 style="margin:0;font-size:13.5px;font-weight:600;">Environments</h3>
+              <span class="hx-mono" style="font-size:11px;color:var(--hx-text-dim);">3 standard</span>
+            </div>
+            <div class="hx-env-card">
+              <div class="left">
+                <span class="dot is-gray"></span>
+                <div>
+                  <div class="lbl">Development</div>
+                  <div class="lbl-sub">Sandbox for prototypes &amp; tests</div>
+                </div>
+              </div>
+              <span class="val" id="hx-env-dev">0</span>
+            </div>
+            <div class="hx-env-card">
+              <div class="left">
+                <span class="dot is-yellow"></span>
+                <div>
+                  <div class="lbl">Staging</div>
+                  <div class="lbl-sub">Pre-prod with real data, no traffic</div>
+                </div>
+              </div>
+              <span class="val" id="hx-env-staging">0</span>
+            </div>
+            <div class="hx-env-card">
+              <div class="left">
+                <span class="dot"></span>
+                <div>
+                  <div class="lbl">Production</div>
+                  <div class="lbl-sub">Live traffic — billed + monitored</div>
+                </div>
+              </div>
+              <span class="val" id="hx-env-prod">0</span>
+            </div>
+          </div>
+          <div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">
+            <div style="padding:14px 16px 12px;border-bottom:1px solid var(--hx-line);display:flex;align-items:center;justify-content:space-between;">
+              <h3 style="margin:0;font-size:13.5px;font-weight:600;">Regions</h3>
+              <span class="hx-mono" style="font-size:11px;color:var(--hx-text-dim);">Swiss-only by default</span>
+            </div>
+            <div class="hx-env-card">
+              <div class="left">
+                <span class="dot"></span>
+                <div>
+                  <div class="lbl">EU-CH-1 · Zurich</div>
+                  <div class="lbl-sub">Primary · AES-256 · TLS 1.3</div>
+                </div>
+              </div>
+              <span class="val" id="hx-reg-eu-ch-1">0</span>
+            </div>
+            <div class="hx-env-card">
+              <div class="left">
+                <span class="dot is-gray"></span>
+                <div>
+                  <div class="lbl">EU-CH-2 · Geneva</div>
+                  <div class="lbl-sub">Failover · enabled on Scale</div>
+                </div>
+              </div>
+              <span class="val" id="hx-reg-eu-ch-2">—</span>
+            </div>
+            <div class="hx-env-card">
+              <div class="left">
+                <span class="dot is-gray"></span>
+                <div>
+                  <div class="lbl">Other regions</div>
+                  <div class="lbl-sub">EU-only by policy — ask for exceptions</div>
+                </div>
+              </div>
+              <span class="val">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════ RECENT ROLLOUTS ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Recent rollouts</h2>
+            <span class="sub-meta">version changes in the last 14 days</span>
+          </div>
+          <a href="/activity.html">Full activity →</a>
+        </div>
+        <div id="hx-rollouts-host"></div>
+
+        <!-- ═══════════════ HOW IT WORKS ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>How deployments work</h2>
+            <span class="sub-meta">from brief to live endpoint</span>
+          </div>
+        </div>
+        <div class="hx-grid hx-grid-3">
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">01 · Build</p>
+            <h3>Engineer + agent draft together</h3>
+            <p class="desc">A senior HelveX engineer turns your brief into a versioned agent or workflow. You watch it take shape inside Workbench before it ever ships.</p>
+          </div>
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">02 · Stage</p>
+            <h3>Live data, zero traffic</h3>
+            <p class="desc">Each new version goes to staging first, with real connections but no production callers. We watch latency, error rate and outputs before promoting.</p>
+          </div>
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">03 · Ship</p>
+            <h3>Production · monitored · reversible</h3>
+            <p class="desc">Promotion to production is one click. Every rollout keeps the previous version on standby — rollback is instant and never destructive.</p>
+          </div>
+        </div>
+
+        <footer class="hx-foot-signature">
+          <p class="sig-left"><b>EU-CH-1</b> · AES-256 at rest · TLS 1.3 · rollback retained 90 days</p>
+          <p class="sig-right">— Designed and operated in Switzerland.</p>
+        </footer>
 
       </main>
     </div>
@@ -83,7 +333,7 @@
 
   <script src="/platform.js"></script>
   <script>
-    /* Real deployments from public.deployments + recent error count from log_events. */
+    /* Real deployments + recent errors + recent rollouts. */
     (function () {
       function whenAuthReady(fn) {
         if (window.HX && window.HX.supabase) { fn(); return; }
@@ -92,59 +342,183 @@
       var $ = function (id) { return document.getElementById(id); };
       function escape(s) { return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
       function fmtDate(iso) { if (!iso) return '—'; try { return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); } catch (e) { return '—'; } }
+      function relTime(iso) {
+        if (!iso) return '—';
+        var d = new Date(iso); var diff = (Date.now() - d.getTime()) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff/60) + 'm';
+        if (diff < 86400) return Math.floor(diff/3600) + 'h';
+        return Math.floor(diff/86400) + 'd';
+      }
       function badge(s) {
         if (s === 'live')     return '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Live</span>';
-        if (s === 'degraded') return '<span class="hx-badge hx-badge-yellow"><span class="hx-badge-dot"></span>Degraded</span>';
-        if (s === 'failed')   return '<span class="hx-badge hx-badge-red"><span class="hx-badge-dot"></span>Failed</span>';
+        if (s === 'degraded') return '<span class="hx-badge hx-badge-yellow"><span class="hx-badge-dot" style="background:var(--hx-yellow-deep);"></span>Degraded</span>';
+        if (s === 'failed')   return '<span class="hx-badge hx-badge-red"><span class="hx-badge-dot" style="background:var(--hx-red);"></span>Failed</span>';
         if (s === 'stopped')  return '<span class="hx-badge hx-badge-neutral">Stopped</span>';
         return '<span class="hx-badge hx-badge-neutral">' + escape(s || 'pending') + '</span>';
       }
 
       whenAuthReady(function () {
         var sb = window.HX.supabase;
-        sb.auth.getUser().then(async function (res) {
-          var u = res && res.data ? res.data.user : null; if (!u) return;
-          var since = new Date(Date.now() - 24*3600*1000).toISOString();
-          var [deps, errs] = await Promise.all([
-            sb.from('deployments').select('*').order('created_at', { ascending: false }),
-            sb.from('log_events').select('id', { count: 'exact', head: true }).eq('level', 'error').gte('created_at', since)
-          ]);
-          var rows = deps.data || [];
-          var live = rows.filter(function (r) { return r.status === 'live'; }).length;
-          $('hx-dep-live').textContent = live;
-          $('hx-dep-live-meta').textContent = live ? live + ' running' : 'Nothing deployed yet';
-          $('hx-dep-total').textContent = rows.length;
-          $('hx-dep-errors').textContent = (errs && errs.count) || 0;
-          $('hx-dep-meta').textContent = rows.length + (rows.length === 1 ? ' deployment' : ' deployments');
+        var STATE = { rows: [], filter: 'all' };
 
+        async function safeQuery(p) { try { var r = await p; return r && !r.error ? r : { data: null, count: null }; } catch (e) { return { data: null, count: null }; } }
+
+        function renderList() {
           var host = $('hx-dep-host');
+          var filtered = STATE.filter === 'all' ? STATE.rows : STATE.rows.filter(function (r) { return r.status === STATE.filter; });
+          if (filtered.length === 0) {
+            host.innerHTML =
+              '<div class="hx-empty" style="border:0;background:transparent;padding:48px 24px;">' +
+                '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>' +
+                '<h3>' + (STATE.rows.length === 0 ? 'No active deployments' : 'No deployments matching this filter') + '</h3>' +
+                '<p>' + (STATE.rows.length === 0
+                  ? 'Build a workflow or an agent first — when it ships, it appears here with endpoint, version, and rollback. You can also commission a HelveX engagement that ends in a managed deployment.'
+                  : 'Try the "All" chip to see every state.') + '</p>' +
+                (STATE.rows.length === 0
+                  ? '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;"><a href="/workflows.html" class="hx-cta-primary">Open Workflows</a><a href="/services.html" class="hx-cta-secondary">Browse services</a></div>'
+                  : '') +
+              '</div>';
+            return;
+          }
+          host.innerHTML = filtered.map(function (r) {
+            return '<div class="hx-dep-row">' +
+              '<div class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>' +
+              '<div class="body"><div class="name">' + escape(r.name) + '</div><div class="name-sub">' + escape(r.environment || 'production') + ' · ' + escape(r.kind || 'agent') + '</div></div>' +
+              '<div class="ep">' + (r.endpoint_url ? '<a href="' + escape(r.endpoint_url) + '" target="_blank" rel="noopener" style="color:inherit;">' + escape(r.endpoint_url) + '</a>' : '—') + '</div>' +
+              '<div class="reg">' + escape(r.region || 'EU-CH-1') + '</div>' +
+              '<div class="ver">' + escape(r.version || 'v0') + '</div>' +
+              '<div class="status">' + badge(r.status) + '</div>' +
+              '<div class="time" title="' + escape(fmtDate(r.created_at)) + '">' + escape(relTime(r.created_at)) + '</div>' +
+            '</div>';
+          }).join('');
+        }
+
+        function paintCounts() {
+          var c = { all: STATE.rows.length, live: 0, degraded: 0, failed: 0, stopped: 0, pending: 0 };
+          STATE.rows.forEach(function (r) { if (c[r.status] !== undefined) c[r.status]++; });
+          Object.keys(c).forEach(function (k) { var el = $('hx-c-' + k); if (el) el.textContent = c[k]; });
+        }
+
+        function paintEnvs() {
+          var envs = { development: 0, staging: 0, production: 0 };
+          STATE.rows.forEach(function (r) {
+            var e = (r.environment || 'production').toLowerCase();
+            if (envs[e] !== undefined) envs[e]++;
+            else envs.production++;
+          });
+          if ($('hx-env-dev'))     $('hx-env-dev').textContent     = envs.development + (envs.development === 1 ? ' deploy' : ' deploys');
+          if ($('hx-env-staging')) $('hx-env-staging').textContent = envs.staging + (envs.staging === 1 ? ' deploy' : ' deploys');
+          if ($('hx-env-prod'))    $('hx-env-prod').textContent    = envs.production + (envs.production === 1 ? ' deploy' : ' deploys');
+        }
+
+        function paintRegions() {
+          var byRegion = {};
+          STATE.rows.forEach(function (r) {
+            var k = (r.region || 'EU-CH-1').toLowerCase();
+            byRegion[k] = (byRegion[k] || 0) + 1;
+          });
+          if ($('hx-reg-eu-ch-1')) $('hx-reg-eu-ch-1').textContent = (byRegion['eu-ch-1'] || 0) + (byRegion['eu-ch-1'] === 1 ? ' deploy' : ' deploys');
+        }
+
+        async function loadRollouts() {
+          var since14 = new Date(Date.now() - 14*86400*1000).toISOString();
+          var r = await safeQuery(
+            sb.from('activity_events').select('id,kind,payload,created_at').like('kind', 'deployment.%').gte('created_at', since14).order('created_at', { ascending: false }).limit(8)
+          );
+          var rows = r.data || [];
+          var host = $('hx-rollouts-host');
+          if (!host) return;
           if (rows.length === 0) {
             host.innerHTML =
-              '<div class="hx-empty">' +
-                '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>' +
-                '<h3>No active deployments</h3>' +
-                '<p>Build a workflow or an agent first — when it ships, it shows up here with a public endpoint, version history, and rollback. You can also commission a HelveX engagement that ends in a managed deployment.</p>' +
-                '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">' +
-                  '<a href="/workflows.html" class="hx-btn hx-btn-primary">Open Workflows</a>' +
-                  '<a href="/services.html" class="hx-btn hx-btn-secondary">Browse services</a>' +
-                '</div>' +
+              '<div class="hx-empty" style="border-radius:var(--hx-r-xl);">' +
+                '<div class="icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></div>' +
+                '<h3>No rollouts in the last 14 days</h3>' +
+                '<p>Every promotion, rollback, or version bump appears here with the actor, version delta, and timestamp.</p>' +
               '</div>';
-          } else {
-            var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Name</th><th>Endpoint</th><th>Region</th><th>Version</th><th>Created</th><th>Status</th></tr></thead><tbody>';
-            rows.forEach(function (r) {
-              html += '<tr>' +
-                '<td><strong>' + escape(r.name) + '</strong></td>' +
-                '<td>' + (r.endpoint_url ? '<a href="' + escape(r.endpoint_url) + '" target="_blank" rel="noopener" class="hx-mono" style="font-size:12.5px;">' + escape(r.endpoint_url) + '</a>' : '<span style="color:var(--hx-text-faint);">—</span>') + '</td>' +
-                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.region) + '</span></td>' +
-                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.version) + '</span></td>' +
-                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(r.created_at) + '</span></td>' +
-                '<td>' + badge(r.status) + '</td>' +
-              '</tr>';
-            });
-            html += '</tbody></table></div>';
-            host.innerHTML = html;
+            return;
           }
+          host.innerHTML = '<div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">' +
+            rows.map(function (r) {
+              var p = r.payload || {};
+              var act = (r.kind || '').replace(/^deployment\./, '').replace(/_/g, ' ');
+              return '<div style="display:grid;grid-template-columns:30px 1fr auto;gap:14px;padding:14px 16px;align-items:center;border-top:1px solid var(--hx-line-soft);">' +
+                '<span style="width:28px;height:28px;border-radius:7px;background:var(--hx-bg-2);border:1px solid var(--hx-line);display:flex;align-items:center;justify-content:center;color:var(--hx-text-mid);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 6 12 16 8 12 2 18"/></svg></span>' +
+                '<div><div style="font-size:13.5px;font-weight:500;">' + escape(act.charAt(0).toUpperCase() + act.slice(1)) + (p.version ? ' · <span class="hx-mono" style="color:var(--hx-text-mid);">' + escape(p.version) + '</span>' : '') + '</div>' +
+                '<div style="font-size:11.5px;color:var(--hx-text-mid);margin-top:2px;">' + escape(p.deployment_name || p.target || 'deployment') + (p.region ? ' · ' + escape(p.region) : '') + '</div></div>' +
+                '<span class="hx-mono" style="font-size:11px;color:var(--hx-text-dim);">' + escape(relTime(r.created_at)) + '</span>' +
+              '</div>';
+            }).join('') +
+          '</div>';
+        }
+
+        async function load() {
+          var u = (await sb.auth.getUser()).data.user; if (!u) return;
+          var since24 = new Date(Date.now() - 24*3600*1000).toISOString();
+          var since30 = new Date(Date.now() - 30*86400*1000).toISOString();
+          var [deps, errs24, errs30, total30] = await Promise.all([
+            safeQuery(sb.from('deployments').select('*').order('created_at', { ascending: false })),
+            safeQuery(sb.from('log_events').select('id', { count: 'exact', head: true }).eq('level', 'error').gte('created_at', since24)),
+            safeQuery(sb.from('log_events').select('id', { count: 'exact', head: true }).eq('level', 'error').gte('created_at', since30)),
+            safeQuery(sb.from('log_events').select('id', { count: 'exact', head: true }).gte('created_at', since30))
+          ]);
+          STATE.rows = deps.data || [];
+
+          var live = STATE.rows.filter(function (r) { return r.status === 'live'; }).length;
+          $('hx-dep-live').textContent = live;
+          $('hx-dep-live-meta').textContent = live ? (live + ' running') : 'Nothing deployed yet';
+          $('hx-dep-total').textContent = STATE.rows.length;
+          $('hx-dep-total-meta').textContent = STATE.rows.length === 0 ? 'Nothing yet' : 'Across all states';
+          $('hx-dep-meta').textContent = STATE.rows.length + (STATE.rows.length === 1 ? ' deployment' : ' deployments');
+          $('hx-hero-state').textContent = live > 0 ? (live + ' live') : 'ready';
+
+          // Errors + uptime calc
+          var err24 = (errs24 && errs24.count) || 0;
+          var err30 = (errs30 && errs30.count) || 0;
+          var totEvents30 = (total30 && total30.count) || 0;
+          $('hx-dep-errors').textContent = err24;
+          var ed = $('hx-dep-errors-delta');
+          if (ed) {
+            if (err24 === 0) { ed.className = 'hx-metric-delta'; ed.textContent = 'clean'; }
+            else if (err24 < 5) { ed.className = 'hx-metric-delta is-flat'; ed.textContent = err24 + ' issues'; }
+            else { ed.className = 'hx-metric-delta is-down'; ed.textContent = err24 + ' issues'; }
+          }
+          // Uptime — proxied as (1 - errors/total) over 30 days. Defaults to 100% if no events.
+          var uptime = totEvents30 > 0 ? Math.max(0, 100 - (err30 / totEvents30) * 100) : 100;
+          $('hx-dep-uptime').innerHTML = uptime.toFixed(2) + '<span class="suffix">%</span>';
+          var ud = $('hx-dep-uptime-delta');
+          if (ud) {
+            if (uptime >= 99.9) { ud.className = 'hx-metric-delta'; ud.textContent = 'SLO met'; }
+            else if (uptime >= 99) { ud.className = 'hx-metric-delta is-flat'; ud.textContent = 'below target'; }
+            else { ud.className = 'hx-metric-delta is-down'; ud.textContent = 'breached'; }
+          }
+          // Live trend
+          var ld = $('hx-dep-live-delta');
+          if (ld) {
+            if (live > 0) { ld.className = 'hx-metric-delta'; ld.textContent = 'healthy'; }
+            else { ld.className = 'hx-metric-delta is-flat'; ld.textContent = 'idle'; }
+          }
+          var td = $('hx-dep-total-delta');
+          if (td) { td.className = 'hx-metric-delta is-flat'; td.textContent = (STATE.rows.length || 0) + ' total'; }
+
+          paintCounts();
+          paintEnvs();
+          paintRegions();
+          renderList();
+          loadRollouts();
+        }
+
+        // Filter chip wiring
+        $('hx-dep-filter').addEventListener('click', function (e) {
+          var c = e.target.closest && e.target.closest('.hx-dep-chip');
+          if (!c) return;
+          document.querySelectorAll('.hx-dep-chip').forEach(function (x) { x.classList.remove('is-active'); });
+          c.classList.add('is-active');
+          STATE.filter = c.getAttribute('data-status');
+          renderList();
         });
+
+        load();
       });
     })();
   </script>

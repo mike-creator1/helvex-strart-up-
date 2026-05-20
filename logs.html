@@ -4,12 +4,120 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Logs — HelveX</title>
-  <meta name="description" content="HelveX runtime logs — every model call, tool invocation, and workflow step, streamed and searchable." />
+  <meta name="description" content="HelveX runtime logs — every model call, tool invocation, and workflow step, streamed, searchable, exportable." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <style>
+    .hx-log-toolbar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--hx-line);
+    }
+    .hx-log-search {
+      flex: 1; min-width: 220px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 12px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm);
+      transition: border-color 0.12s, background 0.12s;
+    }
+    .hx-log-search:focus-within { border-color: var(--hx-text); background: var(--hx-surface); }
+    .hx-log-search svg { width: 13px; height: 13px; color: var(--hx-text-mid); flex-shrink: 0; }
+    .hx-log-search input {
+      flex: 1; min-width: 0;
+      border: 0; outline: 0; background: transparent;
+      font-family: var(--hx-mono);
+      font-size: 12.5px;
+      color: var(--hx-text);
+      padding: 0;
+    }
+    .hx-log-search input::placeholder { color: var(--hx-text-dim); }
+
+    .hx-log-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--hx-text-mid);
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+      font-family: var(--hx-mono);
+      letter-spacing: 0.02em;
+    }
+    .hx-log-chip:hover { background: var(--hx-bg-2); }
+    .hx-log-chip.is-active { background: var(--hx-text); border-color: var(--hx-text); color: var(--hx-bg); }
+    .hx-log-chip .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .hx-log-chip .dot.is-info { background: var(--hx-emerald); }
+    .hx-log-chip .dot.is-warn { background: var(--hx-yellow-deep); }
+    .hx-log-chip .dot.is-error { background: var(--hx-red); }
+    .hx-log-chip .count { font-family: var(--hx-mono); font-size: 11px; opacity: 0.7; }
+
+    .hx-log-row {
+      display: grid;
+      grid-template-columns: 110px 60px minmax(0, 1fr) auto;
+      gap: 14px; align-items: center;
+      padding: 10px 16px;
+      border-top: 1px solid var(--hx-line-soft);
+      font-family: var(--hx-mono);
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .hx-log-row:first-child { border-top: 0; }
+    .hx-log-row:hover { background: var(--hx-bg-2); }
+    .hx-log-row .ts { color: var(--hx-text-dim); }
+    .hx-log-row .lvl {
+      font-weight: 600;
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .hx-log-row .lvl.is-info { color: var(--hx-emerald); }
+    .hx-log-row .lvl.is-warn { color: var(--hx-yellow-deep); }
+    .hx-log-row .lvl.is-error { color: var(--hx-red); }
+    .hx-log-row .msg { color: var(--hx-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hx-log-row .trace { color: var(--hx-text-faint); font-size: 11px; }
+    .hx-log-detail {
+      grid-column: 1 / -1;
+      margin-top: 8px;
+      padding: 12px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm);
+      font-size: 11.5px;
+      color: var(--hx-text-mid);
+      white-space: pre-wrap;
+      word-break: break-all;
+      display: none;
+    }
+    .hx-log-row.is-open .hx-log-detail { display: block; }
+
+    .hx-log-source {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--hx-line-soft);
+    }
+    .hx-log-source:first-child { border-top: 0; }
+    .hx-log-source .ico {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3));
+      border: 1px solid var(--hx-line);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--hx-text-mid);
+    }
+    .hx-log-source .ico svg { width: 13px; height: 13px; }
+    .hx-log-source .nm { font-size: 13px; font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hx-log-source .ct { font-family: var(--hx-mono); font-size: 11.5px; color: var(--hx-text-mid); }
+  </style>
 </head>
 <body data-active="logs">
 
@@ -21,13 +129,17 @@
 
         <div class="hx-aura" aria-hidden="true"></div>
         <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Logs · streamed</p>
+          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Logs · <span id="hx-stream-state">streaming live</span></p>
           <div class="hx-pg-hero-grid">
             <div>
               <h1 class="hx-pg-title">Logs <em>·</em></h1>
-              <p class="hx-pg-sub">Every model call, tool invocation, and workflow step — streamed in real time, searchable by trace ID, and retained for 30 days on every plan.</p>
+              <p class="hx-pg-sub">Every model call, tool invocation, and workflow step — streamed in real time, searchable by trace ID, retained for 30 days on every plan. Data stays in Switzerland.</p>
               <div class="hx-pg-cta-row">
-                <a href="/monitoring.html" class="hx-cta-primary">Monitoring</a>
+                <button class="hx-cta-primary" id="hx-log-export" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export
+                </button>
+                <a href="/monitoring.html" class="hx-cta-secondary">Monitoring</a>
                 <a href="/usage.html" class="hx-cta-secondary">Usage</a>
               </div>
             </div>
@@ -40,38 +152,152 @@
                 <p class="hx-pg-meta-label">Index</p>
                 <p class="hx-pg-meta-value">Trace ID</p>
               </div>
+              <div class="hx-pg-meta-item">
+                <p class="hx-pg-meta-label">Region</p>
+                <p class="hx-pg-meta-value hx-mono">EU-CH-1</p>
+              </div>
             </div>
           </div>
         </header>
 
+        <!-- ═══════════════ METRICS ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Stream health</h2>
+            <span class="sub-meta">last 24 hours</span>
+          </div>
+        </div>
         <div class="hx-grid hx-grid-4">
-          <div class="hx-stat">
-            <p class="hx-stat-label">Streaming</p>
-            <p class="hx-stat-value" id="hx-stat-streaming" style="font-size:18px;color:var(--hx-text-dim);">Idle</p>
-            <p class="hx-stat-meta" id="hx-stat-streaming-meta">No active deployments</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Streaming</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+            </p>
+            <p class="hx-metric-value-text" id="hx-stat-streaming" style="color:var(--hx-text-dim);">Idle</p>
+            <div class="hx-metric-foot">
+              <span id="hx-stat-streaming-meta">No active deployments</span>
+              <span class="hx-metric-delta is-flat" id="hx-stat-streaming-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Events (24 h)</p>
-            <p class="hx-stat-value hx-mono" id="hx-stat-events">0</p>
-            <p class="hx-stat-meta">Across all sources</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Events</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-stat-events">0</p>
+            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none" id="hx-spark-events">
+              <path d="" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div class="hx-metric-foot">
+              <span>Across all sources</span>
+              <span class="hx-metric-delta is-flat" id="hx-stat-events-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Retention</p>
-            <p class="hx-stat-value" style="font-size:18px;">30 d</p>
-            <p class="hx-stat-meta">Plan default</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Errors</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-stat-errs">0</p>
+            <div class="hx-metric-foot">
+              <span id="hx-stat-errs-meta">Last 24 hours</span>
+              <span class="hx-metric-delta is-flat" id="hx-stat-errs-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Region</p>
-            <p class="hx-stat-value" style="font-size:18px;">EU-CH-1</p>
-            <p class="hx-stat-meta">Logs stay in Switzerland</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Warnings</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-stat-warns">0</p>
+            <div class="hx-metric-foot">
+              <span>Last 24 hours</span>
+              <span class="hx-metric-delta is-flat" id="hx-stat-warns-delta">·</span>
+            </div>
           </div>
         </div>
 
-        <div class="hx-section-head">
-          <h2>Live stream</h2>
-          <span class="meta" id="hx-log-meta">All sources · all severities</span>
+        <!-- ═══════════════ LOG FEED ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Stream</h2>
+            <span class="sub-meta" id="hx-log-meta">all sources · all severities</span>
+          </div>
+          <a href="/audit-log.html">Audit log →</a>
         </div>
-        <div id="hx-log-host"></div>
+        <div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">
+          <div class="hx-log-toolbar">
+            <div class="hx-log-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input id="hx-log-q" placeholder="Search by message, trace ID, or source…" />
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;" id="hx-log-levels">
+              <button class="hx-log-chip is-active" data-lvl="all">All <span class="count" id="hx-lc-all">0</span></button>
+              <button class="hx-log-chip" data-lvl="info"><span class="dot is-info"></span>Info <span class="count" id="hx-lc-info">0</span></button>
+              <button class="hx-log-chip" data-lvl="warn"><span class="dot is-warn"></span>Warn <span class="count" id="hx-lc-warn">0</span></button>
+              <button class="hx-log-chip" data-lvl="error"><span class="dot is-error"></span>Error <span class="count" id="hx-lc-error">0</span></button>
+            </div>
+            <button class="hx-cta-secondary" id="hx-log-refresh" style="height:32px;padding:0 12px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+          <div id="hx-log-host"></div>
+        </div>
+
+        <!-- ═══════════════ TOP SOURCES + SLOW CALLS ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Source breakdown</h2>
+            <span class="sub-meta">where events are coming from</span>
+          </div>
+        </div>
+        <div class="hx-grid hx-grid-2">
+          <div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">
+            <div style="padding:14px 16px 12px;border-bottom:1px solid var(--hx-line);display:flex;align-items:center;justify-content:space-between;">
+              <h3 style="margin:0;font-size:13.5px;font-weight:600;">Top sources</h3>
+              <span class="hx-mono" style="font-size:11px;color:var(--hx-text-dim);">last 24 h</span>
+            </div>
+            <div id="hx-log-sources"></div>
+          </div>
+          <div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">
+            <div style="padding:14px 16px 12px;border-bottom:1px solid var(--hx-line);display:flex;align-items:center;justify-content:space-between;">
+              <h3 style="margin:0;font-size:13.5px;font-weight:600;">Recent error families</h3>
+              <span class="hx-mono" style="font-size:11px;color:var(--hx-text-dim);">grouped by message</span>
+            </div>
+            <div id="hx-log-errs"></div>
+          </div>
+        </div>
+
+        <!-- ═══════════════ HOW IT WORKS ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>How logs work</h2>
+            <span class="sub-meta">structured, indexed, searchable</span>
+          </div>
+        </div>
+        <div class="hx-grid hx-grid-3">
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">Structured</p>
+            <h3>JSON, not strings</h3>
+            <p class="desc">Every event is structured JSON with model, tokens, latency, trace ID, deployment, and the full payload. No grep — query.</p>
+          </div>
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">Indexed</p>
+            <h3>Trace ID first</h3>
+            <p class="desc">The trace ID threads every call to the chat, agent, or workflow that triggered it — so you can always pull the full chain back.</p>
+          </div>
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">Retained</p>
+            <h3>30 days · longer on Scale</h3>
+            <p class="desc">Logs roll off after 30 days on every plan. Scale extends this to 365 days and adds 7-year archive for audit shipping.</p>
+          </div>
+        </div>
+
+        <footer class="hx-foot-signature">
+          <p class="sig-left"><b>EU-CH-1</b> · structured JSON · 30-day retention · trace-ID indexed</p>
+          <p class="sig-right">— Designed and operated in Switzerland.</p>
+        </footer>
 
       </main>
     </div>
@@ -79,7 +305,6 @@
 
   <script src="/platform.js"></script>
   <script>
-    /* Real log_events feed with realtime subscription. */
     (function () {
       function whenAuthReady(fn) {
         if (window.HX && window.HX.supabase) { fn(); return; }
@@ -87,77 +312,263 @@
       }
       var $ = function (id) { return document.getElementById(id); };
       function escape(s) { return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-      function fmtTime(iso) { try { return new Date(iso).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' }); } catch (e) { return ''; } }
-      function levelTag(l) {
-        var col = 'var(--hx-text-mid)';
-        if (l === 'error') col = 'var(--hx-red)';
-        if (l === 'warn')  col = 'var(--hx-yellow-deep)';
-        if (l === 'info')  col = 'var(--hx-emerald)';
-        return '<span class="hx-mono" style="font-size:11px;font-weight:600;text-transform:uppercase;color:' + col + ';">' + (l || 'info') + '</span>';
+      function fmtTime(iso) {
+        if (!iso) return '';
+        try { return new Date(iso).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' }); }
+        catch (e) { return ''; }
+      }
+      async function safeQuery(p) { try { var r = await p; return r && !r.error ? r : { data: null, count: null }; } catch (e) { return { data: null, count: null }; } }
+
+      var STATE = { all: [], filtered: [], level: 'all', query: '' };
+
+      function applyFilters() {
+        var q = STATE.query.toLowerCase();
+        STATE.filtered = STATE.all.filter(function (r) {
+          if (STATE.level !== 'all' && (r.level || 'info') !== STATE.level) return false;
+          if (!q) return true;
+          var hay = [r.message || '', r.trace_id || '', r.source || ''].join(' ').toLowerCase();
+          return hay.indexOf(q) >= 0;
+        });
+        renderFeed();
+        $('hx-log-meta').textContent = STATE.filtered.length + ' event' + (STATE.filtered.length === 1 ? '' : 's') +
+          (STATE.level === 'all' ? ' · all severities' : ' · ' + STATE.level + ' only') +
+          (STATE.query ? ' · matching "' + STATE.query + '"' : '');
+      }
+
+      function paintCounts() {
+        var c = { all: STATE.all.length, info: 0, warn: 0, error: 0 };
+        STATE.all.forEach(function (r) { var l = r.level || 'info'; if (c[l] !== undefined) c[l]++; });
+        ['all','info','warn','error'].forEach(function (k) { var el = $('hx-lc-' + k); if (el) el.textContent = c[k] || 0; });
+      }
+
+      function renderFeed() {
+        var host = $('hx-log-host');
+        if (!host) return;
+        if (STATE.filtered.length === 0) {
+          host.innerHTML =
+            '<div class="hx-empty" style="border:0;background:transparent;padding:64px 24px;">' +
+              '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>' +
+              '<h3>' + (STATE.all.length === 0 ? 'No log events yet' : 'No events match this filter') + '</h3>' +
+              '<p>' + (STATE.all.length === 0
+                ? 'Logs start filling the moment you make your first AI call. Every model invocation, workflow step, and tool call lands here with trace ID, latency, and status.'
+                : 'Try the "All" chip or clear the search.') + '</p>' +
+              (STATE.all.length === 0
+                ? '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;"><a href="/app-assistant.html" class="hx-cta-primary">Open Business Assistant</a><a href="/chat.html" class="hx-cta-secondary">Open chat</a></div>'
+                : '') +
+            '</div>';
+          return;
+        }
+        host.innerHTML = STATE.filtered.slice(0, 200).map(function (r) {
+          var lvl = r.level || 'info';
+          var detail = '';
+          var parts = [];
+          if (r.source)   parts.push('source:     ' + r.source);
+          if (r.trace_id) parts.push('trace_id:   ' + r.trace_id);
+          if (r.deployment_id) parts.push('deployment: ' + r.deployment_id);
+          if (r.latency_ms != null) parts.push('latency:    ' + r.latency_ms + ' ms');
+          if (r.payload && Object.keys(r.payload).length) {
+            try { parts.push('payload:    ' + JSON.stringify(r.payload, null, 2)); } catch (e) {}
+          }
+          if (parts.length) detail = '<div class="hx-log-detail">' + escape(parts.join('\n')) + '</div>';
+          return '<div class="hx-log-row" data-id="' + escape(r.id || '') + '">' +
+            '<span class="ts">' + escape(fmtTime(r.created_at)) + '</span>' +
+            '<span class="lvl is-' + lvl + '">' + lvl + '</span>' +
+            '<span class="msg">' + escape(r.message || '') + '</span>' +
+            '<span class="trace">' + escape((r.trace_id || '').slice(0, 12)) + '</span>' +
+            detail +
+          '</div>';
+        }).join('');
+      }
+
+      function renderSources() {
+        var host = $('hx-log-sources');
+        if (!host) return;
+        var bySrc = {};
+        STATE.all.forEach(function (r) {
+          var s = r.source || 'unknown';
+          bySrc[s] = (bySrc[s] || 0) + 1;
+        });
+        var sorted = Object.keys(bySrc).sort(function (a, b) { return bySrc[b] - bySrc[a]; }).slice(0, 6);
+        if (!sorted.length) {
+          host.innerHTML = '<div style="padding:36px 16px;text-align:center;font-size:12.5px;color:var(--hx-text-mid);">No sources yet — make a call to populate.</div>';
+          return;
+        }
+        host.innerHTML = sorted.map(function (s) {
+          return '<div class="hx-log-source">' +
+            '<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>' +
+            '<span class="nm">' + escape(s) + '</span>' +
+            '<span class="ct">' + bySrc[s].toLocaleString() + ' events</span>' +
+          '</div>';
+        }).join('');
+      }
+
+      function renderErrFamilies() {
+        var host = $('hx-log-errs');
+        if (!host) return;
+        var errs = STATE.all.filter(function (r) { return r.level === 'error'; });
+        if (!errs.length) {
+          host.innerHTML = '<div style="padding:36px 16px;text-align:center;font-size:12.5px;color:var(--hx-text-mid);"><strong style="color:var(--hx-text);font-weight:600;">No errors in the last 24 hours.</strong><br>You\'re running clean.</div>';
+          return;
+        }
+        var groups = {};
+        errs.forEach(function (r) {
+          var key = (r.message || 'unknown error').slice(0, 80);
+          if (!groups[key]) groups[key] = { count: 0, last: r.created_at };
+          groups[key].count++;
+          if (r.created_at > groups[key].last) groups[key].last = r.created_at;
+        });
+        var sorted = Object.keys(groups).sort(function (a, b) { return groups[b].count - groups[a].count; }).slice(0, 6);
+        host.innerHTML = sorted.map(function (k) {
+          return '<div class="hx-log-source">' +
+            '<span class="ico" style="color:var(--hx-red);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg></span>' +
+            '<span class="nm" style="color:var(--hx-text);">' + escape(k) + '</span>' +
+            '<span class="ct">' + groups[k].count + '×</span>' +
+          '</div>';
+        }).join('');
+      }
+
+      function renderSpark(daily) {
+        var spark = $('hx-spark-events');
+        if (!spark) return;
+        var max = Math.max.apply(null, daily.length ? daily : [0]) || 1;
+        var step = 200 / Math.max(1, daily.length - 1);
+        var d = daily.map(function (v, i) {
+          var x = (i * step).toFixed(1);
+          var y = (28 - (v / max) * 20 - 2).toFixed(1);
+          return (i === 0 ? 'M' : 'L') + x + ',' + y;
+        }).join(' ');
+        var path = spark.querySelector('path');
+        if (path) path.setAttribute('d', d);
       }
 
       whenAuthReady(function () {
         var sb = window.HX.supabase;
-        var host = $('hx-log-host');
         var channel = null;
 
-        async function refresh() {
-          var [logs, total24, liveDeps] = await Promise.all([
-            sb.from('log_events').select('*').order('created_at', { ascending: false }).limit(200),
-            sb.from('log_events').select('id', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 86400000).toISOString()),
-            sb.from('deployments').select('id', { count: 'exact', head: true }).eq('status', 'live')
+        async function load() {
+          var u = (await sb.auth.getUser()).data.user; if (!u) return;
+          var since24 = new Date(Date.now() - 86400000).toISOString();
+          var since14 = new Date(Date.now() - 14*86400000).toISOString();
+          var [logs, total24, err24, warn24, liveDeps, last14] = await Promise.all([
+            safeQuery(sb.from('log_events').select('*').order('created_at', { ascending: false }).limit(300)),
+            safeQuery(sb.from('log_events').select('id', { count: 'exact', head: true }).gte('created_at', since24)),
+            safeQuery(sb.from('log_events').select('id', { count: 'exact', head: true }).eq('level', 'error').gte('created_at', since24)),
+            safeQuery(sb.from('log_events').select('id', { count: 'exact', head: true }).eq('level', 'warn').gte('created_at', since24)),
+            safeQuery(sb.from('deployments').select('id', { count: 'exact', head: true }).eq('status', 'live')),
+            safeQuery(sb.from('log_events').select('created_at').gte('created_at', since14))
           ]);
-          $('hx-log-meta').textContent = ((total24 && total24.count) || 0) + ' events / 24h · all severities';
-          $('hx-stat-events').textContent = ((total24 && total24.count) || 0).toLocaleString();
+
+          STATE.all = logs.data || [];
+          var totEvents = (total24 && total24.count) || 0;
+          var totErr = (err24 && err24.count) || 0;
+          var totWarn = (warn24 && warn24.count) || 0;
           var liveCount = (liveDeps && liveDeps.count) || 0;
-          var streamEl = $('hx-stat-streaming');
-          var streamMetaEl = $('hx-stat-streaming-meta');
-          if (streamEl) {
-            streamEl.textContent = liveCount > 0 ? 'Live' : 'Idle';
-            streamEl.style.color = liveCount > 0 ? 'var(--hx-emerald)' : 'var(--hx-text-dim)';
+
+          $('hx-stat-events').textContent = totEvents.toLocaleString();
+          $('hx-stat-errs').textContent = totErr.toLocaleString();
+          $('hx-stat-warns').textContent = totWarn.toLocaleString();
+          $('hx-stat-streaming').textContent = liveCount > 0 ? 'Live' : 'Idle';
+          $('hx-stat-streaming').style.color = liveCount > 0 ? 'var(--hx-emerald)' : 'var(--hx-text-dim)';
+          $('hx-stat-streaming-meta').textContent = liveCount > 0
+            ? liveCount + ' deployment' + (liveCount === 1 ? '' : 's') + ' streaming'
+            : 'No active deployments';
+
+          $('hx-stream-state').textContent = liveCount > 0 ? 'streaming live' : 'idle';
+
+          // Delta pills
+          var sd = $('hx-stat-streaming-delta');
+          if (sd) { sd.className = liveCount > 0 ? 'hx-metric-delta' : 'hx-metric-delta is-flat'; sd.textContent = liveCount > 0 ? 'active' : 'idle'; }
+          var ed = $('hx-stat-events-delta');
+          if (ed) { ed.className = totEvents > 0 ? 'hx-metric-delta' : 'hx-metric-delta is-flat'; ed.textContent = totEvents > 0 ? 'flowing' : 'no data'; }
+          var erd = $('hx-stat-errs-delta');
+          if (erd) {
+            if (totErr === 0) { erd.className = 'hx-metric-delta'; erd.textContent = 'clean'; }
+            else if (totErr < 5) { erd.className = 'hx-metric-delta is-flat'; erd.textContent = 'low'; }
+            else { erd.className = 'hx-metric-delta is-down'; erd.textContent = 'elevated'; }
           }
-          if (streamMetaEl) {
-            streamMetaEl.textContent = liveCount > 0
-              ? liveCount + ' deployment' + (liveCount === 1 ? '' : 's') + ' streaming'
-              : 'No active deployments';
+          var wd = $('hx-stat-warns-delta');
+          if (wd) {
+            if (totWarn === 0) { wd.className = 'hx-metric-delta'; wd.textContent = 'clean'; }
+            else { wd.className = 'hx-metric-delta is-flat'; wd.textContent = 'review'; }
           }
-          var rows = logs.data || [];
-          if (rows.length === 0) {
-            host.innerHTML =
-              '<div class="hx-empty">' +
-                '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>' +
-                '<h3>No log events yet</h3>' +
-                '<p>Logs start filling the moment you make your first AI call. Every model invocation, workflow step, and tool call lands here with trace ID, latency, and status — searchable and exportable.</p>' +
-                '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">' +
-                  '<a href="/app-assistant.html" class="hx-btn hx-btn-primary">Open Business Assistant</a>' +
-                  '<a href="/models.html" class="hx-btn hx-btn-secondary">Run the playground</a>' +
-                '</div>' +
-              '</div>';
-            return;
-          }
-          var html = '<div class="hx-card" style="padding:0;font-family:var(--hx-mono);font-size:12.5px;overflow:hidden;">';
-          rows.forEach(function (r, i) {
-            html += '<div style="display:grid;grid-template-columns:auto auto 1fr auto;gap:14px;padding:8px 14px;align-items:center;' + (i > 0 ? 'border-top:1px solid var(--hx-line);' : '') + '">' +
-              '<span style="color:var(--hx-text-dim);">' + escape(fmtTime(r.created_at)) + '</span>' +
-              levelTag(r.level) +
-              '<span style="color:var(--hx-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escape(r.message) + '</span>' +
-              '<span style="color:var(--hx-text-faint);font-size:11px;">' + escape(r.trace_id || '') + '</span>' +
-            '</div>';
+          if ($('hx-stat-errs-meta')) $('hx-stat-errs-meta').textContent = totErr === 0 ? 'No errors yet' : totErr + ' in last 24 hours';
+
+          // Sparkline: daily event counts over 14 days
+          var daily = new Array(14).fill(0);
+          (last14.data || []).forEach(function (r) {
+            var diff = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 86400000);
+            var idx = 13 - diff;
+            if (idx >= 0 && idx < 14) daily[idx]++;
           });
-          html += '</div>';
-          host.innerHTML = html;
+          renderSpark(daily);
+
+          paintCounts();
+          applyFilters();
+          renderSources();
+          renderErrFamilies();
         }
 
+        // Search input
+        var t = null;
+        $('hx-log-q').addEventListener('input', function (e) {
+          STATE.query = (e.target.value || '').trim();
+          if (t) clearTimeout(t);
+          t = setTimeout(applyFilters, 150);
+        });
+
+        // Level chips
+        $('hx-log-levels').addEventListener('click', function (e) {
+          var c = e.target.closest('.hx-log-chip');
+          if (!c) return;
+          document.querySelectorAll('.hx-log-chip').forEach(function (x) { x.classList.remove('is-active'); });
+          c.classList.add('is-active');
+          STATE.level = c.getAttribute('data-lvl');
+          applyFilters();
+        });
+
+        // Expand row to show detail
+        $('hx-log-host').addEventListener('click', function (e) {
+          var row = e.target.closest('.hx-log-row');
+          if (row) row.classList.toggle('is-open');
+        });
+
+        // Refresh
+        $('hx-log-refresh').addEventListener('click', load);
+
+        // Export CSV
+        $('hx-log-export').addEventListener('click', function () {
+          var rows = STATE.filtered.length ? STATE.filtered : STATE.all;
+          if (!rows.length) return;
+          function cell(v) {
+            if (v == null) return '';
+            var s = typeof v === 'string' ? v : JSON.stringify(v);
+            if (/[",\n]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+            return s;
+          }
+          var lines = ['id,level,source,trace_id,message,latency_ms,created_at'];
+          rows.forEach(function (r) {
+            lines.push([r.id, r.level, r.source, r.trace_id, r.message, r.latency_ms, r.created_at].map(cell).join(','));
+          });
+          var blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url; a.download = 'helvex-logs-' + new Date().toISOString().slice(0, 10) + '.csv';
+          document.body.appendChild(a); a.click();
+          setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 0);
+        });
+
+        // Realtime new events
         sb.auth.getUser().then(function (res) {
           var u = res && res.data ? res.data.user : null; if (!u) return;
           if (sb.channel) {
             channel = sb.channel('hx-logs-' + u.id)
-              .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'log_events', filter: 'owner_id=eq.' + u.id }, function () { refresh(); })
+              .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'log_events', filter: 'owner_id=eq.' + u.id }, function () { load(); })
               .subscribe();
           }
         });
         window.addEventListener('beforeunload', function () { try { if (channel) channel.unsubscribe(); } catch (e) {} });
-        refresh();
+
+        load();
       });
     })();
   </script>

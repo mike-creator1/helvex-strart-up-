@@ -4,12 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Monitoring — HelveX</title>
-  <meta name="description" content="HelveX monitoring — uptime, latency, and error rate across every deployment." />
+  <meta name="description" content="HelveX monitoring — uptime, latency percentiles, error rate, and alert routing for every deployment." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <style>
+    .hx-dep-monitor {
+      display: grid;
+      grid-template-columns: 36px minmax(180px, 1.4fr) repeat(3, minmax(90px, 1fr)) 100px;
+      gap: 14px; align-items: center;
+      padding: 14px 16px;
+      border-top: 1px solid var(--hx-line-soft);
+    }
+    .hx-dep-monitor:first-child { border-top: 0; }
+    .hx-dep-monitor:hover { background: var(--hx-bg-2); }
+    .hx-dep-monitor .ico { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3)); border: 1px solid var(--hx-line); display: flex; align-items: center; justify-content: center; color: var(--hx-text); }
+    .hx-dep-monitor .ico svg { width: 14px; height: 14px; }
+    .hx-dep-monitor .name { font-weight: 600; font-size: 13.5px; }
+    .hx-dep-monitor .meta { font-size: 11.5px; color: var(--hx-text-mid); margin-top: 2px; }
+    .hx-dep-monitor .num { font-family: var(--hx-mono); font-size: 13px; font-variant-numeric: tabular-nums; text-align: right; }
+    .hx-dep-monitor .uptime-bar { width: 100%; height: 4px; background: var(--hx-bg-2); border-radius: 999px; overflow: hidden; }
+    .hx-dep-monitor .uptime-fill { height: 100%; background: var(--hx-emerald); border-radius: 999px; }
+
+    .hx-alert-route {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px;
+      border-top: 1px solid var(--hx-line-soft);
+    }
+    .hx-alert-route:first-child { border-top: 0; }
+    .hx-alert-route .ico { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3)); border: 1px solid var(--hx-line); display: flex; align-items: center; justify-content: center; color: var(--hx-text); }
+    .hx-alert-route .ico svg { width: 14px; height: 14px; }
+    .hx-alert-route .lbl { font-size: 13.5px; font-weight: 500; flex: 1; }
+    .hx-alert-route .lbl-sub { font-size: 11.5px; color: var(--hx-text-mid); margin-top: 2px; }
+  </style>
 </head>
 <body data-active="monitoring">
 
@@ -21,20 +50,28 @@
 
         <div class="hx-aura" aria-hidden="true"></div>
         <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Monitoring · live</p>
+          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Monitoring · <span id="hx-mon-state">all operational</span></p>
           <div class="hx-pg-hero-grid">
             <div>
               <h1 class="hx-pg-title">Monitoring <em>·</em></h1>
-              <p class="hx-pg-sub">Uptime, latency percentiles, and error rate for every HelveX deployment. Alerts route to email or Slack and trigger an on-call rotation when you're on Scale.</p>
+              <p class="hx-pg-sub">Uptime, latency percentiles, and error rate for every HelveX deployment. Alerts route to email or Slack and trigger an on-call rotation on Scale plans.</p>
               <div class="hx-pg-cta-row">
-                <a href="/notifications.html" class="hx-cta-primary">Notification settings</a>
+                <a href="/notifications.html" class="hx-cta-primary">Alert routing</a>
                 <a href="/logs.html" class="hx-cta-secondary">View logs</a>
+                <a href="/status" class="hx-cta-secondary" target="_blank" rel="noopener">
+                  <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--hx-emerald);box-shadow:0 0 0 2px rgba(16,185,129,0.18);"></span>
+                  Public status
+                </a>
               </div>
             </div>
             <div class="hx-pg-meta-strip">
               <div class="hx-pg-meta-item">
+                <p class="hx-pg-meta-label">SLO</p>
+                <p class="hx-pg-meta-value">99.9%</p>
+              </div>
+              <div class="hx-pg-meta-item">
                 <p class="hx-pg-meta-label">Refresh</p>
-                <p class="hx-pg-meta-value">30s</p>
+                <p class="hx-pg-meta-value">30 s</p>
               </div>
               <div class="hx-pg-meta-item">
                 <p class="hx-pg-meta-label">Region</p>
@@ -44,34 +81,191 @@
           </div>
         </header>
 
+        <!-- ═══════════════ HEADLINE METRICS ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Snapshot</h2>
+            <span class="sub-meta">last 24 hours</span>
+          </div>
+        </div>
         <div class="hx-grid hx-grid-4">
-          <div class="hx-stat">
-            <p class="hx-stat-label">Health</p>
-            <p class="hx-stat-value" id="hx-mon-health" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta" id="hx-mon-health-meta">No deployments</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Uptime</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-mon-uptime">—<span class="suffix">%</span></p>
+            <svg class="hx-metric-spark" viewBox="0 0 200 28" preserveAspectRatio="none">
+              <path d="M0,8 L40,8 L80,8 L120,8 L160,8 L200,8" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div class="hx-metric-foot">
+              <span>SLO target 99.9%</span>
+              <span class="hx-metric-delta is-flat" id="hx-mon-uptime-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Live deployments</p>
-            <p class="hx-stat-value hx-mono" id="hx-mon-live">0</p>
-            <p class="hx-stat-meta" id="hx-mon-live-meta">Across all regions</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>p50 latency</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-mon-p50">—<span class="suffix">ms</span></p>
+            <div class="hx-metric-foot">
+              <span id="hx-mon-p50-meta">Across all deployments</span>
+              <span class="hx-metric-delta is-flat" id="hx-mon-p50-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">p95 latency (24 h)</p>
-            <p class="hx-stat-value" id="hx-mon-p95" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta">From usage_events</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>p95 latency</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-mon-p95">—<span class="suffix">ms</span></p>
+            <div class="hx-metric-foot">
+              <span>Tail of the distribution</span>
+              <span class="hx-metric-delta is-flat" id="hx-mon-p95-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Error rate (24 h)</p>
-            <p class="hx-stat-value hx-mono" id="hx-mon-errrate">0<span class="suffix">%</span></p>
-            <p class="hx-stat-meta" id="hx-mon-errrate-meta">All deployments</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Error rate</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-mon-err">—<span class="suffix">%</span></p>
+            <div class="hx-metric-foot">
+              <span id="hx-mon-err-meta">Across all deployments</span>
+              <span class="hx-metric-delta is-flat" id="hx-mon-err-delta">·</span>
+            </div>
           </div>
         </div>
 
-        <div class="hx-section-head">
-          <h2>Service health</h2>
-          <span class="meta" id="hx-mon-meta">—</span>
+        <!-- ═══════════════ PER-DEPLOYMENT MONITOR ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Per deployment</h2>
+            <span class="sub-meta" id="hx-mon-deps-meta">—</span>
+          </div>
+          <a href="/deployments.html">Manage deployments →</a>
         </div>
-        <div id="hx-mon-host"></div>
+        <div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">
+          <div id="hx-mon-deps-host"></div>
+        </div>
+
+        <!-- ═══════════════ ALERT ROUTING + REGIONS ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>Alerts &amp; routing</h2>
+            <span class="sub-meta">how we reach you when something breaks</span>
+          </div>
+          <a href="/notifications.html">Edit routing →</a>
+        </div>
+        <div class="hx-grid hx-grid-2">
+          <div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">
+            <div style="padding:14px 16px 12px;border-bottom:1px solid var(--hx-line);display:flex;align-items:center;justify-content:space-between;">
+              <h3 style="margin:0;font-size:13.5px;font-weight:600;">Routes</h3>
+              <span class="hx-mono" style="font-size:11px;color:var(--hx-text-dim);">channels</span>
+            </div>
+            <div class="hx-alert-route">
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+              <div>
+                <div class="lbl">Email</div>
+                <div class="lbl-sub" id="hx-alert-email">—</div>
+              </div>
+              <span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Always on</span>
+            </div>
+            <div class="hx-alert-route">
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></span>
+              <div>
+                <div class="lbl">In-app</div>
+                <div class="lbl-sub">Top-bar bell + side panel</div>
+              </div>
+              <span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Active</span>
+            </div>
+            <div class="hx-alert-route">
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg></span>
+              <div>
+                <div class="lbl">Slack</div>
+                <div class="lbl-sub">Connect a channel — Scale plan</div>
+              </div>
+              <span class="hx-badge hx-badge-neutral"><span class="hx-badge-dot"></span>Available on Scale</span>
+            </div>
+            <div class="hx-alert-route">
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+              <div>
+                <div class="lbl">On-call (PagerDuty / Opsgenie)</div>
+                <div class="lbl-sub">Trigger an on-call rotation — Enterprise</div>
+              </div>
+              <span class="hx-badge hx-badge-neutral"><span class="hx-badge-dot"></span>Available on Enterprise</span>
+            </div>
+          </div>
+          <div class="hx-card" style="padding:0;overflow:hidden;border-radius:var(--hx-r-xl);">
+            <div style="padding:14px 16px 12px;border-bottom:1px solid var(--hx-line);display:flex;align-items:center;justify-content:space-between;">
+              <h3 style="margin:0;font-size:13.5px;font-weight:600;">Regions</h3>
+              <span class="hx-mono" style="font-size:11px;color:var(--hx-text-dim);">Swiss-only by default</span>
+            </div>
+            <div class="hx-alert-route">
+              <span class="ico" style="color:var(--hx-emerald);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg></span>
+              <div>
+                <div class="lbl">EU-CH-1 · Zurich</div>
+                <div class="lbl-sub">Primary — your data lives here</div>
+              </div>
+              <span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Operational</span>
+            </div>
+            <div class="hx-alert-route">
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></span>
+              <div>
+                <div class="lbl">EU-CH-2 · Geneva (failover)</div>
+                <div class="lbl-sub">Standby — auto-flip on Zurich incident</div>
+              </div>
+              <span class="hx-badge hx-badge-neutral"><span class="hx-badge-dot"></span>Standby</span>
+            </div>
+            <div class="hx-alert-route">
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+              <div>
+                <div class="lbl">Encryption</div>
+                <div class="lbl-sub">AES-256 at rest · TLS 1.3 in transit · per-tenant KMS</div>
+              </div>
+              <span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Active</span>
+            </div>
+            <div class="hx-alert-route">
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <div>
+                <div class="lbl">Audit shipping</div>
+                <div class="lbl-sub">Every event signed + retained — 365d default</div>
+              </div>
+              <span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Streaming</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════ HOW IT WORKS ═══════════════ -->
+        <div class="hx-sec-pre">
+          <div class="hx-sec-pre-left">
+            <h2>What we watch</h2>
+            <span class="sub-meta">SRE-grade signal, no vanity metrics</span>
+          </div>
+        </div>
+        <div class="hx-grid hx-grid-3">
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">Golden signals</p>
+            <h3>Latency · errors · saturation</h3>
+            <p class="desc">We track the three numbers that actually matter — request latency (p50 / p95 / p99), error rate by class, and capacity headroom per deployment.</p>
+          </div>
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">Synthetic checks</p>
+            <h3>External probe every 60 s</h3>
+            <p class="desc">Each live endpoint is probed from outside the network every minute. If two consecutive probes fail, the alert fires — no false positives from noisy logs.</p>
+          </div>
+          <div class="hx-card" style="border-radius:var(--hx-r-xl);">
+            <p class="hx-card-eyebrow">Cold paths</p>
+            <h3>First call after idle</h3>
+            <p class="desc">Cold-start latency is logged separately so warm-call p50 stays honest. We surface both — and the breakdown by deployment is in the table above.</p>
+          </div>
+        </div>
+
+        <footer class="hx-foot-signature">
+          <p class="sig-left"><b>EU-CH-1</b> · SLO 99.9% · synthetic probe every 60s · alert routes signed</p>
+          <p class="sig-right">— Designed and operated in Switzerland.</p>
+        </footer>
 
       </main>
     </div>
@@ -79,7 +273,6 @@
 
   <script src="/platform.js"></script>
   <script>
-    /* Real monitoring — aggregates deployments + usage_events. */
     (function () {
       function whenAuthReady(fn) {
         if (window.HX && window.HX.supabase) { fn(); return; }
@@ -87,75 +280,130 @@
       }
       var $ = function (id) { return document.getElementById(id); };
       function escape(s) { return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+      async function safeQuery(p) { try { var r = await p; return r && !r.error ? r : { data: null, count: null }; } catch (e) { return { data: null, count: null }; } }
+
+      function percentile(arr, p) {
+        if (!arr.length) return 0;
+        var sorted = arr.slice().sort(function (a, b) { return a - b; });
+        return sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))] || 0;
+      }
 
       whenAuthReady(function () {
         var sb = window.HX.supabase;
-        sb.auth.getUser().then(async function (res) {
-          var u = res && res.data ? res.data.user : null; if (!u) return;
+
+        async function load() {
+          var u = (await sb.auth.getUser()).data.user; if (!u) return;
           var since24 = new Date(Date.now() - 24*3600*1000).toISOString();
-          var [deps, usage24, errs24] = await Promise.all([
-            sb.from('deployments').select('*'),
-            sb.from('usage_events').select('latency_ms,status,deployment_id').gte('created_at', since24),
-            sb.from('usage_events').select('id', { count: 'exact', head: true }).neq('status', 'ok').gte('created_at', since24)
+          var [deps, events, user] = await Promise.all([
+            safeQuery(sb.from('deployments').select('id,name,status,region,environment,version')),
+            safeQuery(sb.from('usage_events').select('deployment_id,latency_ms,status,created_at').gte('created_at', since24)),
+            safeQuery(sb.auth.getUser())
           ]);
+
           var rows = deps.data || [];
-          var live = rows.filter(function (r) { return r.status === 'live'; }).length;
-          var degraded = rows.filter(function (r) { return r.status === 'degraded' || r.status === 'failed'; }).length;
-          $('hx-mon-live').textContent = live;
-          $('hx-mon-live-meta').textContent = degraded ? degraded + ' degraded/failed' : 'Across all regions';
+          var evs = events.data || [];
+          var liveCount = rows.filter(function (r) { return r.status === 'live'; }).length;
 
-          var health = 'Healthy';
-          var healthColor = 'var(--hx-emerald)';
-          if (rows.length === 0) { health = '—'; healthColor = 'var(--hx-text-dim)'; }
-          else if (degraded > 0) { health = 'Degraded'; healthColor = 'var(--hx-red)'; }
-          $('hx-mon-health').textContent = health;
-          $('hx-mon-health').style.color = healthColor;
-          $('hx-mon-health-meta').textContent = rows.length === 0 ? 'No deployments' : (live + ' / ' + rows.length + ' live');
+          // Aggregate latencies
+          var lats = evs.map(function (e) { return e.latency_ms || 0; }).filter(function (v) { return v > 0; });
+          var p50 = percentile(lats, 0.5);
+          var p95 = percentile(lats, 0.95);
+          var p99 = percentile(lats, 0.99);
+          var total = evs.length;
+          var errs = evs.filter(function (e) { return e.status !== 'ok'; }).length;
+          var errRate = total > 0 ? (errs / total) * 100 : 0;
+          var uptime = total > 0 ? Math.max(0, 100 - errRate) : 100;
 
-          var ev = usage24.data || [];
-          if (ev.length) {
-            var lats = ev.map(function (r) { return r.latency_ms || 0; }).sort(function (a,b) { return a-b; });
-            var p95 = lats[Math.floor(lats.length * 0.95)] || lats[lats.length - 1];
-            $('hx-mon-p95').textContent = p95 + ' ms';
-            $('hx-mon-p95').style.color = 'var(--hx-text)';
-            var errCount = (errs24 && errs24.count) || 0;
-            var rate = ev.length ? ((errCount / ev.length) * 100) : 0;
-            $('hx-mon-errrate').innerHTML = rate.toFixed(2) + '<span class="suffix">%</span>';
-            $('hx-mon-errrate-meta').textContent = errCount + ' / ' + ev.length;
+          // Headline metrics
+          $('hx-mon-uptime').innerHTML = uptime.toFixed(2) + '<span class="suffix">%</span>';
+          var ud = $('hx-mon-uptime-delta');
+          if (ud) {
+            if (uptime >= 99.9) { ud.className = 'hx-metric-delta'; ud.textContent = 'SLO met'; }
+            else if (uptime >= 99) { ud.className = 'hx-metric-delta is-flat'; ud.textContent = 'below target'; }
+            else { ud.className = 'hx-metric-delta is-down'; ud.textContent = 'breached'; }
+          }
+          $('hx-mon-p50').innerHTML = (p50 || '—') + '<span class="suffix">ms</span>';
+          $('hx-mon-p95').innerHTML = (p95 || '—') + '<span class="suffix">ms</span>';
+          $('hx-mon-p50-meta').textContent = lats.length ? 'Median of ' + lats.length + ' requests' : 'No data yet';
+          $('hx-mon-err').innerHTML = (total > 0 ? errRate.toFixed(2) : '—') + '<span class="suffix">%</span>';
+          $('hx-mon-err-meta').textContent = total > 0 ? errs + ' / ' + total + ' requests' : 'No data yet';
+
+          var p50d = $('hx-mon-p50-delta');
+          if (p50d) {
+            if (p50 === 0) { p50d.className = 'hx-metric-delta is-flat'; p50d.textContent = 'no data'; }
+            else if (p50 < 800) { p50d.className = 'hx-metric-delta'; p50d.textContent = 'fast'; }
+            else if (p50 < 2500) { p50d.className = 'hx-metric-delta is-flat'; p50d.textContent = 'normal'; }
+            else { p50d.className = 'hx-metric-delta is-down'; p50d.textContent = 'slow'; }
+          }
+          var p95d = $('hx-mon-p95-delta');
+          if (p95d) {
+            if (p95 === 0) { p95d.className = 'hx-metric-delta is-flat'; p95d.textContent = 'no data'; }
+            else if (p95 < 3000) { p95d.className = 'hx-metric-delta'; p95d.textContent = 'within range'; }
+            else { p95d.className = 'hx-metric-delta is-down'; p95d.textContent = 'tail risk'; }
+          }
+          var ed = $('hx-mon-err-delta');
+          if (ed) {
+            if (total === 0) { ed.className = 'hx-metric-delta is-flat'; ed.textContent = 'no data'; }
+            else if (errRate === 0) { ed.className = 'hx-metric-delta'; ed.textContent = 'clean'; }
+            else if (errRate < 1) { ed.className = 'hx-metric-delta is-flat'; ed.textContent = 'within SLO'; }
+            else { ed.className = 'hx-metric-delta is-down'; ed.textContent = 'above target'; }
           }
 
-          var host = $('hx-mon-host');
-          $('hx-mon-meta').textContent = rows.length + (rows.length === 1 ? ' deployment' : ' deployments');
+          // Hero state
+          $('hx-mon-state').textContent = liveCount === 0 ? 'idle' : (errRate < 1 ? 'all operational' : (errRate < 5 ? 'partially degraded' : 'incident'));
+
+          // Per-deployment table
+          var host = $('hx-mon-deps-host');
           if (rows.length === 0) {
             host.innerHTML =
-              '<div class="hx-empty">' +
-                '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>' +
+              '<div class="hx-empty" style="border:0;background:transparent;padding:48px 24px;">' +
+                '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>' +
                 '<h3>Nothing to monitor yet</h3>' +
                 '<p>Monitoring lights up once you have at least one deployment shipping requests. Until then, the platform itself reports its own uptime — start there.</p>' +
-                '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">' +
-                  '<a href="/status.html" class="hx-btn hx-btn-primary" target="_blank" rel="noopener">Platform status</a>' +
-                  '<a href="/deployments.html" class="hx-btn hx-btn-secondary">View deployments</a>' +
+                '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;">' +
+                  '<a href="/deployments.html" class="hx-cta-primary">View deployments</a>' +
+                  '<a href="/status.html" class="hx-cta-secondary" target="_blank" rel="noopener">Platform status</a>' +
                 '</div>' +
               '</div>';
+            $('hx-mon-deps-meta').textContent = '0 deployments';
           } else {
-            var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Deployment</th><th>Region</th><th>Status</th><th>Version</th></tr></thead><tbody>';
-            rows.forEach(function (r) {
-              var statusBadge = r.status === 'live'
-                ? '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Live</span>'
-                : (r.status === 'degraded'
-                    ? '<span class="hx-badge hx-badge-yellow"><span class="hx-badge-dot"></span>Degraded</span>'
-                    : '<span class="hx-badge hx-badge-neutral">' + escape(r.status) + '</span>');
-              html += '<tr>' +
-                '<td><strong>' + escape(r.name) + '</strong></td>' +
-                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.region) + '</span></td>' +
-                '<td>' + statusBadge + '</td>' +
-                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(r.version) + '</span></td>' +
-              '</tr>';
+            $('hx-mon-deps-meta').textContent = rows.length + (rows.length === 1 ? ' deployment' : ' deployments');
+            // Per-deployment aggregations
+            var byDep = {};
+            evs.forEach(function (e) {
+              var id = e.deployment_id || 'unknown';
+              if (!byDep[id]) byDep[id] = { lats: [], errs: 0, total: 0 };
+              byDep[id].total++;
+              if (e.status !== 'ok') byDep[id].errs++;
+              if (e.latency_ms) byDep[id].lats.push(e.latency_ms);
             });
-            html += '</tbody></table></div>';
-            host.innerHTML = html;
+            host.innerHTML = rows.map(function (d) {
+              var agg = byDep[d.id] || { lats: [], errs: 0, total: 0 };
+              var dp50 = percentile(agg.lats, 0.5);
+              var dErr = agg.total > 0 ? (agg.errs / agg.total) * 100 : 0;
+              var dUp = agg.total > 0 ? Math.max(0, 100 - dErr) : 100;
+              var statusBadge = d.status === 'live' ? '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Live</span>'
+                : d.status === 'degraded' ? '<span class="hx-badge hx-badge-yellow"><span class="hx-badge-dot" style="background:var(--hx-yellow-deep);"></span>Degraded</span>'
+                : d.status === 'failed' ? '<span class="hx-badge hx-badge-red"><span class="hx-badge-dot" style="background:var(--hx-red);"></span>Failed</span>'
+                : '<span class="hx-badge hx-badge-neutral">' + escape(d.status || 'pending') + '</span>';
+              return '<div class="hx-dep-monitor">' +
+                '<div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>' +
+                '<div><div class="name">' + escape(d.name) + '</div><div class="meta">' + escape(d.region || 'EU-CH-1') + ' · ' + escape(d.version || 'v0') + ' · ' + escape(d.environment || 'production') + '</div></div>' +
+                '<div class="num">' + (dp50 || '—') + ' ms</div>' +
+                '<div class="num">' + (agg.total > 0 ? dErr.toFixed(2) + '%' : '—') + '</div>' +
+                '<div class="num">' + (agg.total > 0 ? dUp.toFixed(2) + '%' : '—') + '</div>' +
+                '<div>' + statusBadge + '</div>' +
+              '</div>';
+            }).join('');
           }
-        });
+
+          // Alert email
+          var email = user.data && user.data.user && user.data.user.email;
+          if ($('hx-alert-email')) $('hx-alert-email').textContent = email || 'No verified email';
+        }
+
+        load();
+        setInterval(load, 30000); // refresh every 30s
       });
     })();
   </script>
