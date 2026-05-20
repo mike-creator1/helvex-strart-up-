@@ -781,7 +781,7 @@
         0 1px 0 var(--hx-line);
     }
 
-    /* Voice input — listening pill + transient error banner */
+    /* Voice input — slim status pill (used for transcribing state) */
     .hx-voice-status {
       display: inline-flex; align-items: center; gap: 6px;
       font-size: 11.5px; color: var(--hx-red);
@@ -799,6 +799,161 @@
       0%, 100% { opacity: 0.55; transform: scale(1); }
       50%      { opacity: 1;    transform: scale(1.25); }
     }
+
+    /* ─── Premium voice recording panel ────────────────────────
+       Replaces the textarea row with a dramatic, editorial recording
+       experience: live waveform bars, MM:SS timer, cancel + commit
+       buttons, breathing red dot. Slides up from the bottom. */
+    .hx-voice-panel {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 8px 8px 8px 14px;
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-red-soft) 35%, var(--hx-surface)) 0%,
+        var(--hx-surface) 100%);
+      border-radius: 14px;
+      border: 1px solid color-mix(in srgb, var(--hx-red) 18%, var(--hx-line));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+        0 4px 14px -6px color-mix(in srgb, var(--hx-red) 35%, transparent);
+      animation: hx-voice-panel-in 0.32s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      position: relative;
+      overflow: hidden;
+    }
+    .hx-voice-panel::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 110%,
+        color-mix(in srgb, var(--hx-red) 16%, transparent) 0%,
+        transparent 60%);
+      pointer-events: none;
+      animation: hx-voice-glow 2.6s ease-in-out infinite;
+    }
+    @keyframes hx-voice-panel-in {
+      from { opacity: 0; transform: translateY(8px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes hx-voice-glow {
+      0%, 100% { opacity: 0.7; }
+      50%      { opacity: 1; }
+    }
+    .hx-voice-panel-left {
+      display: inline-flex; align-items: center; gap: 10px;
+      flex-shrink: 0;
+      position: relative; z-index: 1;
+    }
+    .hx-voice-rec-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--hx-red);
+      box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--hx-red) 18%, transparent),
+        0 0 12px color-mix(in srgb, var(--hx-red) 60%, transparent);
+      animation: hx-voice-rec-pulse 1.4s ease-out infinite;
+    }
+    @keyframes hx-voice-rec-pulse {
+      0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--hx-red) 18%, transparent), 0 0 10px color-mix(in srgb, var(--hx-red) 50%, transparent); transform: scale(1); }
+      50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--hx-red) 8%,  transparent), 0 0 18px color-mix(in srgb, var(--hx-red) 75%, transparent); transform: scale(1.1); }
+    }
+    .hx-voice-panel-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--hx-red);
+    }
+    .hx-voice-timer {
+      font-family: var(--hx-mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--hx-text);
+      letter-spacing: 0.04em;
+      font-variant-numeric: tabular-nums;
+      padding-left: 4px;
+      border-left: 1px solid color-mix(in srgb, var(--hx-red) 22%, var(--hx-line));
+      padding-left: 10px;
+      margin-left: 2px;
+    }
+    .hx-voice-wave {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      flex: 1;
+      height: 36px;
+      justify-content: center;
+      position: relative; z-index: 1;
+    }
+    .hx-voice-wave span {
+      display: block;
+      width: 3px;
+      border-radius: 2px;
+      background: linear-gradient(180deg, var(--hx-red) 0%, color-mix(in srgb, var(--hx-red) 60%, transparent) 100%);
+      animation: hx-voice-bar 1s ease-in-out infinite;
+      box-shadow: 0 0 6px color-mix(in srgb, var(--hx-red) 35%, transparent);
+    }
+    .hx-voice-wave span:nth-child(1)  { height: 30%; animation-delay: -0.92s; animation-duration: 0.94s; }
+    .hx-voice-wave span:nth-child(2)  { height: 55%; animation-delay: -0.61s; animation-duration: 1.08s; }
+    .hx-voice-wave span:nth-child(3)  { height: 80%; animation-delay: -0.33s; animation-duration: 0.86s; }
+    .hx-voice-wave span:nth-child(4)  { height: 45%; animation-delay: -0.22s; animation-duration: 1.16s; }
+    .hx-voice-wave span:nth-child(5)  { height: 70%; animation-delay: -0.77s; animation-duration: 0.92s; }
+    .hx-voice-wave span:nth-child(6)  { height: 95%; animation-delay: -0.41s; animation-duration: 1.04s; }
+    .hx-voice-wave span:nth-child(7)  { height: 60%; animation-delay: -0.15s; animation-duration: 0.88s; }
+    .hx-voice-wave span:nth-child(8)  { height: 85%; animation-delay: -0.55s; animation-duration: 1.12s; }
+    .hx-voice-wave span:nth-child(9)  { height: 40%; animation-delay: -0.83s; animation-duration: 0.96s; }
+    .hx-voice-wave span:nth-child(10) { height: 75%; animation-delay: -0.28s; animation-duration: 1.06s; }
+    .hx-voice-wave span:nth-child(11) { height: 50%; animation-delay: -0.69s; animation-duration: 0.84s; }
+    .hx-voice-wave span:nth-child(12) { height: 88%; animation-delay: -0.46s; animation-duration: 1.14s; }
+    .hx-voice-wave span:nth-child(13) { height: 35%; animation-delay: -0.07s; animation-duration: 0.94s; }
+    .hx-voice-wave span:nth-child(14) { height: 65%; animation-delay: -0.74s; animation-duration: 1.02s; }
+    .hx-voice-wave span:nth-child(15) { height: 48%; animation-delay: -0.36s; animation-duration: 0.90s; }
+    @keyframes hx-voice-bar {
+      0%, 100% { transform: scaleY(0.35); opacity: 0.55; }
+      50%      { transform: scaleY(1);    opacity: 1; }
+    }
+    .hx-voice-panel-actions {
+      display: inline-flex; align-items: center; gap: 6px;
+      flex-shrink: 0;
+      position: relative; z-index: 1;
+    }
+    .hx-voice-cancel,
+    .hx-voice-done {
+      width: 34px; height: 34px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 11px;
+      cursor: pointer;
+      border: 1px solid var(--hx-line);
+      background: var(--hx-surface);
+      color: var(--hx-text-mid);
+      transition: transform 0.14s ease, box-shadow 0.18s ease, background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+      box-shadow: var(--hx-shadow-xs);
+      padding: 0;
+    }
+    .hx-voice-cancel:hover {
+      background: var(--hx-red-soft);
+      color: var(--hx-red);
+      border-color: color-mix(in srgb, var(--hx-red) 30%, var(--hx-line));
+      transform: translateY(-1px);
+    }
+    .hx-voice-cancel svg { width: 15px; height: 15px; }
+    .hx-voice-done {
+      background: linear-gradient(180deg, var(--hx-red) 0%, color-mix(in srgb, var(--hx-red) 80%, #000) 100%);
+      color: #fff;
+      border-color: var(--hx-red);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 22%, transparent),
+        0 1px 2px rgba(0,0,0,0.10),
+        0 6px 18px -6px color-mix(in srgb, var(--hx-red) 60%, transparent);
+    }
+    .hx-voice-done:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 26%, transparent),
+        0 2px 4px rgba(0,0,0,0.12),
+        0 10px 26px -8px color-mix(in srgb, var(--hx-red) 75%, transparent);
+    }
+    .hx-voice-done svg { width: 16px; height: 16px; }
+    /* While the voice panel is up, hide the normal input bar */
+    .hx-chat-input-row.is-recording-mode .hx-chat-input-bar { display: none; }
     .hx-voice-error {
       font-size: 11.5px;
       color: var(--hx-red);
@@ -844,6 +999,12 @@
       .hx-msg.is-user .hx-msg-content { max-width: 88%; }
       .hx-chat-foot { font-size: 10.5px; gap: 10px; }
       .hx-chat-send { width: 34px; height: 34px; }
+      .hx-voice-panel { padding: 6px 6px 6px 12px; gap: 10px; }
+      .hx-voice-panel-label { display: none; }
+      .hx-voice-wave { height: 30px; gap: 2px; }
+      .hx-voice-wave span { width: 2.5px; }
+      .hx-voice-wave span:nth-child(n+12) { display: none; }
+      .hx-voice-cancel, .hx-voice-done { width: 32px; height: 32px; border-radius: 10px; }
     }
   </style>
 </head>
@@ -908,6 +1069,29 @@
             <div class="hx-chat-compose-inner">
               <div class="hx-chat-input-row" id="hx-c-input-row">
                 <div class="hx-chat-attach-bar" id="hx-c-attach-bar"></div>
+
+                <!-- Premium voice recording panel — replaces the textarea when recording -->
+                <div class="hx-voice-panel" id="hx-c-voice-panel" hidden>
+                  <div class="hx-voice-panel-left">
+                    <span class="hx-voice-rec-dot" aria-hidden="true"></span>
+                    <span class="hx-voice-panel-label">Recording</span>
+                    <span class="hx-voice-timer" id="hx-c-voice-timer">00:00</span>
+                  </div>
+                  <div class="hx-voice-wave" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                  <div class="hx-voice-panel-actions">
+                    <button class="hx-voice-cancel" id="hx-c-voice-cancel" type="button" aria-label="Cancel recording" title="Cancel">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                    <button class="hx-voice-done" id="hx-c-voice-done" type="button" aria-label="Stop and transcribe" title="Stop & transcribe">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                  </div>
+                </div>
+
                 <div class="hx-chat-input-bar">
                   <button
                     class="hx-chat-tool-btn"
@@ -1902,19 +2086,48 @@
         var micStream     = null;     // MediaStream for the open mic
         var voiceState    = 'idle';   // 'idle' | 'starting' | 'recording' | 'transcribing'
         var recordingMime = '';       // negotiated MIME type
+        var voicePanel    = $('hx-c-voice-panel');
+        var voiceTimerEl  = $('hx-c-voice-timer');
+        var voiceCancelBtn= $('hx-c-voice-cancel');
+        var voiceDoneBtn  = $('hx-c-voice-done');
+        var voiceCanceled = false;    // set by cancel button to skip transcription
+        var voiceTimerHandle = null;
+        var voiceStartedAt   = 0;
+        var inputRowEl    = document.querySelector('.hx-chat-input-row');
+
+        function fmtVoiceTime(ms) {
+          var s = Math.max(0, Math.floor(ms / 1000));
+          var mm = Math.floor(s / 60);
+          var ss = s % 60;
+          return (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss;
+        }
+        function startVoiceTimer() {
+          voiceStartedAt = Date.now();
+          if (voiceTimerEl) voiceTimerEl.textContent = '00:00';
+          if (voiceTimerHandle) clearInterval(voiceTimerHandle);
+          voiceTimerHandle = setInterval(function () {
+            if (voiceTimerEl) voiceTimerEl.textContent = fmtVoiceTime(Date.now() - voiceStartedAt);
+          }, 250);
+        }
+        function stopVoiceTimer() {
+          if (voiceTimerHandle) { clearInterval(voiceTimerHandle); voiceTimerHandle = null; }
+        }
 
         function setVoiceState(next) {
           voiceState = next;
           if (next === 'recording') {
             micBtn.classList.add('is-recording');
             micBtn.setAttribute('aria-pressed', 'true');
-            if (listeningEl) {
-              listeningEl.style.display = '';
-              listeningEl.querySelector('span:last-child').textContent = 'Listening…';
-            }
+            if (voicePanel) voicePanel.hidden = false;
+            if (inputRowEl) inputRowEl.classList.add('is-recording-mode');
+            if (listeningEl) listeningEl.style.display = 'none';
+            startVoiceTimer();
           } else if (next === 'transcribing') {
             micBtn.classList.remove('is-recording');
             micBtn.setAttribute('aria-pressed', 'false');
+            if (voicePanel) voicePanel.hidden = true;
+            if (inputRowEl) inputRowEl.classList.remove('is-recording-mode');
+            stopVoiceTimer();
             if (listeningEl) {
               listeningEl.style.display = '';
               listeningEl.querySelector('span:last-child').textContent = 'Transcribing…';
@@ -1923,6 +2136,9 @@
             // idle / starting
             micBtn.classList.remove('is-recording');
             micBtn.setAttribute('aria-pressed', 'false');
+            if (voicePanel) voicePanel.hidden = true;
+            if (inputRowEl) inputRowEl.classList.remove('is-recording-mode');
+            stopVoiceTimer();
             if (listeningEl) listeningEl.style.display = 'none';
           }
           refreshSendDisabled();
@@ -2311,6 +2527,35 @@
         });
 
         micBtn.addEventListener('click', toggleVoice);
+
+        if (voiceDoneBtn) {
+          voiceDoneBtn.addEventListener('click', function () {
+            // Same as tapping the mic again while recording: stop & transcribe
+            if (voiceState === 'recording') stopVoice();
+          });
+        }
+        if (voiceCancelBtn) {
+          voiceCancelBtn.addEventListener('click', function () {
+            // Abort the recording without uploading for transcription
+            if (voiceState !== 'recording' && voiceState !== 'starting') return;
+            voiceCanceled = true;
+            // Detach onstop handler so we don't trigger transcription
+            try {
+              if (mediaRecorder) mediaRecorder.onstop = function () {
+                try { cleanupMicStream(); } catch (e) {}
+                mediaRecorder = null;
+                audioChunks = [];
+                voiceCanceled = false;
+                setVoiceState('idle');
+              };
+              if (mediaRecorder && voiceState === 'recording') mediaRecorder.stop();
+              else { cleanupMicStream(); setVoiceState('idle'); }
+            } catch (e) {
+              cleanupMicStream();
+              setVoiceState('idle');
+            }
+          });
+        }
 
         inputEl.addEventListener('input', function () {
           refreshSendDisabled();
