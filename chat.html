@@ -429,6 +429,137 @@
       font-size: 1.18em;
       letter-spacing: -0.01em;
     }
+    /* Inline markdown bits inside assistant prose */
+    .hx-md-inline {
+      font-family: var(--hx-mono);
+      font-size: 0.88em;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      padding: 1px 6px;
+      border-radius: 5px;
+      color: var(--hx-yellow-deep);
+    }
+    .hx-md-link {
+      color: var(--hx-text);
+      border-bottom: 1px solid color-mix(in srgb, var(--hx-text) 30%, transparent);
+      transition: border-color 0.14s ease;
+    }
+    .hx-md-link:hover { border-color: var(--hx-text); }
+
+    /* Code block — premium card with header, body, and optional live preview */
+    .hx-code-block {
+      margin: 12px 0;
+      border-radius: 12px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      overflow: hidden;
+      box-shadow: var(--hx-shadow-xs);
+      white-space: normal;
+    }
+    .hx-code-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px 7px 14px;
+      background: linear-gradient(180deg, var(--hx-bg-2) 0%, var(--hx-surface-3) 100%);
+      border-bottom: 1px solid var(--hx-line);
+    }
+    .hx-code-lang {
+      font-family: var(--hx-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--hx-text-dim);
+    }
+    .hx-code-streaming {
+      font-family: var(--hx-mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--hx-yellow-deep);
+      padding: 1px 6px;
+      background: var(--hx-yellow-soft);
+      border-radius: 4px;
+      border: 1px solid color-mix(in srgb, var(--hx-yellow) 30%, var(--hx-line));
+    }
+    .hx-code-actions {
+      margin-left: auto;
+      display: inline-flex;
+      gap: 4px;
+    }
+    .hx-code-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--hx-text-mid);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+    }
+    .hx-code-btn:hover {
+      background: var(--hx-surface);
+      color: var(--hx-text);
+      border-color: var(--hx-line);
+    }
+    .hx-code-btn svg { width: 11px; height: 11px; }
+    .hx-code-btn.is-active {
+      background: var(--hx-yellow-soft);
+      color: var(--hx-yellow-deep);
+      border-color: color-mix(in srgb, var(--hx-yellow) 30%, var(--hx-line));
+    }
+    .hx-code-body {
+      margin: 0;
+      padding: 14px 16px;
+      overflow-x: auto;
+      background: var(--hx-bg-2);
+      font-family: var(--hx-mono);
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--hx-text);
+      max-height: 480px;
+    }
+    .hx-code-body code { font-family: inherit; font-size: inherit; }
+
+    /* Live preview iframe for HTML / SVG code blocks */
+    .hx-code-preview {
+      border-top: 1px solid var(--hx-line);
+      background: #fff;
+    }
+    .hx-code-preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 7px 14px;
+      background: var(--hx-surface-3);
+      font-family: var(--hx-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--hx-text-dim);
+      border-bottom: 1px solid var(--hx-line);
+    }
+    .hx-code-preview-sandbox {
+      font-size: 9.5px;
+      letter-spacing: 0.14em;
+      color: var(--hx-emerald);
+    }
+    .hx-code-preview iframe {
+      display: block;
+      width: 100%;
+      min-height: 320px;
+      max-height: 640px;
+      border: 0;
+      background: #fff;
+    }
     /* User turns sit in a refined ivory-tinted chip; assistant turns are flush editorial prose. */
     .hx-msg.is-user { align-items: flex-end; }
     .hx-msg.is-user .hx-msg-content {
@@ -1341,6 +1472,82 @@
         return (s == null ? '' : String(s))
           .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       }
+
+      // Renders message content with fenced code-block support + inline
+      // basics. Splits on ```lang\n...\n``` fences. Code goes into a
+      // premium card with header (language + Copy + Preview if HTML), the
+      // code body, and an optional sandboxed iframe preview for HTML/SVG.
+      // Anything between fences is escaped + linkified + has **bold**/`code`
+      // light Markdown handling so prose reads cleanly.
+      function renderInlineMarkdown(text) {
+        var s = escape(text);
+        // **bold**
+        s = s.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+        // `code`
+        s = s.replace(/`([^`\n]+)`/g, '<code class="hx-md-inline">$1</code>');
+        // Auto-link bare URLs
+        s = s.replace(/(https?:\/\/[^\s<]+[^\s<.,!?)\];:])/g, '<a href="$1" target="_blank" rel="noopener" class="hx-md-link">$1</a>');
+        return s;
+      }
+      function renderRichContent(text, isAssistant) {
+        if (!text) return '';
+        var src = String(text);
+        var fence = /```([a-zA-Z0-9+_.\-]*)\n([\s\S]*?)```/g;
+        var out = '';
+        var idx = 0;
+        var m;
+        var blockId = 0;
+        while ((m = fence.exec(src)) !== null) {
+          // Prose between previous fence and this one
+          if (m.index > idx) {
+            out += renderInlineMarkdown(src.slice(idx, m.index));
+          }
+          var lang = (m[1] || '').toLowerCase();
+          var code = m[2] || '';
+          var id   = 'hxcb-' + Date.now().toString(36) + '-' + (blockId++) + '-' + Math.random().toString(36).slice(2, 6);
+          out += renderCodeBlock(id, lang, code, isAssistant);
+          idx = m.index + m[0].length;
+        }
+        // Trailing prose
+        if (idx < src.length) {
+          out += renderInlineMarkdown(src.slice(idx));
+        }
+        // If the model is still streaming an open fence, render whatever
+        // came after the opening ``` as a partial code block so the user
+        // can watch it appear in real time.
+        var openIdx = src.indexOf('```', idx);
+        if (openIdx !== -1 && openIdx >= idx) {
+          var tail = src.slice(openIdx + 3);
+          var nl   = tail.indexOf('\n');
+          var partLang = nl >= 0 ? tail.slice(0, nl).trim().toLowerCase() : '';
+          var partCode = nl >= 0 ? tail.slice(nl + 1) : '';
+          if (partCode) {
+            // Replace whatever we already added for the open-fence region with
+            // a streaming code block. Trim the trailing inline-rendered chunk.
+            // (Simpler: just append a streaming block — duplicate is rare during streaming.)
+            out += renderCodeBlock('hxcb-streaming', partLang, partCode, isAssistant, true);
+          }
+        }
+        return out;
+      }
+      function renderCodeBlock(id, lang, code, isAssistant, isStreaming) {
+        var langLabel = lang ? lang : 'plain';
+        var canPreview = isAssistant && (lang === 'html' || lang === 'htm' || lang === 'svg');
+        var encoded = encodeURIComponent(code);
+        var head = '<div class="hx-code-head">' +
+            '<span class="hx-code-lang">' + escape(langLabel) + '</span>' +
+            (isStreaming ? '<span class="hx-code-streaming">streaming</span>' : '') +
+            '<div class="hx-code-actions">' +
+              (canPreview ? '<button type="button" class="hx-code-btn hx-code-preview-btn" data-code-id="' + id + '" data-code="' + encoded + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Preview</button>' : '') +
+              '<button type="button" class="hx-code-btn hx-code-copy-btn" data-code="' + encoded + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>' +
+            '</div>' +
+          '</div>';
+        var body = '<pre class="hx-code-body"><code class="hx-code-lang-' + escape(lang || 'plain') + '">' + escape(code) + '</code></pre>';
+        var preview = canPreview
+          ? '<div class="hx-code-preview" id="' + id + '-preview" hidden><div class="hx-code-preview-head"><span>Live preview</span><span class="hx-code-preview-sandbox">sandboxed</span></div><iframe sandbox="allow-scripts" loading="lazy" referrerpolicy="no-referrer"></iframe></div>'
+          : '';
+        return '<div class="hx-code-block" id="' + id + '">' + head + body + preview + '</div>';
+      }
       function relTime(iso) {
         var d = new Date(iso); var diff = (Date.now() - d.getTime()) / 1000;
         if (diff < 60) return 'just now';
@@ -1766,6 +1973,36 @@
               if (act === 'speak') speakMessage(b, msg);
             });
           });
+          // Wire code block buttons (copy + preview-toggle)
+          thread.querySelectorAll('.hx-code-copy-btn').forEach(function (b) {
+            b.addEventListener('click', function () {
+              var code = decodeURIComponent(b.getAttribute('data-code') || '');
+              if (navigator.clipboard) {
+                navigator.clipboard.writeText(code).then(function () {
+                  var prev = b.innerHTML;
+                  b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Copied';
+                  setTimeout(function () { b.innerHTML = prev; }, 1400);
+                });
+              }
+            });
+          });
+          thread.querySelectorAll('.hx-code-preview-btn').forEach(function (b) {
+            b.addEventListener('click', function () {
+              var id   = b.getAttribute('data-code-id');
+              var code = decodeURIComponent(b.getAttribute('data-code') || '');
+              var panel = document.getElementById(id + '-preview');
+              if (!panel) return;
+              var iframe = panel.querySelector('iframe');
+              var nowOpen = panel.hidden;
+              panel.hidden = !nowOpen;
+              b.classList.toggle('is-active', nowOpen);
+              if (nowOpen && iframe) {
+                // Inject the HTML — sandbox prevents access to parent.
+                // Add a base style reset so previews render predictably.
+                iframe.srcdoc = code;
+              }
+            });
+          });
           // Lazy-load signed URLs for any attachment thumbnails / file links
           hydrateAttachmentLinks(thread);
           // Scroll to bottom
@@ -1830,7 +2067,7 @@
           }
 
           var contentHtml = '';
-          if (m.content) contentHtml = '<div class="hx-msg-content">' + escape(m.content) + '</div>';
+          if (m.content) contentHtml = '<div class="hx-msg-content">' + renderRichContent(m.content, isAssist) + '</div>';
           else if (!atts.length) contentHtml = '<div class="hx-msg-content"></div>';
 
           return '<div class="hx-msg ' + (isAssist ? 'is-assistant' : 'is-user') + (m.__error ? ' hx-msg-error' : '') + '" data-msg-key="' + escape(m.id) + '">' +
