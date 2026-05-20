@@ -1683,7 +1683,70 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
    with light text on top — unreadable. We re-bind every such
    surface to the dark theme's `--hx-surface` and `--hx-bg-2` here
    so we don't have to touch ~20 individual HTML files.
+
+   User requirement: NO white anywhere in dark mode. We use
+   !important here to beat the page-local rules — that's the only
+   reliable way to override `.hx-foo input { background: #fff }`
+   declarations that ship with their own specificity.
    ══════════════════════════════════════════════════════════════ */
+
+/* Force every form control black in dark mode, regardless of where
+   the rule defining it lives. Skips visual-only inputs that don't
+   carry a background of their own (checkbox, radio, range). */
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+  border-color: var(--hx-line) !important;
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: var(--hx-text-dim) !important;
+  opacity: 1;
+}
+html[data-theme="dark"] select option {
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+/* Page-local card / drawer / modal classes that hardcode white. */
+html[data-theme="dark"] .hx-con-card,
+html[data-theme="dark"] .hx-con-new-form,
+html[data-theme="dark"] .hx-deal,
+html[data-theme="dark"] .hx-deal-card,
+html[data-theme="dark"] .hx-deal-add,
+html[data-theme="dark"] .hx-deals-stat,
+html[data-theme="dark"] .hx-form-card,
+html[data-theme="dark"] .hx-drawer,
+html[data-theme="dark"] .hx-timeline-dot,
+html[data-theme="dark"] .hx-tpl,
+html[data-theme="dark"] .hx-tool-card,
+html[data-theme="dark"] .hx-gen,
+html[data-theme="dark"] .hx-variant,
+html[data-theme="dark"] .hx-modal,
+html[data-theme="dark"] .hx-persona-pill,
+html[data-theme="dark"] .hx-persona-menu,
+html[data-theme="dark"] .hx-thread-pane,
+html[data-theme="dark"] .hx-asst-main {
+  background-color: #000000 !important;
+  border-color: var(--hx-line) !important;
+}
+
+/* Empty/onboarding panels with dashed borders. */
+html[data-theme="dark"] .hx-empty-state,
+html[data-theme="dark"] .hx-wb-onboard,
+html[data-theme="dark"] .hx-mem-empty,
+html[data-theme="dark"] .hx-con-onboard,
+html[data-theme="dark"] .hx-svc-onboard {
+  background-color: #000000 !important;
+  border-color: var(--hx-line) !important;
+}
+
+/* Hover variants that flip back to white on the deal-add affordance. */
+html[data-theme="dark"] .hx-deal-add:hover {
+  background-color: #0A0A0A !important;
+}
 
 /* Named empty-state / onboarding cards (workbench, memory,
    consulting, services, marketing, automation, CRM). */
