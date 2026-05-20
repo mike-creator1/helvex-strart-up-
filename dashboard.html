@@ -4,95 +4,273 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Overview — HelveX</title>
-  <meta name="description" content="HelveX client portal — your workspace overview, recent chats, artifacts, usage, and engagements at a glance." />
+  <meta name="description" content="HelveX client portal — your workspace at a glance: credits, recent work, active engagement, and the shortcuts you reach for most." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
   <style>
-    /* Active-project banner — visible only when the user has scoped
-       the workspace to a project from chat or projects. */
-    .hx-active-bar {
-      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-      padding: 10px 14px; margin: 0 0 14px;
-      background: var(--hx-yellow-soft);
-      border: 1px solid rgba(252, 211, 77, 0.45);
-      border-radius: var(--hx-r);
-    }
-    .hx-active-bar[hidden] { display: none; }
-    .hx-active-bar-kicker {
-      font-family: var(--hx-mono);
-      font-size: 10px; font-weight: 600; letter-spacing: 0.10em;
-      text-transform: uppercase; color: var(--hx-yellow-deep);
-    }
-    .hx-active-bar-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--hx-yellow-deep);
-      display: inline-block;
-      box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.28);
-    }
-    .hx-active-bar-name {
-      font-size: 13px; font-weight: 600; color: var(--hx-text);
-      flex: 1; min-width: 0;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .hx-active-bar-action {
-      font-size: 12px; font-weight: 500; color: var(--hx-text-mid);
-      background: transparent; border: 0;
-      padding: 4px 8px; border-radius: 6px; cursor: pointer;
-      text-decoration: none;
-      transition: color 0.12s, background 0.12s;
-    }
-    .hx-active-bar-action:hover { color: var(--hx-text); background: rgba(0,0,0,0.04); }
+    /* ═══════════════════════════════════════════════════════════
+       PREMIUM OVERVIEW — Linear / Stripe / Anthropic Console feel
+       Subtle gradients, serif accent numbers, generous spacing.
+       Lives in this file rather than platform.css because no other
+       surface needs these treatments.
+       ═══════════════════════════════════════════════════════════ */
 
-    /* Quick-action tile — primary CTA grid. */
-    .hx-qa {
-      display: block;
-      padding: 16px;
+    /* Hero — generous spacing + time-aware greeting + status pill */
+    .hx-hero {
+      position: relative;
+      padding: 4px 0 18px;
+      margin-bottom: 4px;
+      border-bottom: 1px solid var(--hx-line);
+    }
+    .hx-hero-row {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 22px; flex-wrap: wrap;
+    }
+    .hx-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--hx-mono);
+      font-size: 10.5px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--hx-text-dim);
+      margin: 0 0 10px;
+    }
+    .hx-hero-eyebrow-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--hx-emerald);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+      animation: hx-hero-pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes hx-hero-pulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18); }
+      50%      { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.06); }
+    }
+    .hx-hero-title {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: -0.024em;
+      line-height: 1.1;
+      color: var(--hx-text);
+    }
+    .hx-hero-title em {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -0.008em;
+      font-size: 1.06em;
+    }
+    .hx-hero-sub {
+      margin: 8px 0 0;
+      font-size: 13.5px;
+      color: var(--hx-text-mid);
+      max-width: 640px;
+      line-height: 1.55;
+    }
+    .hx-hero-aside {
+      display: flex; flex-direction: column; gap: 10px;
+      align-items: flex-end; flex-shrink: 0;
+    }
+    .hx-hero-meta {
+      display: flex; gap: 14px; align-items: center;
+      font-family: var(--hx-mono);
+      font-size: 11px; color: var(--hx-text-dim);
+    }
+    .hx-hero-meta b { color: var(--hx-text); font-weight: 500; }
+    .hx-hero-cta-row {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+
+    /* Premium metric tiles — bigger numbers in Instrument Serif,
+       optional delta + progress. */
+    .hx-metric {
+      position: relative;
       background: var(--hx-surface);
       border: 1px solid var(--hx-line);
-      border-radius: var(--hx-r);
-      text-decoration: none; color: var(--hx-text);
-      transition: border-color 0.12s, transform 0.12s, box-shadow 0.12s;
-      position: relative;
+      border-radius: var(--hx-r-lg);
+      padding: 18px 20px 16px;
+      transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s;
+      overflow: hidden;
     }
-    .hx-qa:hover {
+    .hx-metric:hover {
       border-color: var(--hx-line-strong);
-      transform: translateY(-1px);
       box-shadow: var(--hx-shadow-sm);
     }
-    .hx-qa-head {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 8px;
+    .hx-metric-label {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px;
+      font-family: var(--hx-mono);
+      font-size: 10.5px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.10em;
+      color: var(--hx-text-dim);
+      margin: 0 0 12px;
     }
-    .hx-qa-ico {
-      width: 32px; height: 32px;
-      border-radius: var(--hx-r-sm);
+    .hx-metric-label .ico {
+      width: 24px; height: 24px;
+      border-radius: var(--hx-r-xs);
       background: var(--hx-bg-2);
       border: 1px solid var(--hx-line);
       display: flex; align-items: center; justify-content: center;
+      color: var(--hx-text-mid);
+    }
+    .hx-metric-label .ico svg { width: 12px; height: 12px; }
+    .hx-metric-value {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 38px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
       color: var(--hx-text);
-      flex-shrink: 0;
+      line-height: 1;
+      margin: 0 0 8px;
+      font-variant-numeric: tabular-nums;
     }
-    .hx-qa-ico svg { width: 15px; height: 15px; }
-    .hx-qa-title { font-size: 13.5px; font-weight: 600; letter-spacing: -0.012em; }
-    .hx-qa-desc { font-size: 12px; color: var(--hx-text-mid); line-height: 1.5; }
-    .hx-qa-arrow {
-      position: absolute; top: 14px; right: 14px;
-      color: var(--hx-text-dim);
-      transition: color 0.12s, transform 0.12s;
+    .hx-metric-value .suffix {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--hx-text-mid);
+      letter-spacing: 0;
+      margin-left: 4px;
     }
-    .hx-qa:hover .hx-qa-arrow { color: var(--hx-text); transform: translate(2px, -2px); }
+    .hx-metric-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--hx-text-mid);
+      line-height: 1.4;
+    }
+    .hx-metric-delta {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-family: var(--hx-mono);
+      font-size: 11px; font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--hx-emerald-soft);
+      color: var(--hx-emerald);
+    }
+    .hx-metric-delta.is-down { background: var(--hx-red-soft); color: var(--hx-red); }
+    .hx-metric-delta.is-flat { background: var(--hx-bg-2); color: var(--hx-text-mid); }
 
-    /* Recent list row — used for chats, artifacts, activity */
+    /* Premium quick-action — gradient icon tile, hover lift */
+    .hx-qa2 {
+      position: relative;
+      display: block;
+      padding: 18px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-lg);
+      text-decoration: none; color: var(--hx-text);
+      transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s;
+      overflow: hidden;
+    }
+    .hx-qa2:hover {
+      border-color: var(--hx-line-strong);
+      transform: translateY(-2px);
+      box-shadow: var(--hx-shadow);
+    }
+    .hx-qa2-ico {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3));
+      border: 1px solid var(--hx-line);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--hx-text);
+      margin-bottom: 12px;
+      box-shadow: var(--hx-shadow-xs);
+    }
+    .hx-qa2-ico svg { width: 16px; height: 16px; }
+    .hx-qa2-title {
+      font-size: 14px; font-weight: 600;
+      letter-spacing: -0.012em;
+      margin: 0 0 4px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .hx-qa2-title .arrow {
+      color: var(--hx-text-dim);
+      transition: transform 0.14s, color 0.14s;
+    }
+    .hx-qa2:hover .hx-qa2-title .arrow {
+      transform: translateX(3px);
+      color: var(--hx-text);
+    }
+    .hx-qa2-desc {
+      font-size: 12.5px;
+      color: var(--hx-text-mid);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .hx-qa2-kbd {
+      position: absolute; top: 16px; right: 16px;
+      font-family: var(--hx-mono);
+      font-size: 10px; font-weight: 600;
+      padding: 2px 6px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: 4px;
+      color: var(--hx-text-dim);
+      letter-spacing: 0;
+    }
+
+    /* Active engagement — premium card with yellow accent strip */
+    .hx-engagement-card {
+      position: relative;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-lg);
+      padding: 22px 24px;
+      overflow: hidden;
+    }
+    .hx-engagement-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; bottom: 0; width: 3px;
+      background: linear-gradient(180deg, var(--hx-yellow), var(--hx-yellow-deep));
+    }
+    .hx-engagement-card .kicker {
+      font-family: var(--hx-mono);
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--hx-yellow-deep);
+      margin: 0 0 6px;
+    }
+    .hx-engagement-card h3 {
+      margin: 0 0 4px;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.014em;
+      color: var(--hx-text);
+    }
+    .hx-engagement-card .desc {
+      margin: 6px 0 0;
+      color: var(--hx-text-mid);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .hx-engagement-card .foot {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--hx-line-soft);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 14px; flex-wrap: wrap;
+    }
+    .hx-engagement-card .foot .meta {
+      font-family: var(--hx-mono);
+      font-size: 11.5px;
+      color: var(--hx-text-dim);
+      display: flex; gap: 14px; flex-wrap: wrap;
+    }
+    .hx-engagement-card .foot .meta b { color: var(--hx-text-mid); font-weight: 500; }
+    .hx-engagement-card .foot .actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+    /* Recent list row */
     .hx-list-row {
       display: grid;
-      grid-template-columns: 24px minmax(0, 1fr) auto;
+      grid-template-columns: 28px minmax(0, 1fr) auto;
       gap: 12px;
       align-items: center;
-      padding: 11px 14px;
+      padding: 12px 16px;
       border-top: 1px solid var(--hx-line-soft);
       text-decoration: none;
       color: var(--hx-text);
@@ -101,18 +279,18 @@
     .hx-list-row:first-child { border-top: 0; }
     .hx-list-row:hover { background: var(--hx-bg-2); }
     .hx-list-row .glyph {
-      width: 24px; height: 24px;
-      border-radius: var(--hx-r-xs);
+      width: 28px; height: 28px;
+      border-radius: 7px;
       background: var(--hx-bg-2);
       border: 1px solid var(--hx-line);
       display: flex; align-items: center; justify-content: center;
       color: var(--hx-text-mid);
       flex-shrink: 0;
     }
-    .hx-list-row .glyph svg { width: 12px; height: 12px; }
+    .hx-list-row .glyph svg { width: 13px; height: 13px; }
     .hx-list-row .body { min-width: 0; }
     .hx-list-row .ttl {
-      font-size: 13px; font-weight: 500;
+      font-size: 13.5px; font-weight: 500;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .hx-list-row .meta {
@@ -124,41 +302,30 @@
       font-family: var(--hx-mono);
       font-size: 11px; color: var(--hx-text-dim);
       white-space: nowrap;
-      flex-shrink: 0;
     }
-
-    /* Usage bar — single horizontal bar showing credit consumption */
-    .hx-usage-bar {
-      height: 6px;
-      background: var(--hx-bg-2);
-      border-radius: 999px;
-      overflow: hidden;
-      margin: 10px 0 6px;
-    }
-    .hx-usage-bar-fill {
-      height: 100%;
-      background: var(--hx-text);
-      border-radius: 999px;
-      transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    .hx-usage-row {
-      display: flex; justify-content: space-between; align-items: baseline;
-      font-size: 12px; color: var(--hx-text-mid);
-    }
-    .hx-usage-row b { color: var(--hx-text); font-weight: 600; font-family: var(--hx-mono); font-size: 13px; }
 
     /* Two-col responsive grid for the recents row */
     @media (min-width: 900px) {
-      .hx-recents { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .hx-recents { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     }
     .hx-recents > .hx-card { padding: 0; overflow: hidden; }
     .hx-recents-head {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 14px 10px;
+      padding: 14px 16px 12px;
       border-bottom: 1px solid var(--hx-line);
     }
     .hx-recents-head h3 {
-      margin: 0; font-size: 13px; font-weight: 600; letter-spacing: -0.005em;
+      margin: 0; font-size: 13px; font-weight: 600;
+      letter-spacing: -0.005em;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .hx-recents-head h3 .count {
+      font-family: var(--hx-mono);
+      font-size: 10.5px; font-weight: 600;
+      padding: 1px 6px; border-radius: 4px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      color: var(--hx-text-mid);
     }
     .hx-recents-head a {
       font-size: 11.5px; color: var(--hx-text-mid);
@@ -166,6 +333,63 @@
       transition: color 0.12s, border-color 0.12s;
     }
     .hx-recents-head a:hover { color: var(--hx-text); border-color: var(--hx-text); }
+
+    /* Usage bar */
+    .hx-usage-bar {
+      height: 5px;
+      background: var(--hx-bg-2);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 12px 0 8px;
+    }
+    .hx-usage-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--hx-text), var(--hx-text-mid));
+      border-radius: 999px;
+      transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .hx-usage-foot {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 11.5px; color: var(--hx-text-mid);
+      font-family: var(--hx-mono);
+    }
+
+    /* Section headings — premium, with mono eyebrow */
+    .hx-sec {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 12px;
+      margin: 32px 0 14px;
+      padding-bottom: 0;
+      border: 0;
+    }
+    .hx-sec:first-of-type { margin-top: 22px; }
+    .hx-sec h2 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--hx-text);
+      font-family: var(--hx-mono);
+    }
+    .hx-sec .meta {
+      font-size: 12px;
+      color: var(--hx-text-mid);
+    }
+    .hx-sec a {
+      font-size: 11.5px;
+      color: var(--hx-text-mid);
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+      transition: color 0.12s, border-color 0.12s;
+    }
+    .hx-sec a:hover { color: var(--hx-text); border-color: var(--hx-text); }
+
+    @media (max-width: 760px) {
+      .hx-hero-title { font-size: 24px; }
+      .hx-metric-value { font-size: 32px; }
+      .hx-hero-aside { align-items: flex-start; width: 100%; }
+    }
   </style>
 </head>
 <body data-active="dashboard">
@@ -176,112 +400,153 @@
       <div class="hx-topbar"></div>
       <main class="hx-main">
 
-        <div class="hx-page-head">
-          <div>
-            <h1 id="hx-greeting">Overview.</h1>
-            <p class="sub">Your workspace at a glance — credits, recent work, active engagement, and the shortcuts you use most.</p>
+        <!-- ═══════════════ HERO ═══════════════ -->
+        <header class="hx-hero">
+          <div class="hx-hero-row">
+            <div style="min-width:0;flex:1;">
+              <p class="hx-hero-eyebrow">
+                <span class="hx-hero-eyebrow-dot" aria-hidden="true"></span>
+                <span id="hx-eyebrow-text">Workspace · ready</span>
+              </p>
+              <h1 class="hx-hero-title" id="hx-greeting">
+                Good day,&nbsp;<em>there.</em>
+              </h1>
+              <p class="hx-hero-sub" id="hx-hero-sub">Your workspace at a glance — credits, recent work, active engagement, and the shortcuts you reach for most.</p>
+            </div>
+            <div class="hx-hero-aside">
+              <div class="hx-hero-meta">
+                <span><b id="hx-hero-time">—</b></span>
+                <span aria-hidden="true">·</span>
+                <span><b id="hx-hero-tz">Europe/Zurich</b></span>
+              </div>
+              <div class="hx-hero-cta-row">
+                <a href="/chat.html" class="hx-btn hx-btn-secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg>
+                  Open chat
+                </a>
+                <a href="/services.html" class="hx-btn hx-btn-primary">
+                  Browse services
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+            </div>
           </div>
-          <div class="hx-page-actions">
-            <a href="/chat.html" class="hx-btn hx-btn-secondary">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg>
-              Open chat
-            </a>
-            <a href="/services.html" class="hx-btn hx-btn-primary">
-              Browse services
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
+        </header>
 
-        <!-- Active project banner -->
-        <div class="hx-active-bar" id="hx-active-bar" hidden>
-          <span class="hx-active-bar-dot" aria-hidden="true"></span>
-          <span class="hx-active-bar-kicker">Working on</span>
-          <span class="hx-active-bar-name" id="hx-active-bar-name">—</span>
-          <a href="/projects.html" class="hx-active-bar-action">Manage</a>
-          <a href="/chat.html"     class="hx-active-bar-action">Open chat</a>
-          <button type="button" id="hx-active-bar-clear" class="hx-active-bar-action">Clear</button>
+        <!-- ═══════════════ ACTIVE PROJECT BANNER ═══════════════ -->
+        <div class="hx-active-bar" id="hx-active-bar" hidden style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;margin:14px 0 0;background:var(--hx-yellow-soft);border:1px solid rgba(252,211,77,0.45);border-radius:var(--hx-r);">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--hx-yellow-deep);box-shadow:0 0 0 3px rgba(252,211,77,0.28);" aria-hidden="true"></span>
+          <span style="font-family:var(--hx-mono);font-size:10px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:var(--hx-yellow-deep);">Working on</span>
+          <span id="hx-active-bar-name" style="font-size:13px;font-weight:600;color:var(--hx-text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span>
+          <a href="/projects.html" style="font-size:12px;font-weight:500;color:var(--hx-text-mid);background:transparent;border:0;padding:4px 8px;border-radius:6px;text-decoration:none;">Manage</a>
+          <a href="/chat.html"     style="font-size:12px;font-weight:500;color:var(--hx-text-mid);background:transparent;border:0;padding:4px 8px;border-radius:6px;text-decoration:none;">Open chat</a>
+          <button type="button" id="hx-active-bar-clear" style="font-size:12px;font-weight:500;color:var(--hx-text-mid);background:transparent;border:0;padding:4px 8px;border-radius:6px;cursor:pointer;">Clear</button>
         </div>
 
         <!-- ═══════════════ METRICS ═══════════════ -->
+        <div class="hx-sec">
+          <h2>Snapshot</h2>
+          <span class="meta">Updated live from your account.</span>
+        </div>
         <div class="hx-grid hx-grid-4">
-          <div class="hx-stat">
-            <p class="hx-stat-label">Credits available</p>
-            <p class="hx-stat-value hx-mono" id="hx-stat-credits">0</p>
-            <p class="hx-stat-meta" id="hx-stat-credits-meta">No active subscription</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Credits available</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-stat-credits">0<span class="suffix">cr</span></p>
+            <div class="hx-metric-foot">
+              <span id="hx-stat-credits-meta">No active subscription</span>
+              <span class="hx-metric-delta is-flat" id="hx-stat-credits-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Active projects</p>
-            <p class="hx-stat-value hx-mono" id="hx-stat-projects">0</p>
-            <p class="hx-stat-meta" id="hx-stat-projects-meta">Nothing in flight</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Active projects</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-stat-projects">0</p>
+            <div class="hx-metric-foot">
+              <span id="hx-stat-projects-meta">Nothing in flight</span>
+              <span class="hx-metric-delta is-flat" id="hx-stat-projects-delta">·</span>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Subscription</p>
-            <p class="hx-stat-value" id="hx-stat-plan" style="font-size:17px;">Free</p>
-            <p class="hx-stat-meta" id="hx-stat-plan-meta">Pick a plan to get started</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Subscription</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></span>
+            </p>
+            <p class="hx-metric-value" style="font-family:'Inter',sans-serif;font-size:28px;font-weight:600;letter-spacing:-0.014em;" id="hx-stat-plan">Free</p>
+            <div class="hx-metric-foot">
+              <span id="hx-stat-plan-meta">Pick a plan to get started</span>
+              <a href="/billing.html" class="hx-metric-delta is-flat" style="text-decoration:none;">Upgrade →</a>
+            </div>
           </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Open invoices</p>
-            <p class="hx-stat-value hx-mono" id="hx-stat-invoices">0</p>
-            <p class="hx-stat-meta" id="hx-stat-invoices-meta">Nothing due</p>
+          <div class="hx-metric">
+            <p class="hx-metric-label">
+              <span>Open invoices</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+            </p>
+            <p class="hx-metric-value" id="hx-stat-invoices">0</p>
+            <div class="hx-metric-foot">
+              <span id="hx-stat-invoices-meta">Nothing due</span>
+              <span class="hx-metric-delta" id="hx-stat-invoices-delta" style="display:none;">Outstanding</span>
+            </div>
           </div>
         </div>
 
-        <!-- ═══════════════ QUICK ACTIONS ═══════════════ -->
-        <div class="hx-section-head">
-          <h2>Quick actions</h2>
-          <span class="meta">The work most users start with.</span>
+        <!-- ═══════════════ ACTIVE ENGAGEMENT ═══════════════ -->
+        <div class="hx-sec">
+          <h2>Engagement</h2>
+          <a href="/projects.html">View all projects →</a>
+        </div>
+        <div id="hx-engagement-host"></div>
+
+        <!-- ═══════════════ QUICK START ═══════════════ -->
+        <div class="hx-sec">
+          <h2>Quick start</h2>
+          <span class="meta">Where most days begin.</span>
         </div>
         <div class="hx-grid hx-grid-4">
-          <a href="/chat.html" class="hx-qa">
-            <svg class="hx-qa-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
-            <div class="hx-qa-head">
-              <div class="hx-qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg></div>
-              <div class="hx-qa-title">New chat</div>
-            </div>
-            <p class="hx-qa-desc">Start a fresh conversation. Pick a model and (optionally) a project to scope it.</p>
+          <a href="/chat.html" class="hx-qa2">
+            <span class="hx-qa2-kbd">⌘ K</span>
+            <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg></div>
+            <div class="hx-qa2-title">New chat <svg class="arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <p class="hx-qa2-desc">Open a fresh conversation. Pick a model and a project to scope it.</p>
           </a>
-          <a href="/projects.html?new=1" class="hx-qa">
-            <svg class="hx-qa-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
-            <div class="hx-qa-head">
-              <div class="hx-qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
-              <div class="hx-qa-title">New project</div>
-            </div>
-            <p class="hx-qa-desc">Group chats, memories, and artifacts under one workspace context.</p>
+          <a href="/projects.html?new=1" class="hx-qa2">
+            <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+            <div class="hx-qa2-title">New project <svg class="arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <p class="hx-qa2-desc">Group chats, memories, and artifacts under one workspace context.</p>
           </a>
-          <a href="/memory.html?new=1" class="hx-qa">
-            <svg class="hx-qa-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
-            <div class="hx-qa-head">
-              <div class="hx-qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-              <div class="hx-qa-title">New memory</div>
-            </div>
-            <p class="hx-qa-desc">A single fact the assistant carries into every new conversation.</p>
+          <a href="/memory.html?new=1" class="hx-qa2">
+            <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+            <div class="hx-qa2-title">New memory <svg class="arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <p class="hx-qa2-desc">A single fact the assistant carries into every new conversation.</p>
           </a>
-          <a href="/services.html" class="hx-qa">
-            <svg class="hx-qa-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
-            <div class="hx-qa-head">
-              <div class="hx-qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-              <div class="hx-qa-title">Request a service</div>
-            </div>
-            <p class="hx-qa-desc">Brief our engineering team — agents, automation, data tooling, fractional leads.</p>
+          <a href="/services.html" class="hx-qa2">
+            <div class="hx-qa2-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <div class="hx-qa2-title">Request a service <svg class="arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <p class="hx-qa2-desc">Brief our engineering team — agents, automation, data tooling.</p>
           </a>
         </div>
 
-        <!-- ═══════════════ RECENT WORK (chats + artifacts) ═══════════════ -->
-        <div class="hx-section-head">
+        <!-- ═══════════════ RECENT WORK ═══════════════ -->
+        <div class="hx-sec">
           <h2>Recent work</h2>
+          <span class="meta">Chats and artifacts you touched last.</span>
         </div>
         <div class="hx-recents">
           <div class="hx-card">
             <div class="hx-recents-head">
-              <h3>Recent chats</h3>
+              <h3>Recent chats <span class="count" id="hx-chats-count">0</span></h3>
               <a href="/chat.html">Open all →</a>
             </div>
             <div id="hx-recent-chats-host"></div>
           </div>
           <div class="hx-card">
             <div class="hx-recents-head">
-              <h3>Workbench artifacts</h3>
+              <h3>Workbench artifacts <span class="count" id="hx-arts-count">0</span></h3>
               <a href="/workbench.html">Open workbench →</a>
             </div>
             <div id="hx-recent-artifacts-host"></div>
@@ -289,51 +554,44 @@
         </div>
 
         <!-- ═══════════════ USAGE THIS MONTH ═══════════════ -->
-        <div class="hx-section-head">
-          <h2>Usage this month</h2>
+        <div class="hx-sec">
+          <h2>This month</h2>
           <a href="/usage.html">Full breakdown →</a>
         </div>
         <div class="hx-grid hx-grid-3">
           <div class="hx-card">
-            <p class="hx-card-eyebrow">Credits</p>
-            <h3 style="margin:0;font-size:20px;letter-spacing:-0.012em;" id="hx-usage-credits">0</h3>
-            <p class="desc" id="hx-usage-credits-meta" style="margin:4px 0 0;">No usage yet this month.</p>
+            <p class="hx-card-eyebrow">Credits spent</p>
+            <h3 style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-size:34px;font-weight:400;letter-spacing:-0.018em;line-height:1;" id="hx-usage-credits">0</h3>
+            <p class="desc" id="hx-usage-credits-meta" style="margin:6px 0 0;">No usage yet this month.</p>
             <div class="hx-usage-bar"><div class="hx-usage-bar-fill" id="hx-usage-credits-bar" style="width:0%;"></div></div>
-            <div class="hx-usage-row">
+            <div class="hx-usage-foot">
               <span id="hx-usage-credits-used">0 used</span>
-              <span><b id="hx-usage-credits-cap">—</b> limit</span>
+              <span><b id="hx-usage-credits-cap">— limit</b></span>
             </div>
           </div>
           <div class="hx-card">
-            <p class="hx-card-eyebrow">Most-used model</p>
-            <h3 style="margin:0;font-size:20px;letter-spacing:-0.012em;" id="hx-usage-model">—</h3>
-            <p class="desc" style="margin:4px 0 0;" id="hx-usage-model-meta">No requests yet this month.</p>
+            <p class="hx-card-eyebrow">Top model</p>
+            <h3 style="margin:0;font-size:22px;font-weight:600;letter-spacing:-0.014em;line-height:1.2;" id="hx-usage-model">—</h3>
+            <p class="desc" style="margin:6px 0 0;" id="hx-usage-model-meta">No requests yet this month.</p>
             <a href="/usage.html" class="hx-card-link">Model breakdown</a>
           </div>
           <div class="hx-card">
             <p class="hx-card-eyebrow">Requests</p>
-            <h3 style="margin:0;font-size:20px;letter-spacing:-0.012em;" id="hx-usage-requests">0</h3>
-            <p class="desc" style="margin:4px 0 0;" id="hx-usage-requests-meta">Across every surface — chat, agents, workflows.</p>
+            <h3 style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-size:34px;font-weight:400;letter-spacing:-0.018em;line-height:1;" id="hx-usage-requests">0</h3>
+            <p class="desc" style="margin:6px 0 0;" id="hx-usage-requests-meta">Across every surface — chat, agents, workflows.</p>
             <a href="/logs.html" class="hx-card-link">Open logs</a>
           </div>
         </div>
 
-        <!-- ═══════════════ ACTIVE ENGAGEMENT ═══════════════ -->
-        <div class="hx-section-head">
-          <h2>Active engagement</h2>
-          <a href="/projects.html">View all projects →</a>
-        </div>
-        <div id="hx-engagement-host"></div>
-
         <!-- ═══════════════ ACTIVITY ═══════════════ -->
-        <div class="hx-section-head">
+        <div class="hx-sec">
           <h2>Recent activity</h2>
           <a href="/activity.html">Open activity log →</a>
         </div>
         <div id="hx-activity-host"></div>
 
-        <!-- ═══════════════ PRACTICE SHORTCUTS ═══════════════ -->
-        <div class="hx-section-head">
+        <!-- ═══════════════ PRACTICE AREAS ═══════════════ -->
+        <div class="hx-sec">
           <h2>Practice areas</h2>
           <a href="/services.html">View all services →</a>
         </div>
@@ -383,10 +641,15 @@
         if (!iso) return '—';
         var d = new Date(iso); var diff = (Date.now() - d.getTime()) / 1000;
         if (diff < 60) return 'just now';
-        if (diff < 3600) return Math.floor(diff/60) + 'm ago';
-        if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+        if (diff < 3600) return Math.floor(diff/60) + 'm';
+        if (diff < 86400) return Math.floor(diff/3600) + 'h';
         var days = Math.floor(diff/86400);
-        return days + (days === 1 ? 'd ago' : 'd ago');
+        return days + 'd';
+      }
+      function fmtDate(iso) {
+        if (!iso) return '—';
+        try { return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); }
+        catch (e) { return '—'; }
       }
       function labelFor(kind) {
         return (kind || '').split('.').map(function (s) {
@@ -408,7 +671,30 @@
         }
       }
 
-      // ─── Active project banner ──────────────────────────────────
+      // ─── Time-aware greeting + live clock ──────────────────────
+      function greetingFor(hour) {
+        if (hour < 5)  return 'Still up';
+        if (hour < 12) return 'Good morning';
+        if (hour < 18) return 'Good afternoon';
+        if (hour < 22) return 'Good evening';
+        return 'Up late';
+      }
+      function tickClock(tz) {
+        try {
+          var now = new Date();
+          var fmt = new Intl.DateTimeFormat(undefined, {
+            hour: '2-digit', minute: '2-digit', hour12: false, timeZone: tz || undefined
+          });
+          if ($('hx-hero-time')) $('hx-hero-time').textContent = fmt.format(now);
+        } catch (e) {}
+      }
+      function setupClock(tz) {
+        if ($('hx-hero-tz')) $('hx-hero-tz').textContent = tz || 'Europe/Zurich';
+        tickClock(tz);
+        setInterval(function () { tickClock(tz); }, 30000);
+      }
+
+      // ─── Active project banner ────────────────────────────────
       var ACTIVE_KEY = 'hx_active_project';
       function getActiveProject() {
         try { return JSON.parse(localStorage.getItem(ACTIVE_KEY) || 'null'); } catch (e) { return null; }
@@ -438,8 +724,6 @@
         var sb = window.HX.supabase;
 
         async function safeQuery(promise) {
-          // Wrap each fetch so a missing table or RLS denial doesn't take
-          // down the whole dashboard — we just render an empty section.
           try { var r = await promise; return r && !r.error ? r : { data: null, count: null }; }
           catch (e) { return { data: null, count: null }; }
         }
@@ -449,51 +733,80 @@
           var user = res && res.data ? res.data.user : null;
           if (!user) return;
           var meta = user.user_metadata || {};
-          // Prefer first_name from the profile, fall back to user_metadata
+
           var prof = await safeQuery(sb.from('profiles').select('first_name,last_name').eq('id', user.id).maybeSingle());
           var first = (prof.data && prof.data.first_name) || meta.first_name || '';
+          var hour = new Date().getHours();
+          var greet = greetingFor(hour);
           if ($('hx-greeting')) {
-            $('hx-greeting').textContent = first ? ('Welcome back, ' + first + '.') : 'Overview.';
+            $('hx-greeting').innerHTML = first
+              ? greet + ', <em>' + escape(first) + '.</em>'
+              : greet + ', <em>there.</em>';
+          }
+          if ($('hx-eyebrow-text')) {
+            var dayName = new Date().toLocaleDateString(undefined, { weekday: 'long' });
+            $('hx-eyebrow-text').textContent = dayName + ' · workspace ready';
           }
 
           var active = getActiveProject();
           var firstOfMonth = new Date(); firstOfMonth.setDate(1); firstOfMonth.setHours(0,0,0,0);
           var firstOfMonthIso = firstOfMonth.toISOString();
+          var sevenDaysAgo = new Date(Date.now() - 7*86400000).toISOString();
 
-          // Parallel fetch of every dashboard data source
           var activityQuery = sb.from('activity_events')
             .select('id,kind,created_at,payload,project_id')
             .order('created_at', { ascending: false })
             .limit(8);
           if (active && active.id) activityQuery = activityQuery.eq('project_id', active.id);
 
-          var [projects, credits, subs, invoices, recent, chats, artifacts, usage] = await Promise.all([
-            safeQuery(sb.from('projects').select('id,name,slug,status,description,updated_at')),
+          var [projects, credits, subs, invoices, recent, chats, artifacts, usage, userSettings] = await Promise.all([
+            safeQuery(sb.from('projects').select('id,name,slug,status,description,updated_at,created_at')),
             safeQuery(sb.from('credits_balance').select('credits_total,credits_used').maybeSingle()),
             safeQuery(sb.from('subscriptions').select('plan,status,current_period_end').maybeSingle()),
             safeQuery(sb.from('invoices').select('id,status', { count: 'exact', head: true }).neq('status', 'paid')),
             safeQuery(activityQuery),
             safeQuery(sb.from('chat_conversations').select('id,title,model,project_id,updated_at').order('updated_at', { ascending: false }).limit(5)),
             safeQuery(sb.from('workbench_artifacts').select('id,title,kind,updated_at').order('updated_at', { ascending: false }).limit(5)),
-            safeQuery(sb.from('api_usage_log').select('model,credits_consumed').gte('created_at', firstOfMonthIso))
+            safeQuery(sb.from('api_usage_log').select('model,credits_consumed,created_at').gte('created_at', firstOfMonthIso)),
+            safeQuery(sb.from('user_settings').select('timezone').eq('user_id', user.id).maybeSingle())
           ]);
+
+          // Clock (uses workspace timezone if saved, otherwise browser default)
+          var tz = (userSettings.data && userSettings.data.timezone) || 'Europe/Zurich';
+          setupClock(tz);
 
           // ── Credits ──
           if (credits.data) {
             var available = Math.max(0, (credits.data.credits_total || 0) - (credits.data.credits_used || 0));
-            $('hx-stat-credits').textContent = available.toLocaleString();
+            if ($('hx-stat-credits'))
+              $('hx-stat-credits').innerHTML = available.toLocaleString() + '<span class="suffix">cr</span>';
             $('hx-stat-credits-meta').textContent = (subs.data && subs.data.plan && subs.data.plan !== 'free')
               ? (subs.data.plan.charAt(0).toUpperCase() + subs.data.plan.slice(1)) + ' plan · refreshes monthly'
               : 'Free plan — pick a plan to top up';
+            var pctUsed = (credits.data.credits_total || 0) > 0
+              ? Math.round(((credits.data.credits_used || 0) / credits.data.credits_total) * 100) : 0;
+            var d = $('hx-stat-credits-delta');
+            if (d) {
+              if (pctUsed === 0) { d.className = 'hx-metric-delta is-flat'; d.textContent = 'fresh'; }
+              else if (pctUsed < 50) { d.className = 'hx-metric-delta'; d.textContent = pctUsed + '% used'; }
+              else if (pctUsed < 85) { d.className = 'hx-metric-delta is-flat'; d.textContent = pctUsed + '% used'; }
+              else { d.className = 'hx-metric-delta is-down'; d.textContent = pctUsed + '% used'; }
+            }
           }
 
           // ── Active projects ──
           var rows = projects.data || [];
           var activeCount = rows.filter(function (p) { return p.status === 'active'; }).length;
+          var newThisWeek = rows.filter(function (p) { return p.created_at && new Date(p.created_at) > new Date(sevenDaysAgo); }).length;
           $('hx-stat-projects').textContent = activeCount;
           $('hx-stat-projects-meta').textContent = activeCount === 0
             ? 'Nothing in flight'
             : (rows.length - activeCount) + ' paused / archived';
+          var pd = $('hx-stat-projects-delta');
+          if (pd) {
+            if (newThisWeek > 0) { pd.className = 'hx-metric-delta'; pd.textContent = '+' + newThisWeek + ' this week'; }
+            else { pd.className = 'hx-metric-delta is-flat'; pd.textContent = 'steady'; }
+          }
 
           // ── Subscription ──
           var planRaw = (subs.data && subs.data.plan) || 'free';
@@ -502,93 +815,17 @@
           $('hx-stat-plan-meta').textContent = planRaw === 'free'
             ? 'Pick a plan to get started'
             : (subs.data && subs.data.status === 'active'
-                ? ('Renews ' + (subs.data.current_period_end ? new Date(subs.data.current_period_end).toLocaleDateString() : 'soon'))
+                ? ('Renews ' + (subs.data.current_period_end ? fmtDate(subs.data.current_period_end) : 'soon'))
                 : (subs.data && subs.data.status) || '—');
 
           // ── Open invoices ──
           $('hx-stat-invoices').textContent = (invoices.count) || 0;
           $('hx-stat-invoices-meta').textContent = (invoices.count) ? 'Outstanding — pay from Billing' : 'Nothing due';
-
-          // ── Recent chats list ──
-          var chatHost = $('hx-recent-chats-host');
-          if (chatHost) {
-            var chatRows = (chats.data) || [];
-            if (chatRows.length) {
-              chatHost.innerHTML = chatRows.map(function (c) {
-                var meta = (c.model || 'model') + (c.project_id ? ' · scoped' : '');
-                return '<a class="hx-list-row" href="/chat.html?c=' + encodeURIComponent(c.id) + '">' +
-                  '<span class="glyph">' + iconForKind('chat') + '</span>' +
-                  '<span class="body">' +
-                    '<span class="ttl">' + escape(c.title || 'Untitled chat') + '</span>' +
-                    '<span class="meta">' + escape(meta) + '</span>' +
-                  '</span>' +
-                  '<span class="time">' + escape(relTime(c.updated_at)) + '</span>' +
-                '</a>';
-              }).join('');
-            } else {
-              chatHost.innerHTML =
-                '<div style="padding:20px 16px;text-align:center;">' +
-                  '<p style="margin:0 0 6px;font-size:13px;font-weight:500;">No chats yet</p>' +
-                  '<p style="margin:0 0 12px;font-size:12px;color:var(--hx-text-mid);">Start a conversation and it lands here.</p>' +
-                  '<a href="/chat.html" class="hx-btn hx-btn-secondary hx-btn-sm">Open chat</a>' +
-                '</div>';
-            }
+          var id = $('hx-stat-invoices-delta');
+          if (id) {
+            if (invoices.count > 0) { id.className = 'hx-metric-delta is-down'; id.textContent = 'Due'; id.style.display = ''; }
+            else { id.style.display = 'none'; }
           }
-
-          // ── Recent workbench artifacts ──
-          var artHost = $('hx-recent-artifacts-host');
-          if (artHost) {
-            var artRows = (artifacts.data) || [];
-            if (artRows.length) {
-              artHost.innerHTML = artRows.map(function (a) {
-                var kindLabel = a.kind ? a.kind.charAt(0).toUpperCase() + a.kind.slice(1) : 'Artifact';
-                return '<a class="hx-list-row" href="/workbench.html?a=' + encodeURIComponent(a.id) + '">' +
-                  '<span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>' +
-                  '<span class="body">' +
-                    '<span class="ttl">' + escape(a.title || 'Untitled') + '</span>' +
-                    '<span class="meta">' + escape(kindLabel) + '</span>' +
-                  '</span>' +
-                  '<span class="time">' + escape(relTime(a.updated_at)) + '</span>' +
-                '</a>';
-              }).join('');
-            } else {
-              artHost.innerHTML =
-                '<div style="padding:20px 16px;text-align:center;">' +
-                  '<p style="margin:0 0 6px;font-size:13px;font-weight:500;">No artifacts yet</p>' +
-                  '<p style="margin:0 0 12px;font-size:12px;color:var(--hx-text-mid);">Anything substantial Helix produces in chat lands here automatically.</p>' +
-                  '<a href="/workbench.html" class="hx-btn hx-btn-secondary hx-btn-sm">Open workbench</a>' +
-                '</div>';
-            }
-          }
-
-          // ── Usage this month ──
-          var usageRows = (usage.data) || [];
-          var creditsUsedMonth = usageRows.reduce(function (s, r) { return s + (r.credits_consumed || 0); }, 0);
-          var requestsMonth = usageRows.length;
-          var modelCounts = {};
-          usageRows.forEach(function (r) { if (r.model) modelCounts[r.model] = (modelCounts[r.model] || 0) + 1; });
-          var topModel = null; var topCount = 0;
-          Object.keys(modelCounts).forEach(function (k) { if (modelCounts[k] > topCount) { topCount = modelCounts[k]; topModel = k; } });
-
-          var creditsCap = (credits.data && credits.data.credits_total) || 0;
-          var pct = creditsCap > 0 ? Math.min(100, Math.round((creditsUsedMonth / creditsCap) * 100)) : 0;
-          if ($('hx-usage-credits')) $('hx-usage-credits').textContent = creditsUsedMonth.toLocaleString();
-          if ($('hx-usage-credits-meta')) $('hx-usage-credits-meta').textContent = creditsUsedMonth > 0
-            ? ('Spent so far in ' + new Date().toLocaleDateString(undefined, { month: 'long' }))
-            : 'No usage yet this month.';
-          if ($('hx-usage-credits-bar')) $('hx-usage-credits-bar').style.width = pct + '%';
-          if ($('hx-usage-credits-used')) $('hx-usage-credits-used').textContent = creditsUsedMonth.toLocaleString() + ' used';
-          if ($('hx-usage-credits-cap'))  $('hx-usage-credits-cap').textContent  = creditsCap ? creditsCap.toLocaleString() : '—';
-
-          if ($('hx-usage-model'))      $('hx-usage-model').textContent = topModel || '—';
-          if ($('hx-usage-model-meta')) $('hx-usage-model-meta').textContent = topModel
-            ? topCount + ' request' + (topCount === 1 ? '' : 's') + ' this month'
-            : 'No requests yet this month.';
-
-          if ($('hx-usage-requests')) $('hx-usage-requests').textContent = requestsMonth.toLocaleString();
-          if ($('hx-usage-requests-meta')) $('hx-usage-requests-meta').textContent = requestsMonth > 0
-            ? 'Across every surface — chat, agents, workflows.'
-            : 'Across every surface — chat, agents, workflows.';
 
           // ── Active engagement panel ──
           var engHost = $('hx-engagement-host');
@@ -598,19 +835,21 @@
               if (thisProj) {
                 var statusLabel = (thisProj.status || 'active').charAt(0).toUpperCase() + (thisProj.status || 'active').slice(1);
                 engHost.innerHTML =
-                  '<div class="hx-card" style="padding:18px;">' +
-                    '<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">' +
-                      '<div style="min-width:0;">' +
-                        '<p class="hx-mono" style="margin:0 0 4px;font-size:10px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:var(--hx-text-dim);">Active engagement</p>' +
-                        '<h3 style="margin:0 0 2px;font-size:16px;font-weight:700;letter-spacing:-0.012em;">' + escape(thisProj.name) + '</h3>' +
-                        (thisProj.description ? '<p style="margin:4px 0 0;color:var(--hx-text-mid);font-size:13px;line-height:1.5;">' + escape(thisProj.description) + '</p>' : '') +
+                  '<div class="hx-engagement-card">' +
+                    '<p class="kicker">Active engagement</p>' +
+                    '<h3>' + escape(thisProj.name) + '</h3>' +
+                    (thisProj.description ? '<p class="desc">' + escape(thisProj.description) + '</p>' : '') +
+                    '<div class="foot">' +
+                      '<div class="meta">' +
+                        '<span><b>Status</b> · ' + escape(statusLabel) + '</span>' +
+                        '<span><b>Last touched</b> · ' + escape(relTime(thisProj.updated_at)) + '</span>' +
+                        '<span><b>Slug</b> · ' + escape(thisProj.slug || '—') + '</span>' +
                       '</div>' +
-                      '<div style="display:flex;gap:8px;flex-shrink:0;">' +
+                      '<div class="actions">' +
                         '<a href="/chat.html" class="hx-btn hx-btn-secondary hx-btn-sm">Open chat</a>' +
                         '<a href="/projects.html" class="hx-btn hx-btn-ghost hx-btn-sm">Manage</a>' +
                       '</div>' +
                     '</div>' +
-                    '<p class="hx-mono" style="margin:12px 0 0;font-size:11px;color:var(--hx-text-dim);">Status: ' + escape(statusLabel) + ' · Slug: ' + escape(thisProj.slug || '—') + '</p>' +
                   '</div>';
               } else {
                 engHost.innerHTML = '<div class="hx-empty"><h3>This project was removed</h3><p>Pick a different active project from the chat or projects page.</p></div>';
@@ -633,6 +872,86 @@
                 '</div>';
             }
           }
+
+          // ── Recent chats list ──
+          var chatRows = (chats.data) || [];
+          if ($('hx-chats-count')) $('hx-chats-count').textContent = chatRows.length;
+          var chatHost = $('hx-recent-chats-host');
+          if (chatHost) {
+            if (chatRows.length) {
+              chatHost.innerHTML = chatRows.map(function (c) {
+                var m = (c.model || 'model') + (c.project_id ? ' · scoped' : '');
+                return '<a class="hx-list-row" href="/chat.html?c=' + encodeURIComponent(c.id) + '">' +
+                  '<span class="glyph">' + iconForKind('chat') + '</span>' +
+                  '<span class="body">' +
+                    '<span class="ttl">' + escape(c.title || 'Untitled chat') + '</span>' +
+                    '<span class="meta">' + escape(m) + '</span>' +
+                  '</span>' +
+                  '<span class="time">' + escape(relTime(c.updated_at)) + '</span>' +
+                '</a>';
+              }).join('');
+            } else {
+              chatHost.innerHTML =
+                '<div style="padding:22px 18px;text-align:center;">' +
+                  '<p style="margin:0 0 6px;font-size:13px;font-weight:500;">No chats yet</p>' +
+                  '<p style="margin:0 0 14px;font-size:12px;color:var(--hx-text-mid);">Start a conversation and it lands here.</p>' +
+                  '<a href="/chat.html" class="hx-btn hx-btn-secondary hx-btn-sm">Open chat</a>' +
+                '</div>';
+            }
+          }
+
+          // ── Workbench artifacts list ──
+          var artRows = (artifacts.data) || [];
+          if ($('hx-arts-count')) $('hx-arts-count').textContent = artRows.length;
+          var artHost = $('hx-recent-artifacts-host');
+          if (artHost) {
+            if (artRows.length) {
+              artHost.innerHTML = artRows.map(function (a) {
+                var kindLabel = a.kind ? a.kind.charAt(0).toUpperCase() + a.kind.slice(1) : 'Artifact';
+                return '<a class="hx-list-row" href="/workbench.html?a=' + encodeURIComponent(a.id) + '">' +
+                  '<span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>' +
+                  '<span class="body">' +
+                    '<span class="ttl">' + escape(a.title || 'Untitled') + '</span>' +
+                    '<span class="meta">' + escape(kindLabel) + '</span>' +
+                  '</span>' +
+                  '<span class="time">' + escape(relTime(a.updated_at)) + '</span>' +
+                '</a>';
+              }).join('');
+            } else {
+              artHost.innerHTML =
+                '<div style="padding:22px 18px;text-align:center;">' +
+                  '<p style="margin:0 0 6px;font-size:13px;font-weight:500;">No artifacts yet</p>' +
+                  '<p style="margin:0 0 14px;font-size:12px;color:var(--hx-text-mid);">Anything substantial Helix produces in chat lands here automatically.</p>' +
+                  '<a href="/workbench.html" class="hx-btn hx-btn-secondary hx-btn-sm">Open workbench</a>' +
+                '</div>';
+            }
+          }
+
+          // ── Usage this month ──
+          var usageRows = (usage.data) || [];
+          var creditsUsedMonth = usageRows.reduce(function (s, r) { return s + (r.credits_consumed || 0); }, 0);
+          var requestsMonth = usageRows.length;
+          var modelCounts = {};
+          usageRows.forEach(function (r) { if (r.model) modelCounts[r.model] = (modelCounts[r.model] || 0) + 1; });
+          var topModel = null; var topCount = 0;
+          Object.keys(modelCounts).forEach(function (k) { if (modelCounts[k] > topCount) { topCount = modelCounts[k]; topModel = k; } });
+
+          var creditsCap = (credits.data && credits.data.credits_total) || 0;
+          var pct = creditsCap > 0 ? Math.min(100, Math.round((creditsUsedMonth / creditsCap) * 100)) : 0;
+          if ($('hx-usage-credits')) $('hx-usage-credits').textContent = creditsUsedMonth.toLocaleString();
+          if ($('hx-usage-credits-meta')) $('hx-usage-credits-meta').textContent = creditsUsedMonth > 0
+            ? ('Spent so far in ' + new Date().toLocaleDateString(undefined, { month: 'long' }))
+            : 'No usage yet this month.';
+          if ($('hx-usage-credits-bar')) $('hx-usage-credits-bar').style.width = pct + '%';
+          if ($('hx-usage-credits-used')) $('hx-usage-credits-used').textContent = creditsUsedMonth.toLocaleString() + ' used';
+          if ($('hx-usage-credits-cap'))  $('hx-usage-credits-cap').textContent  = (creditsCap ? creditsCap.toLocaleString() : '—') + ' limit';
+
+          if ($('hx-usage-model'))      $('hx-usage-model').textContent = topModel || '—';
+          if ($('hx-usage-model-meta')) $('hx-usage-model-meta').textContent = topModel
+            ? topCount + ' request' + (topCount === 1 ? '' : 's') + ' this month'
+            : 'No requests yet this month.';
+
+          if ($('hx-usage-requests')) $('hx-usage-requests').textContent = requestsMonth.toLocaleString();
 
           // ── Recent activity feed ──
           var actHost = $('hx-activity-host');
