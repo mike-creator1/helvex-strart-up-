@@ -815,155 +815,36 @@
       will-change: transform, opacity;
     }
 
-    /* ─── Ether — energy laser sweeps ─────────────────────────────
-       Bright horizontal gold light bars that race across the screen
-       like data packets / energy pulses. Reads as "real-time, fast". */
-    .hx-chat-ambient.is-ether i {
-      width: 120px; height: 1.5px;
-      border-radius: 4px;
-      background: linear-gradient(90deg,
-        transparent 0%,
-        color-mix(in srgb, var(--hx-yellow) 40%, transparent) 30%,
-        var(--hx-yellow) 50%,
-        color-mix(in srgb, var(--hx-yellow) 40%, transparent) 70%,
-        transparent 100%);
-      box-shadow:
-        0 0 12px var(--hx-yellow),
-        0 0 24px var(--hx-yellow-soft),
-        0 0 48px var(--hx-yellow-soft);
-      opacity: 0;
-      filter: blur(0.5px);
-      left: -150px !important;
-      animation: hx-ether-laser var(--d, 5s) cubic-bezier(0.4, 0, 0.2, 1) infinite var(--delay, 0s);
-      mix-blend-mode: screen;
-    }
-    @keyframes hx-ether-laser {
-      0%   { transform: translateX(0)        scaleX(0.4); opacity: 0; }
-      10%  { opacity: 0.95; transform: translateX(10vw) scaleX(1); }
-      50%  { opacity: 1;    transform: translateX(50vw) scaleX(1.4); }
-      90%  { opacity: 0.5;  transform: translateX(95vw) scaleX(1); }
-      100% { transform: translateX(110vw)    scaleX(0.4); opacity: 0; }
-    }
-    /* Ether also gets a slow scanning horizon glow */
-    body[data-model="ether"] .hx-chat-pane::after {
-      content: '';
-      position: absolute;
-      left: 0; right: 0; top: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--hx-yellow), transparent);
-      box-shadow: 0 0 20px var(--hx-yellow-soft), 0 0 40px var(--hx-yellow-soft);
-      pointer-events: none;
-      z-index: 0;
-      animation: hx-ether-horizon 6s ease-in-out infinite;
-      opacity: 0;
-    }
-    @keyframes hx-ether-horizon {
-      0%, 100% { opacity: 0; transform: translateY(0); }
-      50%      { opacity: 0.85; transform: translateY(8px); }
-    }
+    /* ─── ULTRA-SUBTLE per-model ambience ───────────────────────────
+       User feedback: dramatic particles + flame tongues were distracting
+       while reading. Now: a single quiet radial whisper of the model's
+       accent in the bottom-right corner. ~22s slow breath, max 7% tint.
+       Should never pull the eye away from the chat text. */
+    .hx-chat-ambient i { display: none !important; }
 
-    /* ─── Nexus — pulsing constellation nodes ──────────────────────
-       Larger red glowing orbs that breathe in unison + emit slow
-       expanding rings. Reads as "deep thought" — calm but powerful. */
-    .hx-chat-ambient.is-nexus i {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%,
-        #FCA5A5 0%,
-        var(--hx-red) 50%,
-        rgba(127, 29, 29, 0.6) 100%);
-      box-shadow:
-        0 0 14px color-mix(in srgb, var(--hx-red) 70%, transparent),
-        0 0 32px color-mix(in srgb, var(--hx-red) 40%, transparent),
-        0 0 60px color-mix(in srgb, var(--hx-red) 18%, transparent);
-      opacity: 0;
-      animation: hx-nexus-pulse var(--d, 5s) ease-in-out infinite var(--delay, 0s);
-    }
-    .hx-chat-ambient.is-nexus i::before {
-      content: '';
-      position: absolute;
-      inset: -8px;
-      border-radius: 50%;
-      border: 1.5px solid color-mix(in srgb, var(--hx-red) 50%, transparent);
-      animation: hx-nexus-ring 3.6s cubic-bezier(0, 0.55, 0.25, 1) infinite;
-    }
-    @keyframes hx-nexus-pulse {
-      0%, 100% { transform: scale(0.6); opacity: 0.35; }
-      50%      { transform: scale(1.15); opacity: 0.9; }
-    }
-    @keyframes hx-nexus-ring {
-      0%   { transform: scale(0.7); opacity: 0;   border-width: 2px; }
-      30%  { opacity: 0.8; }
-      100% { transform: scale(4);   opacity: 0;   border-width: 0.5px; }
-    }
-    /* Nexus also gets a center radial glow that pulses with the nodes */
-    body[data-model="nexus"] .hx-chat-pane::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center,
-        color-mix(in srgb, var(--hx-red) 6%, transparent) 0%,
-        transparent 55%);
-      pointer-events: none;
-      z-index: 0;
-      animation: hx-nexus-aura 4.5s ease-in-out infinite;
-    }
-    @keyframes hx-nexus-aura {
-      0%, 100% { opacity: 0.3; }
-      50%      { opacity: 0.7; }
-    }
-
-    /* ─── Prometheus — REAL fire at the bottom ─────────────────────
-       Stacked flame "tongues" with stretched scale animations + a
-       constant heat glow + smoke haze rising. Each tongue dances on
-       its own rhythm so the fire never repeats visually. */
-    .hx-chat-ambient.is-prometheus i {
-      width: 90px; height: 200px;
-      bottom: -40px !important;
-      top: auto !important;
-      border-radius: 50% 50% 35% 35% / 65% 65% 30% 30%;
-      background: radial-gradient(ellipse at 50% 80%,
-        #FFE082 0%,
-        #FFB347 18%,
-        #DC2626 45%,
-        rgba(127, 17, 17, 0.7) 70%,
-        transparent 100%);
-      box-shadow:
-        0 -10px 40px rgba(255, 100, 0, 0.55),
-        0 -20px 80px rgba(220, 38, 38, 0.35),
-        0 -40px 120px rgba(255, 140, 0, 0.2);
-      opacity: 0;
-      filter: blur(2px);
-      mix-blend-mode: screen;
-      transform-origin: 50% 100%;
-      animation: hx-prom-flame var(--d, 2.2s) ease-in-out infinite var(--delay, 0s);
-    }
-    @keyframes hx-prom-flame {
-      0%, 100% { transform: scale(0.6, 0.5) skewX(0deg);    opacity: 0.6; }
-      20%      { transform: scale(0.85, 1.1) skewX(-3deg);   opacity: 0.95; }
-      40%      { transform: scale(0.7, 0.8)  skewX(2deg);    opacity: 0.8; }
-      60%      { transform: scale(0.95, 1.3) skewX(-2deg);   opacity: 1; }
-      80%      { transform: scale(0.75, 0.95) skewX(1.5deg); opacity: 0.85; }
-    }
-    /* Strong heat glow at the very bottom + smoke haze rising */
+    body[data-model="ether"]      .hx-chat-pane::after,
+    body[data-model="nexus"]      .hx-chat-pane::after,
     body[data-model="prometheus"] .hx-chat-pane::after {
       content: '';
       position: absolute;
-      left: 0; right: 0; bottom: 0;
-      height: 280px;
-      background:
-        radial-gradient(ellipse at center bottom,
-          rgba(255, 100, 0, 0.22) 0%,
-          rgba(220, 38, 38, 0.12) 30%,
-          rgba(127, 17, 17, 0.05) 60%,
-          transparent 90%);
+      right: 0; bottom: 0;
+      width: 360px; height: 360px;
+      background: radial-gradient(circle at 100% 100%,
+        color-mix(in srgb, var(--hx-mc) 7%, transparent) 0%,
+        color-mix(in srgb, var(--hx-mc) 3%, transparent) 40%,
+        transparent 75%);
       pointer-events: none;
       z-index: 0;
-      animation: hx-prom-glow 3.2s ease-in-out infinite;
+      animation: hx-ambient-whisper 22s ease-in-out infinite;
     }
-    @keyframes hx-prom-glow {
-      0%, 100% { opacity: 0.7; transform: scaleY(1)    scaleX(1); }
-      50%      { opacity: 1;   transform: scaleY(1.15) scaleX(1.05); }
+    @keyframes hx-ambient-whisper {
+      0%, 100% { opacity: 0.55; }
+      50%      { opacity: 0.95; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-model="ether"] .hx-chat-pane::after,
+      body[data-model="nexus"] .hx-chat-pane::after,
+      body[data-model="prometheus"] .hx-chat-pane::after { animation: none; opacity: 0.6; }
     }
     .hx-chat-toolbar {
       display: flex;
