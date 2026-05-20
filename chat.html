@@ -33,6 +33,23 @@
       position: relative;
     }
 
+    /* Backdrop element exists in DOM at all times for JS simplicity, but
+       must never be a grid item. Take it out of normal flow so .hx-main
+       stays a clean 2-column grid on desktop. */
+    .hx-chat-backdrop {
+      position: fixed;
+      top: var(--hx-topbar-h);
+      left: 0; right: 0; bottom: 0;
+      background: rgba(20, 18, 12, 0.35);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      z-index: 65;
+      opacity: 0;
+      pointer-events: none;
+      display: none;
+      transition: opacity 0.22s ease;
+    }
+
     /* Mobile: rail becomes a slide-in drawer. Backdrop dims the chat. */
     @media (max-width: 900px) {
       body[data-active="chat"] .hx-main { grid-template-columns: 1fr; }
@@ -50,18 +67,7 @@
       }
       .hx-chat-rail.is-open { transform: translateX(0); }
       .hx-chat-rail::after { display: none; }
-      .hx-chat-backdrop {
-        position: fixed;
-        top: var(--hx-topbar-h);
-        left: 0; right: 0; bottom: 0;
-        background: rgba(20, 18, 12, 0.35);
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
-        z-index: 65;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.22s ease;
-      }
+      .hx-chat-backdrop { display: block; }
       .hx-chat-backdrop.is-visible { opacity: 1; pointer-events: auto; }
     }
 
