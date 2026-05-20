@@ -1667,3 +1667,83 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
   border-color: var(--hx-text-mid);
 }
 .hx-cmdp-close svg { width: 14px; height: 14px; }
+
+/* ══════════════════════════════════════════════════════════════
+   DARK-MODE PER-PAGE OVERRIDES
+   ──────────────────────────────────────────────────────────────
+   Individual page stylesheets shipped with hardcoded `background:
+   #fff` rules and `style="background:#fff;..."` inline strings. In
+   dark mode those leave bright-white panels on top of a dark page
+   with light text on top — unreadable. We re-bind every such
+   surface to the dark theme's `--hx-surface` and `--hx-bg-2` here
+   so we don't have to touch ~20 individual HTML files.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Named empty-state / onboarding cards (workbench, memory,
+   consulting, services, marketing, automation, CRM). */
+html[data-theme="dark"] .hx-wb-onboard,
+html[data-theme="dark"] .hx-mem-empty,
+html[data-theme="dark"] .hx-con-onboard,
+html[data-theme="dark"] .hx-svc-onboard,
+html[data-theme="dark"] .hx-empty-state,
+html[data-theme="dark"] .hx-con-card,
+html[data-theme="dark"] .hx-con-new-form,
+html[data-theme="dark"] .hx-variant,
+html[data-theme="dark"] .hx-modal,
+html[data-theme="dark"] .hx-gen,
+html[data-theme="dark"] .hx-tpl,
+html[data-theme="dark"] .hx-tool-card,
+html[data-theme="dark"] .hx-thread-pane,
+html[data-theme="dark"] .hx-asst-main,
+html[data-theme="dark"] .hx-persona-pill,
+html[data-theme="dark"] .hx-persona-menu,
+html[data-theme="dark"] .hx-deal,
+html[data-theme="dark"] .hx-deal-card,
+html[data-theme="dark"] .hx-deals-stat,
+html[data-theme="dark"] .hx-form-card,
+html[data-theme="dark"] .hx-drawer,
+html[data-theme="dark"] .hx-timeline-dot {
+  background: var(--hx-surface);
+}
+
+/* Nested "step" / "tier" / "pillar" tiles inside the onboarding
+   blocks — the inner tiles use --hx-bg-2 which already swaps with
+   the theme, but the parent's hardcoded white was the visible bug.
+   Reinforcing here for the few inline-styled inner blocks. */
+html[data-theme="dark"] .hx-wb-onboard .step,
+html[data-theme="dark"] .hx-con-onboard .hx-con-tile,
+html[data-theme="dark"] .hx-svc-onboard .hx-svc-pillar {
+  background: var(--hx-bg-2);
+  border-color: var(--hx-line);
+}
+
+/* Form controls on pages that pinned input bg to #fff explicitly. */
+html[data-theme="dark"] .hx-field input,
+html[data-theme="dark"] .hx-field textarea,
+html[data-theme="dark"] .hx-field select,
+html[data-theme="dark"] .hx-note-form textarea {
+  background: var(--hx-surface);
+  color: var(--hx-text);
+}
+
+/* Catch-all for inline white backgrounds — both the spaced and
+   unspaced variants, hex and named. !important is necessary
+   because inline style attributes always beat class rules. */
+html[data-theme="dark"] [style*="background:#fff"],
+html[data-theme="dark"] [style*="background: #fff"],
+html[data-theme="dark"] [style*="background:#FFFFFF"],
+html[data-theme="dark"] [style*="background: #FFFFFF"],
+html[data-theme="dark"] [style*="background:white"],
+html[data-theme="dark"] [style*="background: white"],
+html[data-theme="dark"] [style*="background-color:#fff"],
+html[data-theme="dark"] [style*="background-color: #fff"],
+html[data-theme="dark"] [style*="background-color:white"],
+html[data-theme="dark"] [style*="background-color: white"] {
+  background-color: var(--hx-surface) !important;
+}
+
+/* The cmdp-foot kbd is the last remaining hardcoded white inside
+   platform.css — re-bind for dark. */
+html[data-theme="dark"] .hx-cmdp-foot kbd {
+  background: var(--hx-surface-2);
+}
