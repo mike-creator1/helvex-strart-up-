@@ -1324,9 +1324,59 @@
       font-size: 13px;
     }
 
-    /* Thinking indicator — Claude.ai-style: pulsing orb + label + dots.
-       Replaces the bare three-dot blip with something that announces the
-       model is actually doing work, not idle. */
+    /* Thinking indicator — minimalist: just the model's logo doing its
+       signature animation. No pill, no label, no dots. The logo IS the
+       state. Per-model accent via .is-ether / .is-nexus / .is-prometheus. */
+    .hx-thinking-solo {
+      display: inline-block;
+      width: 32px; height: 32px;
+      color: var(--hx-yellow-deep);
+      animation: hx-solo-fade-in 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    .hx-thinking-solo svg { width: 100%; height: 100%; }
+    @keyframes hx-solo-fade-in {
+      from { opacity: 0; transform: scale(0.6); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .hx-thinking-solo.is-ether {
+      color: var(--hx-yellow-deep);
+      filter: drop-shadow(0 0 10px var(--hx-yellow-soft));
+    }
+    .hx-thinking-solo.is-ether svg {
+      animation: hx-solo-ether 2.4s linear infinite;
+    }
+    @keyframes hx-solo-ether {
+      to { transform: rotate(360deg); }
+    }
+    .hx-thinking-solo.is-nexus {
+      color: var(--hx-red);
+      filter: drop-shadow(0 0 10px var(--hx-red-soft));
+    }
+    .hx-thinking-solo.is-nexus svg {
+      animation: hx-solo-nexus 1.8s ease-in-out infinite;
+    }
+    @keyframes hx-solo-nexus {
+      0%, 100% { transform: scale(0.92); opacity: 0.85; }
+      50%      { transform: scale(1.08); opacity: 1; }
+    }
+    .hx-thinking-solo.is-prometheus {
+      color: var(--hx-text);
+      filter: drop-shadow(0 0 12px var(--hx-mc-glow));
+      transform-origin: 16px 26px;
+    }
+    .hx-thinking-solo.is-prometheus svg {
+      animation: hx-solo-prometheus 1.3s ease-in-out infinite;
+      transform-origin: 12px 20px;
+    }
+    @keyframes hx-solo-prometheus {
+      0%, 100% { transform: scale(1)   skewX(0deg);  }
+      25%      { transform: scale(1.06) skewX(-1.5deg); }
+      50%      { transform: scale(0.95) skewX(1deg); }
+      75%      { transform: scale(1.05) skewX(-0.5deg); }
+    }
+
+    /* Old pill — kept around in case anyone still mounts .hx-thinking, but
+       we don't render it anymore in this build. */
     .hx-thinking {
       display: inline-flex;
       align-items: center;
@@ -3223,14 +3273,13 @@
           });
           if (state.sending) {
             var activeModel = ($('hx-c-model') && $('hx-c-model').value) || 'ether';
-            html += '<div class="hx-msg is-assistant">' +
+            // Minimal thinking indicator: just the active model's logo
+            // doing its signature animation. No pill, no labels, no dots.
+            html += '<div class="hx-msg is-assistant hx-msg-thinking">' +
               '<div class="hx-msg-body">' +
-                '<div class="hx-msg-meta"><strong>Helix</strong></div>' +
-                '<div class="hx-thinking is-' + activeModel + '">' +
-                  '<span class="hx-thinking-mark" aria-hidden="true">' + modelLogoSvg(activeModel) + '</span>' +
-                  '<span class="hx-thinking-text">' + (state.agentEnabled ? 'Planning' : 'Thinking') + '</span>' +
-                  '<span class="hx-typing"><span></span><span></span><span></span></span>' +
-                '</div>' +
+                '<span class="hx-thinking-solo is-' + activeModel + '" aria-label="' + (state.agentEnabled ? 'Planning' : 'Thinking') + '">' +
+                  modelLogoSvg(activeModel) +
+                '</span>' +
               '</div>' +
             '</div>';
           }
