@@ -686,21 +686,57 @@
       font-size: 13px;
     }
 
-    /* Typing indicator */
+    /* Thinking indicator — Claude.ai-style: pulsing orb + label + dots.
+       Replaces the bare three-dot blip with something that announces the
+       model is actually doing work, not idle. */
+    .hx-thinking {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 12px 4px 8px;
+      background: linear-gradient(180deg, var(--hx-surface) 0%, var(--hx-bg-2) 100%);
+      border: 1px solid var(--hx-line);
+      border-radius: 999px;
+      color: var(--hx-text-mid);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      box-shadow: var(--hx-shadow-xs);
+    }
+    .hx-thinking-orb {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--hx-yellow) 0%, var(--hx-yellow-deep) 100%);
+      box-shadow:
+        0 0 0 3px var(--hx-yellow-soft),
+        0 0 10px color-mix(in srgb, var(--hx-yellow) 60%, transparent);
+      animation: hx-thinking-orb 1.6s ease-in-out infinite;
+    }
+    @keyframes hx-thinking-orb {
+      0%, 100% { transform: scale(0.85); box-shadow: 0 0 0 3px var(--hx-yellow-soft), 0 0 8px color-mix(in srgb, var(--hx-yellow) 45%, transparent); }
+      50%      { transform: scale(1.1);  box-shadow: 0 0 0 5px var(--hx-yellow-soft), 0 0 16px color-mix(in srgb, var(--hx-yellow) 75%, transparent); }
+    }
+    .hx-thinking-text {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-size: 14px;
+      letter-spacing: -0.005em;
+      color: var(--hx-text);
+    }
+    /* Typing indicator — small dots inline with the thinking pill */
     .hx-typing {
-      display: inline-flex; gap: 4px; align-items: center;
-      padding: 6px 0;
+      display: inline-flex; gap: 3px; align-items: center;
     }
     .hx-typing span {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--hx-text-faint);
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--hx-text-dim);
       animation: hx-typing-bounce 1.2s infinite;
     }
     .hx-typing span:nth-child(2) { animation-delay: 0.15s; }
     .hx-typing span:nth-child(3) { animation-delay: 0.30s; }
     @keyframes hx-typing-bounce {
       0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
-      30%           { transform: translateY(-4px); opacity: 1; }
+      30%           { transform: translateY(-3px); opacity: 1; }
     }
 
     /* Empty state — editorial welcome */
@@ -2319,7 +2355,11 @@
             html += '<div class="hx-msg is-assistant">' +
               '<div class="hx-msg-body">' +
                 '<div class="hx-msg-meta"><strong>Helix</strong></div>' +
-                '<div class="hx-typing"><span></span><span></span><span></span></div>' +
+                '<div class="hx-thinking">' +
+                  '<span class="hx-thinking-orb" aria-hidden="true"></span>' +
+                  '<span class="hx-thinking-text">' + (state.agentEnabled ? 'Planning' : 'Thinking') + '</span>' +
+                  '<span class="hx-typing"><span></span><span></span><span></span></span>' +
+                '</div>' +
               '</div>' +
             '</div>';
           }
@@ -2652,15 +2692,49 @@
           function appendDelta(t) {
             if (!t) return;
             ensureStreamMessage();
-            if (streamNode) streamNode.appendChild(document.createTextNode(t));
             assistantText += t;
             // Keep the model in sync so any incidental re-render still
             // shows what the user has been reading.
             var s = state.messages.find(function (m) { return m.id === streamId; });
             if (s) s.content = assistantText;
+            // Re-render the message body through the markdown pipeline so
+            // checkboxes, code blocks, bold, links etc. appear live as the
+            // model streams — not just plain text. Throttled to ~120ms so
+            // we don't thrash the DOM on every tiny delta.
+            scheduleStreamRender();
             // Auto-scroll only if the user hasn't scrolled up to read.
             var nearBottom = (thread.scrollHeight - thread.scrollTop - thread.clientHeight) < 80;
             if (nearBottom) thread.scrollTop = thread.scrollHeight;
+          }
+
+          // Throttled markdown re-render during streaming. Latest content
+          // always wins; a trailing render fires after the burst settles.
+          var streamRenderPending = false;
+          var streamRenderLastAt = 0;
+          function scheduleStreamRender() {
+            var now = Date.now();
+            var elapsed = now - streamRenderLastAt;
+            if (elapsed >= 120) {
+              streamRenderLastAt = now;
+              runStreamRender();
+              return;
+            }
+            if (streamRenderPending) return;
+            streamRenderPending = true;
+            setTimeout(function () {
+              streamRenderPending = false;
+              streamRenderLastAt = Date.now();
+              runStreamRender();
+            }, 120 - elapsed);
+          }
+          function runStreamRender() {
+            if (!streamNode) return;
+            try {
+              streamNode.innerHTML = renderRichContent(assistantText, true);
+            } catch (e) {
+              // Fallback: at least show the raw text rather than crashing
+              streamNode.textContent = assistantText;
+            }
           }
 
           function finalizeError(msg) {
