@@ -1,3 +1,26 @@
+    /* Marketing-wide: block pinch-zoom and double-tap-zoom on iOS Safari.
+       Same no-zoom policy as the platform shell. */
+    (function lockZoom() {
+      var prevent = function (e) { e.preventDefault(); };
+      document.addEventListener('gesturestart',  prevent, { passive: false });
+      document.addEventListener('gesturechange', prevent, { passive: false });
+      document.addEventListener('gestureend',    prevent, { passive: false });
+      var lastTouchEnd = 0;
+      document.addEventListener('touchend', function (e) {
+        var now = Date.now();
+        if (now - lastTouchEnd <= 320) e.preventDefault();
+        lastTouchEnd = now;
+      }, { passive: false });
+      document.addEventListener('wheel', function (e) {
+        if (e.ctrlKey) e.preventDefault();
+      }, { passive: false });
+      document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+          e.preventDefault();
+        }
+      });
+    })();
+
     /* Disable HTML5 validation on the premium footer subscribe form so the
        browser never paints :invalid / :-moz-ui-invalid red ring while the
        user is typing an email. The form has an onsubmit preventDefault
