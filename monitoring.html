@@ -18,6 +18,15 @@
       padding: 14px 16px;
       border-top: 1px solid var(--hx-line-soft);
     }
+    @media (max-width: 1000px) {
+      .hx-dep-monitor { grid-template-columns: 36px 1fr auto; gap: 10px; padding: 12px 14px; }
+      .hx-dep-monitor .num { font-size: 12px; }
+      .hx-dep-monitor .num.is-extra { display: none; }
+    }
+    @media (max-width: 600px) {
+      .hx-dep-monitor { grid-template-columns: 32px 1fr; row-gap: 6px; }
+      .hx-dep-monitor .num { text-align: left; }
+    }
     .hx-dep-monitor:first-child { border-top: 0; }
     .hx-dep-monitor:hover { background: var(--hx-bg-2); }
     .hx-dep-monitor .ico { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3)); border: 1px solid var(--hx-line); display: flex; align-items: center; justify-content: center; color: var(--hx-text); }

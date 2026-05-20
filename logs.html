@@ -71,6 +71,19 @@
       cursor: pointer;
       transition: background 0.1s;
     }
+    @media (max-width: 720px) {
+      .hx-log-row {
+        grid-template-columns: 60px 1fr;
+        grid-template-areas: 'lvl ts' 'msg msg' 'trace trace';
+        gap: 6px 10px;
+        padding: 10px 14px;
+        align-items: start;
+      }
+      .hx-log-row .ts    { grid-area: ts; justify-self: end; font-size: 10.5px; }
+      .hx-log-row .lvl   { grid-area: lvl; }
+      .hx-log-row .msg   { grid-area: msg; white-space: normal; overflow-wrap: anywhere; line-height: 1.45; }
+      .hx-log-row .trace { grid-area: trace; font-size: 10px; }
+    }
     .hx-log-row:first-child { border-top: 0; }
     .hx-log-row:hover { background: var(--hx-bg-2); }
     .hx-log-row .ts { color: var(--hx-text-dim); }
