@@ -5294,6 +5294,64 @@
               return { role: m.role, content: m.content || '' };
             });
 
+          // ─── Intent router ────────────────────────────────────────
+          // Look at THIS turn's user text and append a targeted reminder
+          // to the system prompt. Per-turn nudges land at the top of the
+          // model's attention and dramatically improve format compliance
+          // vs. abstract rules buried in a 200-line system prompt.
+          var turnHint = (function buildTurnHint() {
+            var ut = (typeof currentContent === 'string' ? currentContent : '').toLowerCase();
+            if (!ut) return '';
+            var hints = [];
+            // Stock / crypto intent — match common tickers + Greek/English
+            // keywords. Pull out the ticker so we can name it back.
+            var tickerMatch = ut.match(/\b(nvda|aapl|tsla|msft|meta|amzn|googl|goog|nflx|amd|intc|nke|ko|pep|dis|jpm|bac|gs|spy|qqq|btc|eth|sol|xrp|ada|doge|otoel|opap|elpe|ete|alpha|peir)\b/);
+            var stockKw = /\b(μετοχ|stock|share|price|τιμή|πόσο πάει|how much|crypto|κρυπτο|bitcoin|μπίτκοιν)\b/i;
+            if (tickerMatch || stockKw.test(ut)) {
+              var tickerUpper = tickerMatch ? tickerMatch[1].toUpperCase() : '';
+              hints.push(
+                'TURN INTENT: STOCK/CRYPTO question' + (tickerUpper ? ' for ' + tickerUpper : '') + '. ' +
+                'You MUST produce, IN THIS ORDER and NOTHING ELSE BEFORE: ' +
+                '1) bold one-line headline `**TICKER $price ±%**`, ' +
+                '2) the literal marker `<<HXCHART:stock:' + (tickerUpper || 'TICKER') + '>>` on its own line, ' +
+                '3) a 3-4 row Markdown table (Day range, 52-week range, Market cap, Volume), ' +
+                '4) one short paragraph with the why, ' +
+                '5) citation. ' +
+                'NO preamble, NO "Of course", NO closing pleasantries. Call web_search first to confirm live price.'
+              );
+            }
+            // Email / draft intent
+            if (/\b(email|μέιλ|μειλ|μήνυμα|γράψε.*(email|μέιλ|μήνυμα|σε πελάτη|στον πελάτη|στη πελάτη)|write.*email|draft.*email)\b/i.test(ut)) {
+              hints.push(
+                'TURN INTENT: EMAIL DRAFT. You MUST wrap the email in `<<HXEMAIL subject="…" to="…">> … <<HXEMAIL_END>>`. ' +
+                'Put exactly ONE short intro sentence before the block (e.g. "Πρόχειρο διαθέσιμο παρακάτω. Αντικατέστησε [placeholders]."). ' +
+                'NOTHING after the block. Use square-bracketed placeholders for unknowns. Greek body if the user wrote Greek.'
+              );
+            } else if (/\b(linkedin|tweet|post|caption|brief|contract|proposal|cv|resume|βιογραφικό|πρόχειρο|γράψε ένα|γράψε μου)\b/i.test(ut)) {
+              hints.push(
+                'TURN INTENT: COPY-ABLE DRAFT. You MUST wrap the content in `<<HXDRAFT title="…">> … <<HXDRAFT_END>>`. ' +
+                'One intro sentence before, nothing after.'
+              );
+            }
+            // Live data intent — sports, news, weather, schedules
+            if (/\b(σήμερα|αύριο|απόψε|τώρα|live|σκορ|ματς|αγών|fixture|kickoff|tipoff|today|tonight|tomorrow|latest|breaking|news|weather|καιρός|θερμοκρασία)\b/i.test(ut)) {
+              hints.push(
+                'TURN INTENT: LIVE DATA. CALL web_search IMMEDIATELY — do not write any prose before searching. ' +
+                'After searching, lead with a bold concrete headline (score, time, temperature) on the first line. ' +
+                'Use a Markdown table for structured details. Citation at the end. ' +
+                'Forbidden response: "I don\'t have access to real-time information."'
+              );
+            }
+            // Rude / profane user
+            if (/\b(μαλάκ|μαλακ|βλάκα|ηλίθι|χαζ|σκατά|fuck|shit|idiot|stupid|dumb)\b/i.test(ut)) {
+              hints.push(
+                'TURN INTENT: USER USED PROFANITY. Do NOT acknowledge it, do NOT mirror it, do NOT lecture. ' +
+                'Respond as if the request was phrased calmly. Address the underlying question with full professionalism.'
+              );
+            }
+            return hints.length ? '\n\n' + hints.join('\n\n') : '';
+          })();
+
           var t0 = Date.now();
           var traceCell = $('hx-c-trace');
           traceCell.textContent = '…';
@@ -5402,7 +5460,7 @@
               body: JSON.stringify({
                 model:           $('hx-c-model').value || 'ether',
                 conversation_id: state.conversation.id,
-                system:          helixSystem() + (currentlyAgentic() ? HELIX_AGENT_SYSTEM : ''),
+                system:          helixSystem() + (currentlyAgentic() ? HELIX_AGENT_SYSTEM : '') + turnHint,
                 messages:        send_msgs,
                 user_attachments: persistAttachs,
                 max_tokens:      currentlyAgentic() ? 8192 : 2048,
