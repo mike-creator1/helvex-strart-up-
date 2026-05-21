@@ -1897,22 +1897,48 @@
         /* 5) ambient gold halo — barely visible, premium feel */
         0 18px 40px -20px color-mix(in srgb, var(--hx-yellow, transparent) 35%, transparent);
     }
-    /* Decorative gradient edge — sits behind the border, glints on focus */
+    /* Decorative animated gradient edge — sits behind the border. Idles
+       at a barely-visible 8% gold tint that rotates slowly; on focus,
+       amplifies to a stronger conic sweep that breathes with the model
+       accent (gold for Ether, coral for Nexus, graphite for Prometheus). */
     .hx-chat-input-row::before {
       content: '';
       position: absolute;
       inset: -1px;
       border-radius: 21px;
       padding: 1px;
-      background: linear-gradient(135deg,
-        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 0%, transparent) 0%,
-        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 0%, transparent) 100%);
+      background: conic-gradient(from var(--hx-edge-angle, 0deg) at 50% 50%,
+        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 6%, transparent) 0%,
+        transparent 25%,
+        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 12%, transparent) 50%,
+        transparent 75%,
+        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 6%, transparent) 100%);
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
       -webkit-mask-composite: xor;
               mask-composite: exclude;
       pointer-events: none;
-      transition: background 0.32s ease;
+      animation: hx-edge-rotate 14s linear infinite;
+      opacity: 0.7;
+      transition: opacity 0.4s ease;
     }
+    body[data-model="nexus"] .hx-chat-input-row::before,
+    body[data-model="prometheus"] .hx-chat-input-row::before {
+      background: conic-gradient(from var(--hx-edge-angle, 0deg) at 50% 50%,
+        color-mix(in srgb, var(--hx-mc, var(--hx-text)) 6%, transparent) 0%,
+        transparent 25%,
+        color-mix(in srgb, var(--hx-mc, var(--hx-text)) 14%, transparent) 50%,
+        transparent 75%,
+        color-mix(in srgb, var(--hx-mc, var(--hx-text)) 6%, transparent) 100%);
+    }
+    @property --hx-edge-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+    @keyframes hx-edge-rotate {
+      to { --hx-edge-angle: 360deg; }
+    }
+    .hx-chat-input-row:focus-within::before { opacity: 1; }
     .hx-chat-input-row:hover {
       border-color: color-mix(in srgb, var(--hx-line-strong) 90%, transparent);
       box-shadow:
@@ -2438,23 +2464,19 @@
         inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
         0 0 0 3px color-mix(in srgb, var(--hx-mc, transparent) 16%, transparent);
     }
-    .hx-chat-modelpop-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--hx-yellow, var(--hx-text));
-      box-shadow:
-        0 0 0 2px color-mix(in srgb, var(--hx-yellow, transparent) 28%, transparent),
-        0 0 8px color-mix(in srgb, var(--hx-yellow, transparent) 60%, transparent);
-      animation: hx-modeldot-breathe 3.2s ease-in-out infinite;
+    /* The active-model mark inside the popover button — shows the real
+       Ether / Nexus / Prometheus SVG glyph, tinted by model identity,
+       with a soft breathing halo so the chat feels alive. */
+    .hx-chat-modelpop-btnmark {
+      width: 18px; height: 18px;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--hx-yellow-deep, var(--hx-text));
+      transition: color 0.22s ease, transform 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
-    @keyframes hx-modeldot-breathe {
-      0%, 100% { box-shadow: 0 0 0 2px color-mix(in srgb, var(--hx-mc, var(--hx-yellow, transparent)) 25%, transparent), 0 0 6px  color-mix(in srgb, var(--hx-mc, var(--hx-yellow, transparent)) 50%, transparent); }
-      50%      { box-shadow: 0 0 0 3px color-mix(in srgb, var(--hx-mc, var(--hx-yellow, transparent)) 35%, transparent), 0 0 12px color-mix(in srgb, var(--hx-mc, var(--hx-yellow, transparent)) 75%, transparent); }
-    }
-    body[data-model="nexus"] .hx-chat-modelpop-dot,
-    body[data-model="prometheus"] .hx-chat-modelpop-dot {
-      background: var(--hx-mc, var(--hx-text));
-    }
+    body[data-model="nexus"]      .hx-chat-modelpop-btnmark { color: #C84A4A; }
+    body[data-model="prometheus"] .hx-chat-modelpop-btnmark { color: #4A4A52; }
+    .hx-chat-modelpop-btnmark svg { width: 16px; height: 16px; }
+    .hx-chat-modelpop-btn:hover .hx-chat-modelpop-btnmark { transform: scale(1.08); }
     .hx-chat-modelpop-name {
       font-weight: 600;
       color: inherit;
@@ -2502,7 +2524,7 @@
     }
     .hx-chat-modelpop-item {
       display: grid;
-      grid-template-columns: 1fr auto auto auto;
+      grid-template-columns: 30px 1fr auto auto;
       align-items: center;
       gap: 12px;
       width: 100%;
@@ -2519,6 +2541,34 @@
         border-color 0.16s ease,
         transform 0.14s cubic-bezier(0.2, 0.7, 0.2, 1);
       position: relative;
+    }
+    /* Real model SVG mark — colored per identity, glow on active row */
+    .hx-chat-modelpop-mark {
+      width: 26px; height: 26px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 8px;
+      background: linear-gradient(180deg, var(--hx-surface) 0%, var(--hx-bg-2) 100%);
+      border: 1px solid color-mix(in srgb, var(--hx-line) 70%, transparent);
+      color: var(--hx-yellow-deep, var(--hx-text));
+      transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.22s ease;
+      flex-shrink: 0;
+      box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent);
+    }
+    .hx-chat-modelpop-mark[data-model-mark="nexus"]      { color: #C84A4A; }
+    .hx-chat-modelpop-mark[data-model-mark="prometheus"] { color: #4A4A52; }
+    .hx-chat-modelpop-mark svg { width: 16px; height: 16px; }
+    .hx-chat-modelpop-item:hover .hx-chat-modelpop-mark,
+    .hx-chat-modelpop-item[aria-checked="true"] .hx-chat-modelpop-mark {
+      border-color: color-mix(in srgb, currentColor 32%, var(--hx-line));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+        0 0 0 3px color-mix(in srgb, currentColor 10%, transparent);
+    }
+    .hx-chat-modelpop-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .hx-chat-modelpop-idesc {
+      font-size: 11px;
+      color: var(--hx-text-faint);
+      letter-spacing: -0.003em;
     }
     .hx-chat-modelpop-item:hover {
       background: linear-gradient(180deg,
@@ -3370,7 +3420,7 @@
                   </button>
                   <span class="hx-chat-controls-spacer"></span>
 
-                  <!-- Model picker popover — Claude Code parity (click to switch, ⌘+1/2/3 shortcuts) -->
+                  <!-- Model picker popover — premium with real model SVG marks -->
                   <div class="hx-chat-modelpop-wrap">
                     <button
                       class="hx-chat-modelpop-btn"
@@ -3379,27 +3429,36 @@
                       aria-haspopup="menu"
                       aria-expanded="false"
                       aria-label="Switch model">
-                      <span class="hx-chat-modelpop-dot" aria-hidden="true"></span>
+                      <span class="hx-chat-modelpop-btnmark" id="hx-c-modelpop-btnmark" aria-hidden="true"></span>
                       <span class="hx-chat-modelpop-name" id="hx-c-modelpop-name">ether</span>
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                     </button>
                     <div class="hx-chat-modelpop-menu" id="hx-c-modelpop-menu" role="menu" hidden>
                       <div class="hx-chat-modelpop-section">Models</div>
                       <button class="hx-chat-modelpop-item" data-model="ether" type="button" role="menuitemradio" aria-checked="true">
-                        <span class="hx-chat-modelpop-iname">Ether</span>
-                        <span class="hx-chat-modelpop-meta">fast</span>
+                        <span class="hx-chat-modelpop-mark" data-model-mark="ether" aria-hidden="true"></span>
+                        <span class="hx-chat-modelpop-body">
+                          <span class="hx-chat-modelpop-iname">Ether</span>
+                          <span class="hx-chat-modelpop-idesc">Quick replies, light reasoning</span>
+                        </span>
                         <span class="hx-chat-modelpop-tick" aria-hidden="true"></span>
                         <span class="hx-chat-modelpop-num">1</span>
                       </button>
                       <button class="hx-chat-modelpop-item" data-model="nexus" type="button" role="menuitemradio" aria-checked="false">
-                        <span class="hx-chat-modelpop-iname">Nexus</span>
-                        <span class="hx-chat-modelpop-meta">balanced</span>
+                        <span class="hx-chat-modelpop-mark" data-model-mark="nexus" aria-hidden="true"></span>
+                        <span class="hx-chat-modelpop-body">
+                          <span class="hx-chat-modelpop-iname">Nexus</span>
+                          <span class="hx-chat-modelpop-idesc">Balanced — agent + tools</span>
+                        </span>
                         <span class="hx-chat-modelpop-tick" aria-hidden="true"></span>
                         <span class="hx-chat-modelpop-num">2</span>
                       </button>
                       <button class="hx-chat-modelpop-item" data-model="prometheus" type="button" role="menuitemradio" aria-checked="false">
-                        <span class="hx-chat-modelpop-iname">Prometheus</span>
-                        <span class="hx-chat-modelpop-meta">deepest</span>
+                        <span class="hx-chat-modelpop-mark" data-model-mark="prometheus" aria-hidden="true"></span>
+                        <span class="hx-chat-modelpop-body">
+                          <span class="hx-chat-modelpop-iname">Prometheus</span>
+                          <span class="hx-chat-modelpop-idesc">Deepest reasoning, longest plans</span>
+                        </span>
                         <span class="hx-chat-modelpop-tick" aria-hidden="true"></span>
                         <span class="hx-chat-modelpop-num">3</span>
                       </button>
@@ -5960,10 +6019,23 @@
         var modelPopMenu  = $('hx-c-modelpop-menu');
         var modelPopName  = $('hx-c-modelpop-name');
         var modelSelectEl = $('hx-c-model');
+        // Inject the real model SVG marks once into each row + the button.
+        // This pulls from the existing modelLogoSvg(model) function so the
+        // popover uses the same Ether ✦ / Nexus ◈ / Prometheus 🜂 glyphs the
+        // rest of the chat uses (thinking indicator, blank state, morph).
+        (function injectModelMarks() {
+          if (typeof modelLogoSvg !== 'function') return;
+          document.querySelectorAll('.hx-chat-modelpop-mark[data-model-mark]').forEach(function (n) {
+            var m = n.getAttribute('data-model-mark');
+            n.innerHTML = modelLogoSvg(m);
+          });
+        })();
         function refreshModelPopUI() {
           if (!modelPopMenu || !modelSelectEl) return;
           var current = modelSelectEl.value || 'ether';
           if (modelPopName) modelPopName.textContent = current;
+          var btnMark = document.getElementById('hx-c-modelpop-btnmark');
+          if (btnMark && typeof modelLogoSvg === 'function') btnMark.innerHTML = modelLogoSvg(current);
           modelPopMenu.querySelectorAll('.hx-chat-modelpop-item').forEach(function (it) {
             it.setAttribute('aria-checked', it.getAttribute('data-model') === current ? 'true' : 'false');
           });
