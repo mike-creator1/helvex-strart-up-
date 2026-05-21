@@ -563,54 +563,41 @@
       background: linear-gradient(180deg, transparent 0%, var(--hx-line) 18%, var(--hx-line) 82%, transparent 100%);
       pointer-events: none;
     }
+    /* Rail head — single full-width "New chat" CTA + collapse caret.
+       Borrowed from Claude.ai's layout: the conversations heading is
+       implicit (the list below), the New-chat button is the focal point. */
     .hx-chat-rail-head {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 18px 16px 14px;
+      gap: 6px;
+      padding: 12px 10px;
       border-bottom: 1px solid var(--hx-line-soft, var(--hx-line));
     }
-    .hx-chat-rail-title {
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: none;
-      letter-spacing: -0.005em;
-      color: var(--hx-text);
-      margin: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .hx-chat-rail-title::before { content: none; }
-    .hx-chat-rail-head-actions {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .hx-chat-rail-title { display: none; }
+    .hx-chat-rail-head-actions { display: contents; }
     /* Collapse-rail button — Claude-style chevron tucked next to "+ New".
        Desktop only: on mobile the rail uses the drawer pattern and the
        hamburger already provides open/close. */
     .hx-chat-rail-collapse {
-      width: 28px; height: 28px;
+      width: 36px; height: 36px;
+      flex-shrink: 0;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: var(--hx-r-sm);
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: 8px;
       color: var(--hx-text-dim);
       cursor: pointer;
       padding: 0;
-      transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease, transform 0.14s ease;
+      transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
     }
     .hx-chat-rail-collapse:hover {
       background: var(--hx-bg-2);
-      border-color: var(--hx-line);
+      border-color: var(--hx-line-strong);
       color: var(--hx-text);
     }
-    .hx-chat-rail-collapse:active { transform: scale(0.96); }
-    .hx-chat-rail-collapse svg { width: 15px; height: 15px; }
+    .hx-chat-rail-collapse svg { width: 14px; height: 14px; }
     @media (max-width: 900px) {
       .hx-chat-rail-collapse { display: none; }
     }
@@ -642,23 +629,39 @@
       body[data-rail="collapsed"] .hx-chat-rail-expand { display: none; }
     }
     .hx-chat-new {
-      width: 28px; height: 28px;
-      display: inline-flex; align-items: center; justify-content: center;
-      background: var(--hx-text); color: var(--hx-bg);
-      border: 1px solid var(--hx-text);
-      border-radius: var(--hx-r-sm);
+      flex: 1; min-width: 0;
+      height: 36px;
+      display: inline-flex; align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      background: var(--hx-surface);
+      color: var(--hx-text);
+      border: 1px solid var(--hx-line);
+      border-radius: 8px;
       cursor: pointer;
-      box-shadow: var(--hx-shadow-xs);
-      transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.003em;
+      transition: background 0.14s ease, border-color 0.14s ease;
     }
     .hx-chat-new:hover {
-      background: var(--hx-text-mid);
-      border-color: var(--hx-text-mid);
-      transform: translateY(-1px);
-      box-shadow: var(--hx-shadow-sm);
+      background: var(--hx-bg-2);
+      border-color: var(--hx-line-strong);
     }
-    .hx-chat-new:active { transform: translateY(0); }
-    .hx-chat-new svg { width: 13px; height: 13px; }
+    .hx-chat-new svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--hx-text-mid); }
+    .hx-chat-new span { flex: 1; text-align: left; }
+    .hx-chat-new-kbd {
+      font-family: var(--hx-mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--hx-text-faint);
+      padding: 2px 6px;
+      border: 1px solid var(--hx-line);
+      border-radius: 4px;
+      background: var(--hx-bg-2);
+      letter-spacing: 0.02em;
+    }
 
     .hx-chat-list {
       flex: 1;
@@ -767,34 +770,14 @@
       margin: 4px 4px;
       background: var(--hx-line);
     }
-    .hx-chat-item::before {
-      content: '';
-      position: absolute;
-      left: 4px; top: 50%;
-      transform: translateY(-50%) scaleY(0.4);
-      width: 2px; height: 56%;
-      background: linear-gradient(180deg,
-        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 0%, transparent) 0%,
-        var(--hx-yellow, var(--hx-text)) 50%,
-        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 0%, transparent) 100%);
-      border-radius: 2px;
-      opacity: 0;
-      transition: opacity 0.16s ease, transform 0.18s cubic-bezier(0.2, 0.7, 0.3, 1);
-      box-shadow: 0 0 6px color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 50%, transparent);
-    }
-    .hx-chat-item:hover {
-      background: var(--hx-bg-2);
-    }
+    /* Conversation row — flat, Claude/Linear-style. Hover = neutral
+       bg-2. Active = same bg + bold title. No gradient stripe, no
+       gold glow. */
+    .hx-chat-item::before { content: none; }
+    .hx-chat-item:hover { background: var(--hx-bg-2); }
     .hx-chat-item.is-active {
-      background: linear-gradient(180deg, var(--hx-bg-2) 0%, color-mix(in srgb, var(--hx-bg-2) 70%, var(--hx-surface)) 100%);
-      border-color: var(--hx-line);
-      box-shadow:
-        inset 0 1px 0 color-mix(in srgb, #fff 50%, transparent),
-        var(--hx-shadow-xs);
-    }
-    .hx-chat-item.is-active::before {
-      opacity: 1;
-      transform: translateY(-50%) scaleY(1);
+      background: var(--hx-bg-2);
+      border-color: transparent;
     }
     .hx-chat-item.is-active .hx-chat-item-title { font-weight: 600; }
     .hx-chat-item-title {
@@ -804,19 +787,19 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      letter-spacing: -0.005em;
+      letter-spacing: -0.003em;
     }
     .hx-chat-item-meta {
-      font-size: 10.5px;
-      color: var(--hx-text-dim);
+      font-size: 11px;
+      color: var(--hx-text-faint);
       display: flex;
       align-items: center;
-      gap: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-weight: 500;
+      gap: 6px;
+      letter-spacing: -0.002em;
+      font-weight: 400;
+      text-transform: none;
     }
-    .hx-chat-item-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--hx-text-faint); }
+    .hx-chat-item-meta .dot { width: 2px; height: 2px; border-radius: 50%; background: var(--hx-text-faint); }
 
     .hx-chat-empty-list {
       padding: 28px 18px;
@@ -1495,32 +1478,36 @@
       from { opacity: 0; transform: translateY(6px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+    /* Icon-only action row under each assistant message — Claude.ai
+       parity. 28px squares, no text labels, tooltip on hover. */
     .hx-msg-actions {
       display: flex; align-items: center; gap: 2px;
       margin-top: 10px;
+      margin-left: -6px;
       opacity: 0;
       transition: opacity 0.16s ease;
     }
     .hx-msg:hover .hx-msg-actions,
     .hx-msg:focus-within .hx-msg-actions { opacity: 1; }
     .hx-msg-act {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 5px 9px;
-      font-size: 11.5px; font-weight: 500;
+      width: 28px; height: 28px;
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0;
       color: var(--hx-text-dim);
       background: transparent;
       border: 1px solid transparent;
       border-radius: 6px;
       cursor: pointer;
       font-family: inherit;
-      letter-spacing: -0.002em;
-      transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+      transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
     }
     .hx-msg-act:hover {
       background: var(--hx-bg-2);
       color: var(--hx-text);
+      border-color: var(--hx-line);
     }
-    .hx-msg-act svg { width: 12px; height: 12px; opacity: 0.85; }
+    .hx-msg-act svg { width: 14px; height: 14px; opacity: 0.9; stroke-width: 1.8; }
+    .hx-msg-act-label { display: none; }
 
     /* Premium speaker / TTS button — sits to the left of Copy/Regenerate */
     .hx-msg-speak {
@@ -3113,15 +3100,14 @@
         <!-- Conversation rail -->
         <aside class="hx-chat-rail">
           <div class="hx-chat-rail-head">
-            <p class="hx-chat-rail-title">Conversations</p>
-            <div class="hx-chat-rail-head-actions">
-              <button class="hx-chat-new" type="button" id="hx-c-new" aria-label="New chat" title="Start a new conversation">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              </button>
-              <button class="hx-chat-rail-collapse" type="button" id="hx-c-rail-collapse" aria-label="Collapse sidebar" title="Collapse sidebar">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-              </button>
-            </div>
+            <button class="hx-chat-new" type="button" id="hx-c-new" title="Start a new conversation">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>New chat</span>
+              <kbd class="hx-chat-new-kbd">⌘ K</kbd>
+            </button>
+            <button class="hx-chat-rail-collapse" type="button" id="hx-c-rail-collapse" aria-label="Collapse sidebar" title="Collapse sidebar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
           </div>
           <div class="hx-chat-list" id="hx-c-list">
             <div class="hx-chat-empty-list" id="hx-c-empty">Your conversations will appear here.</div>
@@ -4519,7 +4505,7 @@
           var actions = '';
           if (isAssist && m.content && !m.__error && !m.__streaming) {
             actions = '<div class="hx-msg-actions">' +
-              '<button class="hx-msg-act hx-msg-speak" type="button" data-act="speak" data-idx="' + i + '" aria-label="Listen">' +
+              '<button class="hx-msg-act hx-msg-speak" type="button" data-act="speak" data-idx="' + i + '" aria-label="Listen" title="Listen">' +
                 '<span class="hx-msg-speak-ico hx-msg-speak-play">' +
                   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>' +
                 '</span>' +
@@ -4527,15 +4513,18 @@
                   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>' +
                 '</span>' +
                 '<span class="hx-msg-speak-ico hx-msg-speak-load"><span></span><span></span><span></span></span>' +
-                '<span class="hx-msg-act-label">Listen</span>' +
               '</button>' +
-              '<button class="hx-msg-act" type="button" data-act="copy" data-idx="' + i + '">' +
+              '<button class="hx-msg-act" type="button" data-act="copy" data-idx="' + i + '" aria-label="Copy" title="Copy">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
-                'Copy' +
               '</button>' +
-              '<button class="hx-msg-act" type="button" data-act="regenerate" data-idx="' + i + '">' +
+              '<button class="hx-msg-act" type="button" data-act="regenerate" data-idx="' + i + '" aria-label="Regenerate" title="Regenerate">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>' +
-                'Regenerate' +
+              '</button>' +
+              '<button class="hx-msg-act" type="button" data-act="like" data-idx="' + i + '" aria-label="Good response" title="Good response">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>' +
+              '</button>' +
+              '<button class="hx-msg-act" type="button" data-act="dislike" data-idx="' + i + '" aria-label="Bad response" title="Bad response">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zM17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>' +
               '</button>' +
             '</div>';
           }
