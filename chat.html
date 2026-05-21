@@ -476,6 +476,12 @@
       grid-template-columns: 280px minmax(0, 1fr);
       height: calc(100vh - var(--hx-topbar-h));
       min-height: 0;
+      transition: grid-template-columns 0.32s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    /* Desktop collapsed rail: column shrinks to zero, rail slides out of
+       view. Chat pane gets the entire viewport width. */
+    body[data-active="chat"][data-rail="collapsed"] .hx-main {
+      grid-template-columns: 0 minmax(0, 1fr);
     }
 
     /* Left rail — conversation list */
@@ -487,6 +493,15 @@
       min-height: 0;
       overflow: hidden;
       position: relative;
+      transition: transform 0.32s cubic-bezier(0.2, 0.7, 0.2, 1),
+                  opacity 0.22s ease,
+                  border-color 0.18s ease;
+    }
+    body[data-rail="collapsed"] .hx-chat-rail {
+      transform: translateX(-100%);
+      opacity: 0;
+      border-right-color: transparent;
+      pointer-events: none;
     }
 
     /* Backdrop element exists in DOM at all times for JS simplicity, but
@@ -578,6 +593,64 @@
       width: 4px; height: 4px; border-radius: 50%;
       background: var(--hx-yellow, var(--hx-text));
       box-shadow: 0 0 0 3px var(--hx-yellow-soft, transparent);
+    }
+    .hx-chat-rail-head-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    /* Collapse-rail button — Claude-style chevron tucked next to "+ New".
+       Desktop only: on mobile the rail uses the drawer pattern and the
+       hamburger already provides open/close. */
+    .hx-chat-rail-collapse {
+      width: 28px; height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--hx-r-sm);
+      color: var(--hx-text-dim);
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease, transform 0.14s ease;
+    }
+    .hx-chat-rail-collapse:hover {
+      background: var(--hx-bg-2);
+      border-color: var(--hx-line);
+      color: var(--hx-text);
+    }
+    .hx-chat-rail-collapse:active { transform: scale(0.96); }
+    .hx-chat-rail-collapse svg { width: 15px; height: 15px; }
+    @media (max-width: 900px) {
+      .hx-chat-rail-collapse { display: none; }
+    }
+    /* Expand-rail button — appears in the chat toolbar ONLY when rail is
+       collapsed. Desktop only. */
+    .hx-chat-rail-expand {
+      display: none;
+      width: 34px; height: 34px;
+      align-items: center;
+      justify-content: center;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: 10px;
+      color: var(--hx-text);
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+      box-shadow: var(--hx-shadow-xs);
+      transition: background 0.14s ease, border-color 0.14s ease, transform 0.14s ease;
+    }
+    .hx-chat-rail-expand:hover {
+      background: var(--hx-bg-2);
+      border-color: var(--hx-line-strong);
+    }
+    .hx-chat-rail-expand:active { transform: scale(0.96); }
+    .hx-chat-rail-expand svg { width: 16px; height: 16px; }
+    body[data-rail="collapsed"] .hx-chat-rail-expand { display: inline-flex; }
+    @media (max-width: 900px) {
+      body[data-rail="collapsed"] .hx-chat-rail-expand { display: none; }
     }
     .hx-chat-new {
       width: 28px; height: 28px;
@@ -2441,9 +2514,14 @@
         <aside class="hx-chat-rail">
           <div class="hx-chat-rail-head">
             <p class="hx-chat-rail-title">Conversations</p>
-            <button class="hx-chat-new" type="button" id="hx-c-new" aria-label="New chat" title="Start a new conversation">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            </button>
+            <div class="hx-chat-rail-head-actions">
+              <button class="hx-chat-new" type="button" id="hx-c-new" aria-label="New chat" title="Start a new conversation">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+              <button class="hx-chat-rail-collapse" type="button" id="hx-c-rail-collapse" aria-label="Collapse sidebar" title="Collapse sidebar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+            </div>
           </div>
           <div class="hx-chat-list" id="hx-c-list">
             <div class="hx-chat-empty-list" id="hx-c-empty">Your conversations will appear here.</div>
@@ -2462,6 +2540,9 @@
           <div class="hx-chat-toolbar">
             <button class="hx-chat-drawer-toggle" id="hx-c-drawer-toggle" type="button" aria-label="Open conversations">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <button class="hx-chat-rail-expand" id="hx-c-rail-expand" type="button" aria-label="Expand sidebar" title="Show conversations">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
             <p class="hx-chat-title" id="hx-c-title">New chat</p>
             <label class="hx-chat-pill" title="Model">
@@ -4031,6 +4112,39 @@
         }
         if (drawerToggle) drawerToggle.addEventListener('click', openDrawer);
         if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeDrawer);
+
+        // ─── Desktop: collapse / expand the conversations rail ───
+        // Claude-style: chevron in the rail head hides it, chevron in
+        // the toolbar brings it back. State persists across sessions.
+        var railCollapseBtn = $('hx-c-rail-collapse');
+        var railExpandBtn   = $('hx-c-rail-expand');
+        var RAIL_KEY = 'hx.chat.rail.collapsed';
+        function applyRailState(collapsed) {
+          if (collapsed) document.body.setAttribute('data-rail', 'collapsed');
+          else document.body.removeAttribute('data-rail');
+          try { localStorage.setItem(RAIL_KEY, collapsed ? '1' : '0'); } catch (e) {}
+        }
+        // Restore on load (desktop only — mobile uses drawer pattern).
+        try {
+          if (window.matchMedia('(min-width: 901px)').matches &&
+              localStorage.getItem(RAIL_KEY) === '1') {
+            applyRailState(true);
+          }
+        } catch (e) {}
+        if (railCollapseBtn) railCollapseBtn.addEventListener('click', function () {
+          applyRailState(true);
+        });
+        if (railExpandBtn) railExpandBtn.addEventListener('click', function () {
+          applyRailState(false);
+        });
+        // Keyboard shortcut: Cmd/Ctrl+\  toggles the rail (Claude parity).
+        document.addEventListener('keydown', function (e) {
+          if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
+            e.preventDefault();
+            var nowCollapsed = document.body.getAttribute('data-rail') === 'collapsed';
+            applyRailState(!nowCollapsed);
+          }
+        });
         // Auto-close drawer when user selects a conversation or starts a new one
         var railList = $('hx-c-list');
         if (railList) {
