@@ -1075,19 +1075,29 @@
     /* Inline markdown bits inside assistant prose */
     .hx-md-inline {
       font-family: var(--hx-mono);
-      font-size: 0.88em;
-      background: var(--hx-bg-2);
-      border: 1px solid var(--hx-line);
-      padding: 1px 6px;
+      font-size: 0.86em;
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-yellow-soft) 50%, var(--hx-bg-2)) 0%,
+        var(--hx-bg-2) 100%);
+      border: 1px solid color-mix(in srgb, var(--hx-yellow, var(--hx-line)) 18%, var(--hx-line));
+      padding: 1px 6px 2px;
       border-radius: 5px;
       color: var(--hx-yellow-deep);
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent);
+      white-space: nowrap;
     }
     .hx-md-link {
       color: var(--hx-text);
       border-bottom: 1px solid color-mix(in srgb, var(--hx-text) 30%, transparent);
-      transition: border-color 0.14s ease;
+      text-decoration: none;
+      transition: border-color 0.14s ease, color 0.14s ease;
     }
-    .hx-md-link:hover { border-color: var(--hx-text); }
+    .hx-md-link:hover {
+      border-bottom-color: var(--hx-yellow-deep);
+      color: var(--hx-yellow-deep);
+    }
 
     /* Headings inside the chat — editorial hierarchy.
        H1/H2 use the Instrument Serif italic so longform plans + reports
@@ -1262,40 +1272,100 @@
 
     /* Blockquote — editorial pull-quote */
     .hx-md-quote {
+      position: relative;
       margin: 14px 0;
-      padding: 8px 16px;
+      padding: 10px 16px 10px 20px;
       border-left: 3px solid var(--hx-yellow-deep);
-      background: linear-gradient(90deg, var(--hx-yellow-soft) 0%, transparent 60%);
+      background: linear-gradient(90deg,
+        color-mix(in srgb, var(--hx-yellow-soft) 80%, transparent) 0%,
+        transparent 70%);
       color: var(--hx-text-mid);
       font-style: italic;
-      border-radius: 0 8px 8px 0;
+      border-radius: 0 10px 10px 0;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 60%, transparent),
+        var(--hx-shadow-xs);
+    }
+    .hx-md-quote::before {
+      content: '"';
+      position: absolute;
+      top: -2px; left: 6px;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 28px;
+      line-height: 1;
+      color: color-mix(in srgb, var(--hx-yellow-deep) 50%, transparent);
+      font-style: normal;
+      pointer-events: none;
     }
 
-    /* Code block — premium card with header, body, and optional live preview */
+    /* ─── Premium code block — Claude-grade editor surface ─────────
+       Always-dark editor body (regardless of theme) gives code a true
+       "VS Code feel". Header has macOS traffic-light decoration, language
+       tag with file icon, streaming indicator, and a copy button with
+       state feedback. Optional line-number gutter for readability on
+       longer blocks. */
     .hx-code-block {
-      margin: 12px 0;
+      position: relative;
+      margin: 14px 0;
       border-radius: 12px;
-      background: var(--hx-bg-2);
-      border: 1px solid var(--hx-line);
+      background: #0b0d12;
+      border: 1px solid #1f232c;
       overflow: hidden;
-      box-shadow: var(--hx-shadow-xs);
+      box-shadow:
+        0 1px 0 color-mix(in srgb, #fff 6%, transparent) inset,
+        0 14px 32px -16px rgba(0, 0, 0, 0.55),
+        0 2px 6px -2px rgba(0, 0, 0, 0.30);
       white-space: normal;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .hx-code-block:hover {
+      border-color: #2a2f3a;
+      box-shadow:
+        0 1px 0 color-mix(in srgb, #fff 8%, transparent) inset,
+        0 18px 40px -16px rgba(0, 0, 0, 0.65),
+        0 3px 8px -2px rgba(0, 0, 0, 0.34);
     }
     .hx-code-head {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 7px 10px 7px 14px;
-      background: linear-gradient(180deg, var(--hx-bg-2) 0%, var(--hx-surface-3) 100%);
-      border-bottom: 1px solid var(--hx-line);
+      gap: 10px;
+      padding: 8px 10px 8px 14px;
+      background: linear-gradient(180deg, #14171e 0%, #0e1117 100%);
+      border-bottom: 1px solid #1f232c;
+      position: relative;
     }
+    /* macOS traffic-light dots — pure decoration, signals "this is code" */
+    .hx-code-traffic {
+      display: inline-flex;
+      gap: 6px;
+      margin-right: 4px;
+      flex-shrink: 0;
+    }
+    .hx-code-traffic span {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25);
+    }
+    .hx-code-traffic span:nth-child(1) { background: #ff5f57; }
+    .hx-code-traffic span:nth-child(2) { background: #febc2e; }
+    .hx-code-traffic span:nth-child(3) { background: #28c840; }
     .hx-code-lang {
       font-family: var(--hx-mono);
-      font-size: 10.5px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
       text-transform: uppercase;
-      color: var(--hx-text-dim);
+      color: #a8b0bd;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hx-code-lang::before {
+      content: '';
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--hx-yellow, #f5c84a);
+      box-shadow: 0 0 6px color-mix(in srgb, var(--hx-yellow, #f5c84a) 60%, transparent);
     }
     .hx-code-streaming {
       font-family: var(--hx-mono);
@@ -1303,11 +1373,16 @@
       font-weight: 700;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--hx-yellow-deep);
-      padding: 1px 6px;
-      background: var(--hx-yellow-soft);
+      color: var(--hx-yellow, #f5c84a);
+      padding: 2px 7px;
+      background: color-mix(in srgb, var(--hx-yellow, #f5c84a) 14%, transparent);
       border-radius: 4px;
-      border: 1px solid color-mix(in srgb, var(--hx-yellow) 30%, var(--hx-line));
+      border: 1px solid color-mix(in srgb, var(--hx-yellow, #f5c84a) 30%, transparent);
+      animation: hx-code-stream-pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes hx-code-stream-pulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.55; }
     }
     .hx-code-actions {
       margin-left: auto;
@@ -1318,40 +1393,95 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 3px 8px;
-      font-size: 11.5px;
+      padding: 4px 9px;
+      font-size: 11px;
       font-weight: 500;
-      color: var(--hx-text-mid);
+      color: #c5cbd4;
       background: transparent;
       border: 1px solid transparent;
       border-radius: 6px;
       cursor: pointer;
       font-family: inherit;
-      transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+      transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease, transform 0.12s ease;
     }
     .hx-code-btn:hover {
-      background: var(--hx-surface);
-      color: var(--hx-text);
-      border-color: var(--hx-line);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      border-color: rgba(255,255,255,0.08);
     }
-    .hx-code-btn svg { width: 11px; height: 11px; }
+    .hx-code-btn:active { transform: scale(0.96); }
+    .hx-code-btn svg { width: 12px; height: 12px; }
     .hx-code-btn.is-active {
-      background: var(--hx-yellow-soft);
-      color: var(--hx-yellow-deep);
-      border-color: color-mix(in srgb, var(--hx-yellow) 30%, var(--hx-line));
+      background: color-mix(in srgb, var(--hx-yellow, #f5c84a) 16%, transparent);
+      color: var(--hx-yellow, #f5c84a);
+      border-color: color-mix(in srgb, var(--hx-yellow, #f5c84a) 30%, transparent);
+    }
+    .hx-code-btn.is-copied {
+      background: color-mix(in srgb, var(--hx-emerald, #34d399) 18%, transparent);
+      color: var(--hx-emerald, #34d399);
+      border-color: color-mix(in srgb, var(--hx-emerald, #34d399) 32%, transparent);
     }
     .hx-code-body {
       margin: 0;
-      padding: 14px 16px;
+      padding: 14px 16px 14px 16px;
       overflow-x: auto;
-      background: var(--hx-bg-2);
+      overflow-y: auto;
+      background: #0b0d12;
       font-family: var(--hx-mono);
       font-size: 12.5px;
-      line-height: 1.6;
-      color: var(--hx-text);
-      max-height: 480px;
+      line-height: 1.65;
+      color: #d4d8e0;
+      max-height: 520px;
+      tab-size: 2;
+      -moz-tab-size: 2;
     }
     .hx-code-body code { font-family: inherit; font-size: inherit; }
+    /* Optional line-number gutter — added by renderer for blocks ≥ 4 lines */
+    .hx-code-block.has-gutter .hx-code-body {
+      padding-left: 0;
+    }
+    .hx-code-gutter-wrap {
+      display: grid;
+      grid-template-columns: auto 1fr;
+    }
+    .hx-code-gutter {
+      padding: 14px 12px 14px 14px;
+      margin: 0;
+      font-family: var(--hx-mono);
+      font-size: 12.5px;
+      line-height: 1.65;
+      color: #50586b;
+      text-align: right;
+      user-select: none;
+      border-right: 1px solid #1a1d24;
+      background: #090b10;
+      min-width: 38px;
+    }
+    /* Custom scrollbar inside code blocks — matches the dark surface */
+    .hx-code-body::-webkit-scrollbar { width: 8px; height: 8px; }
+    .hx-code-body::-webkit-scrollbar-track { background: transparent; }
+    .hx-code-body::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.10);
+      border-radius: 8px;
+      border: 2px solid #0b0d12;
+    }
+    .hx-code-body::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.20); }
+
+    /* Syntax highlight tokens — calm "Editor One Dark" palette */
+    .hx-tok-comment  { color: #6b7385; font-style: italic; }
+    .hx-tok-string   { color: #98c379; }
+    .hx-tok-number   { color: #d19a66; }
+    .hx-tok-keyword  { color: #c678dd; font-weight: 500; }
+    .hx-tok-builtin  { color: #56b6c2; }
+    .hx-tok-function { color: #61afef; }
+    .hx-tok-class    { color: #e5c07b; }
+    .hx-tok-tag      { color: #e06c75; }
+    .hx-tok-attr     { color: #d19a66; }
+    .hx-tok-punct    { color: #abb2bf; }
+    .hx-tok-operator { color: #56b6c2; }
+    .hx-tok-property { color: #e5c07b; }
+    .hx-tok-bool     { color: #d19a66; font-weight: 600; }
+    .hx-tok-regex    { color: #98c379; }
 
     /* Live preview iframe for HTML / SVG code blocks */
     .hx-code-preview {
@@ -3083,11 +3213,146 @@
         }
         return out;
       }
+      // ─── Lightweight syntax highlighter ─────────────────────────
+      // Hand-rolled tokenizer covering the languages clients ship most
+      // often. Returns the input as HTML with token spans. No external
+      // library to keep the chat bundle small. Recognised: js, ts, jsx,
+      // tsx, py, html, css, json, bash/sh, sql, md, go, rs, java, php.
+      function hxHighlight(code, lang) {
+        var l = (lang || '').toLowerCase();
+        // Family detection — most syntaxes share the same C-like skeleton.
+        var family = 'generic';
+        if (/^(js|jsx|ts|tsx|javascript|typescript|node)$/.test(l)) family = 'js';
+        else if (/^(py|python)$/.test(l)) family = 'py';
+        else if (/^(html|htm|xml|svg|vue|svelte)$/.test(l)) family = 'html';
+        else if (/^css|scss|sass|less$/.test(l)) family = 'css';
+        else if (/^json5?$/.test(l)) family = 'json';
+        else if (/^(sh|bash|zsh|shell|console)$/.test(l)) family = 'bash';
+        else if (/^sql$/.test(l)) family = 'sql';
+        else if (/^go$/.test(l)) family = 'go';
+        else if (/^(rust|rs)$/.test(l)) family = 'rust';
+
+        var kw = {
+          js:   /\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|class|extends|super|this|import|export|from|as|default|async|await|try|catch|finally|throw|typeof|instanceof|in|of|void|delete|yield|null|undefined|true|false)\b/g,
+          py:   /\b(def|class|return|if|elif|else|for|while|break|continue|import|from|as|with|try|except|finally|raise|pass|lambda|yield|global|nonlocal|async|await|in|is|not|and|or|None|True|False|self|cls)\b/g,
+          css:  /\b(important|inherit|initial|unset|auto|none|hidden|visible|absolute|relative|fixed|sticky|flex|grid|block|inline|inline-block|inline-flex|center|left|right|top|bottom|middle|baseline)\b/g,
+          json: /\b(true|false|null)\b/g,
+          bash: /\b(if|then|else|elif|fi|for|in|do|done|while|case|esac|function|return|local|export|echo|exit|cd|pwd|ls|cat|grep|sed|awk|cp|mv|rm|mkdir|chmod|sudo|source)\b/g,
+          sql:  /\b(SELECT|FROM|WHERE|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|TABLE|INDEX|VIEW|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AS|AND|OR|NOT|NULL|IS|IN|LIKE|BETWEEN|ORDER|BY|GROUP|HAVING|LIMIT|OFFSET|DISTINCT|UNION|ALL|CASE|WHEN|THEN|ELSE|END|RETURNING)\b/gi,
+          go:   /\b(package|import|func|var|const|type|struct|interface|return|if|else|for|range|switch|case|default|break|continue|defer|go|chan|select|map|nil|true|false|error|string|int|int8|int16|int32|int64|uint|uint8|uint16|uint32|uint64|float32|float64|byte|rune|bool)\b/g,
+          rust: /\b(fn|let|mut|const|static|if|else|match|for|while|loop|break|continue|return|struct|enum|impl|trait|pub|use|mod|crate|self|Self|as|in|where|move|ref|true|false|None|Some|Ok|Err|Vec|String|Box|Result|Option)\b/g
+        };
+        var builtins = {
+          js:   /\b(console|document|window|globalThis|Promise|Array|Object|Math|JSON|Map|Set|Date|RegExp|Error|String|Number|Boolean|Symbol|BigInt|fetch|setTimeout|setInterval|clearTimeout|clearInterval|require|module|exports|process)\b/g,
+          py:   /\b(print|len|range|list|dict|set|tuple|str|int|float|bool|bytes|type|isinstance|hasattr|getattr|setattr|open|input|map|filter|zip|sorted|reversed|enumerate|sum|min|max|abs|round|any|all|super)\b/g
+        };
+
+        function esc(s) {
+          return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+        function wrap(cls, txt) { return '<span class="hx-tok-' + cls + '">' + esc(txt) + '</span>'; }
+
+        // HTML/XML uses a different rendering path (tag-based).
+        if (family === 'html') {
+          return code
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="hx-tok-comment">$1</span>')
+            .replace(/(&lt;\/?)([a-zA-Z][\w-]*)/g, '$1<span class="hx-tok-tag">$2</span>')
+            .replace(/([a-zA-Z-:]+)(=)(&quot;[^&]*?&quot;|&#39;[^&]*?&#39;|"[^"]*"|'[^']*')/g,
+              '<span class="hx-tok-attr">$1</span><span class="hx-tok-punct">$2</span><span class="hx-tok-string">$3</span>');
+        }
+
+        // CSS-style tokenization (also handles SCSS).
+        if (family === 'css') {
+          return esc(code)
+            .replace(/(\/\*[\s\S]*?\*\/)/g, wrap('comment', '$1').replace('$1', '$1'))
+            .replace(/(['"])((?:\\.|(?!\1).)*?)\1/g, '<span class="hx-tok-string">$1$2$1</span>')
+            .replace(/([#.][\w-]+|::?[\w-]+|[\w-]+)\s*(?=\{|,|\s*\{)/g, '<span class="hx-tok-class">$1</span>')
+            .replace(/([\w-]+)(\s*:)/g, '<span class="hx-tok-property">$1</span>$2')
+            .replace(/(#[0-9a-fA-F]{3,8}\b|\b\d+\.?\d*(?:px|em|rem|%|vh|vw|deg|ms|s)?\b)/g, '<span class="hx-tok-number">$1</span>');
+        }
+
+        // C-like tokenization for the rest (handles strings, comments,
+        // numbers, keywords, builtins, function calls).
+        var html = '';
+        var i = 0;
+        while (i < code.length) {
+          var c = code[i], rest = code.slice(i);
+          // Comments
+          if (family === 'py' && c === '#') {
+            var end = code.indexOf('\n', i); end = end === -1 ? code.length : end;
+            html += wrap('comment', code.slice(i, end)); i = end; continue;
+          }
+          if ((family === 'js' || family === 'go' || family === 'rust' || family === 'sql') && rest.startsWith('//')) {
+            var end2 = code.indexOf('\n', i); end2 = end2 === -1 ? code.length : end2;
+            html += wrap('comment', code.slice(i, end2)); i = end2; continue;
+          }
+          if (rest.startsWith('/*')) {
+            var end3 = code.indexOf('*/', i + 2); end3 = end3 === -1 ? code.length : end3 + 2;
+            html += wrap('comment', code.slice(i, end3)); i = end3; continue;
+          }
+          if (family === 'bash' && c === '#' && (i === 0 || code[i-1] === '\n')) {
+            var end4 = code.indexOf('\n', i); end4 = end4 === -1 ? code.length : end4;
+            html += wrap('comment', code.slice(i, end4)); i = end4; continue;
+          }
+          // Strings (single, double, template, py triple)
+          if (family === 'py' && (rest.startsWith('"""') || rest.startsWith("'''"))) {
+            var q = rest.slice(0, 3);
+            var endS = code.indexOf(q, i + 3); endS = endS === -1 ? code.length : endS + 3;
+            html += wrap('string', code.slice(i, endS)); i = endS; continue;
+          }
+          if (c === '"' || c === "'" || c === '`') {
+            var j = i + 1;
+            while (j < code.length && code[j] !== c) {
+              if (code[j] === '\\') j += 2; else j++;
+            }
+            j = Math.min(j + 1, code.length);
+            html += wrap('string', code.slice(i, j)); i = j; continue;
+          }
+          // Numbers
+          if (/[0-9]/.test(c) && (i === 0 || /[\s+\-*/%=<>!&|^,;:(){}\[\]]/.test(code[i-1]))) {
+            var nm = /^(0x[0-9a-fA-F]+|0b[01]+|\d+\.?\d*(?:[eE][+-]?\d+)?)/.exec(rest);
+            if (nm) { html += wrap('number', nm[0]); i += nm[0].length; continue; }
+          }
+          // Identifiers / keywords
+          if (/[a-zA-Z_$]/.test(c)) {
+            var idm = /^[a-zA-Z_$][\w$]*/.exec(rest);
+            var id = idm[0];
+            var nextCh = code[i + id.length];
+            var k = kw[family];
+            var b = builtins[family];
+            if (k && k.test(id)) { k.lastIndex = 0; html += wrap('keyword', id); }
+            else if (id === 'true' || id === 'false' || id === 'None' || id === 'null' || id === 'undefined') html += wrap('bool', id);
+            else if (b && b.test(id)) { b.lastIndex = 0; html += wrap('builtin', id); }
+            else if (nextCh === '(') html += wrap('function', id);
+            else if (/^[A-Z]/.test(id)) html += wrap('class', id);
+            else html += esc(id);
+            i += id.length; continue;
+          }
+          // Operators / punctuation
+          if (/[+\-*/%=<>!&|^~?]/.test(c)) {
+            html += wrap('operator', c); i++; continue;
+          }
+          if (/[{}\[\]().,;:]/.test(c)) {
+            html += wrap('punct', c); i++; continue;
+          }
+          html += esc(c); i++;
+        }
+        return html;
+      }
+
       function renderCodeBlock(id, lang, code, isAssistant, isStreaming) {
         var langLabel = lang ? lang : 'plain';
         var canPreview = isAssistant && (lang === 'html' || lang === 'htm' || lang === 'svg');
         var encoded = encodeURIComponent(code);
+        var lineCount = (code.match(/\n/g) || []).length + 1;
+        var hasGutter = lineCount >= 4;
+        var highlighted = hxHighlight(code, lang);
+
         var head = '<div class="hx-code-head">' +
+            '<span class="hx-code-traffic" aria-hidden="true"><span></span><span></span><span></span></span>' +
             '<span class="hx-code-lang">' + escape(langLabel) + '</span>' +
             (isStreaming ? '<span class="hx-code-streaming">streaming</span>' : '') +
             '<div class="hx-code-actions">' +
@@ -3095,11 +3360,24 @@
               '<button type="button" class="hx-code-btn hx-code-copy-btn" data-code="' + encoded + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>' +
             '</div>' +
           '</div>';
-        var body = '<pre class="hx-code-body"><code class="hx-code-lang-' + escape(lang || 'plain') + '">' + escape(code) + '</code></pre>';
+
+        var body;
+        if (hasGutter) {
+          var gutter = '';
+          for (var n = 1; n <= lineCount; n++) gutter += n + '\n';
+          body = '<div class="hx-code-gutter-wrap">' +
+            '<pre class="hx-code-gutter" aria-hidden="true">' + gutter.replace(/\n$/, '') + '</pre>' +
+            '<pre class="hx-code-body"><code class="hx-code-lang-' + escape(lang || 'plain') + '">' + highlighted + '</code></pre>' +
+          '</div>';
+        } else {
+          body = '<pre class="hx-code-body"><code class="hx-code-lang-' + escape(lang || 'plain') + '">' + highlighted + '</code></pre>';
+        }
+
         var preview = canPreview
           ? '<div class="hx-code-preview" id="' + id + '-preview" hidden><div class="hx-code-preview-head"><span>Live preview</span><span class="hx-code-preview-sandbox">sandboxed</span></div><iframe sandbox="allow-scripts" loading="lazy" referrerpolicy="no-referrer"></iframe></div>'
           : '';
-        return '<div class="hx-code-block" id="' + id + '">' + head + body + preview + '</div>';
+        var cls = 'hx-code-block' + (hasGutter ? ' has-gutter' : '');
+        return '<div class="' + cls + '" id="' + id + '">' + head + body + preview + '</div>';
       }
       function relTime(iso) {
         var d = new Date(iso); var diff = (Date.now() - d.getTime()) / 1000;
@@ -3722,8 +4000,12 @@
               if (navigator.clipboard) {
                 navigator.clipboard.writeText(code).then(function () {
                   var prev = b.innerHTML;
-                  b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Copied';
-                  setTimeout(function () { b.innerHTML = prev; }, 1400);
+                  b.classList.add('is-copied');
+                  b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Copied';
+                  setTimeout(function () {
+                    b.classList.remove('is-copied');
+                    b.innerHTML = prev;
+                  }, 1600);
                 });
               }
             });
