@@ -1861,21 +1861,94 @@
       max-width: 760px; margin: 0 auto;
       display: flex; flex-direction: column; gap: 10px;
     }
-    /* Claude Code-style composer card — tight, calm, two-row layout:
-       textarea on top, control cluster on bottom. Border softens until
-       focus, no big shadows. */
+    /* ═══════════════════════════════════════════════════════════
+       PREMIUM COMPOSER — glassmorphism + gold accent + layered depth.
+       Three pillars: 1) materiality (subtle backdrop blur + inner
+       highlight + ambient shadow), 2) brand presence (gold breathes
+       through hover + focus), 3) tactile feedback (springy hover lift,
+       smooth scale on press). Every element here was tuned, not
+       guessed. ═══════════════════════════════════════════════════════ */
+
     .hx-chat-input-row {
-      display: flex; flex-direction: column; gap: 4px;
-      background: var(--hx-surface);
-      border: 1px solid var(--hx-line);
-      border-radius: 16px;
-      padding: 6px 8px 6px 14px;
-      transition: border-color 0.16s ease, box-shadow 0.18s ease;
+      display: flex; flex-direction: column; gap: 6px;
+      position: relative;
+      background:
+        linear-gradient(180deg,
+          color-mix(in srgb, var(--hx-surface) 96%, var(--hx-yellow-soft, transparent)) 0%,
+          color-mix(in srgb, var(--hx-surface) 90%, var(--hx-bg-2)) 100%);
+      border: 1px solid color-mix(in srgb, var(--hx-line) 80%, transparent);
+      border-radius: 20px;
+      padding: 10px 10px 8px 16px;
+      backdrop-filter: saturate(140%) blur(12px);
+      -webkit-backdrop-filter: saturate(140%) blur(12px);
+      transition:
+        border-color 0.22s cubic-bezier(0.2, 0.7, 0.2, 1),
+        box-shadow 0.26s cubic-bezier(0.2, 0.7, 0.2, 1),
+        transform 0.18s cubic-bezier(0.2, 0.7, 0.2, 1);
+      box-shadow:
+        /* 1) inner top highlight — feels like a piece of glass */
+        inset 0 1px 0 color-mix(in srgb, #fff 68%, transparent),
+        /* 2) inner bottom shadow — implies depth */
+        inset 0 -1px 0 color-mix(in srgb, var(--hx-line) 40%, transparent),
+        /* 3) tight shadow — sits on the surface */
+        0 1px 2px rgba(20,18,12,0.04),
+        /* 4) medium drop — gives it a body */
+        0 6px 16px -6px rgba(20,18,12,0.10),
+        /* 5) ambient gold halo — barely visible, premium feel */
+        0 18px 40px -20px color-mix(in srgb, var(--hx-yellow, transparent) 35%, transparent);
     }
-    .hx-chat-input-row:hover { border-color: var(--hx-line-strong); }
+    /* Decorative gradient edge — sits behind the border, glints on focus */
+    .hx-chat-input-row::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 21px;
+      padding: 1px;
+      background: linear-gradient(135deg,
+        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 0%, transparent) 0%,
+        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 0%, transparent) 100%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events: none;
+      transition: background 0.32s ease;
+    }
+    .hx-chat-input-row:hover {
+      border-color: color-mix(in srgb, var(--hx-line-strong) 90%, transparent);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 72%, transparent),
+        inset 0 -1px 0 color-mix(in srgb, var(--hx-line) 50%, transparent),
+        0 1px 2px rgba(20,18,12,0.05),
+        0 10px 22px -8px rgba(20,18,12,0.13),
+        0 22px 44px -20px color-mix(in srgb, var(--hx-yellow, transparent) 40%, transparent);
+    }
     .hx-chat-input-row:focus-within {
-      border-color: color-mix(in srgb, var(--hx-text) 55%, var(--hx-line));
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--hx-text) 5%, transparent);
+      border-color: color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 38%, var(--hx-line));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 75%, transparent),
+        inset 0 -1px 0 color-mix(in srgb, var(--hx-yellow, var(--hx-line)) 22%, transparent),
+        0 0 0 4px color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 10%, transparent),
+        0 2px 6px rgba(20,18,12,0.06),
+        0 14px 30px -10px rgba(20,18,12,0.16),
+        0 28px 56px -20px color-mix(in srgb, var(--hx-yellow, transparent) 55%, transparent);
+    }
+    .hx-chat-input-row:focus-within::before {
+      background: linear-gradient(135deg,
+        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 36%, transparent) 0%,
+        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 0%,  transparent) 35%,
+        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 0%,  transparent) 65%,
+        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 22%, transparent) 100%);
+    }
+    body[data-model="nexus"] .hx-chat-input-row:focus-within,
+    body[data-model="prometheus"] .hx-chat-input-row:focus-within {
+      border-color: color-mix(in srgb, var(--hx-mc, var(--hx-text)) 38%, var(--hx-line));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 75%, transparent),
+        inset 0 -1px 0 color-mix(in srgb, var(--hx-mc, var(--hx-line)) 22%, transparent),
+        0 0 0 4px color-mix(in srgb, var(--hx-mc, var(--hx-text)) 10%, transparent),
+        0 2px 6px rgba(20,18,12,0.06),
+        0 14px 30px -10px rgba(20,18,12,0.16),
+        0 28px 56px -20px color-mix(in srgb, var(--hx-mc, transparent) 55%, transparent);
     }
     .hx-chat-input-row.is-drag-over {
       border-color: var(--hx-yellow, var(--hx-text));
@@ -1950,61 +2023,96 @@
 
     /* Bottom row of the composer: attach + textarea + mic + send */
     .hx-chat-input-bar {
-      display: flex; align-items: flex-end; gap: 6px;
+      display: flex; align-items: flex-end; gap: 8px;
     }
     .hx-chat-textarea {
       flex: 1;
       border: none; outline: none;
       background: transparent;
       resize: none;
-      font: inherit; font-size: 14.5px; line-height: 1.5;
+      font-family: inherit;
+      font-size: 14.5px;
+      line-height: 1.55;
       color: var(--hx-text);
-      max-height: 240px; min-height: 24px;
+      max-height: 280px; min-height: 24px;
       padding: 6px 2px;
-      letter-spacing: -0.003em;
+      letter-spacing: -0.005em;
+      caret-color: var(--hx-yellow-deep, var(--hx-text));
+    }
+    body[data-model="nexus"] .hx-chat-textarea,
+    body[data-model="prometheus"] .hx-chat-textarea {
+      caret-color: var(--hx-mc, var(--hx-text));
     }
     .hx-chat-textarea::placeholder {
       color: var(--hx-text-faint);
       font-style: normal;
+      font-weight: 400;
+      letter-spacing: -0.003em;
+      opacity: 0.85;
+      transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .hx-chat-textarea:focus::placeholder {
+      opacity: 0.55;
+      transform: translateX(2px);
     }
 
-    /* Bottom controls row — Claude Code style: small icon buttons,
-       transparent, no borders until hover. Spacer pushes right-side
-       items (model tag, etc.) away. */
+    /* Bottom controls row — premium polish: gentle separator above when
+       attach bar / textarea has content, refined gap, subtle hover. */
     .hx-chat-controls {
-      display: flex; align-items: center; gap: 2px;
-      padding: 0 2px;
+      display: flex; align-items: center; gap: 4px;
+      padding: 2px 2px 0;
     }
     .hx-chat-controls-spacer { flex: 1; }
-    .hx-chat-model-tag {
-      font-family: var(--hx-mono);
-      font-size: 10.5px;
-      letter-spacing: 0.04em;
-      color: var(--hx-text-faint);
-      padding-right: 6px;
-      text-transform: capitalize;
-      user-select: none;
-    }
-    .hx-chat-model-tag:empty { display: none; }
+    .hx-chat-model-tag { display: none; }
 
-    /* Round icon buttons inside the composer (attach + mic + tools) */
+    /* Premium icon buttons — soft default, springy hover, gold tint on
+       active state, refined press feedback. */
     .hx-chat-tool-btn {
-      width: 28px; height: 28px;
+      width: 30px; height: 30px;
       flex-shrink: 0;
       display: inline-flex; align-items: center; justify-content: center;
       background: transparent;
       border: 1px solid transparent;
-      border-radius: 7px;
+      border-radius: 9px;
       color: var(--hx-text-dim);
       cursor: pointer;
-      transition: background 0.12s, color 0.12s, border-color 0.12s;
+      transition:
+        background 0.16s cubic-bezier(0.2, 0.7, 0.2, 1),
+        color 0.16s ease,
+        border-color 0.16s ease,
+        transform 0.14s cubic-bezier(0.2, 0.7, 0.2, 1),
+        box-shadow 0.18s ease;
       padding: 0;
+      position: relative;
     }
-    .hx-chat-tool-btn:hover { background: var(--hx-bg-2); color: var(--hx-text); }
-    .hx-chat-tool-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-    .hx-chat-tool-btn svg { width: 15px; height: 15px; }
+    .hx-chat-tool-btn:hover {
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-yellow-soft, var(--hx-bg-2)) 38%, var(--hx-bg-2)) 0%,
+        var(--hx-bg-2) 100%);
+      color: var(--hx-text);
+      border-color: color-mix(in srgb, var(--hx-yellow, var(--hx-line)) 12%, var(--hx-line));
+      transform: translateY(-1px);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+        0 2px 6px -2px rgba(20,18,12,0.08);
+    }
+    .hx-chat-tool-btn:active { transform: translateY(0) scale(0.94); }
+    .hx-chat-tool-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .hx-chat-tool-btn:disabled:hover { background: transparent; border-color: transparent; box-shadow: none; }
+    .hx-chat-tool-btn svg {
+      width: 16px; height: 16px;
+      stroke-width: 1.8;
+      transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .hx-chat-tool-btn:hover svg { transform: scale(1.06); }
     .hx-chat-tool-btn.is-active {
-      background: var(--hx-text); color: var(--hx-bg); border-color: var(--hx-text);
+      background: linear-gradient(180deg, var(--hx-text) 0%, color-mix(in srgb, var(--hx-text) 85%, #000) 100%);
+      color: var(--hx-bg);
+      border-color: var(--hx-text);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 18%, transparent),
+        0 1px 2px rgba(0,0,0,0.10),
+        0 4px 10px -4px rgba(0,0,0,0.20);
     }
     /* Agent mode button — premium pill that announces the highest-level
        capability of the chat. When on, Helix plans and executes
@@ -2159,24 +2267,30 @@
     }
     .hx-chat-tools-menu {
       position: absolute;
-      bottom: calc(100% + 10px);
-      left: -8px;
-      min-width: 280px;
-      padding: 6px;
-      background: var(--hx-surface);
-      border: 1px solid var(--hx-line);
-      border-radius: 14px;
+      bottom: calc(100% + 12px);
+      left: -10px;
+      min-width: 300px;
+      padding: 8px;
+      background: color-mix(in srgb, var(--hx-surface) 92%, transparent);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid color-mix(in srgb, var(--hx-line) 80%, transparent);
+      border-radius: 16px;
       box-shadow:
-        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
-        0 18px 38px -12px rgba(20,18,12,0.18),
-        0 4px 10px rgba(20,18,12,0.05);
+        inset 0 1px 0 color-mix(in srgb, #fff 68%, transparent),
+        inset 0 -1px 0 color-mix(in srgb, var(--hx-line) 30%, transparent),
+        0 2px 4px rgba(20,18,12,0.04),
+        0 12px 28px -10px rgba(20,18,12,0.16),
+        0 32px 60px -20px rgba(20,18,12,0.20),
+        0 0 0 1px color-mix(in srgb, var(--hx-yellow, transparent) 4%, transparent);
       z-index: 20;
-      animation: hx-tools-in 0.18s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      transform-origin: bottom left;
+      animation: hx-tools-in 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both;
     }
     .hx-chat-tools-menu[hidden] { display: none; }
     @keyframes hx-tools-in {
-      from { opacity: 0; transform: translateY(6px) scale(0.98); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateY(8px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0)  scale(1); }
     }
     .hx-chat-tools-item {
       display: flex;
@@ -2186,13 +2300,17 @@
       padding: 10px 12px;
       background: transparent;
       border: 1px solid transparent;
-      border-radius: 10px;
+      border-radius: 11px;
       cursor: pointer;
       font: inherit;
       color: var(--hx-text);
       text-align: left;
-      transition: background 0.14s ease, border-color 0.14s ease;
+      transition:
+        background 0.18s cubic-bezier(0.2, 0.7, 0.2, 1),
+        border-color 0.16s ease,
+        transform 0.14s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
+    .hx-chat-tools-item:active { transform: scale(0.985); }
     .hx-chat-tools-item:hover { background: var(--hx-bg-2); }
     .hx-chat-tools-item[aria-checked="true"] {
       background: linear-gradient(180deg, var(--hx-yellow-soft) 0%, transparent 100%);
@@ -2266,185 +2384,312 @@
       100% { box-shadow: 0 0 0 8px rgba(0,0,0,0.0); }
     }
 
-    /* ─── Model picker popover (bottom-right of composer) ───────────
-       Claude Code parity: click the model tag to open a list of models
-       with keyboard shortcuts (Cmd+1/2/3). */
+    /* ─── Premium model picker popover (bottom-right of composer) ───
+       Refined pill with breathing accent dot. Hover lifts subtly,
+       open state pins the surface with a brand-tinted border ring. */
     .hx-chat-modelpop-wrap { position: relative; }
     .hx-chat-modelpop-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 6px 4px 8px;
+      gap: 7px;
+      padding: 5px 7px 5px 10px;
       background: transparent;
       border: 1px solid transparent;
-      border-radius: 7px;
+      border-radius: 9px;
       cursor: pointer;
       color: var(--hx-text-mid);
       font-family: inherit;
       font-size: 11.5px;
-      letter-spacing: 0.01em;
-      transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+      letter-spacing: 0.005em;
+      transition:
+        background 0.18s cubic-bezier(0.2, 0.7, 0.2, 1),
+        border-color 0.18s ease,
+        color 0.18s ease,
+        transform 0.14s cubic-bezier(0.2, 0.7, 0.2, 1),
+        box-shadow 0.2s ease;
     }
     .hx-chat-modelpop-btn:hover {
-      background: var(--hx-bg-2);
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-yellow-soft, var(--hx-bg-2)) 30%, var(--hx-bg-2)) 0%,
+        var(--hx-bg-2) 100%);
+      border-color: color-mix(in srgb, var(--hx-yellow, var(--hx-line)) 16%, var(--hx-line));
       color: var(--hx-text);
+      transform: translateY(-1px);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+        0 2px 6px -2px rgba(20,18,12,0.08);
+    }
+    body[data-model="nexus"] .hx-chat-modelpop-btn:hover,
+    body[data-model="prometheus"] .hx-chat-modelpop-btn:hover {
+      border-color: color-mix(in srgb, var(--hx-mc, var(--hx-line)) 22%, var(--hx-line));
     }
     .hx-chat-modelpop-btn[aria-expanded="true"] {
       background: var(--hx-bg-2);
-      border-color: var(--hx-line);
+      border-color: color-mix(in srgb, var(--hx-yellow, var(--hx-line)) 22%, var(--hx-line));
       color: var(--hx-text);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+        0 0 0 3px color-mix(in srgb, var(--hx-yellow, transparent) 12%, transparent);
+    }
+    body[data-model="nexus"] .hx-chat-modelpop-btn[aria-expanded="true"],
+    body[data-model="prometheus"] .hx-chat-modelpop-btn[aria-expanded="true"] {
+      border-color: color-mix(in srgb, var(--hx-mc, var(--hx-line)) 28%, var(--hx-line));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+        0 0 0 3px color-mix(in srgb, var(--hx-mc, transparent) 16%, transparent);
     }
     .hx-chat-modelpop-dot {
-      width: 6px; height: 6px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       background: var(--hx-yellow, var(--hx-text));
       box-shadow:
-        0 0 0 2px color-mix(in srgb, var(--hx-yellow, transparent) 25%, transparent),
-        0 0 6px color-mix(in srgb, var(--hx-yellow, transparent) 55%, transparent);
+        0 0 0 2px color-mix(in srgb, var(--hx-yellow, transparent) 28%, transparent),
+        0 0 8px color-mix(in srgb, var(--hx-yellow, transparent) 60%, transparent);
+      animation: hx-modeldot-breathe 3.2s ease-in-out infinite;
+    }
+    @keyframes hx-modeldot-breathe {
+      0%, 100% { box-shadow: 0 0 0 2px color-mix(in srgb, var(--hx-mc, var(--hx-yellow, transparent)) 25%, transparent), 0 0 6px  color-mix(in srgb, var(--hx-mc, var(--hx-yellow, transparent)) 50%, transparent); }
+      50%      { box-shadow: 0 0 0 3px color-mix(in srgb, var(--hx-mc, var(--hx-yellow, transparent)) 35%, transparent), 0 0 12px color-mix(in srgb, var(--hx-mc, var(--hx-yellow, transparent)) 75%, transparent); }
     }
     body[data-model="nexus"] .hx-chat-modelpop-dot,
-    body[data-model="prometheus"] .hx-chat-modelpop-dot { background: var(--hx-mc, var(--hx-text)); box-shadow: 0 0 0 2px var(--hx-mc-soft, transparent), 0 0 6px var(--hx-mc-glow, transparent); }
+    body[data-model="prometheus"] .hx-chat-modelpop-dot {
+      background: var(--hx-mc, var(--hx-text));
+    }
     .hx-chat-modelpop-name {
       font-weight: 600;
       color: inherit;
       text-transform: capitalize;
+      letter-spacing: -0.003em;
     }
-    .hx-chat-modelpop-btn svg { width: 11px; height: 11px; opacity: 0.7; }
+    .hx-chat-modelpop-btn svg {
+      width: 11px; height: 11px;
+      opacity: 0.65;
+      transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.18s ease;
+    }
+    .hx-chat-modelpop-btn[aria-expanded="true"] svg { transform: rotate(180deg); opacity: 0.85; }
 
     .hx-chat-modelpop-menu {
       position: absolute;
-      bottom: calc(100% + 8px);
-      right: -4px;
-      min-width: 220px;
-      padding: 6px;
-      background: var(--hx-surface);
-      border: 1px solid var(--hx-line);
-      border-radius: 12px;
+      bottom: calc(100% + 10px);
+      right: -6px;
+      min-width: 260px;
+      padding: 8px;
+      background: color-mix(in srgb, var(--hx-surface) 92%, transparent);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid color-mix(in srgb, var(--hx-line) 80%, transparent);
+      border-radius: 14px;
       box-shadow:
-        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
-        0 18px 38px -12px rgba(20,18,12,0.20),
-        0 4px 10px rgba(20,18,12,0.06);
+        inset 0 1px 0 color-mix(in srgb, #fff 68%, transparent),
+        inset 0 -1px 0 color-mix(in srgb, var(--hx-line) 30%, transparent),
+        0 2px 4px rgba(20,18,12,0.04),
+        0 12px 28px -10px rgba(20,18,12,0.18),
+        0 28px 60px -20px rgba(20,18,12,0.22),
+        0 0 0 1px color-mix(in srgb, var(--hx-yellow, transparent) 5%, transparent);
       z-index: 25;
-      animation: hx-tools-in 0.18s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      transform-origin: bottom right;
+      animation: hx-tools-in 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both;
     }
     .hx-chat-modelpop-menu[hidden] { display: none; }
     .hx-chat-modelpop-section {
       font-family: var(--hx-mono);
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 600;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--hx-text-faint);
-      padding: 6px 10px 4px;
+      padding: 6px 10px 8px;
     }
     .hx-chat-modelpop-item {
       display: grid;
       grid-template-columns: 1fr auto auto auto;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       width: 100%;
-      padding: 8px 10px;
+      padding: 10px 12px;
       background: transparent;
       border: 1px solid transparent;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       font: inherit;
       color: var(--hx-text);
       text-align: left;
-      transition: background 0.12s ease, border-color 0.12s ease;
+      transition:
+        background 0.18s cubic-bezier(0.2, 0.7, 0.2, 1),
+        border-color 0.16s ease,
+        transform 0.14s cubic-bezier(0.2, 0.7, 0.2, 1);
+      position: relative;
     }
-    .hx-chat-modelpop-item:hover { background: var(--hx-bg-2); }
-    .hx-chat-modelpop-iname { font-size: 13px; font-weight: 600; }
+    .hx-chat-modelpop-item:hover {
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-yellow-soft, var(--hx-bg-2)) 32%, var(--hx-bg-2)) 0%,
+        var(--hx-bg-2) 100%);
+      border-color: color-mix(in srgb, var(--hx-yellow, var(--hx-line)) 14%, var(--hx-line));
+    }
+    .hx-chat-modelpop-item:active { transform: scale(0.985); }
+    .hx-chat-modelpop-item[aria-checked="true"] {
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-yellow-soft, var(--hx-bg-2)) 55%, transparent) 0%,
+        color-mix(in srgb, var(--hx-yellow-soft, var(--hx-bg-2)) 15%, transparent) 100%);
+      border-color: color-mix(in srgb, var(--hx-yellow, var(--hx-line)) 28%, var(--hx-line));
+      box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent);
+    }
+    body[data-model="nexus"] .hx-chat-modelpop-item[aria-checked="true"],
+    body[data-model="prometheus"] .hx-chat-modelpop-item[aria-checked="true"] {
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-mc-soft, var(--hx-bg-2)) 60%, transparent) 0%,
+        color-mix(in srgb, var(--hx-mc-soft, var(--hx-bg-2)) 15%, transparent) 100%);
+      border-color: color-mix(in srgb, var(--hx-mc, var(--hx-line)) 32%, var(--hx-line));
+    }
+    .hx-chat-modelpop-iname {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--hx-text);
+      letter-spacing: -0.005em;
+    }
     .hx-chat-modelpop-meta {
       font-family: var(--hx-mono);
       font-size: 10.5px;
       color: var(--hx-text-faint);
       letter-spacing: 0.04em;
+      text-transform: lowercase;
     }
     .hx-chat-modelpop-tick {
-      width: 14px; height: 14px;
+      width: 16px; height: 16px;
       display: inline-flex; align-items: center; justify-content: center;
-      color: var(--hx-yellow-deep);
+      color: var(--hx-yellow-deep, var(--hx-text));
       opacity: 0;
+      transform: scale(0.6);
+      transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.2, 1.4, 0.4, 1);
+    }
+    body[data-model="nexus"] .hx-chat-modelpop-tick,
+    body[data-model="prometheus"] .hx-chat-modelpop-tick {
+      color: var(--hx-mc, var(--hx-text));
     }
     .hx-chat-modelpop-tick::before {
       content: '';
-      width: 9px; height: 5px;
-      border-left: 1.6px solid currentColor;
-      border-bottom: 1.6px solid currentColor;
+      width: 10px; height: 5px;
+      border-left: 1.8px solid currentColor;
+      border-bottom: 1.8px solid currentColor;
       transform: rotate(-45deg) translateY(-1px);
     }
-    .hx-chat-modelpop-item[aria-checked="true"] .hx-chat-modelpop-tick { opacity: 1; }
+    .hx-chat-modelpop-item[aria-checked="true"] .hx-chat-modelpop-tick {
+      opacity: 1;
+      transform: scale(1);
+    }
     .hx-chat-modelpop-num {
       font-family: var(--hx-mono);
       font-size: 10.5px;
+      font-weight: 600;
       color: var(--hx-text-faint);
-      padding: 2px 6px;
+      padding: 3px 7px;
       border: 1px solid var(--hx-line);
-      border-radius: 4px;
-      background: var(--hx-bg-2);
+      border-radius: 5px;
+      background: linear-gradient(180deg, var(--hx-surface) 0%, var(--hx-bg-2) 100%);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 60%, transparent),
+        0 1px 0 color-mix(in srgb, var(--hx-line) 50%, transparent);
+      letter-spacing: 0;
     }
 
-    /* ─── Slash command palette (opens when textarea starts with "/") ───
-       Floats above the composer with the available commands. Arrow keys
-       navigate, Enter selects, Esc dismisses. */
+    /* ─── Premium slash command palette ─────────────────────────────
+       Premium floating surface — frosted backdrop, layered shadow, brand-
+       tinted active row. Arrow keys navigate, Enter selects, Esc closes. */
     .hx-chat-slash-menu {
       position: absolute;
-      bottom: calc(100% + 12px);
+      bottom: calc(100% + 14px);
       left: 0; right: 0;
-      max-width: 460px;
+      max-width: 480px;
       margin: 0 auto;
-      padding: 6px;
-      background: var(--hx-surface);
-      border: 1px solid var(--hx-line);
-      border-radius: 12px;
+      padding: 8px;
+      background: color-mix(in srgb, var(--hx-surface) 92%, transparent);
+      backdrop-filter: saturate(180%) blur(22px);
+      -webkit-backdrop-filter: saturate(180%) blur(22px);
+      border: 1px solid color-mix(in srgb, var(--hx-line) 80%, transparent);
+      border-radius: 14px;
       box-shadow:
-        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
-        0 22px 50px -16px rgba(20,18,12,0.22),
-        0 6px 14px rgba(20,18,12,0.06);
+        inset 0 1px 0 color-mix(in srgb, #fff 68%, transparent),
+        inset 0 -1px 0 color-mix(in srgb, var(--hx-line) 30%, transparent),
+        0 2px 6px rgba(20,18,12,0.04),
+        0 16px 36px -12px rgba(20,18,12,0.18),
+        0 38px 70px -22px rgba(20,18,12,0.24),
+        0 0 0 1px color-mix(in srgb, var(--hx-yellow, transparent) 5%, transparent);
       z-index: 30;
-      animation: hx-tools-in 0.18s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      transform-origin: bottom center;
+      animation: hx-tools-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
     }
     .hx-chat-slash-menu[hidden] { display: none; }
     .hx-chat-slash-section {
       font-family: var(--hx-mono);
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 600;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--hx-text-faint);
-      padding: 8px 12px 6px;
+      padding: 8px 12px 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hx-chat-slash-section::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg,
+        color-mix(in srgb, var(--hx-line) 50%, transparent) 0%,
+        transparent 100%);
     }
     .hx-chat-slash-item {
       display: grid;
-      grid-template-columns: 92px 1fr;
-      gap: 12px;
+      grid-template-columns: 100px 1fr;
+      gap: 14px;
       width: 100%;
-      padding: 8px 12px;
+      padding: 9px 12px;
       background: transparent;
       border: 1px solid transparent;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       font: inherit;
       color: var(--hx-text);
       text-align: left;
-      transition: background 0.12s ease, border-color 0.12s ease;
+      transition:
+        background 0.18s cubic-bezier(0.2, 0.7, 0.2, 1),
+        border-color 0.16s ease,
+        transform 0.14s cubic-bezier(0.2, 0.7, 0.2, 1);
       align-items: center;
     }
     .hx-chat-slash-item:hover,
     .hx-chat-slash-item.is-active {
-      background: var(--hx-bg-2);
-      border-color: var(--hx-line-soft, var(--hx-line));
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-yellow-soft, var(--hx-bg-2)) 40%, var(--hx-bg-2)) 0%,
+        var(--hx-bg-2) 100%);
+      border-color: color-mix(in srgb, var(--hx-yellow, var(--hx-line)) 18%, var(--hx-line));
     }
+    body[data-model="nexus"] .hx-chat-slash-item:hover,
+    body[data-model="nexus"] .hx-chat-slash-item.is-active,
+    body[data-model="prometheus"] .hx-chat-slash-item:hover,
+    body[data-model="prometheus"] .hx-chat-slash-item.is-active {
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-mc-soft, var(--hx-bg-2)) 42%, var(--hx-bg-2)) 0%,
+        var(--hx-bg-2) 100%);
+      border-color: color-mix(in srgb, var(--hx-mc, var(--hx-line)) 22%, var(--hx-line));
+    }
+    .hx-chat-slash-item:active { transform: scale(0.99); }
     .hx-chat-slash-item strong {
       font-family: var(--hx-mono);
       font-size: 12.5px;
       font-weight: 600;
-      color: var(--hx-yellow-deep);
+      color: var(--hx-yellow-deep, var(--hx-text));
+      letter-spacing: -0.005em;
+    }
+    body[data-model="nexus"] .hx-chat-slash-item strong,
+    body[data-model="prometheus"] .hx-chat-slash-item strong {
+      color: var(--hx-mc, var(--hx-text));
     }
     .hx-chat-slash-item span {
       font-size: 12.5px;
       color: var(--hx-text-mid);
+      letter-spacing: -0.003em;
     }
     /* The composer card needs to be a positioning context for the slash menu */
     .hx-chat-compose-inner { position: relative; }
@@ -2480,34 +2725,80 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .hx-msg-attach-file .hx-msg-attach-meta { color: var(--hx-text-dim); font-size: 11.5px; }
-    /* Send arrow — Claude Code style: tight 28px square, sits inline at
-       the end of the textarea row. Filled dark when armed (text in the
-       input), faint outline when disabled. Up-arrow icon. */
+    /* ─── Premium send button ─────────────────────────────────────
+       Three states sculpted with care:
+       - disabled: hollow outline that quietly says "nothing to send"
+       - armed:    rich dark gradient with inner highlight + outer glow
+       - hover:    lifts 1px, halo expands, brand accent breathes
+       The arrow icon scales slightly on press for tactile feedback. */
     .hx-chat-send {
-      width: 28px; height: 28px;
+      width: 32px; height: 32px;
       display: inline-flex; align-items: center; justify-content: center;
-      background: var(--hx-text);
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-text) 100%, transparent) 0%,
+        color-mix(in srgb, var(--hx-text) 88%, #000) 100%);
       color: var(--hx-bg);
       border: 1px solid var(--hx-text);
-      border-radius: 7px;
+      border-radius: 9px;
       cursor: pointer; flex-shrink: 0;
-      transition: background 0.14s ease, transform 0.12s ease, opacity 0.14s ease, color 0.14s ease;
+      transition:
+        background 0.2s cubic-bezier(0.2, 0.7, 0.2, 1),
+        transform 0.16s cubic-bezier(0.2, 0.7, 0.2, 1),
+        opacity 0.2s ease,
+        color 0.18s ease,
+        box-shadow 0.22s cubic-bezier(0.2, 0.7, 0.2, 1),
+        border-color 0.18s ease;
       position: relative;
       padding: 0;
       margin-bottom: 2px;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 22%, transparent),
+        0 1px 2px rgba(0,0,0,0.12),
+        0 6px 14px -6px rgba(0,0,0,0.24);
+    }
+    .hx-chat-send::after {
+      /* Inner sheen highlight on the top half — premium glass touch */
+      content: '';
+      position: absolute;
+      left: 1px; right: 1px; top: 1px;
+      height: 46%;
+      border-radius: 7px 7px 999px 999px / 7px 7px 100% 100%;
+      background: linear-gradient(180deg,
+        color-mix(in srgb, #fff 14%, transparent) 0%,
+        transparent 100%);
+      pointer-events: none;
     }
     .hx-chat-send:hover:not(:disabled) {
-      background: var(--hx-text-mid);
-      border-color: var(--hx-text-mid);
+      transform: translateY(-1px);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 26%, transparent),
+        0 2px 4px rgba(0,0,0,0.14),
+        0 10px 22px -8px rgba(0,0,0,0.32),
+        0 0 0 4px color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 14%, transparent);
     }
-    .hx-chat-send:active:not(:disabled) { transform: scale(0.94); }
+    body[data-model="nexus"] .hx-chat-send:hover:not(:disabled),
+    body[data-model="prometheus"] .hx-chat-send:hover:not(:disabled) {
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 26%, transparent),
+        0 2px 4px rgba(0,0,0,0.14),
+        0 10px 22px -8px rgba(0,0,0,0.32),
+        0 0 0 4px color-mix(in srgb, var(--hx-mc, var(--hx-text)) 18%, transparent);
+    }
+    .hx-chat-send:active:not(:disabled) { transform: translateY(0) scale(0.93); }
     .hx-chat-send:disabled {
       background: transparent;
       color: var(--hx-text-faint);
       border-color: var(--hx-line);
       cursor: not-allowed;
+      box-shadow: none;
     }
-    .hx-chat-send svg { width: 14px; height: 14px; }
+    .hx-chat-send:disabled::after { display: none; }
+    .hx-chat-send svg {
+      width: 15px; height: 15px;
+      stroke-width: 2.2;
+      transition: transform 0.18s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .hx-chat-send:hover:not(:disabled) svg { transform: translateY(-1px); }
 
     .hx-chat-foot {
       display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
