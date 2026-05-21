@@ -2500,6 +2500,122 @@
       .hx-voice-wave span:nth-child(n+12) { display: none; }
       .hx-voice-cancel, .hx-voice-done { width: 32px; height: 32px; border-radius: 10px; }
     }
+
+    /* ═══════════════════════════════════════════════════════════
+       Premium confirm dialog — replaces window.confirm() for any
+       destructive action (delete conversation, etc). Promise-based:
+       hxConfirm({title, desc, confirmLabel, destructive}) → Promise<bool>
+       ═══════════════════════════════════════════════════════════ */
+    .hx-conf-back {
+      position: fixed; inset: 0;
+      background: rgba(15, 14, 12, 0.42);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: none;
+      z-index: 220;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      transition: opacity 0.18s ease;
+    }
+    .hx-conf-back.is-open { display: flex; opacity: 1; }
+    .hx-conf {
+      width: 100%;
+      max-width: 400px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: 16px;
+      box-shadow:
+        0 1px 0 color-mix(in srgb, #fff 70%, transparent) inset,
+        0 30px 60px -20px rgba(20, 18, 12, 0.32),
+        0 10px 20px -10px rgba(20, 18, 12, 0.16);
+      padding: 22px 22px 18px;
+      transform: scale(0.96) translateY(6px);
+      opacity: 0;
+      transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.2, 1),
+                  opacity 0.18s ease;
+    }
+    .hx-conf-back.is-open .hx-conf {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    .hx-conf-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--hx-red) 12%, transparent);
+      color: var(--hx-red);
+      margin-bottom: 12px;
+    }
+    .hx-conf-icon svg { width: 18px; height: 18px; }
+    .hx-conf:not(.is-destructive) .hx-conf-icon {
+      background: var(--hx-bg-2);
+      color: var(--hx-text);
+    }
+    .hx-conf-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.012em;
+      color: var(--hx-text);
+      margin: 0 0 6px;
+      line-height: 1.3;
+    }
+    .hx-conf-desc {
+      font-size: 13.5px;
+      color: var(--hx-text-mid);
+      margin: 0 0 18px;
+      line-height: 1.5;
+    }
+    .hx-conf-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .hx-conf-btn {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--hx-line);
+      background: var(--hx-surface);
+      color: var(--hx-text);
+      transition: background 0.14s ease, border-color 0.14s ease, transform 0.12s ease, box-shadow 0.14s ease;
+    }
+    .hx-conf-btn:hover {
+      background: var(--hx-bg-2);
+      border-color: var(--hx-line-strong);
+    }
+    .hx-conf-btn:active { transform: scale(0.97); }
+    .hx-conf-btn.is-primary {
+      background: var(--hx-text);
+      color: var(--hx-bg);
+      border-color: var(--hx-text);
+    }
+    .hx-conf-btn.is-primary:hover {
+      background: var(--hx-text-mid);
+      border-color: var(--hx-text-mid);
+    }
+    .hx-conf-btn.is-destructive {
+      background: linear-gradient(180deg, var(--hx-red) 0%, color-mix(in srgb, var(--hx-red) 82%, #000) 100%);
+      color: #fff;
+      border-color: var(--hx-red);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 22%, transparent),
+        0 1px 2px rgba(0,0,0,0.10),
+        0 4px 12px -4px color-mix(in srgb, var(--hx-red) 55%, transparent);
+    }
+    .hx-conf-btn.is-destructive:hover {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--hx-red) 92%, #fff) 0%, var(--hx-red) 100%);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 22%, transparent),
+        0 2px 4px rgba(0,0,0,0.10),
+        0 8px 18px -4px color-mix(in srgb, var(--hx-red) 70%, transparent);
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -2530,6 +2646,21 @@
 
         <!-- Mobile drawer backdrop -->
         <div class="hx-chat-backdrop" id="hx-c-backdrop" aria-hidden="true"></div>
+
+        <!-- Premium confirm dialog (replaces native window.confirm) -->
+        <div class="hx-conf-back" id="hx-conf-back" role="dialog" aria-modal="true" aria-labelledby="hx-conf-title">
+          <div class="hx-conf" id="hx-conf">
+            <div class="hx-conf-icon" id="hx-conf-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+            </div>
+            <h3 class="hx-conf-title" id="hx-conf-title">Delete conversation?</h3>
+            <p class="hx-conf-desc" id="hx-conf-desc">This cannot be undone.</p>
+            <div class="hx-conf-actions">
+              <button class="hx-conf-btn" type="button" id="hx-conf-cancel">Cancel</button>
+              <button class="hx-conf-btn is-destructive" type="button" id="hx-conf-ok">Delete</button>
+            </div>
+          </div>
+        </div>
 
         <!-- Main chat pane -->
         <section class="hx-chat-pane">
@@ -3383,8 +3514,66 @@
           }
           await refreshList();
         }
+        // Premium Promise-based confirm — replaces native window.confirm.
+        // Resolves true on confirm, false on cancel/ESC/backdrop-click.
+        function hxConfirm(opts) {
+          opts = opts || {};
+          var back = $('hx-conf-back');
+          var dialog = $('hx-conf');
+          var titleEl = $('hx-conf-title');
+          var descEl = $('hx-conf-desc');
+          var okEl = $('hx-conf-ok');
+          var cancelEl = $('hx-conf-cancel');
+          if (!back) return Promise.resolve(window.confirm(opts.desc || ''));
+          titleEl.textContent = opts.title || 'Are you sure?';
+          descEl.textContent = opts.desc || '';
+          okEl.textContent = opts.confirmLabel || 'Confirm';
+          cancelEl.textContent = opts.cancelLabel || 'Cancel';
+          if (opts.destructive === false) {
+            dialog.classList.remove('is-destructive');
+            okEl.classList.remove('is-destructive');
+            okEl.classList.add('is-primary');
+          } else {
+            dialog.classList.add('is-destructive');
+            okEl.classList.add('is-destructive');
+            okEl.classList.remove('is-primary');
+          }
+          back.classList.add('is-open');
+          // Defer focus until the transition kicks in so the ring doesn't
+          // flash on the off-screen position.
+          setTimeout(function () { try { cancelEl.focus(); } catch (e) {} }, 60);
+          return new Promise(function (resolve) {
+            function cleanup(result) {
+              back.classList.remove('is-open');
+              okEl.removeEventListener('click', onOk);
+              cancelEl.removeEventListener('click', onCancel);
+              back.removeEventListener('click', onBack);
+              document.removeEventListener('keydown', onKey);
+              resolve(result);
+            }
+            function onOk() { cleanup(true); }
+            function onCancel() { cleanup(false); }
+            function onBack(e) { if (e.target === back) cleanup(false); }
+            function onKey(e) {
+              if (e.key === 'Escape') { e.preventDefault(); cleanup(false); }
+              else if (e.key === 'Enter') { e.preventDefault(); cleanup(true); }
+            }
+            okEl.addEventListener('click', onOk);
+            cancelEl.addEventListener('click', onCancel);
+            back.addEventListener('click', onBack);
+            document.addEventListener('keydown', onKey);
+          });
+        }
+
         async function deleteConversationById(id) {
-          if (!confirm('Delete this conversation? This cannot be undone.')) return;
+          var ok = await hxConfirm({
+            title: 'Delete conversation?',
+            desc: 'This will permanently remove the conversation and every message inside it. This cannot be undone.',
+            confirmLabel: 'Delete',
+            cancelLabel: 'Cancel',
+            destructive: true
+          });
+          if (!ok) return;
           await sb.from('conversations').delete().eq('id', id);
           if (state.conversation && state.conversation.id === id) {
             state.conversation = null;
