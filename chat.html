@@ -1458,41 +1458,9 @@
       border: 0;
       background: #fff;
     }
-    /* ═══════════════════════════════════════════════════════════
-       PROFESSIONAL CHAT SURFACE — cool neutral palette override
-       (Linear / Vercel / Notion territory, not magazine cream).
-       Scoped to body[data-active="chat"] so other platform pages keep
-       their warm tone. ═══════════════════════════════════════════ */
-    body[data-active="chat"] {
-      --hx-bg:           #FFFFFF;
-      --hx-bg-2:         #F7F7F8;
-      --hx-bg-3:         #EFEFF1;
-      --hx-surface:      #FFFFFF;
-      --hx-surface-2:    #FAFAFA;
-      --hx-surface-3:    #F4F4F5;
-      --hx-line:         #E7E7E9;
-      --hx-line-soft:    #EFEFF1;
-      --hx-line-strong:  #D4D4D8;
-      --hx-text:         #0A0A0A;
-      --hx-text-mid:     #525252;
-      --hx-text-dim:     #737373;
-      --hx-text-faint:   #A3A3A3;
-    }
-    html[data-theme="dark"] body[data-active="chat"] {
-      --hx-bg:           #0A0A0B;
-      --hx-bg-2:         #131316;
-      --hx-bg-3:         #1B1B1F;
-      --hx-surface:      #111114;
-      --hx-surface-2:    #16161A;
-      --hx-surface-3:    #1B1B1F;
-      --hx-line:         #26262B;
-      --hx-line-soft:    #1F1F23;
-      --hx-line-strong:  #34343A;
-      --hx-text:         #FAFAFA;
-      --hx-text-mid:     #A1A1AA;
-      --hx-text-dim:     #71717A;
-      --hx-text-faint:   #52525B;
-    }
+    /* The cool-neutral palette now lives at the :root level in
+       platform.css and applies across the whole app. The chat-scoped
+       override was removed for consistency. */
 
     /* User turns sit in a refined chip; assistant turns are flush prose. */
     .hx-msg.is-user { align-items: flex-end; }

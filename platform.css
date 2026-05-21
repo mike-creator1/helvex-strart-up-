@@ -87,34 +87,36 @@ html[data-theme="dark"] .hx-btn:focus-visible { box-shadow: 0 0 0 3px rgba(255,2
 html[data-theme="dark"] .hx-cmdk:focus-within { box-shadow: 0 0 0 3px rgba(255,255,255,0.08); }
 
 :root {
-  /* Surfaces — warm paper-white palette with subtle cream undertones */
-  --hx-bg:           #FBFAF7;
-  --hx-bg-2:         #F4F3EE;
-  --hx-bg-3:         #EDECE6;
+  /* Surfaces — executive cool-neutral palette (Linear/Vercel/Notion).
+     Pure whites + zinc grays, no warm undertones. */
+  --hx-bg:           #FFFFFF;
+  --hx-bg-2:         #F7F7F8;
+  --hx-bg-3:         #EFEFF1;
   --hx-surface:      #FFFFFF;
-  --hx-surface-2:    #FBFAF7;
-  --hx-surface-3:    #F4F3EE;
+  --hx-surface-2:    #FAFAFA;
+  --hx-surface-3:    #F4F4F5;
 
-  /* Borders — softer, warmer hairlines */
-  --hx-line:         #E7E4DC;
-  --hx-line-soft:    #F0EEE7;
-  --hx-line-strong:  #CFCBC0;
-  --hx-line-focus:   #0B0A08;
+  /* Borders — true neutral grays, no beige */
+  --hx-line:         #E7E7E9;
+  --hx-line-soft:    #EFEFF1;
+  --hx-line-strong:  #D4D4D8;
+  --hx-line-focus:   #0A0A0A;
 
-  /* Text — off-black for softer, more refined feel */
-  --hx-text:         #0B0A08;
-  --hx-text-mid:     #4F4D47;
-  --hx-text-dim:     #82807A;
-  --hx-text-faint:   #ADAAA2;
+  /* Text — true off-black + neutral midtones */
+  --hx-text:         #0A0A0A;
+  --hx-text-mid:     #525252;
+  --hx-text-dim:     #737373;
+  --hx-text-faint:   #A3A3A3;
 
-  /* Brand accents — brass/champagne gold, deeper and more sophisticated */
+  /* Brand accents — kept brass gold for action only, never as fill.
+     Used sparingly: focus ring tint, selected-state highlight. */
   --hx-yellow:        #C9A227;
   --hx-yellow-deep:   #8C6F12;
-  --hx-yellow-soft:   rgba(201, 162, 39, 0.13);
-  --hx-red:           #B91C1C;
-  --hx-red-soft:      rgba(185, 28, 28, 0.07);
-  --hx-emerald:       #047857;
-  --hx-emerald-soft:  rgba(4, 120, 87, 0.07);
+  --hx-yellow-soft:   rgba(201, 162, 39, 0.10);
+  --hx-red:           #DC2626;
+  --hx-red-soft:      rgba(220, 38, 38, 0.08);
+  --hx-emerald:       #059669;
+  --hx-emerald-soft:  rgba(5, 150, 105, 0.08);
 
   /* Shadows — multi-layer, softer */
   --hx-shadow-xs:    0 1px 2px rgba(20, 18, 12, 0.04), 0 0 0 1px rgba(20, 18, 12, 0.02);
@@ -519,38 +521,14 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
    Bumped from 10→11.5px and tightened padding so labels read cleanly
    above the larger nav items below. */
 .hx-nav-label {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 14px 12px 8px;
+  padding: 16px 12px 6px;
   margin: 0;
-  color: var(--hx-text-mid);
-  background: linear-gradient(110deg, var(--hx-text-mid) 0%, var(--hx-text) 100%);
-  -webkit-background-clip: text;
-          background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.hx-nav-label::before {
-  content: '';
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--hx-yellow-deep);
-  box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.14);
-  flex-shrink: 0;
-  -webkit-text-fill-color: initial;
-}
-.hx-nav-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, var(--hx-line) 0%, transparent 100%);
-  -webkit-text-fill-color: initial;
+  color: var(--hx-text-dim);
 }
 
 /* Nav item — premium hover with shimmer sweep + icon slide.
@@ -589,58 +567,40 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
 .hx-nav-section.is-revealed .hx-nav-item:nth-child(6) { transition-delay: 0.20s; }
 .hx-nav-section.is-revealed .hx-nav-item:nth-child(7) { transition-delay: 0.24s; }
 
-/* Diagonal shimmer sweep on hover — refined brass tone */
-.hx-nav-item::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 0%, color-mix(in srgb, var(--hx-yellow) 12%, transparent) 50%, transparent 100%);
-  transform: translateX(-110%);
-  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
-  pointer-events: none;
-  border-radius: inherit;
-}
-.hx-nav-item:hover::after { transform: translateX(110%); }
+/* Shimmer hover sweep removed (decorative). Nav items now use a calm
+   solid hover + a clean 2px active rail. */
+.hx-nav-item::after { content: none; }
 
 .hx-nav-item svg {
   width: 17px;
   height: 17px;
   flex-shrink: 0;
-  opacity: 0.85;
+  opacity: 0.7;
   stroke-width: 1.6;
-  transition: opacity 0.18s, transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: opacity 0.15s ease;
 }
 .hx-nav-item:hover {
-  background: linear-gradient(180deg, var(--hx-bg-2) 0%, color-mix(in srgb, var(--hx-bg-2) 80%, var(--hx-surface)) 100%);
+  background: var(--hx-bg-2);
   color: var(--hx-text);
 }
-.hx-nav-item:hover svg { opacity: 1; transform: translateX(2px); }
+.hx-nav-item:hover svg { opacity: 1; }
 .hx-nav-item.active {
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--hx-yellow-soft) 70%, var(--hx-bg-2)) 0%,
-    var(--hx-bg-2) 100%);
+  background: var(--hx-bg-2);
   color: var(--hx-text);
   font-weight: 600;
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #fff 50%, transparent),
-    var(--hx-shadow-xs);
 }
 .hx-nav-item.active svg { color: var(--hx-text); opacity: 1; }
 
-/* Active item — premium glowing brass stripe (3px gradient, breathing) */
+/* Active rail — clean 2px solid mark, no glow, no breathing. */
 .hx-nav-item.active::before {
   content: '';
   position: absolute;
   left: -10px;
-  top: 6px;
-  bottom: 6px;
-  width: 3px;
-  background: linear-gradient(180deg, var(--hx-yellow-deep) 0%, var(--hx-yellow) 50%, var(--hx-yellow-deep) 100%);
-  border-radius: 0 3px 3px 0;
-  box-shadow:
-    0 0 8px color-mix(in srgb, var(--hx-yellow) 55%, transparent),
-    0 0 16px color-mix(in srgb, var(--hx-yellow) 22%, transparent);
-  animation: hxNavPulse 2.6s ease-in-out infinite;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: var(--hx-text);
+  border-radius: 0 2px 2px 0;
 }
 @keyframes hxNavPulse {
   0%, 100% {
@@ -771,12 +731,8 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
   top: 0;
   z-index: 30;
 }
-.hx-topbar::after {
-  content: '';
-  position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
-  background: linear-gradient(90deg, transparent 0%, var(--hx-line) 12%, var(--hx-line) 88%, transparent 100%);
-  pointer-events: none;
-}
+/* Topbar gradient fade-edge removed — base border-bottom is enough. */
+.hx-topbar::after { content: none; }
 .hx-menu-toggle {
   width: 36px;
   height: 36px;
@@ -1327,19 +1283,9 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
   position: relative;
   flex-shrink: 0;
 }
-.hx-badge-emerald .hx-badge-dot::before {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background: currentColor;
-  opacity: 0.4;
-  animation: hx-pulse 1.8s cubic-bezier(.4,0,.2,1) infinite;
-}
-@keyframes hx-pulse {
-  0%   { transform: scale(0.6); opacity: 0.5; }
-  100% { transform: scale(1.6); opacity: 0; }
-}
+/* Pulsing halo on emerald badge dots removed — read as marketing
+   ornament. The solid dot conveys "active" on its own. */
+.hx-badge-emerald .hx-badge-dot::before { content: none; }
 
 /* ═══════════════════════════════════════════════════════════
    FORM FIELDS
@@ -2299,11 +2245,7 @@ html[data-theme="dark"] .hx-cmdp-foot kbd {
 }
 .hx-sec-pre:first-of-type { margin-top: 28px; }
 .hx-sec-pre-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.hx-sec-pre-left::before {
-  content: ''; width: 14px; height: 1px;
-  background: var(--hx-text-dim);
-  flex-shrink: 0;
-}
+.hx-sec-pre-left::before { content: none; }
 .hx-sec-pre h2 {
   margin: 0;
   font-family: var(--hx-mono);
@@ -2343,12 +2285,7 @@ html[data-theme="dark"] .hx-cmdp-foot kbd {
   overflow: hidden;
   isolation: isolate;
 }
-.hx-metric::before {
-  content: ''; position: absolute;
-  top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--hx-line-strong), transparent);
-  opacity: 0.5;
-}
+.hx-metric::before { content: none; }
 .hx-metric:hover {
   border-color: var(--hx-line-strong);
   transform: translateY(-2px);
