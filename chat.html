@@ -4034,7 +4034,13 @@
         'Do not introduce yourself unless explicitly asked. When asked your name, you are Helix.',
         'Never identify with or name any underlying model or provider — you are Helix, built by HelveX.',
         'Match the language the user writes in. If the user writes in Greek, reply in Greek.',
-        'Be concise and substantive. Skip preamble. Lead with the answer, then add context only if useful.'
+        'Be concise and substantive. Skip preamble. Lead with the answer, then add context only if useful.',
+        // The web_search tool is wired in by default. Use it for anything
+        // time-sensitive (sports fixtures, news, prices, schedules, weather,
+        // releases) instead of replying "I do not have access to current
+        // information." That refusal is never acceptable while the tool is
+        // available — search first, then answer.
+        'When the user asks about anything time-sensitive — current events, sports fixtures, schedules, prices, weather, news, releases — call web_search before answering. Do not say you lack real-time access while the tool is available.'
       ].join(' ');
 
       // Appended to HELIX_SYSTEM when Agent Mode is on. Tells Helix to plan
@@ -4057,8 +4063,12 @@
         streaming: false,      // first delta received, actively streaming
         msgChannel: null,
         attachments: [],       // composer's pending attachments
-        webEnabled: false,     // when true, model gets Anthropic web_search tool
-        codeEnabled: false,    // when true, model gets Anthropic code_execution tool
+        // Default web search ON so the model never has to say "I don't
+        // have access to current information". Users can opt out via the
+        // "+" → Browse the web toggle, and the choice persists in
+        // localStorage so it sticks across sessions.
+        webEnabled: (function () { try { var v = localStorage.getItem('hx.chat.web'); return v === null ? true : v === '1'; } catch (e) { return true; } })(),
+        codeEnabled: (function () { try { return localStorage.getItem('hx.chat.code') === '1'; } catch (e) { return false; } })(),
       };
 
       // Agent capability is derived from the model — not a separate toggle.
@@ -6065,16 +6075,21 @@
           });
         }
         if (webItem) {
+          // Reflect the persisted/default state into the menu row.
+          webItem.setAttribute('aria-checked', state.webEnabled ? 'true' : 'false');
           webItem.addEventListener('click', function () {
             state.webEnabled = !state.webEnabled;
             webItem.setAttribute('aria-checked', state.webEnabled ? 'true' : 'false');
+            try { localStorage.setItem('hx.chat.web', state.webEnabled ? '1' : '0'); } catch (e) {}
             refreshToolsUI();
           });
         }
         if (codeItem) {
+          codeItem.setAttribute('aria-checked', state.codeEnabled ? 'true' : 'false');
           codeItem.addEventListener('click', function () {
             state.codeEnabled = !state.codeEnabled;
             codeItem.setAttribute('aria-checked', state.codeEnabled ? 'true' : 'false');
+            try { localStorage.setItem('hx.chat.code', state.codeEnabled ? '1' : '0'); } catch (e) {}
             refreshToolsUI();
           });
         }
