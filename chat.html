@@ -2502,6 +2502,141 @@
       letter-spacing: 0;
     }
 
+    /* ─── Project picker popover (top toolbar) ──────────────────────
+       Replaces the native <select> with a custom button + menu so the
+       OS dropdown chrome stops showing. Sentence-case label, folder
+       icon, chevron — matches the rest of the chat surface. */
+    .hx-chat-projpop-wrap { position: relative; }
+    .hx-chat-projpop-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 28px;
+      padding: 0 8px 0 10px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      cursor: pointer;
+      color: var(--hx-text-mid);
+      font-family: inherit;
+      font-size: 12px;
+      letter-spacing: 0;
+      transition: background 0.14s ease, border-color 0.14s ease, color 0.14s ease;
+    }
+    .hx-chat-projpop-btn:hover,
+    .hx-chat-projpop-btn[aria-expanded="true"] {
+      background: var(--hx-bg-2);
+      border-color: var(--hx-line);
+      color: var(--hx-text);
+    }
+    .hx-chat-projpop-btn > svg:first-of-type {
+      width: 14px; height: 14px;
+      color: var(--hx-text-faint);
+      flex-shrink: 0;
+    }
+    .hx-chat-projpop-eyebrow {
+      color: var(--hx-text-faint);
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .hx-chat-projpop-name {
+      color: inherit;
+      font-weight: 600;
+      max-width: 160px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: -0.003em;
+    }
+    .hx-chat-projpop-btn > svg:last-of-type {
+      width: 11px; height: 11px;
+      opacity: 0.6;
+      transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .hx-chat-projpop-btn[aria-expanded="true"] > svg:last-of-type { transform: rotate(180deg); }
+
+    .hx-chat-projpop-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 240px;
+      max-height: 360px;
+      overflow-y: auto;
+      padding: 6px;
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: 12px;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 68%, transparent),
+        0 1px 2px rgba(0,0,0,0.04),
+        0 12px 28px -10px rgba(0,0,0,0.14),
+        0 24px 48px -16px rgba(0,0,0,0.18);
+      z-index: 30;
+      transform-origin: top right;
+      animation: hx-tools-in 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+    .hx-chat-projpop-menu[hidden] { display: none; }
+    .hx-chat-projpop-section {
+      font-family: var(--hx-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--hx-text-faint);
+      padding: 6px 10px 8px;
+    }
+    .hx-chat-projpop-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 10px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      font: inherit;
+      color: var(--hx-text);
+      text-align: left;
+      transition: background 0.14s ease, border-color 0.14s ease;
+    }
+    .hx-chat-projpop-item:hover { background: var(--hx-bg-2); }
+    .hx-chat-projpop-item[aria-checked="true"] {
+      background: var(--hx-bg-2);
+      border-color: var(--hx-line);
+    }
+    .hx-chat-projpop-iname {
+      flex: 1;
+      min-width: 0;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: -0.003em;
+    }
+    .hx-chat-projpop-item[aria-checked="true"] .hx-chat-projpop-iname { font-weight: 600; }
+    .hx-chat-projpop-tick {
+      width: 14px; height: 14px;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--hx-text);
+      opacity: 0;
+      flex-shrink: 0;
+    }
+    .hx-chat-projpop-tick::before {
+      content: '';
+      width: 9px; height: 5px;
+      border-left: 1.8px solid currentColor;
+      border-bottom: 1.8px solid currentColor;
+      transform: rotate(-45deg) translateY(-1px);
+    }
+    .hx-chat-projpop-item[aria-checked="true"] .hx-chat-projpop-tick { opacity: 1; }
+    .hx-chat-projpop-divider {
+      height: 1px;
+      background: var(--hx-line-soft, var(--hx-line));
+      margin: 4px 6px;
+    }
+
     /* ─── Premium slash command palette ─────────────────────────────
        Premium floating surface — frosted backdrop, layered shadow, brand-
        tinted active row. Arrow keys navigate, Enter selects, Esc closes. */
@@ -3146,13 +3281,26 @@
               </select>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </label>
-            <label class="hx-chat-pill" title="Project">
-              <span style="color:var(--hx-text-dim);font-size:11.5px;">Project</span>
-              <select id="hx-c-project">
+            <!-- Project picker — custom popover (native <select> kept hidden for state/JS) -->
+            <div class="hx-chat-projpop-wrap">
+              <button
+                class="hx-chat-projpop-btn"
+                id="hx-c-projpop-btn"
+                type="button"
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-label="Switch project"
+                title="Switch project">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                <span class="hx-chat-projpop-eyebrow">Project</span>
+                <span class="hx-chat-projpop-name" id="hx-c-projpop-name">None</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="hx-chat-projpop-menu" id="hx-c-projpop-menu" role="menu" hidden></div>
+              <select id="hx-c-project" style="display:none;" aria-hidden="true">
                 <option value="">None</option>
               </select>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </label>
+            </div>
             <!-- Delete moved to each conversation's 3-dots menu in the rail.
                  Credit balance moved to the workspace/account header (not here). -->
           </div>
@@ -4026,6 +4174,8 @@
           // visible selection matches the stored state. openConversation()
           // may override this later to show the open chat's own project.
           sel.value = (active && active.id) || '';
+          // Mirror into the custom popover (button label + menu rows).
+          if (typeof refreshProjPopUI === 'function') refreshProjPopUI();
         }
 
         // ─── Conversation list (scoped to the active project) ─
@@ -5154,7 +5304,90 @@
           var proj = sel.value || null;
           var name = (proj && sel.options[sel.selectedIndex]) ? sel.options[sel.selectedIndex].textContent : '';
           await switchActiveProject(proj, name);
+          refreshProjPopUI();
         });
+
+        // ─── Custom project popover (replaces the native <select>) ───
+        // Looks up DOM fresh each call so it works even if invoked
+        // before the cached vars below are assigned (loadProjects runs
+        // during init before this block is reached).
+        function refreshProjPopUI() {
+          var projSelectEl = document.getElementById('hx-c-project');
+          var projPopMenu  = document.getElementById('hx-c-projpop-menu');
+          var projPopName  = document.getElementById('hx-c-projpop-name');
+          if (!projSelectEl || !projPopMenu) return;
+          var current = projSelectEl.value || '';
+          var currentLabel = 'None';
+          // Update label
+          for (var i = 0; i < projSelectEl.options.length; i++) {
+            if (projSelectEl.options[i].value === current) {
+              currentLabel = projSelectEl.options[i].textContent;
+              break;
+            }
+          }
+          if (projPopName) projPopName.textContent = currentLabel;
+          // Rebuild the menu from the hidden <select>'s options
+          var html = '<div class="hx-chat-projpop-section">Projects</div>';
+          for (var j = 0; j < projSelectEl.options.length; j++) {
+            var opt = projSelectEl.options[j];
+            var val = opt.value;
+            var label = opt.textContent;
+            var checked = (val === current) ? 'true' : 'false';
+            html +=
+              '<button class="hx-chat-projpop-item" type="button" role="menuitemradio" data-value="' + escape(val) + '" aria-checked="' + checked + '">' +
+                '<span class="hx-chat-projpop-iname">' + escape(label) + '</span>' +
+                '<span class="hx-chat-projpop-tick" aria-hidden="true"></span>' +
+              '</button>';
+            // Insert divider between "None" and the first real project
+            if (j === 0 && projSelectEl.options.length > 1) {
+              html += '<div class="hx-chat-projpop-divider"></div>';
+            }
+          }
+          projPopMenu.innerHTML = html;
+          projPopMenu.querySelectorAll('.hx-chat-projpop-item').forEach(function (it) {
+            it.addEventListener('click', function () {
+              var v = it.getAttribute('data-value') || '';
+              if (projSelectEl.value === v) { closeProjPop(); return; }
+              projSelectEl.value = v;
+              projSelectEl.dispatchEvent(new Event('change', { bubbles: true }));
+              closeProjPop();
+            });
+          });
+        }
+        function openProjPop() {
+          var b = document.getElementById('hx-c-projpop-btn');
+          var m = document.getElementById('hx-c-projpop-menu');
+          if (!b || !m) return;
+          refreshProjPopUI();
+          m.hidden = false;
+          b.setAttribute('aria-expanded', 'true');
+        }
+        function closeProjPop() {
+          var b = document.getElementById('hx-c-projpop-btn');
+          var m = document.getElementById('hx-c-projpop-menu');
+          if (!b || !m) return;
+          m.hidden = true;
+          b.setAttribute('aria-expanded', 'false');
+        }
+        (function wireProjPop() {
+          var b = document.getElementById('hx-c-projpop-btn');
+          var m = document.getElementById('hx-c-projpop-menu');
+          if (!b) return;
+          b.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (b.getAttribute('aria-expanded') === 'true') closeProjPop();
+            else openProjPop();
+          });
+          document.addEventListener('click', function (e) {
+            if (!m || m.hidden) return;
+            if (b.contains(e.target) || m.contains(e.target)) return;
+            closeProjPop();
+          });
+          document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeProjPop();
+          });
+        })();
+        refreshProjPopUI();
 
         // If another tab changes the active project, mirror the whole
         // context swap so all workspace tabs stay in sync.
