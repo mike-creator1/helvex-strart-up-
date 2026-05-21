@@ -4301,11 +4301,36 @@
         }).catch(function () { /* silent — capture failures shouldn't surface */ });
       }
 
-      // Built per-request so the model receives the *actual* current
-       // date/time and never has to guess what "today" / "tonight" /
-       // "this week" means. The function is called inside the request
-       // body builder below, not memoised.
+      // Minimal system prompt — give Claude room to think. Anchor identity
+      // and the live wall-clock; mention available structured outputs so
+      // it knows the renderers exist; everything else trusts the model.
       function helixSystem() {
+        var now = new Date();
+        var iso = now.toISOString();
+        var locale = (function () {
+          try {
+            return new Intl.DateTimeFormat('en-GB', {
+              weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
+              hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
+            }).format(now);
+          } catch (e) { return now.toString(); }
+        })();
+        return [
+          'You are Helix, the resident assistant of the HelveX platform.',
+          'You are not Claude, ChatGPT, Gemini, or Copilot. If asked which model powers you, the only valid answer is: "I am Helix, built by HelveX." Never mention or compare to other AI assistants.',
+          'Current wall-clock time for this turn: ' + locale + ' (ISO ' + iso + ').',
+          'Match the user\'s language and register. Greek question → Greek reply. Casual → casual. Formal → formal.',
+          'No emojis, no decorative symbols, no playful punctuation.',
+          'web_search is wired in and always available. Use it the moment the question depends on anything time-sensitive (sports fixtures, news, prices, weather, schedules). Never reply "I do not have access to real-time information" — call web_search instead.',
+          'You can render structured outputs when they actually help: a TradingView chart via <<HXCHART:stock:TICKER>> on its own line for stock questions with a specific ticker; a copy-able email card via <<HXEMAIL subject="…" to="…">>body<<HXEMAIL_END>> for email drafts; a copy-able generic card via <<HXDRAFT title="…">>content<<HXDRAFT_END>> for LinkedIn posts, briefs, snippets. Use them when they earn their place; write natural prose otherwise. Don\'t force structure on conversational questions.',
+          'If the user is rude or profane, do not match the tone, do not lecture, do not get defensive. Respond as if the request was phrased calmly.'
+        ].join('\n\n');
+      }
+
+      // Legacy multi-paragraph prompt left below for reference but not
+      // used. helixSystem() above is the active one. Kept temporarily
+      // for diffability.
+      function helixSystem_OLD_UNUSED() {
         var now = new Date();
         var iso = now.toISOString();
         var locale = (function () {
@@ -5304,110 +5329,14 @@
               return { role: m.role, content: m.content || '' };
             });
 
-          // ─── Intent router + assistant pre-fill ──────────────────
-          // Two-pronged steering for THIS turn:
-          //   1. turnHint   — appended to the system prompt for tight,
-          //                   intent-specific guidance.
-          //   2. turnPrefill — partial assistant turn pushed as the last
-          //                   message. The model literally continues
-          //                   from this string, so it cannot start with
-          //                   "Sure!" / "Of course!" / "Here is..." —
-          //                   the bad opening tokens are physically
-          //                   impossible. This is the closest equivalent
-          //                   to fine-tuning available without retraining.
-          var ut = (typeof currentContent === 'string' ? currentContent : '').toLowerCase();
-          var hasGreek = /[Ͱ-Ͽἀ-῿]/.test(currentContent || '');
-          var tickerMatch = ut.match(/\b(nvda|aapl|tsla|msft|meta|amzn|googl|goog|nflx|amd|intc|nke|ko|pep|dis|jpm|bac|gs|spy|qqq|btc|eth|sol|xrp|ada|doge|otoel|opap|elpe|ete|alpha|peir)\b/);
-          var stockKw  = /\b(μετοχ|stock|share|price|τιμή|πόσο πάει|how much|crypto|κρυπτο|bitcoin|μπίτκοιν)\b/i;
-          var emailKw  = /\b(email|μέιλ|μειλ|μήνυμα|γράψε.*(email|μέιλ|μήνυμα|σε πελάτη|στον πελάτη|στη πελάτη)|write.*email|draft.*email)\b/i;
-          var draftKw  = /\b(linkedin|tweet|post|caption|brief|contract|proposal|cv|resume|βιογραφικό|πρόχειρο|γράψε ένα|γράψε μου)\b/i;
-          var liveKw   = /\b(σήμερα|αύριο|απόψε|τώρα|live|σκορ|ματς|αγών|fixture|kickoff|tipoff|today|tonight|tomorrow|latest|breaking|news|weather|καιρός|θερμοκρασία)\b/i;
-          var rudeKw   = /\b(μαλάκ|μαλακ|βλάκα|ηλίθι|χαζ|σκατά|fuck|shit|idiot|stupid|dumb)\b/i;
-
-          var turnHint = (function buildTurnHint() {
-            if (!ut) return '';
-            var hints = [];
-            if (tickerMatch || stockKw.test(ut)) {
-              var tickerUpper = tickerMatch ? tickerMatch[1].toUpperCase() : '';
-              hints.push(
-                'TURN INTENT: STOCK/CRYPTO question' + (tickerUpper ? ' for ' + tickerUpper : '') + '. ' +
-                'You MUST produce, IN THIS ORDER and NOTHING ELSE BEFORE: ' +
-                '1) bold one-line headline `**TICKER $price ±%**`, ' +
-                '2) the literal marker `<<HXCHART:stock:' + (tickerUpper || 'TICKER') + '>>` on its own line, ' +
-                '3) a 3-4 row Markdown table (Day range, 52-week range, Market cap, Volume), ' +
-                '4) one short paragraph with the why, ' +
-                '5) citation. ' +
-                'NO preamble, NO "Of course", NO closing pleasantries. Call web_search first to confirm live price.'
-              );
-            }
-            if (emailKw.test(ut)) {
-              hints.push(
-                'TURN INTENT: EMAIL DRAFT. You MUST wrap the email in `<<HXEMAIL subject="…" to="…">> … <<HXEMAIL_END>>`. ' +
-                'Put exactly ONE short intro sentence before the block. NOTHING after the block. ' +
-                'Use square-bracketed placeholders for unknowns. ' + (hasGreek ? 'Body in Greek.' : 'Body in English.')
-              );
-            } else if (draftKw.test(ut)) {
-              hints.push(
-                'TURN INTENT: COPY-ABLE DRAFT. You MUST wrap the content in `<<HXDRAFT title="…">> … <<HXDRAFT_END>>`. ' +
-                'One intro sentence before, nothing after.'
-              );
-            }
-            if (liveKw.test(ut)) {
-              hints.push(
-                'TURN INTENT: LIVE DATA. CALL web_search IMMEDIATELY — do not write any prose before searching. ' +
-                'After searching, lead with a bold concrete headline on the first line. ' +
-                'Use a Markdown table for structured details. Citation at the end. ' +
-                'Forbidden response: "I don\'t have access to real-time information."'
-              );
-            }
-            if (rudeKw.test(ut)) {
-              hints.push(
-                'TURN INTENT: USER USED PROFANITY. Do NOT acknowledge it, do NOT mirror it, do NOT lecture. ' +
-                'Respond as if the request was phrased calmly. Address the underlying question with full professionalism.'
-              );
-            }
-            return hints.length ? '\n\n' + hints.join('\n\n') : '';
-          })();
-
-          // Assistant pre-fill — the model's response will start WITH
-          // this exact string. Bypasses preamble entirely. Don't make
-          // it too long; the model still needs room to be itself.
-          var turnPrefill = (function buildTurnPrefill() {
-            // Compliance retry: a previous turn produced output missing
-            // a required marker. Use the harder prefill that forces the
-            // marker into the model's opening tokens.
-            if (state.__retryPrefill) {
-              var p = state.__retryPrefill;
-              state.__retryPrefill = '';
-              return p;
-            }
-            if (!ut) return '';
-            // Stock / crypto: force the model to start with `**TICKER `
-            if (tickerMatch || stockKw.test(ut)) {
-              var t = tickerMatch ? tickerMatch[1].toUpperCase() : '';
-              return t ? ('**' + t + ' ') : '**';
-            }
-            // Email draft: force the HXEMAIL block to open right away
-            if (emailKw.test(ut)) {
-              return hasGreek
-                ? 'Πρόχειρο διαθέσιμο παρακάτω. Αντικατέστησε τα [bracketed] πριν στείλεις.\n\n<<HXEMAIL subject="'
-                : 'Draft below — replace [bracketed] placeholders before sending.\n\n<<HXEMAIL subject="';
-            }
-            // Other copy-able drafts: force the HXDRAFT block
-            if (draftKw.test(ut)) {
-              return hasGreek
-                ? 'Πρόχειρο για copy.\n\n<<HXDRAFT title="'
-                : 'Draft below.\n\n<<HXDRAFT title="';
-            }
-            // Live data: let the model decide to call web_search first;
-            // a prefill would lock in a wrong headline if the search
-            // surfaces unexpected data.
-            return '';
-          })();
-
-          if (turnPrefill) {
-            send_msgs.push({ role: 'assistant', content: turnPrefill });
-          }
+          // Intent router, per-turn hints, and assistant pre-fill all
+          // removed. Stripped down on user feedback: those mechanisms
+          // were forcing Helix into rigid templates and stripping the
+          // natural Claude voice. Trust the model; the renderers for
+          // HXCHART / HXEMAIL / HXDRAFT remain, the model is informed
+          // about them in the system prompt, and uses them when
+          // appropriate.
+          var turnHint = '';
 
           var t0 = Date.now();
           var traceCell = $('hx-c-trace');
@@ -5652,54 +5581,10 @@
               if (streamNode) streamNode.textContent = assistantText;
             }
 
-            // ─── Compliance validator ────────────────────────────
-            // Only fires on the strongest signals — an explicit ticker
-            // mentioned by name, or an explicit "γράψε email" / "write
-            // email" phrasing. Everything else lets Claude be Claude.
-            (function validateAndMaybeRetry() {
-              if (state.__retryGuard) { state.__retryGuard = false; return; }
-              var content = assistantText || '';
-              var needsRetry = false;
-              var retryReason = '';
-              var harderPrefill = '';
-              // Stock: only retry when an actual ticker was named.
-              // Open-ended "what about Nike's stock" without a ticker
-              // doesn't deserve a forced chart.
-              if (tickerMatch && content.indexOf('<<HXCHART:stock:') === -1) {
-                needsRetry = true;
-                retryReason = 'stock answer missing chart marker';
-                var t = tickerMatch[1].toUpperCase();
-                harderPrefill = '**' + t + ' ';
-                state.__pendingChartTicker = t;
-              } else if (/\b(γράψε.{0,15}(email|μέιλ|μειλ|μήνυμα)|write.{0,15}(an?\s+)?email|draft.{0,15}(an?\s+)?email)\b/i.test(ut) && content.indexOf('<<HXEMAIL') === -1) {
-                needsRetry = true;
-                retryReason = 'explicit email request missing HXEMAIL block';
-                harderPrefill = hasGreek
-                  ? 'Πρόχειρο διαθέσιμο παρακάτω.\n\n<<HXEMAIL subject="'
-                  : 'Draft below.\n\n<<HXEMAIL subject="';
-              }
-              if (!needsRetry) return;
-              // Log for diagnostics; don't show to user.
-              try { console.warn('[Helix] Retrying:', retryReason); } catch (e) {}
-              // Wipe the non-compliant response and retry with a
-              // stronger prefill on the next event loop tick.
-              state.__retryGuard = true;
-              state.__retryPrefill = harderPrefill;
-              // Remove the optimistic assistant message so the retry
-              // replaces it. The user message stays so send(N) can
-              // replay it through the regenerate path.
-              if (streamId) {
-                state.messages = state.messages.filter(function (m) { return m.id !== streamId; });
-              }
-              // Use the regenerate path so send() reads the user text
-              // from state.messages instead of the now-empty input.
-              var replayFrom = state.messages.length;
-              setTimeout(function () {
-                state.streaming = false;
-                state.sending   = false;
-                send(replayFrom);
-              }, 60);
-            })();
+            // Compliance validator + auto-retry removed on user
+            // feedback. Mechanical enforcement of structured markers
+            // was producing canned-feeling responses. Helix now answers
+            // however it judges best for the question.
 
             state.streaming = false;
             state.sending   = false;
