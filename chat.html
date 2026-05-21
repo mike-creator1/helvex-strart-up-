@@ -1025,21 +1025,21 @@
       padding: 0 28px;
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      gap: 22px;
     }
-    .hx-msg { display: flex; flex-direction: column; gap: 6px; }
+    .hx-msg { display: flex; flex-direction: column; gap: 4px; }
     /* Avatars are intentionally not rendered. Premium chats keep the
        speaker identity to a single faint label and let the prose breathe. */
     .hx-msg-avatar { display: none; }
     .hx-msg-body { min-width: 0; width: 100%; }
     .hx-msg-meta {
-      font-size: 10px; color: var(--hx-text-faint);
-      letter-spacing: 0.22em; text-transform: uppercase;
-      margin-bottom: 10px;
+      font-size: 9.5px; color: var(--hx-text-faint);
+      letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 6px;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .hx-msg.is-assistant .hx-msg-meta {
       color: var(--hx-text);
@@ -1059,10 +1059,12 @@
       background: linear-gradient(90deg, var(--hx-line-strong) 0%, transparent 100%);
     }
     .hx-msg-meta strong { font-weight: 700; color: inherit; letter-spacing: 0.24em; }
+    /* Claude-density prose: 14px base, tighter leading, fits ~30%
+       more content per viewport vs the previous 15.5/1.75. */
     .hx-msg-content {
-      font-size: 15.5px; line-height: 1.75; color: var(--hx-text);
+      font-size: 14px; line-height: 1.6; color: var(--hx-text);
       white-space: pre-wrap; word-wrap: break-word;
-      letter-spacing: -0.004em;
+      letter-spacing: -0.003em;
     }
     .hx-msg.is-assistant .hx-msg-content::first-letter {
       font-family: 'Instrument Serif', Georgia, serif;
@@ -1091,34 +1093,34 @@
        H1/H2 use the Instrument Serif italic so longform plans + reports
        read like a New Yorker piece, not a corporate doc. H3/H4 stay in
        the Inter family with refined weight/letter-spacing. */
-    .hx-md-h { margin: 22px 0 8px; line-height: 1.2; color: var(--hx-text); letter-spacing: -0.012em; }
+    .hx-md-h { margin: 18px 0 6px; line-height: 1.25; color: var(--hx-text); letter-spacing: -0.012em; }
     .hx-md-h:first-child { margin-top: 4px; }
     .hx-md-h1 {
       font-family: 'Instrument Serif', Georgia, serif;
       font-style: italic;
       font-weight: 400;
-      font-size: 30px;
-      letter-spacing: -0.022em;
+      font-size: 22px;
+      letter-spacing: -0.02em;
     }
     .hx-md-h2 {
       font-family: 'Instrument Serif', Georgia, serif;
       font-style: italic;
       font-weight: 400;
-      font-size: 23px;
-      letter-spacing: -0.018em;
-      padding-bottom: 6px;
+      font-size: 18px;
+      letter-spacing: -0.016em;
+      padding-bottom: 5px;
       border-bottom: 1px solid var(--hx-line-soft, var(--hx-line));
     }
     .hx-md-h3 {
-      font-size: 16px;
+      font-size: 14.5px;
       font-weight: 700;
-      letter-spacing: -0.005em;
+      letter-spacing: -0.004em;
       text-transform: none;
     }
     .hx-md-h4 {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--hx-text-dim);
     }
@@ -1142,15 +1144,15 @@
     }
     .hx-md-list > li {
       position: relative;
-      padding-left: 22px;
-      line-height: 1.6;
+      padding-left: 20px;
+      line-height: 1.55;
       color: var(--hx-text);
     }
     .hx-md-list > li::before {
       content: '';
       position: absolute;
-      left: 8px; top: 0.62em;
-      width: 5px; height: 5px;
+      left: 7px; top: 0.62em;
+      width: 4px; height: 4px;
       border-radius: 50%;
       background: var(--hx-text-mid);
     }
@@ -1400,10 +1402,10 @@
         color-mix(in srgb, var(--hx-yellow-soft, var(--hx-bg-2)) 40%, var(--hx-surface)) 0%,
         color-mix(in srgb, var(--hx-yellow-soft, var(--hx-bg-2)) 22%, var(--hx-bg-2)) 100%);
       border: 1px solid color-mix(in srgb, var(--hx-yellow, var(--hx-line)) 14%, var(--hx-line));
-      border-radius: 18px;
-      border-bottom-right-radius: 5px;
-      padding: 13px 17px;
-      font-size: 14.5px; line-height: 1.62;
+      border-radius: 16px;
+      border-bottom-right-radius: 4px;
+      padding: 10px 14px;
+      font-size: 13.5px; line-height: 1.55;
       max-width: 100%;
       width: fit-content;
       margin-left: auto;
