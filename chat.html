@@ -937,30 +937,20 @@
       pointer-events: none;
     }
     .hx-chat-title {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-style: italic;
-      font-size: 23px;
-      letter-spacing: -0.018em;
-      font-weight: 400;
+      font-family: inherit;
+      font-size: 14px;
+      letter-spacing: -0.006em;
+      font-weight: 600;
       color: var(--hx-text);
       margin: 0 auto 0 0;
-      max-width: 52%;
+      max-width: 56%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      padding-left: 4px;
-      line-height: 1.1;
-      position: relative;
+      padding-left: 2px;
+      line-height: 1.2;
     }
-    .hx-chat-title::before {
-      content: '';
-      position: absolute;
-      left: -8px; top: 50%;
-      transform: translateY(-50%);
-      width: 2px; height: 60%;
-      background: linear-gradient(180deg, transparent 0%, var(--hx-yellow, var(--hx-text)) 50%, transparent 100%);
-      opacity: 0.7;
-    }
+    .hx-chat-title::before { content: none; }
     .hx-chat-pill {
       display: inline-flex;
       align-items: center;
@@ -1046,12 +1036,9 @@
       white-space: pre-wrap; word-wrap: break-word;
       letter-spacing: -0.003em;
     }
-    .hx-msg.is-assistant .hx-msg-content::first-letter {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-style: italic;
-      font-size: 1.18em;
-      letter-spacing: -0.01em;
-    }
+    /* Removed the italic serif drop-cap on assistant prose — it read as
+       editorial novelty rather than executive tool. Prose now flows in
+       the standard Inter weight from the first character. */
     /* Inline markdown bits inside assistant prose */
     .hx-md-inline {
       font-family: var(--hx-mono);
@@ -1083,34 +1070,32 @@
        H1/H2 use the Instrument Serif italic so longform plans + reports
        read like a New Yorker piece, not a corporate doc. H3/H4 stay in
        the Inter family with refined weight/letter-spacing. */
-    .hx-md-h { margin: 18px 0 6px; line-height: 1.25; color: var(--hx-text); letter-spacing: -0.012em; }
+    .hx-md-h { margin: 20px 0 6px; line-height: 1.3; color: var(--hx-text); letter-spacing: -0.014em; }
     .hx-md-h:first-child { margin-top: 4px; }
     .hx-md-h1 {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 22px;
-      letter-spacing: -0.02em;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 19px;
+      letter-spacing: -0.018em;
     }
     .hx-md-h2 {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 18px;
-      letter-spacing: -0.016em;
-      padding-bottom: 5px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.012em;
+      padding-bottom: 6px;
       border-bottom: 1px solid var(--hx-line-soft, var(--hx-line));
     }
     .hx-md-h3 {
       font-size: 14.5px;
-      font-weight: 700;
+      font-weight: 600;
       letter-spacing: -0.004em;
       text-transform: none;
     }
     .hx-md-h4 {
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--hx-text-dim);
     }
@@ -1250,32 +1235,15 @@
       to   { transform: scale(1);   opacity: 1; }
     }
 
-    /* Blockquote — editorial pull-quote */
+    /* Blockquote — restrained, no decorative serif quote mark */
     .hx-md-quote {
-      position: relative;
       margin: 14px 0;
-      padding: 10px 16px 10px 20px;
-      border-left: 3px solid var(--hx-yellow-deep);
-      background: linear-gradient(90deg,
-        color-mix(in srgb, var(--hx-yellow-soft) 80%, transparent) 0%,
-        transparent 70%);
+      padding: 8px 14px;
+      border-left: 2px solid var(--hx-line-strong, var(--hx-line));
+      background: transparent;
       color: var(--hx-text-mid);
-      font-style: italic;
-      border-radius: 0 10px 10px 0;
-      box-shadow:
-        inset 0 1px 0 color-mix(in srgb, #fff 60%, transparent),
-        var(--hx-shadow-xs);
-    }
-    .hx-md-quote::before {
-      content: '"';
-      position: absolute;
-      top: -2px; left: 6px;
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-size: 28px;
-      line-height: 1;
-      color: color-mix(in srgb, var(--hx-yellow-deep) 50%, transparent);
       font-style: normal;
-      pointer-events: none;
+      border-radius: 0;
     }
 
     /* ─── Premium code block — Claude-grade editor surface ─────────
@@ -1747,18 +1715,15 @@
       background: linear-gradient(90deg, var(--hx-line-strong) 0%, transparent 100%);
     }
     .hx-chat-blank h2 {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-style: italic; font-size: 56px;
-      letter-spacing: -0.028em;
+      font-family: inherit;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.022em;
       color: var(--hx-text);
       margin: 0;
-      line-height: 0.96;
+      line-height: 1.15;
     }
-    .hx-chat-blank h2::after {
-      content: '.';
-      color: var(--hx-yellow, var(--hx-text));
-      margin-left: 2px;
-    }
+    .hx-chat-blank h2::after { content: none; }
     .hx-chat-blank p {
       font-size: 14px;
       max-width: 440px;
@@ -1897,48 +1862,10 @@
         /* 5) ambient gold halo — barely visible, premium feel */
         0 18px 40px -20px color-mix(in srgb, var(--hx-yellow, transparent) 35%, transparent);
     }
-    /* Decorative animated gradient edge — sits behind the border. Idles
-       at a barely-visible 8% gold tint that rotates slowly; on focus,
-       amplifies to a stronger conic sweep that breathes with the model
-       accent (gold for Ether, coral for Nexus, graphite for Prometheus). */
-    .hx-chat-input-row::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: 21px;
-      padding: 1px;
-      background: conic-gradient(from var(--hx-edge-angle, 0deg) at 50% 50%,
-        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 6%, transparent) 0%,
-        transparent 25%,
-        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 12%, transparent) 50%,
-        transparent 75%,
-        color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 6%, transparent) 100%);
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-              mask-composite: exclude;
-      pointer-events: none;
-      animation: hx-edge-rotate 14s linear infinite;
-      opacity: 0.7;
-      transition: opacity 0.4s ease;
-    }
-    body[data-model="nexus"] .hx-chat-input-row::before,
-    body[data-model="prometheus"] .hx-chat-input-row::before {
-      background: conic-gradient(from var(--hx-edge-angle, 0deg) at 50% 50%,
-        color-mix(in srgb, var(--hx-mc, var(--hx-text)) 6%, transparent) 0%,
-        transparent 25%,
-        color-mix(in srgb, var(--hx-mc, var(--hx-text)) 14%, transparent) 50%,
-        transparent 75%,
-        color-mix(in srgb, var(--hx-mc, var(--hx-text)) 6%, transparent) 100%);
-    }
-    @property --hx-edge-angle {
-      syntax: '<angle>';
-      initial-value: 0deg;
-      inherits: false;
-    }
-    @keyframes hx-edge-rotate {
-      to { --hx-edge-angle: 360deg; }
-    }
-    .hx-chat-input-row:focus-within::before { opacity: 1; }
+    /* Static refined edge — removed the rotating conic gradient
+       (read as "decorative animation" rather than "professional tool").
+       Composer relies on the base border + focus shadow ring only. */
+    .hx-chat-input-row::before { content: none; }
     .hx-chat-input-row:hover {
       border-color: color-mix(in srgb, var(--hx-line-strong) 90%, transparent);
       box-shadow:
@@ -3278,7 +3205,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
             <p class="hx-chat-title" id="hx-c-title">New chat</p>
-            <label class="hx-chat-pill" title="Model">
+            <label class="hx-chat-pill" title="Model" style="display:none;" aria-hidden="true">
               <span style="color:var(--hx-text-dim);font-size:11.5px;">Model</span>
               <select id="hx-c-model">
                 <option value="ether">Ether</option>
