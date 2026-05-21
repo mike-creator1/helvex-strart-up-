@@ -1032,33 +1032,13 @@
        speaker identity to a single faint label and let the prose breathe. */
     .hx-msg-avatar { display: none; }
     .hx-msg-body { min-width: 0; width: 100%; }
-    .hx-msg-meta {
-      font-size: 9.5px; color: var(--hx-text-faint);
-      letter-spacing: 0.2em; text-transform: uppercase;
-      margin-bottom: 6px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .hx-msg.is-assistant .hx-msg-meta {
-      color: var(--hx-text);
-    }
-    .hx-msg.is-assistant .hx-msg-meta::before {
-      content: '';
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--hx-yellow, var(--hx-text));
-      box-shadow:
-        0 0 0 3px var(--hx-yellow-soft, transparent),
-        0 0 8px color-mix(in srgb, var(--hx-yellow, var(--hx-text)) 55%, transparent);
-    }
-    .hx-msg.is-assistant .hx-msg-meta::after {
-      content: '';
-      flex: 0 0 56px;
-      height: 1px;
-      background: linear-gradient(90deg, var(--hx-line-strong) 0%, transparent 100%);
-    }
-    .hx-msg-meta strong { font-weight: 700; color: inherit; letter-spacing: 0.24em; }
+    /* Author label above each message was removed (Claude.ai parity).
+       The prose layout itself differentiates speakers: user turns sit
+       in a right-aligned pill, assistant turns are flush left with a
+       serif first-letter. Model identity lives in the toolbar selector.
+       Kept as display:none rather than removed entirely so any legacy
+       JS path that still injects meta won't break layout. */
+    .hx-msg-meta { display: none !important; }
     /* Claude-density prose: 14px base, tighter leading, fits ~30%
        more content per viewport vs the previous 15.5/1.75. */
     .hx-msg-content {
@@ -4063,7 +4043,11 @@
         function renderMessage(m) {
           var i = state.messages.indexOf(m);
           var isAssist = m.role === 'assistant';
-          var meta = isAssist ? '<strong>Helix</strong>' : '';
+          // No author label above assistant turns — the prose styling
+          // (left-aligned, serif first-letter) and the user pill on the
+          // right already differentiate speakers. Model identity is in
+          // the toolbar selector. Claude.ai parity.
+          var meta = '';
           var atts = Array.isArray(m.attachments) ? m.attachments : [];
 
           var actions = '';
