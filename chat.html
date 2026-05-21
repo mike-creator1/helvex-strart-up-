@@ -2427,6 +2427,367 @@
       .hx-voice-wave span:nth-child(n+12) { display: none; }
       .hx-voice-cancel, .hx-voice-done { width: 32px; height: 32px; border-radius: 10px; }
     }
+
+    /* ─────────────────────────────────────────────────────────────────
+       Claude-Code parity layer (hx-cc-*)
+       Overrides the legacy chat chrome to match Claude Code's IDE look.
+       All classes are namespaced "hx-cc-" so they don't fight legacy
+       styles — instead they sit on top with higher specificity where
+       needed. Color tokens come from the existing platform variables.
+       ───────────────────────────────────────────────────────────────── */
+
+    /* TOP TOOLBAR — tabs + breadcrumb + pane toggles */
+    .hx-cc-toolbar {
+      display: flex !important;
+      align-items: center !important;
+      gap: 14px !important;
+      padding: 10px 14px !important;
+      background: var(--hx-bg-elev, #0e0e10) !important;
+      border-bottom: 1px solid var(--hx-line, rgba(255,255,255,0.06)) !important;
+      min-height: 48px;
+    }
+    .hx-cc-tabs {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 3px;
+    }
+    .hx-cc-tab {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 11px;
+      border-radius: 6px;
+      background: transparent;
+      border: 0;
+      color: rgba(255,255,255,0.55);
+      font: 500 12.5px/1 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .hx-cc-tab svg { width: 14px; height: 14px; opacity: 0.9; }
+    .hx-cc-tab:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.04); }
+    .hx-cc-tab.is-active {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .hx-cc-crumb {
+      display: inline-flex; align-items: center; gap: 8px;
+      flex: 1; min-width: 0;
+      color: rgba(255,255,255,0.5);
+      font: 500 13px/1 'Inter', sans-serif;
+    }
+    .hx-cc-crumb-proj { color: rgba(255,255,255,0.45); }
+    .hx-cc-crumb-sep  { color: rgba(255,255,255,0.25); }
+    .hx-cc-crumb-title {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: transparent; border: 0; padding: 4px 6px;
+      border-radius: 5px;
+      color: rgba(255,255,255,0.92);
+      font: 500 13px/1 'Inter', sans-serif;
+      cursor: pointer;
+      max-width: 100%; min-width: 0;
+    }
+    .hx-cc-crumb-title > span {
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      max-width: 380px;
+    }
+    .hx-cc-crumb-title:hover { background: rgba(255,255,255,0.05); }
+    .hx-cc-crumb-title svg { width: 12px; height: 12px; opacity: 0.55; }
+    .hx-cc-pane-toggles { display: inline-flex; gap: 4px; }
+    .hx-cc-pane-btn {
+      width: 28px; height: 28px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: transparent; border: 0;
+      color: rgba(255,255,255,0.45);
+      border-radius: 6px; cursor: pointer;
+    }
+    .hx-cc-pane-btn:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+    .hx-cc-pane-btn svg { width: 16px; height: 16px; }
+
+    /* RAIL — Claude-Code-style left sidebar */
+    .hx-cc-rail {
+      display: flex !important;
+      flex-direction: column;
+      gap: 0;
+      padding: 10px 8px !important;
+      background: var(--hx-bg, #0a0a0b) !important;
+      border-right: 1px solid var(--hx-line, rgba(255,255,255,0.06));
+    }
+    .hx-cc-newsess {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px;
+      padding: 9px 12px;
+      margin: 0 4px 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      color: #fff;
+      font: 500 13px/1 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .hx-cc-newsess:hover { background: rgba(255,255,255,0.08); }
+    .hx-cc-newsess-l { display: inline-flex; align-items: center; gap: 8px; }
+    .hx-cc-newsess-l svg { width: 14px; height: 14px; }
+    .hx-cc-newsess-kbd {
+      display: inline-flex; align-items: center; gap: 2px;
+      font: 600 10.5px/1 'JetBrains Mono', monospace;
+      color: rgba(255,255,255,0.45);
+    }
+    .hx-cc-newsess-kbd span {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 16px; height: 16px;
+      padding: 0 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+    }
+    .hx-cc-nav {
+      display: flex; flex-direction: column; gap: 1px;
+      padding: 0 4px;
+      margin-bottom: 14px;
+    }
+    .hx-cc-nav-item {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 6px 8px;
+      background: transparent; border: 0;
+      color: rgba(255,255,255,0.7);
+      font: 500 13px/1 'Inter', sans-serif;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .hx-cc-nav-item svg { width: 14px; height: 14px; opacity: 0.75; }
+    .hx-cc-nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .hx-cc-nav-more svg { transform: rotate(-90deg); }
+    .hx-cc-recents-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 4px 10px 4px 12px;
+      margin-top: 4px;
+      color: rgba(255,255,255,0.4);
+      font: 500 11.5px/1 'Inter', sans-serif;
+      letter-spacing: 0.04em;
+    }
+    .hx-cc-recents-filter {
+      width: 20px; height: 20px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: transparent; border: 0;
+      color: rgba(255,255,255,0.4); border-radius: 4px; cursor: pointer;
+    }
+    .hx-cc-recents-filter:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+    .hx-cc-recents-filter svg { width: 12px; height: 12px; }
+    .hx-cc-list { flex: 1; overflow-y: auto; padding: 2px 4px !important; }
+    .hx-cc-empty-list { color: rgba(255,255,255,0.35) !important; padding: 16px 12px !important; font-size: 12.5px !important; }
+    /* Restyle each conversation item to match Claude Code list style */
+    .hx-cc-list .hx-chat-item {
+      padding: 6px 10px !important;
+      border-radius: 6px !important;
+      border: 0 !important;
+      background: transparent !important;
+      margin: 0 !important;
+    }
+    .hx-cc-list .hx-chat-item:hover {
+      background: rgba(255,255,255,0.05) !important;
+    }
+    .hx-cc-list .hx-chat-item.is-active {
+      background: rgba(255,255,255,0.07) !important;
+    }
+    .hx-cc-list .hx-chat-item .hx-chat-item-title {
+      font: 500 12.5px/1.35 'Inter', sans-serif !important;
+      color: rgba(255,255,255,0.85) !important;
+    }
+    .hx-cc-list .hx-chat-item.is-active .hx-chat-item-title {
+      color: #fff !important;
+    }
+    /* Yellow active-dot before the active item */
+    .hx-cc-list .hx-chat-item.is-active::before {
+      content: ""; position: absolute;
+      left: 2px; top: 50%; transform: translateY(-50%);
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--hx-mc, #C9A227);
+      box-shadow: 0 0 0 2px rgba(201,162,39,0.16);
+    }
+    .hx-cc-list .hx-chat-item { position: relative; }
+
+    /* RAIL FOOT — Upgrade banner + user identity */
+    .hx-cc-rail-foot {
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .hx-cc-relaunch {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 10px;
+      margin: 0 4px;
+      background: rgba(201,162,39,0.05);
+      border: 1px solid rgba(201,162,39,0.16);
+      border-radius: 8px;
+      text-decoration: none;
+      color: rgba(255,255,255,0.9);
+      transition: background 0.15s;
+    }
+    .hx-cc-relaunch:hover { background: rgba(201,162,39,0.10); }
+    .hx-cc-relaunch-ico {
+      width: 26px; height: 26px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: rgba(201,162,39,0.12);
+      border-radius: 7px;
+      color: var(--hx-mc, #C9A227);
+    }
+    .hx-cc-relaunch-ico svg { width: 14px; height: 14px; }
+    .hx-cc-relaunch-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .hx-cc-relaunch-title {
+      font: 600 12.5px/1 'Inter', sans-serif;
+      color: #fff;
+    }
+    .hx-cc-relaunch-meta {
+      font: 500 10.5px/1 'Inter', sans-serif;
+      color: rgba(255,255,255,0.5);
+    }
+    .hx-cc-relaunch-arrow { width: 14px; height: 14px; opacity: 0.4; }
+    .hx-cc-user {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 10px;
+      margin: 0 4px;
+      background: transparent; border: 0;
+      color: rgba(255,255,255,0.8);
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .hx-cc-user:hover { background: rgba(255,255,255,0.04); }
+    .hx-cc-user-avatar {
+      width: 22px; height: 22px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #2a2a2e, #45454c);
+      color: #fff;
+      border-radius: 50%;
+      font: 700 11px/1 'Inter', sans-serif;
+    }
+    .hx-cc-user-name { font: 500 12.5px/1 'Inter', sans-serif; color: #fff; }
+    .hx-cc-user-sep  { color: rgba(255,255,255,0.3); }
+    .hx-cc-user-plan { font: 500 12.5px/1 'Inter', sans-serif; color: rgba(255,255,255,0.55); }
+    .hx-cc-user-caret { width: 12px; height: 12px; opacity: 0.4; margin-left: auto; }
+
+    /* THREAD — cleaner empty state */
+    .hx-cc-blank {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-height: 60vh;
+    }
+    .hx-cc-blank-spark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      color: var(--hx-mc, #C9A227);
+      opacity: 0.55;
+    }
+    .hx-cc-blank-spark svg { width: 22px; height: 22px; }
+    /* Hide legacy empty-state elements when on the new layout */
+    .hx-cc-blank .hx-chat-blank-mark,
+    .hx-cc-blank .hx-chat-blank-eyebrow,
+    .hx-cc-blank h2,
+    .hx-cc-blank p,
+    .hx-cc-blank .hx-chat-blank-chip { display: none !important; }
+
+    /* COMPOSE bar — Accept edits + model picker */
+    .hx-cc-compose-bar {
+      display: flex; align-items: center;
+      gap: 8px;
+      padding: 6px 4px 0;
+      position: relative;
+    }
+    .hx-cc-compose-bar-spacer { flex: 1; }
+    .hx-cc-edits {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 9px 4px 7px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 999px;
+      color: rgba(255,255,255,0.7);
+      font: 500 11.5px/1 'Inter', sans-serif;
+      cursor: pointer;
+    }
+    .hx-cc-edits:hover { background: rgba(255,255,255,0.04); color: #fff; }
+    .hx-cc-edits-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--hx-mc, #C9A227);
+      box-shadow: 0 0 0 2px rgba(201,162,39,0.18);
+    }
+    .hx-cc-edits[aria-pressed="false"] .hx-cc-edits-dot {
+      background: rgba(255,255,255,0.25);
+      box-shadow: none;
+    }
+    .hx-cc-model-pick {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 8px 4px 7px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 999px;
+      color: rgba(255,255,255,0.85);
+      font: 500 11.5px/1 'Inter', sans-serif;
+      cursor: pointer;
+    }
+    .hx-cc-model-pick:hover { background: rgba(255,255,255,0.04); }
+    .hx-cc-model-glyph { color: var(--hx-mc, #C9A227); display: inline-flex; }
+    .hx-cc-model-glyph svg { width: 13px; height: 13px; }
+    .hx-cc-model-name { color: #fff; }
+    .hx-cc-model-sep  { color: rgba(255,255,255,0.25); margin: 0 1px; }
+    .hx-cc-model-tier { color: rgba(255,255,255,0.55); }
+    .hx-cc-model-caret { width: 11px; height: 11px; opacity: 0.45; }
+    .hx-cc-model-spinner {
+      display: none;
+      width: 10px; height: 10px;
+      margin-left: 4px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(201,162,39,0.25);
+      border-top-color: var(--hx-mc, #C9A227);
+      animation: hx-cc-spin 0.85s linear infinite;
+    }
+    .hx-cc-model-pick.is-busy .hx-cc-model-spinner { display: inline-block; }
+    .hx-cc-model-pick.is-busy .hx-cc-model-caret   { display: none; }
+    @keyframes hx-cc-spin { to { transform: rotate(360deg); } }
+    .hx-cc-model-menu {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      right: 0;
+      min-width: 220px;
+      background: #15151a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 4px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+      z-index: 20;
+    }
+    .hx-cc-model-opt {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%;
+      padding: 8px 10px;
+      background: transparent; border: 0;
+      color: rgba(255,255,255,0.85);
+      font: 500 12.5px/1 'Inter', sans-serif;
+      border-radius: 7px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .hx-cc-model-opt > span {
+      color: rgba(255,255,255,0.45);
+      font-size: 11px;
+    }
+    .hx-cc-model-opt:hover  { background: rgba(255,255,255,0.05); }
+    .hx-cc-model-opt.is-active {
+      background: rgba(201,162,39,0.10);
+      color: #fff;
+    }
+
+    /* Hide the legacy inline kbd hint + the tools popover trigger style
+       tweaks so the new compose bar is the only footer visible */
+    .hx-chat-inline-hint { display: none !important; }
   </style>
 </head>
 <body data-active="chat">
@@ -2437,16 +2798,57 @@
       <div class="hx-topbar"></div>
       <main class="hx-main">
 
-        <!-- Conversation rail -->
-        <aside class="hx-chat-rail">
-          <div class="hx-chat-rail-head">
-            <p class="hx-chat-rail-title">Conversations</p>
-            <button class="hx-chat-new" type="button" id="hx-c-new" aria-label="New chat" title="Start a new conversation">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <!-- Conversation rail — Claude-Code-style: New session, nav, Recents, user -->
+        <aside class="hx-chat-rail hx-cc-rail">
+          <button class="hx-cc-newsess" type="button" id="hx-c-new" aria-label="Start a new session">
+            <span class="hx-cc-newsess-l">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>New session</span>
+            </span>
+            <span class="hx-cc-newsess-kbd"><span>⌘</span><span>K</span></span>
+          </button>
+          <nav class="hx-cc-nav" aria-label="Workspace nav">
+            <button class="hx-cc-nav-item" type="button" data-ccnav="routines">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Routines</span>
+            </button>
+            <button class="hx-cc-nav-item" type="button" data-ccnav="customize">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.64 8.6a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1.03-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9c.39.16.74.42 1.03.75"/></svg>
+              <span>Customize</span>
+            </button>
+            <button class="hx-cc-nav-item hx-cc-nav-more" type="button" data-ccnav="more">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              <span>More</span>
+            </button>
+          </nav>
+          <div class="hx-cc-recents-head">
+            <span>Recents</span>
+            <button class="hx-cc-recents-filter" type="button" aria-label="Filter recents" title="Filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
             </button>
           </div>
-          <div class="hx-chat-list" id="hx-c-list">
-            <div class="hx-chat-empty-list" id="hx-c-empty">Your conversations will appear here.</div>
+          <div class="hx-chat-list hx-cc-list" id="hx-c-list">
+            <div class="hx-chat-empty-list hx-cc-empty-list" id="hx-c-empty">No sessions in this project yet.</div>
+          </div>
+          <!-- Bottom: relaunch hint + user identity (Claude Code parity) -->
+          <div class="hx-cc-rail-foot">
+            <a class="hx-cc-relaunch" href="/pricing" title="HelveX subscription">
+              <span class="hx-cc-relaunch-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2a8 8 0 0 1 8 8c0 5-5 9-8 11-3-2-8-6-8-11a8 8 0 0 1 8-8z"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+              </span>
+              <span class="hx-cc-relaunch-body">
+                <span class="hx-cc-relaunch-title">Upgrade plan</span>
+                <span class="hx-cc-relaunch-meta" id="hx-cc-version">HelveX · v1</span>
+              </span>
+              <svg class="hx-cc-relaunch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+            <button class="hx-cc-user" type="button" id="hx-cc-user" aria-label="Account">
+              <span class="hx-cc-user-avatar" id="hx-cc-user-avatar">M</span>
+              <span class="hx-cc-user-name" id="hx-cc-user-name">You</span>
+              <span class="hx-cc-user-sep">·</span>
+              <span class="hx-cc-user-plan" id="hx-cc-user-plan">Free</span>
+              <svg class="hx-cc-user-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
           </div>
         </aside>
 
@@ -2459,39 +2861,60 @@
           <div class="hx-chat-ambient is-ether"      id="hx-c-ambient-ether"      aria-hidden="true"></div>
           <div class="hx-chat-ambient is-nexus"      id="hx-c-ambient-nexus"      aria-hidden="true"></div>
           <div class="hx-chat-ambient is-prometheus" id="hx-c-ambient-prometheus" aria-hidden="true"></div>
-          <div class="hx-chat-toolbar">
+          <div class="hx-chat-toolbar hx-cc-toolbar">
             <button class="hx-chat-drawer-toggle" id="hx-c-drawer-toggle" type="button" aria-label="Open conversations">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
-            <p class="hx-chat-title" id="hx-c-title">New chat</p>
-            <label class="hx-chat-pill" title="Model">
-              <span style="color:var(--hx-text-dim);font-size:11.5px;">Model</span>
-              <select id="hx-c-model">
-                <option value="ether">Ether</option>
-                <option value="nexus">Nexus</option>
-                <option value="prometheus">Prometheus</option>
-              </select>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </label>
-            <label class="hx-chat-pill" title="Project">
-              <span style="color:var(--hx-text-dim);font-size:11.5px;">Project</span>
-              <select id="hx-c-project">
-                <option value="">None</option>
-              </select>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </label>
-            <!-- Delete moved to each conversation's 3-dots menu in the rail.
-                 Credit balance moved to the workspace/account header (not here). -->
+            <!-- Claude-Code-style tab strip -->
+            <nav class="hx-cc-tabs" aria-label="Workspace mode">
+              <button class="hx-cc-tab is-active" data-cctab="chat" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>Chat</span>
+              </button>
+              <button class="hx-cc-tab" data-cctab="cowork" type="button" title="Coming soon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="7" r="2.5"/><path d="M3 19a6 6 0 0 1 12 0"/><path d="M14 19a5 5 0 0 1 7 0"/></svg>
+                <span>Cowork</span>
+              </button>
+              <button class="hx-cc-tab" data-cctab="code" type="button" title="Coming soon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                <span>Code</span>
+              </button>
+            </nav>
+            <!-- Breadcrumb -->
+            <div class="hx-cc-crumb">
+              <span class="hx-cc-crumb-proj" id="hx-cc-proj">workspace</span>
+              <span class="hx-cc-crumb-sep">/</span>
+              <button class="hx-cc-crumb-title" id="hx-c-title" type="button" aria-label="Rename session">
+                <span>New chat</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+            <!-- Right-side panel toggles (decorative, parity with Claude Code) -->
+            <div class="hx-cc-pane-toggles" aria-hidden="true">
+              <button class="hx-cc-pane-btn" type="button" aria-label="Sidebar toggle" title="Sidebar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+              </button>
+              <button class="hx-cc-pane-btn" type="button" aria-label="Right pane" title="Right pane">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+              </button>
+            </div>
+            <!-- Hidden — kept for backwards compat with JS that still reads value -->
+            <select id="hx-c-model" hidden>
+              <option value="ether">Ether</option>
+              <option value="nexus">Nexus</option>
+              <option value="prometheus">Prometheus</option>
+            </select>
+            <select id="hx-c-project" hidden><option value="">None</option></select>
             <button class="hx-chat-pill" type="button" id="hx-c-clear" hidden aria-hidden="true"></button>
             <span class="hx-chat-balance" id="hx-c-balance" hidden aria-hidden="true">—</span>
           </div>
 
-          <div class="hx-chat-thread" id="hx-c-thread">
-            <div class="hx-chat-blank" id="hx-c-blank">
-              <span class="hx-chat-blank-mark" aria-hidden="true"></span>
-              <span class="hx-chat-blank-eyebrow">HelveX &middot; Helix</span>
-              <h2>Helix</h2>
-              <p>Your private workspace assistant. Begin a conversation when you are ready &mdash; every reply is saved to your project.</p>
+          <div class="hx-chat-thread hx-cc-thread" id="hx-c-thread">
+            <div class="hx-chat-blank hx-cc-blank" id="hx-c-blank">
+              <!-- Minimal IDE-style empty state (Claude Code parity) -->
+              <span class="hx-cc-blank-spark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>
+              </span>
             </div>
           </div>
 
@@ -2540,7 +2963,7 @@
                   <textarea
                     id="hx-c-input"
                     class="hx-chat-textarea"
-                    placeholder="Reply to Helix…"
+                    placeholder="Type / for commands"
                     rows="1"
                     autocomplete="off"
                     spellcheck="true"></textarea>
@@ -2592,11 +3015,28 @@
                   </button>
                 </div>
 
-                <!-- Inline hint inside the composer card (Claude.ai-style) -->
-                <div class="hx-chat-inline-hint" aria-hidden="true">
-                  <span><span class="hx-kbd">Enter</span> to send</span>
-                  <span class="hx-chat-inline-hint-sep">·</span>
-                  <span><span class="hx-kbd">Shift</span><span class="hx-kbd-plus">+</span><span class="hx-kbd">Enter</span> for new line</span>
+                <!-- Bottom toolbar inside composer (Claude Code parity) -->
+                <div class="hx-cc-compose-bar">
+                  <button class="hx-cc-edits" type="button" id="hx-cc-edits" aria-pressed="true">
+                    <span class="hx-cc-edits-dot" aria-hidden="true"></span>
+                    <span>Accept edits</span>
+                  </button>
+                  <span class="hx-cc-compose-bar-spacer"></span>
+                  <button class="hx-cc-model-pick" type="button" id="hx-cc-model-pick" aria-haspopup="menu" aria-expanded="false">
+                    <span class="hx-cc-model-glyph" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3 12h18"/></svg>
+                    </span>
+                    <span class="hx-cc-model-name" id="hx-cc-model-name">Ether</span>
+                    <span class="hx-cc-model-sep">·</span>
+                    <span class="hx-cc-model-tier">Max</span>
+                    <svg class="hx-cc-model-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    <span class="hx-cc-model-spinner" id="hx-cc-model-spinner" aria-hidden="true"></span>
+                  </button>
+                  <div class="hx-cc-model-menu" id="hx-cc-model-menu" role="menu" hidden>
+                    <button class="hx-cc-model-opt is-active" data-model="ether"      role="menuitemradio">Ether  <span>fast</span></button>
+                    <button class="hx-cc-model-opt"          data-model="nexus"      role="menuitemradio">Nexus  <span>balanced</span></button>
+                    <button class="hx-cc-model-opt"          data-model="prometheus" role="menuitemradio">Prometheus  <span>deep</span></button>
+                  </div>
                 </div>
               </div>
               <div class="hx-chat-foot">
@@ -3286,7 +3726,7 @@
           await refreshList();
           if (state.conversation && state.conversation.id === id) {
             state.conversation.title = newTitle;
-            var titleEl = $('hx-c-title'); if (titleEl) titleEl.textContent = newTitle;
+            setCrumbTitle(newTitle);
           }
         }
         function copyConversationLink(id) {
@@ -3327,9 +3767,10 @@
           state.conversation = conv;
 
           // Sync toolbar
-          $('hx-c-title').textContent = conv.title || 'New chat';
+          setCrumbTitle(conv.title || 'New chat');
           $('hx-c-model').value = conv.model || 'ether';
           $('hx-c-project').value = conv.project_id || '';
+          syncModelPick();
 
           // Load messages
           var m = await sb.from('messages').select('*').eq('conversation_id', id)
@@ -4243,7 +4684,7 @@
           if (state.msgChannel) { try { state.msgChannel.unsubscribe(); } catch (e) {} state.msgChannel = null; }
           state.conversation = null;
           state.messages = [];
-          $('hx-c-title').textContent = 'New chat';
+          setCrumbTitle('New chat');
           // Reload the sidebar against the new project
           await refreshList();
           // Open the most recent chat in this project (if any)
@@ -5041,6 +5482,122 @@
         window.addEventListener('beforeunload', function () {
           try { if (state.msgChannel) state.msgChannel.unsubscribe(); } catch (e) {}
         });
+
+        // ─── Claude-Code parity helpers ────────────────────────────────
+        // Centralised title setter: writes into the inner <span> of the
+        // breadcrumb button so the SVG caret beside it is preserved.
+        window.setCrumbTitle = function (t) {
+          var el = document.getElementById('hx-c-title');
+          if (!el) return;
+          var span = el.querySelector('span');
+          if (span) span.textContent = t || 'New chat';
+          else el.textContent = t || 'New chat';
+        };
+        // Project breadcrumb prefix — show the active project name.
+        function setCrumbProj(name) {
+          var el = document.getElementById('hx-cc-proj');
+          if (el) el.textContent = name || 'workspace';
+        }
+        // Model pick button + dropdown.
+        window.syncModelPick = function () {
+          var sel = document.getElementById('hx-c-model');
+          var nameEl = document.getElementById('hx-cc-model-name');
+          var v = sel && sel.value ? sel.value : 'ether';
+          if (nameEl) {
+            nameEl.textContent = v.charAt(0).toUpperCase() + v.slice(1);
+          }
+          document.querySelectorAll('#hx-cc-model-menu .hx-cc-model-opt').forEach(function (b) {
+            b.classList.toggle('is-active', b.getAttribute('data-model') === v);
+          });
+        };
+        (function wireModelPick() {
+          var pick = document.getElementById('hx-cc-model-pick');
+          var menu = document.getElementById('hx-cc-model-menu');
+          if (!pick || !menu) return;
+          function open() { menu.hidden = false; pick.setAttribute('aria-expanded', 'true'); }
+          function close() { menu.hidden = true;  pick.setAttribute('aria-expanded', 'false'); }
+          pick.addEventListener('click', function (e) {
+            e.stopPropagation();
+            menu.hidden ? open() : close();
+          });
+          document.addEventListener('click', function (e) {
+            if (menu.hidden) return;
+            if (!menu.contains(e.target) && e.target !== pick) close();
+          });
+          menu.querySelectorAll('.hx-cc-model-opt').forEach(function (opt) {
+            opt.addEventListener('click', function () {
+              var sel = document.getElementById('hx-c-model');
+              if (sel) {
+                sel.value = opt.getAttribute('data-model');
+                sel.dispatchEvent(new Event('change', { bubbles: true }));
+              }
+              syncModelPick();
+              close();
+            });
+          });
+        })();
+        // Accept-edits toggle (visual state only — flag stored on body)
+        (function wireEditsToggle() {
+          var btn = document.getElementById('hx-cc-edits');
+          if (!btn) return;
+          btn.addEventListener('click', function () {
+            var on = btn.getAttribute('aria-pressed') === 'true';
+            btn.setAttribute('aria-pressed', on ? 'false' : 'true');
+            document.body.dataset.acceptEdits = on ? 'off' : 'on';
+          });
+        })();
+        // User identity at the bottom-left of the rail.
+        (function wireUserPanel() {
+          try {
+            var u = (window.HX && window.HX.user) || null;
+            var nameEl = document.getElementById('hx-cc-user-name');
+            var avEl   = document.getElementById('hx-cc-user-avatar');
+            var planEl = document.getElementById('hx-cc-user-plan');
+            if (u) {
+              var nm  = u.user_metadata && u.user_metadata.full_name ? u.user_metadata.full_name
+                       : (u.email ? u.email.split('@')[0] : 'You');
+              if (nameEl) nameEl.textContent = nm;
+              if (avEl)   avEl.textContent   = (nm[0] || 'U').toUpperCase();
+            }
+            // Best-effort plan lookup — falls back to "Free"
+            if (planEl) {
+              sb.from('subscriptions').select('plan').limit(1).then(function (r) {
+                var p = r && r.data && r.data[0] && r.data[0].plan;
+                planEl.textContent = (p ? p[0].toUpperCase() + p.slice(1) : 'Free');
+              });
+            }
+          } catch (e) { /* identity is decorative — never block boot */ }
+        })();
+        // Sync breadcrumb proj name from the (hidden) project select on change.
+        var projSel = document.getElementById('hx-c-project');
+        if (projSel) {
+          var syncProj = function () {
+            var opt = projSel.options[projSel.selectedIndex];
+            setCrumbProj(opt && opt.textContent ? opt.textContent : 'workspace');
+          };
+          projSel.addEventListener('change', syncProj);
+          // Initial sync after refreshProjects has run.
+          setTimeout(syncProj, 600);
+        }
+        // Surface streaming/sending state on the model pick (subtle spinner)
+        (function wireBusyIndicator() {
+          var pick = document.getElementById('hx-cc-model-pick');
+          if (!pick) return;
+          setInterval(function () {
+            var busy = !!(state && (state.sending || state.streaming));
+            pick.classList.toggle('is-busy', busy);
+          }, 250);
+        })();
+        // Cmd/Ctrl+K opens a new session (matches Claude Code shortcut)
+        document.addEventListener('keydown', function (e) {
+          if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+            e.preventDefault();
+            var btn = document.getElementById('hx-c-new');
+            if (btn) btn.click();
+          }
+        });
+        // Initial model-pick sync (after first render)
+        setTimeout(syncModelPick, 200);
       });
     })();
   </script>
