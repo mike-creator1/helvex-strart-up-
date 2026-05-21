@@ -2788,6 +2788,110 @@
     /* Hide the legacy inline kbd hint + the tools popover trigger style
        tweaks so the new compose bar is the only footer visible */
     .hx-chat-inline-hint { display: none !important; }
+
+    /* Hide the global platform chrome on the chat page — the chat owns
+       its full window, just like Claude Code. */
+    body[data-active="chat"] .hx-topbar { display: none !important; }
+    body[data-active="chat"] > .hx-app > .hx-sidebar,
+    body[data-active="chat"] .hx-app > .hx-sidebar { display: none !important; }
+    /* Push the right-hand content full width since the global sidebar is hidden */
+    body[data-active="chat"] .hx-app {
+      grid-template-columns: 1fr !important;
+      height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+    }
+    body[data-active="chat"] .hx-app > div {
+      height: 100vh !important;
+      display: flex; flex-direction: column;
+      min-height: 0; min-width: 0;
+    }
+    body[data-active="chat"] .hx-app > div > .hx-main {
+      flex: 1; height: auto !important; min-height: 0;
+    }
+
+    /* Expand the model menu to match Claude Code's layout:
+       Models section + Effort section + Fast mode toggle */
+    .hx-cc-model-menu {
+      min-width: 280px !important;
+      padding: 6px !important;
+    }
+    .hx-cc-menu-section {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 10px 4px;
+      color: rgba(255,255,255,0.45);
+      font: 500 11.5px/1 'Inter', sans-serif;
+    }
+    .hx-cc-menu-section-kbd {
+      display: inline-flex; gap: 3px;
+      color: rgba(255,255,255,0.4);
+      font: 500 10.5px/1 'JetBrains Mono', monospace;
+    }
+    .hx-cc-menu-section-kbd span {
+      padding: 2px 5px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+    }
+    .hx-cc-model-opt {
+      gap: 8px !important;
+    }
+    .hx-cc-model-opt-num {
+      margin-left: auto;
+      color: rgba(255,255,255,0.35);
+      font: 500 11px/1 'JetBrains Mono', monospace;
+    }
+    .hx-cc-model-opt-check {
+      width: 14px; height: 14px;
+      color: var(--hx-mc, #C9A227);
+      opacity: 0;
+    }
+    .hx-cc-model-opt.is-active .hx-cc-model-opt-check { opacity: 1; }
+    .hx-cc-menu-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 4px 6px;
+    }
+    .hx-cc-effort-opt {
+      display: flex; align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 6px 10px;
+      background: transparent; border: 0;
+      color: rgba(255,255,255,0.85);
+      font: 500 12.5px/1 'Inter', sans-serif;
+      border-radius: 7px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .hx-cc-effort-opt:hover { background: rgba(255,255,255,0.05); }
+    .hx-cc-effort-opt.is-active { color: #fff; }
+    .hx-cc-effort-opt .hx-cc-model-opt-check {
+      margin-left: auto;
+    }
+    .hx-cc-fast-toggle {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 10px;
+      color: rgba(255,255,255,0.85);
+      font: 500 12.5px/1 'Inter', sans-serif;
+    }
+    .hx-cc-fast-switch {
+      width: 28px; height: 16px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 999px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .hx-cc-fast-switch::after {
+      content: ""; position: absolute;
+      top: 2px; left: 2px;
+      width: 12px; height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.15s;
+    }
+    .hx-cc-fast-switch.is-on { background: var(--hx-mc, #C9A227); }
+    .hx-cc-fast-switch.is-on::after { transform: translateX(12px); }
   </style>
 </head>
 <body data-active="chat">
@@ -2832,13 +2936,13 @@
           </div>
           <!-- Bottom: relaunch hint + user identity (Claude Code parity) -->
           <div class="hx-cc-rail-foot">
-            <a class="hx-cc-relaunch" href="/pricing" title="HelveX subscription">
+            <a class="hx-cc-relaunch" href="/pricing" title="HelveX">
               <span class="hx-cc-relaunch-ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2a8 8 0 0 1 8 8c0 5-5 9-8 11-3-2-8-6-8-11a8 8 0 0 1 8-8z"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20a8 8 0 0 1 0-16 5 5 0 0 1 5 5 5 5 0 0 1-5 5"/><path d="M11 9V4"/><path d="M3 12h4"/><path d="M11 20s-3-4-3-7c0-2 1-3 3-3"/></svg>
               </span>
               <span class="hx-cc-relaunch-body">
-                <span class="hx-cc-relaunch-title">Upgrade plan</span>
-                <span class="hx-cc-relaunch-meta" id="hx-cc-version">HelveX · v1</span>
+                <span class="hx-cc-relaunch-title">Relaunch to update</span>
+                <span class="hx-cc-relaunch-meta" id="hx-cc-version">v1.8555.0</span>
               </span>
               <svg class="hx-cc-relaunch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             </a>
@@ -3033,9 +3137,50 @@
                     <span class="hx-cc-model-spinner" id="hx-cc-model-spinner" aria-hidden="true"></span>
                   </button>
                   <div class="hx-cc-model-menu" id="hx-cc-model-menu" role="menu" hidden>
-                    <button class="hx-cc-model-opt is-active" data-model="ether"      role="menuitemradio">Ether  <span>fast</span></button>
-                    <button class="hx-cc-model-opt"          data-model="nexus"      role="menuitemradio">Nexus  <span>balanced</span></button>
-                    <button class="hx-cc-model-opt"          data-model="prometheus" role="menuitemradio">Prometheus  <span>deep</span></button>
+                    <div class="hx-cc-menu-section">
+                      <span>Models</span>
+                      <span class="hx-cc-menu-section-kbd"><span>⌘</span><span>I</span></span>
+                    </div>
+                    <button class="hx-cc-model-opt is-active" data-model="ether"      role="menuitemradio">
+                      <span>Ether</span><span>fast</span>
+                      <svg class="hx-cc-model-opt-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span class="hx-cc-model-opt-num">1</span>
+                    </button>
+                    <button class="hx-cc-model-opt" data-model="nexus" role="menuitemradio">
+                      <span>Nexus</span><span>balanced</span>
+                      <svg class="hx-cc-model-opt-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span class="hx-cc-model-opt-num">2</span>
+                    </button>
+                    <button class="hx-cc-model-opt" data-model="prometheus" role="menuitemradio">
+                      <span>Prometheus</span><span>deep</span>
+                      <svg class="hx-cc-model-opt-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span class="hx-cc-model-opt-num">3</span>
+                    </button>
+                    <div class="hx-cc-menu-divider"></div>
+                    <div class="hx-cc-menu-section">
+                      <span>Effort</span>
+                      <span class="hx-cc-menu-section-kbd"><span>⌘</span><span>E</span></span>
+                    </div>
+                    <button class="hx-cc-effort-opt" data-effort="low">Low
+                      <svg class="hx-cc-model-opt-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                    <button class="hx-cc-effort-opt" data-effort="medium">Medium
+                      <svg class="hx-cc-model-opt-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                    <button class="hx-cc-effort-opt" data-effort="high">High
+                      <svg class="hx-cc-model-opt-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                    <button class="hx-cc-effort-opt" data-effort="extra">Extra high
+                      <svg class="hx-cc-model-opt-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                    <button class="hx-cc-effort-opt is-active" data-effort="max">Max
+                      <svg class="hx-cc-model-opt-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                    <div class="hx-cc-menu-divider"></div>
+                    <div class="hx-cc-fast-toggle">
+                      <span>Fast mode</span>
+                      <span class="hx-cc-fast-switch" id="hx-cc-fast" role="switch" aria-checked="false"></span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3818,61 +3963,15 @@
             if (!active || !active.id) {
               // No project selected — guide the user to pick one (or create
               // their first project) before they can start chatting.
-              var hasProjects = !!(state.projectCount && state.projectCount > 0);
-              if (hasProjects) {
-                thread.innerHTML =
-                  '<div class="hx-chat-blank">' +
-                    '<span class="hx-chat-blank-mark" aria-hidden="true"></span>' +
-                    '<span class="hx-chat-blank-eyebrow">Choose a project</span>' +
-                    '<h2>Pick a project</h2>' +
-                    '<p>Use the <strong>Project</strong> selector above to choose what you are working on. Every chat is saved under the active project.</p>' +
-                  '</div>';
-              } else {
-                thread.innerHTML =
-                  '<div class="hx-chat-blank">' +
-                    '<span class="hx-chat-blank-mark" aria-hidden="true"></span>' +
-                    '<span class="hx-chat-blank-eyebrow">Get started</span>' +
-                    '<h2>Create your first project</h2>' +
-                    '<p>Chats live inside projects. Open <a href="/projects.html?new=1" style="text-decoration:underline;">Projects</a> to create one, then come back here.</p>' +
-                  '</div>';
-              }
+              // Claude-Code-style: minimal empty state with a single spark icon
+              thread.innerHTML = '<div class="hx-chat-blank hx-cc-blank"><span class="hx-cc-blank-spark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></span></div>';
               return;
             }
-            thread.innerHTML =
-              '<div class="hx-chat-blank">' +
-                '<span class="hx-chat-blank-mark" aria-hidden="true"></span>' +
-                '<span class="hx-chat-blank-eyebrow">HelveX &middot; Helix</span>' +
-                '<h2>Helix</h2>' +
-                '<p>Working on <strong>' + escape(active.name || 'Unnamed project') + '</strong>. Send your first message below.</p>' +
-              '</div>';
+            thread.innerHTML = '<div class="hx-chat-blank hx-cc-blank"><span class="hx-cc-blank-spark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></span></div>';
             return;
           }
           if (!state.messages.length && !state.sending) {
-            thread.innerHTML =
-              '<div class="hx-chat-blank">' +
-                '<span class="hx-chat-blank-mark" aria-hidden="true"></span>' +
-                '<span class="hx-chat-blank-eyebrow">New chat</span>' +
-                '<h2>' + escape(state.conversation.title || 'New chat') + '</h2>' +
-                '<p>Type a question, or <strong>drop a PDF, image, contract, or code file</strong> and ask Helix to analyze it.</p>' +
-                '<div class="hx-chat-blank-chips">' +
-                  '<button type="button" class="hx-chat-blank-chip" data-prompt="Summarize the key points in plain language.">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>' +
-                    '<span>Summarize a document</span>' +
-                  '</button>' +
-                  '<button type="button" class="hx-chat-blank-chip" data-prompt="Help me draft a professional response to this.">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>' +
-                    '<span>Draft an email or message</span>' +
-                  '</button>' +
-                  '<button type="button" class="hx-chat-blank-chip" data-prompt="Walk me through this code or explain what it does.">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>' +
-                    '<span>Explain code</span>' +
-                  '</button>' +
-                  '<button type="button" class="hx-chat-blank-chip" data-prompt="Brainstorm 5 ideas for">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>' +
-                    '<span>Brainstorm ideas</span>' +
-                  '</button>' +
-                '</div>' +
-              '</div>';
+            thread.innerHTML = '<div class="hx-chat-blank hx-cc-blank"><span class="hx-cc-blank-spark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></span></div>';
             // Wire chips to prefill the composer
             thread.querySelectorAll('.hx-chat-blank-chip').forEach(function (chip) {
               chip.addEventListener('click', function () {
@@ -5535,6 +5634,30 @@
               close();
             });
           });
+          // Effort selector — visual only for now (parity with Claude Code)
+          menu.querySelectorAll('.hx-cc-effort-opt').forEach(function (opt) {
+            opt.addEventListener('click', function (e) {
+              e.stopPropagation();
+              menu.querySelectorAll('.hx-cc-effort-opt').forEach(function (o) {
+                o.classList.remove('is-active');
+              });
+              opt.classList.add('is-active');
+              // Update the tier label next to the model name
+              var tierEl = document.querySelector('.hx-cc-model-tier');
+              var lbl = opt.textContent.trim();
+              if (tierEl) tierEl.textContent = lbl.charAt(0).toUpperCase() + lbl.slice(1);
+            });
+          });
+          // Fast-mode toggle (parity)
+          var fast = document.getElementById('hx-cc-fast');
+          if (fast) {
+            fast.addEventListener('click', function (e) {
+              e.stopPropagation();
+              var on = fast.classList.toggle('is-on');
+              fast.setAttribute('aria-checked', on ? 'true' : 'false');
+              document.body.dataset.fastMode = on ? 'on' : 'off';
+            });
+          }
         })();
         // Accept-edits toggle (visual state only — flag stored on body)
         (function wireEditsToggle() {
