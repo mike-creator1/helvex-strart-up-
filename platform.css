@@ -159,22 +159,26 @@ html, body {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
-/* overflow-x clip (not hidden) prevents horizontal scroll WITHOUT
-   breaking position: sticky on the sidebar. `clip` is the modern
-   equivalent that doesn't create a scroll container. */
+/* Desktop: overflow-x: clip lets position:sticky keep working on the
+   sidebar. Mobile sidebar is position:fixed, so we can safely escalate
+   to overflow-x: hidden — required for older iOS Safari (<16) which
+   treats `clip` as `visible` and lets wide content scroll the page. */
 html { overflow-x: clip; }
 body { overflow-x: clip; }
-/* Cards, grids, and prose wrap properly within any container. */
-.hx-app { min-width: 0; }
+@media (max-width: 900px) {
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw;
+    width: 100%;
+  }
+}
+.hx-app { min-width: 0; max-width: 100vw; }
 .hx-main { min-width: 0; max-width: 100%; }
 .hx-main > * { min-width: 0; max-width: 100%; }
 p, h1, h2, h3, h4, h5, h6, li, td, th {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
-/* Aggressive mobile clamp: every common page-level element gets pinned
-   to 100% of its container so long text + long emails + long urls
-   can't punch past the viewport. */
 @media (max-width: 720px) {
   .hx-pg-hero, .hx-pg-hero-grid, .hx-pg-title, .hx-pg-sub,
   .hx-page-head, .hx-page-head h1, .hx-page-head p,
@@ -184,6 +188,21 @@ p, h1, h2, h3, h4, h5, h6, li, td, th {
   }
   .hx-pg-hero-grid > div { min-width: 0; max-width: 100%; }
   .hx-pg-hero-grid { grid-template-columns: 1fr !important; }
+  /* Unwrapped <div> between .hx-app and .hx-main exists on every
+     platform page — clamp it explicitly so it can't punch past the
+     viewport with a sticky topbar inside. */
+  .hx-app > div {
+    min-width: 0;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  /* Meta strip values had white-space: nowrap forcing single-line text
+     that overflowed narrow viewports — allow wrapping on mobile. */
+  .hx-pg-meta-strip { flex-wrap: wrap; gap: 12px 18px; }
+  .hx-pg-meta-value { white-space: normal !important; }
+  /* Card content padding was 22px in some pages — long unbreakable
+     values (emails, IDs) push width. Force inner descendants to clamp. */
+  .hx-card * { max-width: 100%; }
 }
 /* Defensive mobile guard removed: the broad [class*='-list'] selector
    was matching .hx-chat-list and other unrelated elements, and the
