@@ -2772,7 +2772,7 @@
     .hx-cc-compose-bar-spacer { flex: 1; }
     .hx-cc-edits {
       display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 8px;
+      padding: 4px 6px 4px 8px;
       background: transparent;
       border: 0;
       border-radius: 6px;
@@ -2781,7 +2781,8 @@
       cursor: pointer;
       transition: background 0.15s, color 0.15s;
     }
-    .hx-cc-edits:hover {
+    .hx-cc-edits:hover,
+    .hx-cc-edits[aria-expanded="true"] {
       background: var(--hx-surface);
       color: var(--hx-text);
     }
@@ -2790,9 +2791,65 @@
       background: var(--hx-yellow, var(--hx-mc));
       box-shadow: 0 0 0 2px var(--hx-yellow-soft, transparent);
     }
-    .hx-cc-edits[aria-pressed="false"] .hx-cc-edits-dot {
-      background: var(--hx-text-faint, #999);
-      box-shadow: none;
+    .hx-cc-edits-caret { width: 11px; height: 11px; opacity: 0.5; }
+    .hx-cc-edits[aria-expanded="true"] .hx-cc-edits-caret { opacity: 0.85; transform: rotate(180deg); }
+    .hx-cc-edits-caret { transition: transform 0.18s ease, opacity 0.18s; }
+    /* Dot color follows the active mode */
+    body[data-edit-mode="ask"]    .hx-cc-edits-dot { background: rgba(255,255,255,0.35); box-shadow: none; }
+    body[data-edit-mode="plan"]   .hx-cc-edits-dot { background: #5BB6FF; box-shadow: 0 0 0 2px rgba(91,182,255,0.18); }
+    body[data-edit-mode="auto"]   .hx-cc-edits-dot { background: #6EE7B7; box-shadow: 0 0 0 2px rgba(110,231,183,0.18); }
+
+    /* ── Mode menu (anchored to Accept edits, opens upward + left) ──── */
+    .hx-cc-mode-menu {
+      position: absolute; bottom: calc(100% + 10px); left: 0;
+      min-width: 240px; max-width: 280px;
+      padding: 6px;
+      z-index: 30;
+      color: #e8e8ea;
+      background:
+        radial-gradient(120% 80% at 0% 0%, rgba(201,162,39,0.04) 0%, transparent 50%),
+        linear-gradient(180deg, #18181d 0%, #131318 100%);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      box-shadow:
+        0 32px 80px -12px rgba(0,0,0,0.65),
+        0 12px 24px -8px rgba(0,0,0,0.45),
+        0 1px 0 rgba(255,255,255,0.04) inset,
+        0 -1px 0 rgba(0,0,0,0.4) inset;
+      backdrop-filter: blur(24px) saturate(160%);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+    }
+    .hx-cc-mode-menu[hidden] { display: none; }
+    .hx-cc-mode-opt {
+      display: flex; align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 7px 10px;
+      background: transparent; border: 0;
+      color: rgba(255,255,255,0.92);
+      font: 500 13px/1 var(--hx-sans, 'Inter'), sans-serif;
+      letter-spacing: -0.005em;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.14s, color 0.14s;
+    }
+    .hx-cc-mode-opt:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .hx-cc-mode-opt.is-active { background: rgba(255,255,255,0.06); color: #fff; }
+    .hx-cc-mode-opt.is-active .hx-cc-check { visibility: visible; }
+    .hx-cc-mode-opt.is-disabled,
+    .hx-cc-mode-opt:disabled {
+      color: rgba(255,255,255,0.30);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .hx-cc-mode-opt.is-disabled:hover { background: transparent; }
+    .hx-cc-mode-opt .hx-cc-opt-name { flex: 1; }
+    .hx-cc-mode-hint {
+      padding: 2px 12px 6px;
+      color: rgba(255,255,255,0.32);
+      font: 500 11px/1.3 var(--hx-sans, 'Inter'), sans-serif;
+      letter-spacing: 0;
     }
     .hx-cc-model-pick {
       display: inline-flex; align-items: center; gap: 6px;
@@ -3408,10 +3465,41 @@
                    The [+] and [🎤] buttons here are proxies for the real
                    (hidden) #hx-c-attach / #hx-c-mic buttons inside the card. -->
               <div class="hx-cc-compose-bar">
-                  <button class="hx-cc-edits" type="button" id="hx-cc-edits" aria-pressed="true">
+                  <button class="hx-cc-edits" type="button" id="hx-cc-edits" aria-haspopup="menu" aria-expanded="false">
                     <span class="hx-cc-edits-dot" aria-hidden="true"></span>
-                    <span>Accept edits</span>
+                    <span id="hx-cc-edits-label">Accept edits</span>
+                    <svg class="hx-cc-edits-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
                   </button>
+                  <div class="hx-cc-mode-menu" id="hx-cc-mode-menu" role="menu" hidden>
+                    <div class="hx-cc-menu-section">
+                      <span>Mode</span>
+                      <span class="hx-cc-menu-kbd"><span>⇧</span><span>Ctrl</span><span>M</span></span>
+                    </div>
+                    <button class="hx-cc-mode-opt" data-mode="ask" role="menuitemradio">
+                      <span class="hx-cc-opt-name">Ask permissions</span>
+                      <svg class="hx-cc-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span class="hx-cc-num">1</span>
+                    </button>
+                    <button class="hx-cc-mode-opt is-active" data-mode="accept" role="menuitemradio">
+                      <span class="hx-cc-opt-name">Accept edits</span>
+                      <svg class="hx-cc-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span class="hx-cc-num">2</span>
+                    </button>
+                    <button class="hx-cc-mode-opt" data-mode="plan" role="menuitemradio">
+                      <span class="hx-cc-opt-name">Plan mode</span>
+                      <svg class="hx-cc-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span class="hx-cc-num">3</span>
+                    </button>
+                    <button class="hx-cc-mode-opt" data-mode="auto" role="menuitemradio">
+                      <span class="hx-cc-opt-name">Auto mode</span>
+                      <svg class="hx-cc-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span class="hx-cc-num">4</span>
+                    </button>
+                    <button class="hx-cc-mode-opt is-disabled" data-mode="bypass" role="menuitemradio" disabled>
+                      <span class="hx-cc-opt-name">Bypass permissions</span>
+                    </button>
+                    <div class="hx-cc-mode-hint">Enable in HelveX settings</div>
+                  </div>
                   <button class="hx-cc-iconbtn" type="button" id="hx-cc-attach-proxy" aria-label="Attach" title="Attach files">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                   </button>
@@ -6154,7 +6242,12 @@
               b.classList.toggle('is-active', b.getAttribute('data-model') === v);
             });
           }
-          function open()  { menu.hidden = false; pick.setAttribute('aria-expanded', 'true'); }
+          function open()  {
+            var mm = document.getElementById('hx-cc-mode-menu');
+            var mb = document.getElementById('hx-cc-edits');
+            if (mm && !mm.hidden) { mm.hidden = true; if (mb) mb.setAttribute('aria-expanded', 'false'); }
+            menu.hidden = false; pick.setAttribute('aria-expanded', 'true');
+          }
           function close() { menu.hidden = true;  pick.setAttribute('aria-expanded', 'false'); }
           pick.addEventListener('click', function (e) {
             e.stopPropagation();
@@ -6222,15 +6315,76 @@
           }
         })();
 
-        // ─── Accept edits toggle (visual flag for now) ─────────────────
-        (function wireEditsToggle() {
-          var btn = document.getElementById('hx-cc-edits');
-          if (!btn) return;
-          btn.addEventListener('click', function () {
-            var on = btn.getAttribute('aria-pressed') === 'true';
-            btn.setAttribute('aria-pressed', on ? 'false' : 'true');
-            document.body.dataset.acceptEdits = on ? 'off' : 'on';
+        // ─── Edit-mode dropdown (Ask / Accept / Plan / Auto) ───────────
+        // Replaces the old single-toggle Accept-edits chip. Click the chip
+        // to open a small menu, pick a mode, the chip label + dot color
+        // updates and the choice is persisted in localStorage.
+        (function wireEditMode() {
+          var btn  = document.getElementById('hx-cc-edits');
+          var menu = document.getElementById('hx-cc-mode-menu');
+          var label = document.getElementById('hx-cc-edits-label');
+          if (!btn || !menu) return;
+          var modelMenu = document.getElementById('hx-cc-model-menu');
+          var modelPick = document.getElementById('hx-cc-model-pick');
+          var usageMenu = document.getElementById('hx-cc-usage-menu');
+          var usagePick = document.getElementById('hx-cc-usage-pick');
+          var MODE_LABEL = {
+            ask:    'Ask permissions',
+            accept: 'Accept edits',
+            plan:   'Plan mode',
+            auto:   'Auto mode'
+          };
+          function applyMode(mode) {
+            if (!MODE_LABEL[mode]) mode = 'accept';
+            document.body.dataset.editMode = mode;
+            if (label) label.textContent = MODE_LABEL[mode];
+            menu.querySelectorAll('.hx-cc-mode-opt').forEach(function (o) {
+              o.classList.toggle('is-active', o.getAttribute('data-mode') === mode);
+            });
+            try { localStorage.setItem('hx-edit-mode', mode); } catch (e) {}
+          }
+          function closeOtherPopovers() {
+            if (modelMenu && !modelMenu.hidden) {
+              modelMenu.hidden = true;
+              if (modelPick) modelPick.setAttribute('aria-expanded', 'false');
+            }
+            if (usageMenu && !usageMenu.hidden) {
+              usageMenu.hidden = true;
+              if (usagePick) usagePick.setAttribute('aria-expanded', 'false');
+            }
+          }
+          function open()  { closeOtherPopovers(); menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); }
+          function close() { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            menu.hidden ? open() : close();
           });
+          document.addEventListener('click', function (e) {
+            if (menu.hidden) return;
+            if (!menu.contains(e.target) && !btn.contains(e.target)) close();
+          });
+          document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !menu.hidden) close();
+            // Number shortcuts 1–4 when menu is open
+            if (!menu.hidden && /^[1-4]$/.test(e.key)) {
+              var modes = ['ask','accept','plan','auto'];
+              applyMode(modes[parseInt(e.key, 10) - 1]);
+              close();
+            }
+          });
+          menu.querySelectorAll('.hx-cc-mode-opt').forEach(function (opt) {
+            if (opt.disabled || opt.classList.contains('is-disabled')) return;
+            opt.addEventListener('click', function (e) {
+              e.stopPropagation();
+              applyMode(opt.getAttribute('data-mode'));
+              close();
+            });
+          });
+          // Restore last selection
+          try {
+            var saved = localStorage.getItem('hx-edit-mode');
+            applyMode(saved || 'accept');
+          } catch (e) { applyMode('accept'); }
         })();
 
         // ─── Proxy buttons: forward clicks to the (now-hidden) icons
@@ -6341,11 +6495,14 @@
             } catch (e) { /* usage panel is informational — never block boot */ }
           }
           function open() {
-            // Close the model menu first so only one popover is open
+            // Close the other popovers so only one is open at a time
             if (modelMenu && !modelMenu.hidden) {
               modelMenu.hidden = true;
               if (modelPick) modelPick.setAttribute('aria-expanded', 'false');
             }
+            var mm = document.getElementById('hx-cc-mode-menu');
+            var mb = document.getElementById('hx-cc-edits');
+            if (mm && !mm.hidden) { mm.hidden = true; if (mb) mb.setAttribute('aria-expanded', 'false'); }
             menu.hidden = false;
             pick.setAttribute('aria-expanded', 'true');
             refreshContext();
