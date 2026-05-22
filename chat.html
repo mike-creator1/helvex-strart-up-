@@ -3234,21 +3234,72 @@
     body[data-active="chat"] #hx-c-mic {
       display: none !important;
     }
-    /* Tools chevron in the compose strip is a small caret icon — match
-       the other compose-strip icons (.hx-cc-iconbtn). */
-    .hx-cc-tools-chevron { color: var(--hx-text-mid); }
-    .hx-cc-tools-chevron:hover { color: var(--hx-text); }
-    .hx-cc-tools-chevron svg { width: 12px; height: 12px; opacity: 0.7; }
-    .hx-cc-tools-chevron[aria-expanded="true"] {
+    /* Mic-settings chevron — sits in the compose strip next to the
+       mic-proxy. Opens a popover with input-device list + Hold-to-record. */
+    .hx-cc-mic-wrap { position: relative; flex-shrink: 0; }
+    .hx-cc-mic-chevron { color: var(--hx-text-mid); width: 20px; }
+    .hx-cc-mic-chevron:hover { color: var(--hx-text); }
+    .hx-cc-mic-chevron svg { width: 12px; height: 12px; opacity: 0.7; transition: transform 0.18s ease, opacity 0.18s; }
+    .hx-cc-mic-chevron[aria-expanded="true"] {
       background: var(--hx-surface);
       border-color: var(--hx-line);
       color: var(--hx-text);
     }
-    .hx-cc-tools-chevron[aria-expanded="true"] svg { opacity: 1; transform: rotate(180deg); }
-    .hx-cc-tools-chevron svg { transition: transform 0.18s ease, opacity 0.18s; }
-    .hx-cc-tools-chevron.has-active { color: var(--hx-yellow); }
-    /* The tools menu is anchored to the chevron in the compose strip;
-       its absolute positioning (bottom 100% +10, left -8) is intact. */
+    .hx-cc-mic-chevron[aria-expanded="true"] svg { opacity: 1; transform: rotate(180deg); }
+
+    .hx-cc-mic-menu {
+      position: absolute; bottom: calc(100% + 10px); left: -6px;
+      min-width: 280px; max-width: 340px;
+      padding: 6px;
+      z-index: 30;
+      color: #e8e8ea;
+      background:
+        radial-gradient(120% 80% at 0% 0%, rgba(201,162,39,0.04) 0%, transparent 50%),
+        linear-gradient(180deg, #18181d 0%, #131318 100%);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      box-shadow:
+        0 32px 80px -12px rgba(0,0,0,0.65),
+        0 12px 24px -8px rgba(0,0,0,0.45),
+        0 1px 0 rgba(255,255,255,0.04) inset,
+        0 -1px 0 rgba(0,0,0,0.4) inset;
+      backdrop-filter: blur(24px) saturate(160%);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+    }
+    .hx-cc-mic-menu[hidden] { display: none; }
+    .hx-cc-mic-list { display: flex; flex-direction: column; }
+    .hx-cc-mic-opt {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%;
+      padding: 7px 10px;
+      background: transparent; border: 0;
+      color: rgba(255,255,255,0.92);
+      font: 500 13px/1.2 var(--hx-sans, 'Inter'), sans-serif;
+      letter-spacing: -0.005em;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.14s, color 0.14s;
+    }
+    .hx-cc-mic-opt:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .hx-cc-mic-opt.is-active { background: rgba(255,255,255,0.06); color: #fff; }
+    .hx-cc-mic-opt .hx-cc-opt-name {
+      flex: 1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .hx-cc-mic-opt.is-active .hx-cc-check { visibility: visible; }
+    .hx-cc-mic-empty {
+      padding: 8px 10px;
+      color: rgba(255,255,255,0.42);
+      font: 500 12px/1.3 var(--hx-sans, 'Inter'), sans-serif;
+    }
+    .hx-cc-mic-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 10px 8px;
+      color: #fff;
+      font: 500 13px/1 var(--hx-sans, 'Inter'), sans-serif;
+      letter-spacing: -0.005em;
+    }
 
     /* 2c. Proxy icon buttons in the bottom bar */
     .hx-cc-iconbtn {
@@ -3506,39 +3557,40 @@
                   <button class="hx-cc-iconbtn" type="button" id="hx-cc-mic-proxy" aria-label="Voice" title="Voice input">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
                   </button>
-                  <div class="hx-chat-tools-wrap hx-cc-tools-wrap">
+                  <div class="hx-cc-mic-wrap">
+                    <button class="hx-cc-iconbtn hx-cc-mic-chevron" type="button" id="hx-cc-mic-chevron" aria-haspopup="menu" aria-expanded="false" aria-label="Microphone settings" title="Microphone settings">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="hx-cc-mic-menu" id="hx-cc-mic-menu" role="menu" hidden>
+                      <div class="hx-cc-menu-section"><span>Microphone</span></div>
+                      <div class="hx-cc-mic-list" id="hx-cc-mic-list" role="radiogroup" aria-label="Audio input device">
+                        <div class="hx-cc-mic-empty">Loading devices…</div>
+                      </div>
+                      <div class="hx-cc-menu-section hx-cc-menu-section-top"><span>Behavior</span></div>
+                      <div class="hx-cc-mic-row">
+                        <span>Hold to record</span>
+                        <span class="hx-cc-fast-switch" id="hx-cc-mic-hold" role="switch" aria-checked="false" tabindex="0"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Tools menu (web search / code execution) is hidden in
+                       chat mode but kept in the DOM so the existing JS
+                       handlers (#hx-c-tools-btn / #hx-c-web / #hx-c-code)
+                       continue to work. -->
+                  <div class="hx-chat-tools-wrap" hidden aria-hidden="true">
                     <button
-                      class="hx-cc-iconbtn hx-cc-tools-chevron"
+                      class="hx-chat-tool-btn"
                       id="hx-c-tools-btn"
                       type="button"
                       aria-haspopup="menu"
                       aria-expanded="false"
-                      aria-label="Tools"
-                      title="Web search · code execution">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                      aria-label="Tools">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg>
                       <span class="hx-chat-tools-count" id="hx-c-tools-count" hidden>0</span>
                     </button>
                     <div class="hx-chat-tools-menu" id="hx-c-tools-menu" role="menu" hidden>
-                      <button class="hx-chat-tools-item" id="hx-c-web" type="button" role="menuitemcheckbox" aria-checked="false">
-                        <span class="hx-chat-tools-ico">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg>
-                        </span>
-                        <span class="hx-chat-tools-body">
-                          <span class="hx-chat-tools-title">Browse the web</span>
-                          <span class="hx-chat-tools-desc">Fresh info, current news, live data</span>
-                        </span>
-                        <span class="hx-chat-tools-check" aria-hidden="true"></span>
-                      </button>
-                      <button class="hx-chat-tools-item" id="hx-c-code" type="button" role="menuitemcheckbox" aria-checked="false">
-                        <span class="hx-chat-tools-ico">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                        </span>
-                        <span class="hx-chat-tools-body">
-                          <span class="hx-chat-tools-title">Run code</span>
-                          <span class="hx-chat-tools-desc">Python · math · data analysis · charts</span>
-                        </span>
-                        <span class="hx-chat-tools-check" aria-hidden="true"></span>
-                      </button>
+                      <button class="hx-chat-tools-item" id="hx-c-web" type="button" role="menuitemcheckbox" aria-checked="false"><span class="hx-chat-tools-title">Browse the web</span></button>
+                      <button class="hx-chat-tools-item" id="hx-c-code" type="button" role="menuitemcheckbox" aria-checked="false"><span class="hx-chat-tools-title">Run code</span></button>
                     </div>
                   </div>
                   <span class="hx-cc-compose-bar-spacer"></span>
@@ -6246,6 +6298,9 @@
             var mm = document.getElementById('hx-cc-mode-menu');
             var mb = document.getElementById('hx-cc-edits');
             if (mm && !mm.hidden) { mm.hidden = true; if (mb) mb.setAttribute('aria-expanded', 'false'); }
+            var micMenu = document.getElementById('hx-cc-mic-menu');
+            var micBtn  = document.getElementById('hx-cc-mic-chevron');
+            if (micMenu && !micMenu.hidden) { micMenu.hidden = true; if (micBtn) micBtn.setAttribute('aria-expanded', 'false'); }
             menu.hidden = false; pick.setAttribute('aria-expanded', 'true');
           }
           function close() { menu.hidden = true;  pick.setAttribute('aria-expanded', 'false'); }
@@ -6404,6 +6459,114 @@
           proxy('hx-cc-mic-proxy',    'hx-c-mic');
         })();
 
+        // ─── Mic settings dropdown — input device list + hold-to-record
+        // Mirrors Claude Code's microphone chevron. Devices come from
+        // navigator.mediaDevices.enumerateDevices(); labels show only
+        // after the user has granted mic permission at least once.
+        (function wireMicSettings() {
+          var btn  = document.getElementById('hx-cc-mic-chevron');
+          var menu = document.getElementById('hx-cc-mic-menu');
+          var list = document.getElementById('hx-cc-mic-list');
+          var hold = document.getElementById('hx-cc-mic-hold');
+          if (!btn || !menu || !list) return;
+          var modelMenu = document.getElementById('hx-cc-model-menu');
+          var modelPick = document.getElementById('hx-cc-model-pick');
+          var usageMenu = document.getElementById('hx-cc-usage-menu');
+          var usagePick = document.getElementById('hx-cc-usage-pick');
+          var modeMenu  = document.getElementById('hx-cc-mode-menu');
+          var modeBtn   = document.getElementById('hx-cc-edits');
+          function activeDeviceId() {
+            try { return localStorage.getItem('hx-mic-device') || ''; } catch (e) { return ''; }
+          }
+          function rebuildList(devices) {
+            var active = activeDeviceId();
+            if (!devices || !devices.length) {
+              list.innerHTML = '<div class="hx-cc-mic-empty">No microphones found.<br>Grant mic permission to see device names.</div>';
+              return;
+            }
+            list.innerHTML = '';
+            devices.forEach(function (d, i) {
+              var b = document.createElement('button');
+              b.type = 'button';
+              b.className = 'hx-cc-mic-opt';
+              b.setAttribute('role', 'menuitemradio');
+              b.dataset.deviceId = d.deviceId;
+              var name = d.label || ('Microphone ' + (i + 1));
+              var isActive = (active && active === d.deviceId) || (!active && d.deviceId === 'default');
+              if (isActive) b.classList.add('is-active');
+              b.innerHTML =
+                '<span class="hx-cc-opt-name"></span>' +
+                '<svg class="hx-cc-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+              b.querySelector('.hx-cc-opt-name').textContent = name;
+              b.addEventListener('click', function (e) {
+                e.stopPropagation();
+                try { localStorage.setItem('hx-mic-device', d.deviceId); } catch (err) {}
+                list.querySelectorAll('.hx-cc-mic-opt').forEach(function (o) {
+                  o.classList.toggle('is-active', o === b);
+                });
+              });
+              list.appendChild(b);
+            });
+          }
+          async function loadDevices() {
+            try {
+              if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+                rebuildList(null); return;
+              }
+              var all = await navigator.mediaDevices.enumerateDevices();
+              var mics = all.filter(function (d) { return d.kind === 'audioinput'; });
+              rebuildList(mics);
+            } catch (e) { rebuildList(null); }
+          }
+          function closeOtherPopovers() {
+            if (modelMenu && !modelMenu.hidden) {
+              modelMenu.hidden = true;
+              if (modelPick) modelPick.setAttribute('aria-expanded', 'false');
+            }
+            if (usageMenu && !usageMenu.hidden) {
+              usageMenu.hidden = true;
+              if (usagePick) usagePick.setAttribute('aria-expanded', 'false');
+            }
+            if (modeMenu && !modeMenu.hidden) {
+              modeMenu.hidden = true;
+              if (modeBtn) modeBtn.setAttribute('aria-expanded', 'false');
+            }
+          }
+          function open()  { closeOtherPopovers(); menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); loadDevices(); }
+          function close() { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            menu.hidden ? open() : close();
+          });
+          document.addEventListener('click', function (e) {
+            if (menu.hidden) return;
+            if (!menu.contains(e.target) && !btn.contains(e.target)) close();
+          });
+          document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !menu.hidden) close();
+          });
+          // Hold-to-record toggle (decorative + persisted; actual mic
+          // wiring respects the saved flag at record-start time)
+          if (hold) {
+            try {
+              if (localStorage.getItem('hx-mic-hold') === '1') {
+                hold.classList.add('is-on');
+                hold.setAttribute('aria-checked', 'true');
+              }
+            } catch (e) {}
+            hold.addEventListener('click', function (e) {
+              e.stopPropagation();
+              var on = hold.classList.toggle('is-on');
+              hold.setAttribute('aria-checked', on ? 'true' : 'false');
+              try { localStorage.setItem('hx-mic-hold', on ? '1' : '0'); } catch (err) {}
+            });
+          }
+          // Refresh device list if the user plugs in / unplugs a mic
+          if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
+            navigator.mediaDevices.addEventListener('devicechange', loadDevices);
+          }
+        })();
+
         // ─── Usage indicator — separate dropdown beside the model pick
         // Shows the live Context window (estimated tokens against the
         // active model's ctx ceiling) and Plan-usage bars (5-hour limit,
@@ -6503,6 +6666,9 @@
             var mm = document.getElementById('hx-cc-mode-menu');
             var mb = document.getElementById('hx-cc-edits');
             if (mm && !mm.hidden) { mm.hidden = true; if (mb) mb.setAttribute('aria-expanded', 'false'); }
+            var micMenu = document.getElementById('hx-cc-mic-menu');
+            var micBtn  = document.getElementById('hx-cc-mic-chevron');
+            if (micMenu && !micMenu.hidden) { micMenu.hidden = true; if (micBtn) micBtn.setAttribute('aria-expanded', 'false'); }
             menu.hidden = false;
             pick.setAttribute('aria-expanded', 'true');
             refreshContext();
