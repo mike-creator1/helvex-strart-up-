@@ -560,7 +560,23 @@
       justify-content: space-between;
       gap: 8px;
       padding: 18px 16px 14px;
-      border-bottom: 1px solid var(--hx-line-soft, var(--hx-line));
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background:
+        linear-gradient(180deg, var(--hx-bg) 0%, var(--hx-bg) 75%, color-mix(in srgb, var(--hx-bg) 0%, transparent) 100%);
+      border-bottom: 1px solid transparent;
+    }
+    .hx-chat-rail-head::after {
+      content: '';
+      position: absolute;
+      left: 12px; right: 12px; bottom: 0;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        color-mix(in srgb, var(--hx-line) 100%, transparent) 30%,
+        color-mix(in srgb, var(--hx-line) 100%, transparent) 70%,
+        transparent 100%);
     }
     .hx-chat-rail-title {
       font-size: 10.5px;
@@ -571,13 +587,20 @@
       margin: 0;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 9px;
     }
     .hx-chat-rail-title::before {
       content: '';
-      width: 4px; height: 4px; border-radius: 50%;
+      width: 5px; height: 5px; border-radius: 50%;
       background: var(--hx-yellow, var(--hx-text));
-      box-shadow: 0 0 0 3px var(--hx-yellow-soft, transparent);
+      box-shadow:
+        0 0 0 3px var(--hx-yellow-soft, transparent),
+        0 0 10px color-mix(in srgb, var(--hx-yellow, #C9A227) 55%, transparent);
+      animation: hx-rail-pulse 2.8s ease-in-out infinite;
+    }
+    @keyframes hx-rail-pulse {
+      0%, 100% { box-shadow: 0 0 0 3px var(--hx-yellow-soft, transparent), 0 0 8px  color-mix(in srgb, var(--hx-yellow, #C9A227) 45%, transparent); }
+      50%      { box-shadow: 0 0 0 4px var(--hx-yellow-soft, transparent), 0 0 14px color-mix(in srgb, var(--hx-yellow, #C9A227) 70%, transparent); }
     }
     .hx-chat-new {
       width: 28px; height: 28px;
@@ -762,6 +785,183 @@
       color: var(--hx-text-dim);
       font-size: 12.5px;
       line-height: 1.55;
+    }
+    /* ─────── PREMIUM CONVERSATIONS RAIL — overrides ─────── */
+    /* Date-group header */
+    .hx-rail-group { padding: 6px 0 4px; }
+    .hx-rail-group:first-child { padding-top: 10px; }
+    .hx-rail-group-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px 6px;
+      font: 600 9.5px/1 var(--hx-sans, 'Inter'), sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: var(--hx-text-faint, #aaa);
+    }
+    .hx-rail-group-count {
+      min-width: 18px; height: 16px;
+      padding: 0 5px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--hx-bg-2, rgba(0,0,0,0.04));
+      border: 1px solid var(--hx-line);
+      border-radius: 999px;
+      color: var(--hx-text-dim);
+      font: 600 9.5px/1 'JetBrains Mono', ui-monospace, monospace;
+      letter-spacing: 0;
+    }
+    /* Item — refined */
+    .hx-rail-group .hx-chat-item {
+      gap: 10px;
+      padding: 10px 8px 10px 14px;
+      margin: 1px 0;
+      border-radius: 10px;
+      will-change: transform, background;
+    }
+    /* Model glyph mark — small left-side dot, colour per model */
+    .hx-chat-item-glyph {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--hx-yellow, #C9A227);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--hx-yellow, #C9A227) 18%, transparent);
+      transition: transform 0.18s ease;
+    }
+    .hx-chat-item-glyph.hx-mg-nexus {
+      background: #C2410C;
+      box-shadow: 0 0 0 2px rgba(194, 65, 12, 0.18);
+    }
+    .hx-chat-item-glyph.hx-mg-prometheus {
+      background: #6B6B6F;
+      box-shadow: 0 0 0 2px rgba(107, 107, 111, 0.18);
+    }
+    .hx-chat-item:hover .hx-chat-item-glyph { transform: scale(1.18); }
+    .hx-chat-item.is-active .hx-chat-item-glyph {
+      transform: scale(1.18);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--hx-yellow, #C9A227) 28%, transparent),
+                  0 0 8px color-mix(in srgb, var(--hx-yellow, #C9A227) 60%, transparent);
+    }
+    .hx-chat-item.is-active .hx-chat-item-glyph.hx-mg-nexus {
+      box-shadow: 0 0 0 2px rgba(194, 65, 12, 0.28), 0 0 8px rgba(194, 65, 12, 0.55);
+    }
+    .hx-chat-item.is-active .hx-chat-item-glyph.hx-mg-prometheus {
+      box-shadow: 0 0 0 2px rgba(107, 107, 111, 0.28), 0 0 8px rgba(107, 107, 111, 0.5);
+    }
+    /* Title — sharper */
+    .hx-chat-item-title {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--hx-text);
+    }
+    .hx-chat-item.is-active .hx-chat-item-title {
+      font-weight: 600;
+      color: var(--hx-text);
+    }
+    /* Meta line — relative time + model chip */
+    .hx-chat-item-meta {
+      font-size: 10px;
+      gap: 7px;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+    }
+    .hx-chat-item-meta .dot {
+      width: 3px; height: 3px;
+      background: var(--hx-text-faint, #aaa);
+      opacity: 0.65;
+    }
+    .hx-chat-item-chip {
+      display: inline-flex; align-items: center;
+      padding: 1px 7px 2px;
+      height: 16px;
+      background: var(--hx-bg-2, rgba(0,0,0,0.04));
+      border: 1px solid var(--hx-line);
+      border-radius: 999px;
+      font: 600 9.5px/1 var(--hx-sans, 'Inter'), sans-serif;
+      letter-spacing: 0.02em;
+      color: var(--hx-text-dim);
+    }
+    .hx-chat-item-chip.hx-mg-ether       { color: #8c6f1c; border-color: rgba(201,162,39,0.30); background: rgba(201,162,39,0.05); }
+    .hx-chat-item-chip.hx-mg-nexus       { color: #9a3409; border-color: rgba(194,65,12,0.30);  background: rgba(194,65,12,0.04); }
+    .hx-chat-item-chip.hx-mg-prometheus  { color: #4b4b4f; border-color: rgba(107,107,111,0.30);background: rgba(107,107,111,0.04); }
+    /* Hover/active surfaces — softer gradients */
+    .hx-chat-item:hover {
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-bg-2, #f5f5f7) 70%, transparent) 0%,
+        color-mix(in srgb, var(--hx-bg-2, #f5f5f7) 40%, transparent) 100%);
+    }
+    .hx-chat-item.is-active {
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-yellow-soft, var(--hx-bg-2)) 100%, transparent) 0%,
+        color-mix(in srgb, var(--hx-bg-2) 80%, transparent) 100%);
+      border-color: color-mix(in srgb, var(--hx-yellow, #C9A227) 18%, var(--hx-line));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 70%, transparent),
+        0 1px 0 color-mix(in srgb, var(--hx-yellow, #C9A227) 10%, transparent),
+        var(--hx-shadow-xs);
+    }
+    /* Gold left-rail accent — taller + stronger */
+    .hx-chat-item::before {
+      left: 5px;
+      width: 2.5px;
+      height: 68% !important;
+      box-shadow:
+        0 0 6px color-mix(in srgb, var(--hx-yellow, #C9A227) 50%, transparent),
+        0 0 14px color-mix(in srgb, var(--hx-yellow, #C9A227) 30%, transparent);
+    }
+    /* Premium empty state */
+    .hx-rail-empty {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px;
+      padding: 48px 24px 36px;
+    }
+    .hx-rail-empty-orb {
+      width: 44px; height: 44px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background:
+        radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--hx-yellow, #C9A227) 18%, transparent) 0%, transparent 70%),
+        var(--hx-bg-2, rgba(0,0,0,0.04));
+      border: 1px solid color-mix(in srgb, var(--hx-yellow, #C9A227) 22%, var(--hx-line));
+      border-radius: 999px;
+      color: color-mix(in srgb, var(--hx-yellow, #C9A227) 70%, var(--hx-text-dim));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 60%, transparent),
+        0 4px 12px -4px color-mix(in srgb, var(--hx-yellow, #C9A227) 25%, transparent);
+    }
+    .hx-rail-empty-orb svg { width: 20px; height: 20px; }
+    .hx-rail-empty-title {
+      font: 500 12.5px/1.5 var(--hx-sans, 'Inter'), sans-serif;
+      color: var(--hx-text);
+      letter-spacing: -0.005em;
+    }
+    .hx-rail-empty-meta {
+      font: 500 11px/1.4 var(--hx-sans, 'Inter'), sans-serif;
+      color: var(--hx-text-dim);
+      letter-spacing: 0;
+    }
+    .hx-rail-empty-meta kbd {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 1px 5px;
+      background: var(--hx-bg-2, rgba(0,0,0,0.04));
+      border: 1px solid var(--hx-line);
+      border-radius: 4px;
+      color: var(--hx-text);
+    }
+    /* Refined scrollbar — gold on hover */
+    .hx-chat-list::-webkit-scrollbar { width: 6px; }
+    .hx-chat-list::-webkit-scrollbar-thumb {
+      background: transparent;
+      border-radius: 999px;
+      transition: background 0.18s ease;
+    }
+    .hx-chat-list:hover::-webkit-scrollbar-thumb {
+      background: color-mix(in srgb, var(--hx-yellow, #C9A227) 20%, var(--hx-line-strong, var(--hx-line)));
+    }
+    .hx-chat-list::-webkit-scrollbar-thumb:hover {
+      background: color-mix(in srgb, var(--hx-yellow, #C9A227) 45%, var(--hx-line-strong, var(--hx-line))) !important;
     }
 
     /* Right pane — thread + composer */
@@ -3789,31 +3989,82 @@
           if (!state.conversations.length) {
             var active = getActiveProject();
             var hasProjects = !!(state.projectCount && state.projectCount > 0);
-            var msg;
+            var msg, cta = '';
             if (!active || !active.id) {
               msg = hasProjects
-                ? 'Select a project above to see its chats.'
-                : 'Create a project first to start chatting.';
+                ? 'Pick a project above to see its sessions.'
+                : 'Create your first project to start chatting.';
             } else {
-              msg = 'No chats in this project yet.';
+              msg = 'No sessions in this project yet.';
+              cta = 'Click <kbd>+</kbd> above to start';
             }
-            host.innerHTML = '<div class="hx-chat-empty-list" id="hx-c-empty">' + msg + '</div>';
+            host.innerHTML =
+              '<div class="hx-chat-empty-list hx-rail-empty">' +
+                '<span class="hx-rail-empty-orb" aria-hidden="true">' +
+                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' +
+                '</span>' +
+                '<span class="hx-rail-empty-title">' + escape(msg) + '</span>' +
+                (cta ? '<span class="hx-rail-empty-meta">' + cta + '</span>' : '') +
+              '</div>';
             return;
           }
-          var html = '';
+          // Group conversations by recency bucket: Today / Yesterday / Last 7 days / Older
+          var buckets = [
+            { key: 'today',     label: 'Today',        items: [] },
+            { key: 'yesterday', label: 'Yesterday',    items: [] },
+            { key: 'week',      label: 'Last 7 days',  items: [] },
+            { key: 'older',     label: 'Older',        items: [] },
+          ];
+          var now = Date.now();
+          var startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
+          var startOfToday = startOfDay.getTime();
+          var startOfYday  = startOfToday - 86400000;
+          var sevenDaysAgo = now - 7 * 86400000;
           state.conversations.forEach(function (c) {
-            var active = state.conversation && state.conversation.id === c.id;
-            html += '<div class="hx-chat-item' + (active ? ' is-active' : '') + '" data-id="' + escape(c.id) + '">' +
-              '<div class="hx-chat-item-body">' +
-                '<span class="hx-chat-item-title">' + escape(c.title || 'Untitled') + '</span>' +
-                '<span class="hx-chat-item-meta">' +
-                  '<span>' + escape(relTime(c.updated_at)) + '</span>' +
-                '</span>' +
-              '</div>' +
-              '<button class="hx-chat-item-more" type="button" data-id="' + escape(c.id) + '" aria-label="Conversation options" title="Options">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5"  r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="19" r="1.2"/></svg>' +
-              '</button>' +
-            '</div>';
+            var t = new Date(c.updated_at).getTime();
+            if      (t >= startOfToday) buckets[0].items.push(c);
+            else if (t >= startOfYday)  buckets[1].items.push(c);
+            else if (t >= sevenDaysAgo) buckets[2].items.push(c);
+            else                         buckets[3].items.push(c);
+          });
+
+          // Model glyph (small mark in the row's leading edge)
+          function modelDot(model) {
+            var m = (model || 'ether').toLowerCase();
+            return '<span class="hx-chat-item-glyph hx-mg-' + escape(m) + '" aria-hidden="true"></span>';
+          }
+          function modelChip(model) {
+            var m = (model || 'ether').toLowerCase();
+            var lbl = m.charAt(0).toUpperCase() + m.slice(1);
+            return '<span class="hx-chat-item-chip hx-mg-' + escape(m) + '">' + escape(lbl) + '</span>';
+          }
+
+          var html = '';
+          buckets.forEach(function (bucket) {
+            if (!bucket.items.length) return;
+            html += '<div class="hx-rail-group">' +
+              '<div class="hx-rail-group-head">' +
+                '<span>' + bucket.label + '</span>' +
+                '<span class="hx-rail-group-count">' + bucket.items.length + '</span>' +
+              '</div>';
+            bucket.items.forEach(function (c) {
+              var active = state.conversation && state.conversation.id === c.id;
+              html += '<div class="hx-chat-item' + (active ? ' is-active' : '') + '" data-id="' + escape(c.id) + '">' +
+                modelDot(c.model) +
+                '<div class="hx-chat-item-body">' +
+                  '<span class="hx-chat-item-title">' + escape(c.title || 'Untitled') + '</span>' +
+                  '<span class="hx-chat-item-meta">' +
+                    '<span>' + escape(relTime(c.updated_at)) + '</span>' +
+                    '<span class="dot" aria-hidden="true"></span>' +
+                    modelChip(c.model) +
+                  '</span>' +
+                '</div>' +
+                '<button class="hx-chat-item-more" type="button" data-id="' + escape(c.id) + '" aria-label="Session options" title="Options">' +
+                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5"  r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="19" r="1.2"/></svg>' +
+                '</button>' +
+              '</div>';
+            });
+            html += '</div>';
           });
           host.innerHTML = html;
           host.querySelectorAll('.hx-chat-item').forEach(function (el) {
