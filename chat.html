@@ -9658,6 +9658,252 @@
       body[data-active="chat"] .hx-voice-wave { height: 22px; }
       body[data-active="chat"] .hx-voice-wave > span { height: 22px; }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V19 — CINEMATIC VOICE COGNITION
+       The recording state becomes a refined, audio-software-grade
+       experience. Visible always-on baseline waveform that never
+       reads as broken. Soft breathing gold halo. Larger, more
+       confident silhouette. Refined controls.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* Voice mode container — luxurious gold cognition halo + inner light */
+    body[data-active="chat"] .hx-chat-input-row.is-recording-mode {
+      background:
+        radial-gradient(ellipse 60% 100% at 50% 50%,
+          color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 5%, transparent) 0%,
+          transparent 70%),
+        var(--hx-surface);
+      border-color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 40%, var(--b1));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 8%, transparent),
+        0 0 0 3px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 8%, transparent),
+        0 10px 28px -12px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 30%, transparent);
+      animation: hx-voice-halo-v19 4.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    @keyframes hx-voice-halo-v19 {
+      0%, 100% {
+        box-shadow:
+          inset 0 1px 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 8%, transparent),
+          0 0 0 3px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 7%, transparent),
+          0 8px 24px -12px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 24%, transparent);
+      }
+      50% {
+        box-shadow:
+          inset 0 1px 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 10%, transparent),
+          0 0 0 4px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 10%, transparent),
+          0 12px 32px -10px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 34%, transparent);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-chat-input-row.is-recording-mode {
+        animation: none;
+      }
+    }
+
+    /* Voice panel — more breathing room, refined typography rhythm */
+    body[data-active="chat"] .hx-voice-panel {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 0 4px 0 4px;
+      min-height: 34px;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      overflow: visible;
+    }
+    body[data-active="chat"] .hx-voice-panel::before { display: none !important; }
+
+    body[data-active="chat"] .hx-voice-panel-left {
+      display: inline-flex; align-items: center; gap: 11px;
+      flex-shrink: 0;
+    }
+    body[data-active="chat"] .hx-voice-rec-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 30%,
+          color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 100%, #fff 18%) 0%,
+          var(--hx-accent, var(--hx-yellow-deep)) 70%);
+      box-shadow:
+        0 0 0 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 38%, transparent),
+        0 0 8px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 50%, transparent);
+      animation: hx-rec-pulse-v19 2.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    @keyframes hx-rec-pulse-v19 {
+      0%, 100% {
+        box-shadow:
+          0 0 0 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 36%, transparent),
+          0 0 6px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 44%, transparent);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow:
+          0 0 0 5px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 0%, transparent),
+          0 0 12px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 60%, transparent);
+        transform: scale(1.08);
+      }
+    }
+    body[data-active="chat"] .hx-voice-panel-label {
+      font-family: var(--sans);
+      font-size: 11.5px;
+      font-weight: 500;
+      font-style: italic;
+      letter-spacing: -0.003em;
+      color: color-mix(in srgb, var(--hx-text) 56%, transparent);
+      text-transform: none;
+    }
+    body[data-active="chat"] .hx-voice-panel-label::before { content: none !important; }
+    body[data-active="chat"] .hx-voice-timer {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: color-mix(in srgb, var(--hx-text) 72%, transparent);
+      font-variant-numeric: tabular-nums;
+      padding: 0 0 0 12px;
+      margin: 0;
+      border-left: 1px solid color-mix(in srgb, var(--hx-text) 10%, transparent);
+    }
+
+    /* ─── Premium waveform — 28 bars, always-visible baseline ──────── */
+    body[data-active="chat"] .hx-voice-wave {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      height: 28px;
+      gap: 2.5px;
+      padding: 0 4px;
+      position: relative;
+    }
+    /* Subtle horizontal centerline — gives "audio software" character */
+    body[data-active="chat"] .hx-voice-wave::before {
+      content: '';
+      position: absolute;
+      left: 4px; right: 4px;
+      top: 50%;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 12%, transparent) 50%,
+        transparent 100%);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    body[data-active="chat"] .hx-voice-wave > span {
+      --amp: 0.04;
+      width: 2px;
+      height: 24px;
+      border-radius: 1.5px;
+      background: linear-gradient(180deg,
+        var(--hx-accent, var(--hx-yellow-deep)) 0%,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 65%, transparent) 100%);
+      transform-origin: center center;
+      /* Always-visible idle baseline (16%) that swells with --amp.
+         Silence reads as a calm centered line; voice makes the bars
+         breathe up to full height naturally. */
+      transform: scaleY(calc(0.14 + var(--amp) * 0.86));
+      animation: none !important;
+      opacity: calc(0.42 + (var(--amp) * 0.58));
+      transition:
+        transform 90ms cubic-bezier(0.22, 0.61, 0.36, 1),
+        opacity   140ms ease;
+      will-change: transform, opacity;
+    }
+    /* Centered bars have very subtle natural variation in base height
+       so even with all amps equal, the meter has visual character. */
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(1)  { height: 12px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(2)  { height: 14px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(3)  { height: 16px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(4)  { height: 18px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(5)  { height: 20px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(6)  { height: 22px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(7)  { height: 23px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(8)  { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(9)  { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(10) { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(11) { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(12) { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(13) { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(14) { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(15) { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(16) { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(17) { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(18) { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(19) { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(20) { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(21) { height: 24px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(22) { height: 23px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(23) { height: 22px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(24) { height: 20px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(25) { height: 18px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(26) { height: 16px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(27) { height: 14px; }
+    body[data-active="chat"] .hx-voice-wave > span:nth-child(28) { height: 12px; }
+
+    /* Cancel + commit — larger, more refined */
+    body[data-active="chat"] .hx-voice-panel-actions {
+      display: inline-flex; align-items: center; gap: 4px;
+      flex-shrink: 0;
+    }
+    body[data-active="chat"] .hx-voice-cancel,
+    body[data-active="chat"] .hx-voice-done {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      padding: 0;
+      border: 0;
+      transition:
+        background 160ms ease,
+        color 160ms ease,
+        transform 120ms cubic-bezier(0.2, 0.7, 0.2, 1),
+        box-shadow 200ms ease;
+    }
+    body[data-active="chat"] .hx-voice-cancel {
+      background: transparent;
+      color: color-mix(in srgb, var(--hx-text) 48%, transparent);
+      box-shadow: none;
+    }
+    body[data-active="chat"] .hx-voice-cancel:hover {
+      background: color-mix(in srgb, var(--hx-text) 6%, transparent);
+      color: var(--hx-text);
+      transform: none;
+    }
+    body[data-active="chat"] .hx-voice-cancel svg { width: 14px; height: 14px; stroke-width: 2; }
+    body[data-active="chat"] .hx-voice-done {
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 100%, #fff 10%) 0%,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 88%, #000) 100%);
+      color: #fff;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 22%, transparent),
+        0 1px 2px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 30%, transparent),
+        0 6px 14px -6px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 45%, transparent);
+    }
+    body[data-active="chat"] .hx-voice-done:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 26%, transparent),
+        0 2px 4px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 36%, transparent),
+        0 10px 22px -6px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 55%, transparent),
+        0 0 0 3px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 12%, transparent);
+    }
+    body[data-active="chat"] .hx-voice-done:active {
+      transform: translateY(0) scale(0.94);
+    }
+    body[data-active="chat"] .hx-voice-done svg { width: 15px; height: 15px; stroke-width: 2.2; color: #fff; }
+
+    /* Mobile voice */
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-voice-panel { gap: 12px; padding: 0 2px; }
+      body[data-active="chat"] .hx-voice-panel-label { display: none; }
+      body[data-active="chat"] .hx-voice-wave { height: 24px; gap: 2px; padding: 0 2px; }
+      body[data-active="chat"] .hx-voice-wave > span { width: 1.5px; }
+      body[data-active="chat"] .hx-voice-wave > span:nth-child(n+22) { display: none; }
+      body[data-active="chat"] .hx-voice-cancel,
+      body[data-active="chat"] .hx-voice-done { width: 30px; height: 30px; }
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -9781,9 +10027,10 @@
                     <span class="hx-voice-timer" id="hx-c-voice-timer">00:00</span>
                   </div>
                   <div class="hx-voice-wave" aria-hidden="true">
-                    <span></span><span></span><span></span><span></span><span></span>
-                    <span></span><span></span><span></span><span></span><span></span>
-                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                   </div>
                   <div class="hx-voice-panel-actions">
                     <button class="hx-voice-cancel" id="hx-c-voice-cancel" type="button" aria-label="Cancel recording" title="Cancel">
