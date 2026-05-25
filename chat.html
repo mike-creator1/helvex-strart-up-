@@ -10305,6 +10305,108 @@
       body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act,
       body[data-active="chat"] .hx-msg-user-act { width: 28px; height: 28px; }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V22 — PREMIUM MARKDOWN TABLES
+       Real HTML tables with editorial typography. Horizontal scroll
+       container for wide content. Zebra rows, refined dividers, mono
+       numerics, gold-tinted header eyebrow. No raw pipes ever again.
+       ═════════════════════════════════════════════════════════════════ */
+
+    body[data-active="chat"] .hx-md-table-wrap {
+      margin: 18px 0;
+      max-width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--b1);
+      border-radius: 12px;
+      background: var(--hx-surface);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 35%, transparent),
+        0 1px 2px color-mix(in srgb, var(--hx-text) 3%, transparent);
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+    }
+    body[data-active="chat"] .hx-md-table-wrap::-webkit-scrollbar { height: 6px; }
+    body[data-active="chat"] .hx-md-table-wrap::-webkit-scrollbar-thumb {
+      background: var(--b2);
+      border-radius: 999px;
+    }
+    body[data-active="chat"] .hx-md-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--sans);
+      font-size: 13.75px;
+      line-height: 1.55;
+      letter-spacing: -0.004em;
+      color: var(--t1);
+      font-feature-settings: 'kern' 1, 'liga' 1, 'tnum' 1, 'cv11' 1;
+    }
+    body[data-active="chat"] .hx-md-table thead {
+      background: color-mix(in srgb, var(--hx-text) 3%, transparent);
+    }
+    body[data-active="chat"] .hx-md-table thead th {
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--t3);
+      border-bottom: 1px solid var(--b1);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    /* The first column gets a subtle gold accent in the header */
+    body[data-active="chat"] .hx-md-table thead th:first-child {
+      color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 80%, var(--t1));
+    }
+    body[data-active="chat"] .hx-md-table tbody td {
+      padding: 11px 16px;
+      vertical-align: top;
+      border-top: 1px solid var(--b1);
+      color: var(--t1);
+    }
+    body[data-active="chat"] .hx-md-table tbody tr:first-child td {
+      border-top: 0;
+    }
+    /* Zebra rows — extremely subtle */
+    body[data-active="chat"] .hx-md-table tbody tr:nth-child(even) td {
+      background: color-mix(in srgb, var(--hx-text) 1.5%, transparent);
+    }
+    /* Hover row highlight */
+    body[data-active="chat"] .hx-md-table tbody tr {
+      transition: background 120ms ease;
+    }
+    body[data-active="chat"] .hx-md-table tbody tr:hover td {
+      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 4%, transparent);
+    }
+    /* First column reads as a key/identifier — slightly stronger weight */
+    body[data-active="chat"] .hx-md-table tbody td:first-child {
+      font-weight: 500;
+      color: var(--t1);
+      letter-spacing: -0.005em;
+    }
+    body[data-active="chat"] .hx-md-table tbody td:first-child strong {
+      font-weight: 600;
+    }
+    body[data-active="chat"] .hx-md-table tbody strong {
+      font-weight: 600;
+      color: var(--t1);
+    }
+    body[data-active="chat"] .hx-md-table tbody em {
+      color: var(--t2);
+      font-style: italic;
+    }
+    body[data-active="chat"] .hx-md-table .hx-md-inline {
+      font-size: 0.88em;
+    }
+
+    /* Mobile — slightly tighter cell padding so content stays readable */
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-md-table { font-size: 13px; }
+      body[data-active="chat"] .hx-md-table thead th { padding: 9px 12px; font-size: 10px; }
+      body[data-active="chat"] .hx-md-table tbody td { padding: 10px 12px; }
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -10842,6 +10944,37 @@
           return (lead || '') + '\x00ORDERED_' + idx + '\x00';
         });
 
+        // Markdown tables (GFM-style):
+        //   | col | col | col |
+        //   |-----|:----|----:|
+        //   | val | val | val |
+        // Matched as a single block whose 2nd line is a separator row.
+        // Pulled out before any other block parser sees the pipes.
+        var tableRe = /(^|\n)((?:[ \t]*\|[^\n]+\|[ \t]*\r?\n)([ \t]*\|(?:[ \t]*:?-+:?[ \t]*\|)+[ \t]*\r?\n)((?:[ \t]*\|[^\n]+\|[ \t]*(?:\r?\n|$))*))/g;
+        var tables = [];
+        stripped = stripped.replace(tableRe, function (m, lead, block) {
+          var lines = block.split(/\r?\n/).filter(function (l) { return l.trim(); });
+          if (lines.length < 2) return m;
+          function splitRow(line) {
+            var trimmed = line.trim().replace(/^\|/, '').replace(/\|$/, '');
+            return trimmed.split('|').map(function (c) { return c.trim(); });
+          }
+          var headerCells = splitRow(lines[0]);
+          var alignCells  = splitRow(lines[1]).map(function (c) {
+            var left  = /^:/.test(c);
+            var right = /:$/.test(c);
+            if (left && right) return 'center';
+            if (right)         return 'right';
+            if (left)          return 'left';
+            return '';
+          });
+          if (!headerCells.length) return m;
+          var bodyRows = lines.slice(2).map(splitRow);
+          var idx = tables.length;
+          tables.push({ header: headerCells, align: alignCells, rows: bodyRows });
+          return (lead || '') + '\x00TABLE_' + idx + '\x00';
+        });
+
         // Blockquotes (> text)
         var quoteRe = /(^|\n)((?:[ \t]*>[^\n]*(?:\n|$))+)/g;
         var quotes = [];
@@ -10902,6 +11035,30 @@
         s = s.replace(/\x00QUOTE_(\d+)\x00/g, function (_, n) {
           var content = quotes[parseInt(n, 10)] || '';
           return '<blockquote class="hx-md-quote">' + renderInlineFragments(content) + '</blockquote>';
+        });
+        // Expand tables — premium HTML table inside a horizontal-scroll wrap
+        s = s.replace(/\x00TABLE_(\d+)\x00/g, function (_, n) {
+          var t = tables[parseInt(n, 10)];
+          if (!t) return '';
+          var html = '<div class="hx-md-table-wrap"><table class="hx-md-table"><thead><tr>';
+          t.header.forEach(function (cell, ci) {
+            var a = t.align[ci] || '';
+            var style = a ? ' style="text-align:' + a + ';"' : '';
+            html += '<th' + style + '>' + renderInlineFragments(cell) + '</th>';
+          });
+          html += '</tr></thead><tbody>';
+          t.rows.forEach(function (row) {
+            html += '<tr>';
+            for (var ci = 0; ci < t.header.length; ci++) {
+              var cell = row[ci] != null ? row[ci] : '';
+              var a = t.align[ci] || '';
+              var style = a ? ' style="text-align:' + a + ';"' : '';
+              html += '<td' + style + '>' + renderInlineFragments(cell) + '</td>';
+            }
+            html += '</tr>';
+          });
+          html += '</tbody></table></div>';
+          return html;
         });
         // Helix cognition — rendered as a single italic muted preamble
         // inline at the top of the response, with a hover-revealed
