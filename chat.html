@@ -5523,6 +5523,368 @@
       body[data-active="chat"] .hx-chat-send { width: 26px; height: 26px; }
       body[data-active="chat"] .hx-chat-textarea { font-size: 14px; }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V8 — PREMIUM AI RESPONSE & REASONING SYSTEM
+       Replaces raw checkbox lists with an elegant AI workflow timeline.
+       Refines response typography for an expensive, calm read.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* Kill the old checkbox visuals entirely — replaced by .hx-md-plan */
+    body[data-active="chat"] .hx-md-checklist,
+    body[data-active="chat"] .hx-md-check-item,
+    body[data-active="chat"] .hx-md-check-box,
+    body[data-active="chat"] .hx-md-check-label {
+      all: revert;
+    }
+
+    /* ── Plan / reasoning timeline ─────────────────────────────────── */
+    body[data-active="chat"] .hx-md-plan {
+      margin: 14px 0;
+      padding: 12px 14px 12px;
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-surface) 60%, var(--hx-bg-2)) 0%,
+        var(--hx-bg-2) 100%);
+      border: 1px solid color-mix(in srgb, var(--hx-text) 7%, transparent);
+      border-radius: 12px;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 40%, transparent),
+        0 1px 2px rgba(20, 18, 12, 0.02);
+    }
+    body[data-active="chat"] .hx-md-plan.is-complete {
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-surface) 80%, var(--hx-bg-2)) 0%,
+        color-mix(in srgb, var(--hx-bg-2) 90%, var(--hx-surface)) 100%);
+    }
+
+    /* Plan header — eyebrow + progress meter */
+    body[data-active="chat"] .hx-md-plan-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 10px;
+      margin-bottom: 4px;
+      border-bottom: 1px solid color-mix(in srgb, var(--hx-text) 5%, transparent);
+    }
+    .hx-md-plan-eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--hx-text) 56%, transparent);
+    }
+    .hx-md-plan-icon {
+      width: 12px; height: 12px;
+      color: var(--hx-accent, var(--hx-yellow-deep));
+    }
+    .hx-md-plan-progress {
+      display: inline-flex; align-items: center; gap: 8px;
+      flex-shrink: 0;
+    }
+    .hx-md-plan-progress-track {
+      width: 56px; height: 3px;
+      background: color-mix(in srgb, var(--hx-text) 8%, transparent);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .hx-md-plan-progress-fill {
+      display: block; height: 100%;
+      background: var(--hx-accent, var(--hx-yellow-deep));
+      border-radius: 2px;
+      transition: width 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+      box-shadow: 0 0 6px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 40%, transparent);
+    }
+    .hx-md-plan-count {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: color-mix(in srgb, var(--hx-text) 48%, transparent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Steps list */
+    body[data-active="chat"] .hx-md-plan-steps {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex; flex-direction: column;
+      position: relative;
+    }
+    /* Vertical connector line that runs through all status dots */
+    body[data-active="chat"] .hx-md-plan-steps::before {
+      content: '';
+      position: absolute;
+      left: 9px;
+      top: 14px; bottom: 14px;
+      width: 1px;
+      background: color-mix(in srgb, var(--hx-text) 8%, transparent);
+    }
+    body[data-active="chat"] .hx-md-plan-step {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 7px 0;
+      position: relative;
+    }
+    .hx-md-plan-status {
+      width: 19px; height: 19px;
+      border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--hx-surface);
+      border: 1px solid color-mix(in srgb, var(--hx-text) 12%, transparent);
+      flex-shrink: 0;
+      margin-top: 2px;
+      box-shadow: 0 0 0 3px var(--hx-bg-2);
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      color: var(--hx-text-mid);
+    }
+    .hx-md-plan-step.is-done .hx-md-plan-status {
+      background: var(--hx-accent, var(--hx-yellow-deep));
+      border-color: var(--hx-accent, var(--hx-yellow-deep));
+      color: #fff;
+    }
+    .hx-md-plan-step.is-active .hx-md-plan-status {
+      background: var(--hx-surface);
+      border-color: var(--hx-accent, var(--hx-yellow-deep));
+      box-shadow:
+        0 0 0 3px var(--hx-bg-2),
+        0 0 0 4px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 18%, transparent);
+    }
+    .hx-md-plan-step.is-pending .hx-md-plan-status {
+      background: var(--hx-bg-2);
+      border-color: color-mix(in srgb, var(--hx-text) 10%, transparent);
+    }
+    .hx-md-plan-check { width: 10px; height: 10px; }
+    .hx-md-plan-pulse {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--hx-accent, var(--hx-yellow-deep));
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 35%, transparent);
+      animation: hx-plan-pulse 1.6s ease-out infinite;
+    }
+    @keyframes hx-plan-pulse {
+      0%   { box-shadow: 0 0 0 0   color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 50%, transparent); }
+      70%  { box-shadow: 0 0 0 8px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 0%,  transparent); }
+      100% { box-shadow: 0 0 0 0   color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 0%,  transparent); }
+    }
+    .hx-md-plan-body {
+      display: flex; align-items: baseline;
+      gap: 10px;
+      min-width: 0;
+    }
+    .hx-md-plan-num {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: color-mix(in srgb, var(--hx-text) 35%, transparent);
+      flex-shrink: 0;
+      padding-top: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .hx-md-plan-label {
+      flex: 1; min-width: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.55;
+      letter-spacing: -0.005em;
+      color: var(--hx-text);
+      transition: color 0.2s ease, opacity 0.2s ease;
+    }
+    .hx-md-plan-step.is-done .hx-md-plan-label {
+      color: color-mix(in srgb, var(--hx-text) 55%, transparent);
+      text-decoration: none;
+    }
+    .hx-md-plan-step.is-done .hx-md-plan-num {
+      color: color-mix(in srgb, var(--hx-text) 24%, transparent);
+    }
+    .hx-md-plan-step.is-pending .hx-md-plan-label {
+      color: color-mix(in srgb, var(--hx-text) 72%, transparent);
+    }
+
+    /* ── Refined response typography ─────────────────────────────────
+       Calm rhythm, premium hierarchy, consistent vertical spacing. */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.72;
+      letter-spacing: -0.005em;
+      color: var(--hx-text);
+      font-feature-settings: 'kern', 'liga', 'calt', 'cv11';
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > * {
+      margin-top: 0;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > * + * {
+      margin-top: 12px;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h {
+      margin-top: 22px;
+      margin-bottom: 4px;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h:first-child,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h:first-child,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h:first-child {
+      margin-top: 2px;
+    }
+
+    /* Refined heading hierarchy */
+    body[data-active="chat"] .hx-md-h1 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.018em;
+      line-height: 1.25;
+    }
+    body[data-active="chat"] .hx-md-h2 {
+      font-size: 16.5px;
+      font-weight: 600;
+      letter-spacing: -0.012em;
+      line-height: 1.3;
+      border-bottom: 0;
+      padding-bottom: 0;
+      text-transform: none;
+    }
+    body[data-active="chat"] .hx-md-h3 {
+      font-size: 14.5px;
+      font-weight: 600;
+      letter-spacing: -0.006em;
+      line-height: 1.35;
+      color: var(--hx-text);
+    }
+    body[data-active="chat"] .hx-md-h4 {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--hx-text) 56%, transparent);
+    }
+
+    /* Refined paragraph + lists rhythm */
+    body[data-active="chat"] .hx-md-list {
+      margin: 8px 0;
+      gap: 6px;
+    }
+    body[data-active="chat"] .hx-md-list > li {
+      padding-left: 22px;
+      line-height: 1.68;
+      letter-spacing: -0.003em;
+    }
+    body[data-active="chat"] .hx-md-list > li::before {
+      top: 11px;
+      width: 4px; height: 4px;
+      background: color-mix(in srgb, var(--hx-text) 42%, transparent);
+    }
+    body[data-active="chat"] .hx-md-list.hx-md-list-num > li::before {
+      top: 0;
+      background: transparent;
+      width: auto; height: auto;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: color-mix(in srgb, var(--hx-text) 38%, transparent);
+      letter-spacing: 0;
+    }
+
+    /* Refined inline code */
+    body[data-active="chat"] .hx-md-inline {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.84em;
+      padding: 1.5px 6px;
+      background: color-mix(in srgb, var(--hx-text) 5%, transparent);
+      border: 1px solid color-mix(in srgb, var(--hx-text) 7%, transparent);
+      border-radius: 5px;
+      color: var(--hx-text);
+      letter-spacing: -0.005em;
+      font-variant-ligatures: none;
+    }
+
+    /* Refined blockquote */
+    body[data-active="chat"] .hx-md-quote {
+      margin: 14px 0;
+      padding: 4px 0 4px 16px;
+      border-left: 2px solid color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 60%, transparent);
+      background: transparent;
+      color: color-mix(in srgb, var(--hx-text) 78%, transparent);
+      font-style: normal;
+      font-size: 14.5px;
+      line-height: 1.65;
+    }
+
+    /* Refined HR */
+    body[data-active="chat"] .hx-md-hr {
+      margin: 22px 0;
+      background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--hx-text) 10%, transparent) 18%, color-mix(in srgb, var(--hx-text) 10%, transparent) 82%, transparent 100%);
+    }
+
+    /* Refined links */
+    body[data-active="chat"] .hx-md-link {
+      color: var(--hx-text);
+      border-bottom: 1px solid color-mix(in srgb, var(--hx-text) 32%, transparent);
+      padding-bottom: 0.5px;
+      transition: border-color 0.14s ease;
+    }
+    body[data-active="chat"] .hx-md-link:hover {
+      border-color: var(--hx-text);
+    }
+
+    /* Refined user bubble — tighter, more refined */
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+      background: var(--hx-bg-2);
+      border: 1px solid color-mix(in srgb, var(--hx-text) 7%, transparent);
+      border-radius: 14px;
+      border-top-right-radius: 5px;
+      padding: 10px 14px;
+      font-size: 14.5px;
+      line-height: 1.55;
+      box-shadow: none;
+      letter-spacing: -0.004em;
+    }
+
+    /* Avatar — quieter, more refined */
+    body[data-active="chat"] .hx-msg-avatar {
+      background: var(--hx-surface);
+      border: 1px solid color-mix(in srgb, var(--hx-text) 8%, transparent);
+      box-shadow: 0 1px 1px rgba(20, 18, 12, 0.02);
+    }
+
+    /* Action row — tighter, more refined */
+    body[data-active="chat"] .hx-msg-actions {
+      margin-top: 12px;
+      gap: 0;
+    }
+    body[data-active="chat"] .hx-msg-act {
+      height: 26px;
+      padding: 0 8px;
+      font-size: 11.5px;
+      gap: 5px;
+      border-radius: 6px;
+      color: color-mix(in srgb, var(--hx-text) 50%, transparent);
+    }
+    body[data-active="chat"] .hx-msg-act:hover {
+      background: color-mix(in srgb, var(--hx-text) 5%, transparent);
+      color: var(--hx-text);
+    }
+    body[data-active="chat"] .hx-msg-act svg { width: 12.5px; height: 12.5px; }
+
+    /* Refined thread proportions */
+    body[data-active="chat"] .hx-chat-thread-inner {
+      max-width: 760px;
+      padding: 36px 32px 28px;
+      gap: 32px;
+    }
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-chat-thread-inner { padding: 24px 16px 22px; gap: 24px; }
+      body[data-active="chat"] .hx-md-plan { padding: 10px 12px 10px; }
+      body[data-active="chat"] .hx-md-plan-eyebrow { font-size: 10px; }
+      .hx-md-plan-label { font-size: 13.5px; }
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -6126,17 +6488,54 @@
           var content = quotes[parseInt(n, 10)] || '';
           return '<blockquote class="hx-md-quote">' + renderInlineFragments(content) + '</blockquote>';
         });
-        // Expand checklist placeholders
+        // Expand checklist placeholders — rendered as a premium AI
+        // workflow timeline. Each item gets a numbered status indicator,
+        // a refined connector line on its left edge, and proper
+        // typography. No raw HTML checkbox look anywhere.
         s = s.replace(/\x00CHECKLIST_(\d+)\x00/g, function (_, n) {
           var items = checklists[parseInt(n, 10)] || [];
-          var html = '<ul class="hx-md-checklist">';
-          items.forEach(function (it) {
-            html += '<li class="hx-md-check-item' + (it.done ? ' is-done' : '') + '">' +
-              '<span class="hx-md-check-box" aria-hidden="true"></span>' +
-              '<span class="hx-md-check-label">' + renderInlineFragments(it.label) + '</span>' +
+          var total = items.length;
+          var doneCount = items.filter(function (it) { return it.done; }).length;
+          var active = -1;
+          for (var i2 = 0; i2 < items.length; i2++) {
+            if (!items[i2].done) { active = i2; break; }
+          }
+          var headLabel = doneCount === total
+            ? 'Plan complete'
+            : (doneCount === 0 ? 'Plan' : 'In progress · ' + doneCount + ' of ' + total);
+          var html = '<div class="hx-md-plan' + (doneCount === total ? ' is-complete' : '') + '">' +
+            '<div class="hx-md-plan-head">' +
+              '<span class="hx-md-plan-eyebrow">' +
+                '<svg class="hx-md-plan-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+                  '<circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.55"/>' +
+                  '<circle cx="8" cy="8" r="2" fill="currentColor"/>' +
+                '</svg>' +
+                '<span>' + escape(headLabel) + '</span>' +
+              '</span>' +
+              '<span class="hx-md-plan-progress" aria-hidden="true">' +
+                '<span class="hx-md-plan-progress-track">' +
+                  '<span class="hx-md-plan-progress-fill" style="width:' + (total ? Math.round((doneCount/total)*100) : 0) + '%"></span>' +
+                '</span>' +
+                '<span class="hx-md-plan-count">' + doneCount + '/' + total + '</span>' +
+              '</span>' +
+            '</div>' +
+            '<ol class="hx-md-plan-steps">';
+          items.forEach(function (it, idx) {
+            var status = it.done ? 'done' : (idx === active ? 'active' : 'pending');
+            var statusInner = it.done
+              ? '<svg class="hx-md-plan-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 6.4l2.2 2.2 3.8-4.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+              : (status === 'active'
+                  ? '<span class="hx-md-plan-pulse" aria-hidden="true"></span>'
+                  : '');
+            html += '<li class="hx-md-plan-step is-' + status + '">' +
+              '<span class="hx-md-plan-status" aria-hidden="true">' + statusInner + '</span>' +
+              '<span class="hx-md-plan-body">' +
+                '<span class="hx-md-plan-num">' + String(idx + 1).padStart(2, '0') + '</span>' +
+                '<span class="hx-md-plan-label">' + renderInlineFragments(it.label) + '</span>' +
+              '</span>' +
             '</li>';
           });
-          html += '</ul>';
+          html += '</ol></div>';
           return html;
         });
         // Expand tool cards LAST so they survive other transformations.
