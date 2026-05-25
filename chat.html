@@ -8582,6 +8582,248 @@
       body[data-active="chat"] .hx-voice-wave { height: 20px; gap: 2.5px; }
       body[data-active="chat"] .hx-voice-wave > span { height: 20px; }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V16 — UNIFIED COMPOSER + VOICE
+       Composer regains structural presence (50px tall). Voice mode
+       reuses that same silhouette so the recording state is a true
+       mode shift, not a popup. Label fixed to "Listening".
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* ── Composer — more confident proportions ─────────────────────── */
+    body[data-active="chat"] .hx-chat-compose {
+      padding: 6px var(--col-x) 22px;
+    }
+    body[data-active="chat"] .hx-chat-compose-inner {
+      max-width: var(--col);
+      gap: 6px;
+    }
+    body[data-active="chat"] .hx-chat-input-row {
+      background: var(--hx-surface);
+      border: 1px solid var(--b2);
+      border-radius: 14px;
+      padding: 7px 8px 7px 14px;
+      box-shadow:
+        0 1px 0 rgba(20, 18, 12, 0.02),
+        0 4px 14px -8px rgba(20, 18, 12, 0.08);
+      transition:
+        background 180ms cubic-bezier(0.2, 0.7, 0.2, 1),
+        border-color 180ms cubic-bezier(0.2, 0.7, 0.2, 1),
+        box-shadow 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    body[data-active="chat"] .hx-chat-input-row:hover {
+      background: var(--hx-surface);
+      border-color: color-mix(in srgb, var(--hx-text) 16%, transparent);
+      box-shadow:
+        0 1px 0 rgba(20, 18, 12, 0.02),
+        0 6px 18px -10px rgba(20, 18, 12, 0.10);
+    }
+    body[data-active="chat"] .hx-chat-input-row:focus-within {
+      background: var(--hx-surface);
+      border-color: color-mix(in srgb, var(--hx-text) 32%, transparent);
+      box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--hx-text) 4%, transparent),
+        0 6px 18px -10px rgba(20, 18, 12, 0.12);
+    }
+    body[data-active="chat"] .hx-chat-input-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-height: 32px;
+    }
+    body[data-active="chat"] .hx-chat-textarea {
+      font-family: var(--sans);
+      font-size: 14.5px;
+      line-height: 1.55;
+      padding: 5px 4px;
+      color: var(--t1);
+      letter-spacing: -0.004em;
+      min-height: 22px;
+    }
+    body[data-active="chat"] .hx-chat-textarea::placeholder {
+      color: var(--t4);
+      font-weight: 400;
+    }
+    body[data-active="chat"] .hx-chat-tool-btn {
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      color: var(--t3);
+      border: 0;
+      background: transparent;
+      transition: background 140ms ease, color 140ms ease;
+    }
+    body[data-active="chat"] .hx-chat-tool-btn:hover {
+      background: color-mix(in srgb, var(--hx-text) 5%, transparent);
+      color: var(--t1);
+    }
+    body[data-active="chat"] .hx-chat-tool-btn svg { width: 16px; height: 16px; stroke-width: 1.6; }
+    body[data-active="chat"] .hx-chat-send {
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      transition: background 140ms ease, color 140ms ease, transform 120ms ease, box-shadow 180ms ease;
+    }
+    body[data-active="chat"] .hx-chat-send:disabled {
+      background: transparent;
+      color: var(--t4);
+    }
+    body[data-active="chat"] .hx-chat-send:not(:disabled) {
+      background: var(--t1);
+      color: var(--hx-bg);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+    }
+    body[data-active="chat"] .hx-chat-send:not(:disabled):hover {
+      background: color-mix(in srgb, var(--t1) 90%, #000);
+      box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.12),
+        0 0 0 3px color-mix(in srgb, var(--hx-text) 5%, transparent);
+    }
+    body[data-active="chat"] .hx-chat-send:not(:disabled):active { transform: scale(0.94); }
+    body[data-active="chat"] .hx-chat-send svg { width: 15px; height: 15px; stroke-width: 2; }
+
+    /* ── Voice mode — same silhouette as composer, gold mode shift ── */
+    body[data-active="chat"] .hx-chat-input-row.is-recording-mode {
+      background: var(--hx-surface);
+      border-color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 32%, var(--b2));
+      box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 8%, transparent),
+        0 6px 18px -10px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 30%, transparent);
+    }
+    body[data-active="chat"] .hx-chat-input-row.is-recording-mode:focus-within {
+      border-color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 44%, var(--b2));
+      box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 10%, transparent),
+        0 6px 20px -10px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 36%, transparent);
+    }
+
+    body[data-active="chat"] .hx-voice-panel {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 2px 0 0;
+      min-height: 32px;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      overflow: visible;
+    }
+    body[data-active="chat"] .hx-voice-panel::before { display: none !important; }
+
+    body[data-active="chat"] .hx-voice-panel-left {
+      display: inline-flex; align-items: center; gap: 10px;
+      flex-shrink: 0;
+    }
+    body[data-active="chat"] .hx-voice-rec-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--hx-accent, var(--hx-yellow-deep));
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 40%, transparent);
+      animation: hx-voice-breathe-v16 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    @keyframes hx-voice-breathe-v16 {
+      0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 36%, transparent); opacity: 0.95; }
+      50%      { box-shadow: 0 0 0 4px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 0%, transparent);  opacity: 1; }
+    }
+    body[data-active="chat"] .hx-voice-panel-label {
+      font-family: var(--sans);
+      font-size: 11.5px;
+      font-weight: 500;
+      font-style: italic;
+      letter-spacing: -0.003em;
+      color: var(--t3);
+      text-transform: none;
+    }
+    body[data-active="chat"] .hx-voice-panel-label::before { content: none !important; }
+    body[data-active="chat"] .hx-voice-timer {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: var(--t2);
+      font-variant-numeric: tabular-nums;
+      padding: 0 0 0 11px;
+      margin: 0;
+      border-left: 1px solid var(--rail);
+    }
+
+    /* Waveform — slightly taller to match new composer presence */
+    body[data-active="chat"] .hx-voice-wave {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 24px;
+      gap: 3px;
+      flex: 1;
+    }
+    body[data-active="chat"] .hx-voice-wave > span {
+      --amp: 0.04;
+      width: 2px;
+      height: 24px;
+      border-radius: 1px;
+      background: var(--hx-accent, var(--hx-yellow-deep));
+      transform-origin: center center;
+      transform: scaleY(var(--amp));
+      animation: none !important;
+      opacity: calc(0.42 + (var(--amp) * 0.58));
+      transition:
+        transform 110ms cubic-bezier(0.22, 0.61, 0.36, 1),
+        opacity   160ms ease;
+      will-change: transform, opacity;
+    }
+
+    /* Voice control buttons — match composer's 30×30 */
+    body[data-active="chat"] .hx-voice-panel-actions {
+      display: inline-flex; align-items: center; gap: 2px;
+      flex-shrink: 0;
+    }
+    body[data-active="chat"] .hx-voice-cancel,
+    body[data-active="chat"] .hx-voice-done {
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      padding: 0;
+      box-shadow: none;
+      border: 0;
+      transition:
+        background 140ms ease,
+        color 140ms ease,
+        transform 120ms ease,
+        box-shadow 180ms ease;
+    }
+    body[data-active="chat"] .hx-voice-cancel {
+      background: transparent;
+      color: var(--t3);
+    }
+    body[data-active="chat"] .hx-voice-cancel:hover {
+      background: var(--bg-hover);
+      color: var(--t1);
+      transform: none;
+    }
+    body[data-active="chat"] .hx-voice-cancel svg { width: 14px; height: 14px; stroke-width: 2; }
+    body[data-active="chat"] .hx-voice-done {
+      background: var(--hx-accent, var(--hx-yellow-deep));
+      color: #fff;
+      box-shadow: 0 1px 2px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 30%, transparent);
+    }
+    body[data-active="chat"] .hx-voice-done:hover {
+      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 90%, #000);
+      transform: none;
+      box-shadow:
+        0 2px 4px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 36%, transparent),
+        0 0 0 3px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 14%, transparent);
+    }
+    body[data-active="chat"] .hx-voice-done:active { transform: scale(0.94); }
+    body[data-active="chat"] .hx-voice-done svg { width: 14px; height: 14px; stroke-width: 2.2; color: #fff; }
+
+    /* Mobile */
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-chat-input-row { border-radius: 12px; padding: 6px 7px 6px 12px; }
+      body[data-active="chat"] .hx-chat-tool-btn,
+      body[data-active="chat"] .hx-chat-send,
+      body[data-active="chat"] .hx-voice-cancel,
+      body[data-active="chat"] .hx-voice-done { width: 28px; height: 28px; }
+      body[data-active="chat"] .hx-voice-panel-label { display: none; }
+      body[data-active="chat"] .hx-voice-wave { height: 22px; }
+      body[data-active="chat"] .hx-voice-wave > span { height: 22px; }
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -8701,7 +8943,7 @@
                 <div class="hx-voice-panel" id="hx-c-voice-panel" hidden>
                   <div class="hx-voice-panel-left">
                     <span class="hx-voice-rec-dot" aria-hidden="true"></span>
-                    <span class="hx-voice-panel-label">Recording</span>
+                    <span class="hx-voice-panel-label">Listening</span>
                     <span class="hx-voice-timer" id="hx-c-voice-timer">00:00</span>
                   </div>
                   <div class="hx-voice-wave" aria-hidden="true">
@@ -10846,10 +11088,19 @@
           var n = voiceBars ? voiceBars.length : 0;
           if (!n) return;
           voiceBarLevels = new Float32Array(n);
-          voicePeak = 0.08;          // start at calm baseline so silence reads idle
+          for (var ix = 0; ix < n; ix++) voiceBarLevels[ix] = 0.04;   // start dead-idle
+          voicePeak = 0.10;          // adaptive normaliser
 
           var timeBuf = new Uint8Array(voiceAnalyser.fftSize);
           var freqBuf = new Uint8Array(voiceAnalyser.frequencyBinCount);
+
+          // True silence gate — anything quieter than this is treated as
+          // exactly silence. With opus-grade mics, ambient room noise
+          // typically sits at RMS ≈ 0.004 – 0.008, so 0.012 is a safe
+          // floor that voice (even whispers) easily exceeds.
+          var SILENCE_RMS = 0.012;
+          var IDLE_AMP    = 0.04;
+          var silenceFrames = 0;
 
           function tick() {
             if (voiceState !== 'recording' || !voiceAnalyser) {
@@ -10857,7 +11108,7 @@
               return;
             }
 
-            // Overall RMS from time-domain — drives a slow adaptive peak
+            // Overall RMS from time-domain
             voiceAnalyser.getByteTimeDomainData(timeBuf);
             var sum = 0;
             for (var i = 0; i < timeBuf.length; i++) {
@@ -10866,14 +11117,43 @@
             }
             var rms = Math.sqrt(sum / timeBuf.length);
 
-            // Auto-gain: track recent peak so a quiet voice fills the bars too
-            voicePeak = Math.max(voicePeak * 0.985, rms * 1.35, 0.04);
+            // If RMS is under the silence floor, decay every bar to the
+            // idle baseline and stop drawing further animation frames
+            // until voice returns. This is the key to "no movement when
+            // silent" — the meter literally stops.
+            if (rms < SILENCE_RMS) {
+              silenceFrames++;
+              var anyMoving = false;
+              for (var b0 = 0; b0 < n; b0++) {
+                var cur = voiceBarLevels[b0];
+                var next = cur + (IDLE_AMP - cur) * 0.12;     // slow natural decay
+                if (Math.abs(next - IDLE_AMP) > 0.002) anyMoving = true;
+                voiceBarLevels[b0] = next;
+                voiceBars[b0].style.setProperty('--amp', next.toFixed(3));
+              }
+              // Bleed the adaptive peak so the next voice burst recalibrates fresh
+              voicePeak = Math.max(0.08, voicePeak * 0.96);
+              // Keep ticking only while bars are still settling; otherwise pause
+              if (anyMoving || silenceFrames < 8) {
+                voiceRafId = requestAnimationFrame(tick);
+              } else {
+                // Force exact idle and stop the RAF until voice comes back
+                for (var b1 = 0; b1 < n; b1++) {
+                  voiceBarLevels[b1] = IDLE_AMP;
+                  voiceBars[b1].style.setProperty('--amp', IDLE_AMP.toFixed(3));
+                }
+                voiceRafId = setTimeout(tick, 80);     // poll every 80ms for new voice
+              }
+              return;
+            }
 
-            // Per-bar frequency envelopes — voice energy concentrates in
-            // 80–4000Hz, so we sample a log-spaced slice of the spectrum.
+            silenceFrames = 0;
+            // Auto-gain: track recent peak so a quiet voice fills the bars too
+            voicePeak = Math.max(voicePeak * 0.985, rms * 1.35, 0.06);
+
+            // Per-bar frequency envelopes
             voiceAnalyser.getByteFrequencyData(freqBuf);
             var binsTotal = freqBuf.length;
-            // Map first ~28% of bins (the speech band for 44.1kHz / 1024 fft)
             var usable = Math.max(8, Math.floor(binsTotal * 0.28));
             var perBar = Math.max(1, Math.floor(usable / n));
 
@@ -10883,14 +11163,11 @@
               var acc = 0, cnt = 0;
               for (var k = start; k < end; k++) { acc += freqBuf[k]; cnt++; }
               var avg = cnt ? (acc / cnt) / 255 : 0;
-              // Normalise against the adaptive peak; clamp 0..1
               var normalised = Math.min(1, avg / Math.max(0.06, voicePeak * 1.6));
-              // Subtle natural variation between adjacent bars
               normalised *= 0.7 + 0.3 * Math.sin((b / n) * Math.PI);
-              // Smoothing — feels like a real meter, not a CSS animation
               var prev = voiceBarLevels[b];
-              var target = Math.max(0.05, normalised);    // idle baseline
-              var smoothed = prev + (target - prev) * (target > prev ? 0.55 : 0.18);
+              var target = Math.max(IDLE_AMP, normalised);
+              var smoothed = prev + (target - prev) * (target > prev ? 0.55 : 0.20);
               voiceBarLevels[b] = smoothed;
               voiceBars[b].style.setProperty('--amp', smoothed.toFixed(3));
             }
@@ -10901,7 +11178,12 @@
         }
 
         function stopVoiceAnalyser() {
-          if (voiceRafId) { try { cancelAnimationFrame(voiceRafId); } catch (e) {} voiceRafId = null; }
+          if (voiceRafId) {
+            // voiceRafId may be a RAF handle OR a setTimeout id (silence poll)
+            try { cancelAnimationFrame(voiceRafId); } catch (e) {}
+            try { clearTimeout(voiceRafId); } catch (e) {}
+            voiceRafId = null;
+          }
           if (voiceSource)   { try { voiceSource.disconnect(); } catch (e) {} voiceSource = null; }
           if (voiceAnalyser) { try { voiceAnalyser.disconnect(); } catch (e) {} voiceAnalyser = null; }
           if (voiceAudioCtx) {
@@ -10911,7 +11193,7 @@
           // Settle bars to calm idle
           if (voiceBars && voiceBars.length) {
             for (var i = 0; i < voiceBars.length; i++) {
-              voiceBars[i].style.setProperty('--amp', '0.06');
+              voiceBars[i].style.setProperty('--amp', '0.04');
             }
           }
           voiceBarLevels = null;
