@@ -5216,6 +5216,149 @@
       font-size: 13px;
       letter-spacing: -0.005em;
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V6 — COMPACT FLOATING AI CONTROL PANEL
+       Tightens the dropdown without losing premium feel. Matches the
+       compact elegance of Arc / Linear / ChatGPT desktop panels.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* Container — narrower, lighter shadow, more integrated */
+    body[data-active="chat"] .hx-cc-model-menu,
+    body[data-active="chat"] .hx-cc-mode-menu,
+    body[data-active="chat"] .hx-cc-mic-menu,
+    body[data-active="chat"] .hx-cc-usage-menu {
+      min-width: 232px;
+      max-width: 256px;
+      padding: 4px;
+      border-radius: 12px;
+      background: rgba(22, 22, 24, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow:
+        0 0 0 0.5px rgba(0, 0, 0, 0.3),
+        0 10px 28px -8px rgba(0, 0, 0, 0.50),
+        0 2px 8px -2px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Section headers — tighter, smaller, refined */
+    body[data-active="chat"] .hx-cc-menu-section {
+      padding: 8px 8px 4px;
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      color: rgba(255, 255, 255, 0.36);
+    }
+    body[data-active="chat"] .hx-cc-menu-section:first-child {
+      padding-top: 5px;
+    }
+    body[data-active="chat"] .hx-cc-menu-section-top {
+      margin-top: 3px;
+      padding-top: 11px;
+    }
+    body[data-active="chat"] .hx-cc-menu-section-top::before {
+      top: 2px;
+      left: 4px; right: 4px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Kbd chips — smaller, tighter */
+    body[data-active="chat"] .hx-cc-menu-kbd { gap: 3px; }
+    body[data-active="chat"] .hx-cc-menu-kbd > span {
+      min-width: 16px; height: 15px;
+      padding: 0 4px;
+      border-radius: 3.5px;
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    /* Option rows — compact 30px, tighter font, restrained accent rail */
+    body[data-active="chat"] .hx-cc-model-opt,
+    body[data-active="chat"] .hx-cc-effort-opt,
+    body[data-active="chat"] .hx-cc-mode-opt {
+      gap: 10px;
+      padding: 0 8px;
+      height: 30px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: -0.005em;
+    }
+    body[data-active="chat"] .hx-cc-model-opt.is-active::before,
+    body[data-active="chat"] .hx-cc-effort-opt.is-active::before,
+    body[data-active="chat"] .hx-cc-mode-opt.is-active::before {
+      left: 2px;
+      width: 2px; height: 14px;
+      box-shadow: 0 0 6px rgba(201, 162, 39, 0.40);
+    }
+    body[data-active="chat"] .hx-cc-check {
+      width: 11px; height: 11px;
+    }
+    body[data-active="chat"] .hx-cc-num {
+      min-width: 16px; height: 15px;
+      padding: 0 4px;
+      border-radius: 3.5px;
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.38);
+    }
+
+    /* Effort bars — compact */
+    body[data-active="chat"] .hx-cc-effort-bars {
+      height: 10px;
+      gap: 1.5px;
+    }
+    body[data-active="chat"] .hx-cc-effort-bars > i {
+      width: 2.5px;
+      border-radius: 0.5px;
+    }
+    body[data-active="chat"] .hx-cc-effort-bars > i:nth-child(1) { height: 3px; }
+    body[data-active="chat"] .hx-cc-effort-bars > i:nth-child(2) { height: 5px; }
+    body[data-active="chat"] .hx-cc-effort-bars > i:nth-child(3) { height: 6.5px; }
+    body[data-active="chat"] .hx-cc-effort-bars > i:nth-child(4) { height: 8px; }
+    body[data-active="chat"] .hx-cc-effort-bars > i:nth-child(5) { height: 10px; }
+
+    /* Fast-mode row — tighter, lighter */
+    body[data-active="chat"] .hx-cc-fast-row {
+      padding: 7px 8px 8px;
+      gap: 10px;
+      margin-top: 1px;
+    }
+    .hx-cc-fast-title {
+      font-size: 12.5px;
+      letter-spacing: -0.005em;
+    }
+    .hx-cc-fast-sub {
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.36);
+    }
+    body[data-active="chat"] .hx-cc-fast-switch {
+      width: 28px; height: 16px;
+    }
+    body[data-active="chat"] .hx-cc-fast-switch::after {
+      width: 11px; height: 11px;
+      top: 1.5px; left: 1.5px;
+    }
+    body[data-active="chat"] .hx-cc-fast-switch.is-on::after {
+      transform: translateX(12px);
+    }
+
+    /* Mode hint at bottom — tighter */
+    body[data-active="chat"] .hx-cc-mode-hint {
+      padding: 4px 8px 2px;
+      font-size: 10px;
+    }
+
+    /* Mic menu — same compact rhythm */
+    body[data-active="chat"] .hx-cc-mic-opt {
+      gap: 10px;
+      padding: 0 8px;
+      height: 30px;
+      border-radius: 6px;
+      font-size: 12.5px;
+    }
+    body[data-active="chat"] .hx-cc-mic-row {
+      padding: 7px 8px 8px;
+      font-size: 12.5px;
+    }
   </style>
 </head>
 <body data-active="chat">
