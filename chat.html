@@ -10088,6 +10088,223 @@
       body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p:first-child { font-size: 16px; }
       body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li { font-size: 14.75px; }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V21 — CHATGPT-PATTERN INTERACTION ARCHITECTURE
+       The pattern the user actually wants: assistant prose runs plain
+       on the canvas, user message is a refined bubble with hover-only
+       Edit + Copy controls, a real action toolbar lives under every
+       assistant turn, and a floating scroll-to-latest FAB anchors long
+       sessions. Kills the gold identity rail entirely.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* Kill V20's identity rail — assistant prose is just clean text */
+    body[data-active="chat"] .hx-msg.is-assistant > .hx-msg-body {
+      padding-left: 0;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant > .hx-msg-body::before,
+    body[data-active="chat"] .hx-msg.is-assistant > .hx-msg-body::after {
+      display: none !important;
+      content: none !important;
+    }
+    /* Lead paragraph drops back to body size — no more "enlarged" first line */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p:first-child,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > details.hx-rsn + p {
+      font-size: 15.75px;
+      font-weight: 400;
+      line-height: 1.7;
+      letter-spacing: -0.006em;
+      color: var(--t1);
+    }
+    /* Neutral bullets — no gold dots */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li::before {
+      background: var(--t3);
+      box-shadow: none;
+      width: 4px; height: 4px;
+    }
+    /* Inline code: neutral chip */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-inline {
+      background: var(--bg-soft);
+      border: 1px solid var(--b1);
+      color: var(--t1);
+    }
+
+    /* ── User bubble — refined with hover-revealed Edit / Copy ─────── */
+    body[data-active="chat"] .hx-msg.is-user {
+      display: flex;
+      justify-content: flex-end;
+      position: relative;
+    }
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-body {
+      position: relative;
+      width: auto;
+      max-width: min(560px, 76%);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+      background: color-mix(in srgb, var(--hx-text) 5%, var(--hx-surface));
+      border: 0;
+      border-radius: 18px;
+      padding: 11px 16px;
+      font-family: var(--sans);
+      font-size: 14.75px;
+      line-height: 1.55;
+      letter-spacing: -0.004em;
+      color: var(--t1);
+      max-width: 100%;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 35%, transparent),
+        0 1px 1px color-mix(in srgb, var(--hx-text) 4%, transparent);
+    }
+    body[data-active="chat"] .hx-msg-user-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      opacity: 0;
+      transform: translateY(-2px);
+      transition: opacity 160ms ease, transform 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
+      pointer-events: none;
+    }
+    body[data-active="chat"] .hx-msg.is-user:hover .hx-msg-user-actions,
+    body[data-active="chat"] .hx-msg-user-actions:focus-within {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    body[data-active="chat"] .hx-msg-user-act {
+      width: 28px; height: 28px;
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+      color: var(--t3);
+      cursor: pointer;
+      transition: background 140ms ease, color 140ms ease;
+    }
+    body[data-active="chat"] .hx-msg-user-act:hover {
+      background: var(--bg-hover);
+      color: var(--t1);
+    }
+    body[data-active="chat"] .hx-msg-user-act svg { width: 13.5px; height: 13.5px; }
+
+    /* ── Assistant action toolbar — ChatGPT-pattern, always under msg ─ */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      margin-top: 14px;
+      margin-left: -6px;
+      padding: 0;
+      opacity: 0.55;
+      transform: translateY(2px);
+      transition: opacity 180ms ease, transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    body[data-active="chat"] .hx-msg.is-assistant:hover .hx-msg-actions,
+    body[data-active="chat"] .hx-msg-actions:focus-within {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act {
+      width: 30px; height: 30px;
+      padding: 0;
+      gap: 0;
+      font-size: 0;
+      border-radius: 7px;
+      color: var(--t3);
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      justify-content: center;
+      transition: background 140ms ease, color 140ms ease, transform 120ms ease;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act:hover {
+      background: var(--bg-hover);
+      color: var(--t1);
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act:active {
+      transform: scale(0.94);
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act svg {
+      width: 15px; height: 15px;
+      opacity: 0.9;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-speak svg {
+      width: 14px; height: 14px;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act-label,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act > :not(svg):not(.hx-msg-speak-ico):not(.hx-msg-speak-load) {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+    body[data-active="chat"] .hx-msg-speak-ico { width: 15px; height: 15px; }
+    body[data-active="chat"] .hx-msg-speak-load { display: none; }
+    body[data-active="chat"] .hx-msg-speak.is-loading .hx-msg-speak-load { display: inline-flex; }
+    body[data-active="chat"] .hx-msg-speak.is-playing,
+    body[data-active="chat"] .hx-msg-speak.is-loading {
+      color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 80%, var(--hx-text));
+    }
+    body[data-active="chat"] .hx-msg-speak.is-playing::after { content: none !important; }
+
+    /* ── Scroll-to-latest floating button ─────────────────────────── */
+    body[data-active="chat"] .hx-chat-pane {
+      position: relative;
+    }
+    body[data-active="chat"] .hx-chat-scroll-fab {
+      position: absolute;
+      left: 50%;
+      bottom: 96px;
+      transform: translate(-50%, 6px);
+      width: 34px; height: 34px;
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      background: color-mix(in srgb, var(--hx-bg) 80%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--b1);
+      border-radius: 50%;
+      color: var(--t2);
+      cursor: pointer;
+      z-index: 5;
+      opacity: 0;
+      pointer-events: none;
+      box-shadow:
+        0 1px 2px rgba(20, 18, 12, 0.05),
+        0 6px 18px -8px rgba(20, 18, 12, 0.12);
+      transition: opacity 200ms ease, transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1), background 140ms ease, color 140ms ease;
+    }
+    body[data-active="chat"] .hx-chat-scroll-fab[hidden] { display: none; }
+    body[data-active="chat"] .hx-chat-scroll-fab.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, 0);
+    }
+    body[data-active="chat"] .hx-chat-scroll-fab.is-hiding {
+      opacity: 0;
+      transform: translate(-50%, 6px);
+      pointer-events: none;
+    }
+    body[data-active="chat"] .hx-chat-scroll-fab:hover {
+      background: var(--hx-surface);
+      color: var(--t1);
+      border-color: var(--b2);
+    }
+    body[data-active="chat"] .hx-chat-scroll-fab:active {
+      transform: translate(-50%, 1px);
+    }
+    body[data-active="chat"] .hx-chat-scroll-fab svg { width: 15px; height: 15px; }
+
+    /* Mobile */
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-chat-scroll-fab { bottom: 84px; width: 32px; height: 32px; }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act,
+      body[data-active="chat"] .hx-msg-user-act { width: 28px; height: 28px; }
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -10172,6 +10389,9 @@
             <span class="hx-chat-balance" id="hx-c-balance" hidden aria-hidden="true" style="display:none !important;">—</span>
           </header>
 
+          <button class="hx-chat-scroll-fab" id="hx-c-scroll-fab" type="button" aria-label="Scroll to latest" title="Scroll to latest" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+          </button>
           <div class="hx-chat-thread" id="hx-c-thread">
             <div class="hx-chat-blank" id="hx-c-blank">
               <div class="hx-chat-blank-inner">
@@ -11524,24 +11744,42 @@
 
           var actions = '';
           if (isAssist && m.content && !m.__error && !m.__streaming) {
-            actions = '<div class="hx-msg-actions">' +
-              '<button class="hx-msg-act hx-msg-speak" type="button" data-act="speak" data-idx="' + i + '" aria-label="Listen">' +
+            actions = '<div class="hx-msg-actions" role="toolbar" aria-label="Response actions">' +
+              '<button class="hx-msg-act" type="button" data-act="copy" data-idx="' + i + '" aria-label="Copy" title="Copy">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
+              '</button>' +
+              '<button class="hx-msg-act" type="button" data-act="like" data-idx="' + i + '" aria-label="Good response" title="Good response">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88L14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H7"/></svg>' +
+              '</button>' +
+              '<button class="hx-msg-act" type="button" data-act="dislike" data-idx="' + i + '" aria-label="Bad response" title="Bad response">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"/><path d="M9 18.12L10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H17"/></svg>' +
+              '</button>' +
+              '<button class="hx-msg-act hx-msg-speak" type="button" data-act="speak" data-idx="' + i + '" aria-label="Read aloud" title="Read aloud">' +
                 '<span class="hx-msg-speak-ico hx-msg-speak-play">' +
-                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>' +
+                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>' +
                 '</span>' +
                 '<span class="hx-msg-speak-ico hx-msg-speak-pause">' +
-                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>' +
+                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>' +
                 '</span>' +
                 '<span class="hx-msg-speak-ico hx-msg-speak-load"><span></span><span></span><span></span></span>' +
-                '<span class="hx-msg-act-label">Listen</span>' +
               '</button>' +
-              '<button class="hx-msg-act" type="button" data-act="copy" data-idx="' + i + '">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
-                'Copy' +
+              '<button class="hx-msg-act" type="button" data-act="share" data-idx="' + i + '" aria-label="Share" title="Share">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>' +
               '</button>' +
-              '<button class="hx-msg-act" type="button" data-act="regenerate" data-idx="' + i + '">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>' +
-                'Regenerate' +
+              '<button class="hx-msg-act" type="button" data-act="regenerate" data-idx="' + i + '" aria-label="Regenerate" title="Regenerate">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>' +
+              '</button>' +
+              '<button class="hx-msg-act" type="button" data-act="more" data-idx="' + i + '" aria-label="More" title="More options">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>' +
+              '</button>' +
+            '</div>';
+          } else if (!isAssist && m.content) {
+            actions = '<div class="hx-msg-user-actions" aria-label="Message actions">' +
+              '<button class="hx-msg-user-act" type="button" data-act="edit" data-idx="' + i + '" aria-label="Edit message" title="Edit">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>' +
+              '</button>' +
+              '<button class="hx-msg-user-act" type="button" data-act="copy" data-idx="' + i + '" aria-label="Copy message" title="Copy">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
               '</button>' +
             '</div>';
           }
@@ -13235,6 +13473,47 @@
           }
           btn.addEventListener('click',    function () { setCollapsed(true);  });
           reopen.addEventListener('click', function () { setCollapsed(false); });
+        })();
+
+        // ─── Floating scroll-to-bottom button ─────────────────────────
+        (function wireScrollFab() {
+          var thread = document.getElementById('hx-c-thread');
+          var fab    = document.getElementById('hx-c-scroll-fab');
+          if (!thread || !fab) return;
+          var threshold = 80;   // px from bottom before we consider "scrolled up"
+          var raf = 0;
+          function update() {
+            raf = 0;
+            var distance = thread.scrollHeight - (thread.scrollTop + thread.clientHeight);
+            var shouldShow = distance > threshold;
+            if (shouldShow) {
+              if (fab.hasAttribute('hidden')) {
+                fab.removeAttribute('hidden');
+                fab.classList.remove('is-hiding');
+                requestAnimationFrame(function () { fab.classList.add('is-visible'); });
+              }
+            } else if (!fab.hasAttribute('hidden')) {
+              fab.classList.remove('is-visible');
+              fab.classList.add('is-hiding');
+              setTimeout(function () {
+                if (fab.classList.contains('is-hiding')) {
+                  fab.setAttribute('hidden', '');
+                  fab.classList.remove('is-hiding');
+                }
+              }, 200);
+            }
+          }
+          function schedule() {
+            if (!raf) raf = requestAnimationFrame(update);
+          }
+          thread.addEventListener('scroll', schedule, { passive: true });
+          window.addEventListener('resize', schedule, { passive: true });
+          // Re-evaluate when new messages are appended
+          new MutationObserver(schedule).observe(thread, { childList: true, subtree: true });
+          fab.addEventListener('click', function () {
+            thread.scrollTo({ top: thread.scrollHeight, behavior: 'smooth' });
+          });
+          schedule();
         })();
 
         // ─── Header Share + More + Model Badge ───────────────────────
