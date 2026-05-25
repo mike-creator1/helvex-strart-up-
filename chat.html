@@ -7100,6 +7100,382 @@
       .hx-chat-blank-lede { font-size: 13px; }
       body[data-active="chat"] .hx-chat-blank-chip { font-size: 12px; padding: 11px 12px; }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V11 — ELITE FLAGSHIP SYSTEM
+       Strips remaining UI chrome. Reading runs the full column. Reasoning
+       is invisible until summoned. The composer is a single hairline.
+       The result is conversation, not interface.
+       ═════════════════════════════════════════════════════════════════ */
+
+    body[data-active="chat"] {
+      --col: 740px;
+      --col-x: 32px;
+    }
+
+    /* Sidebar + toolbar share one background — the workspace is one room */
+    body[data-active="chat"] .hx-chat-rail,
+    body[data-active="chat"] .hx-chat-toolbar { background: var(--hx-bg); }
+    body[data-active="chat"] .hx-chat-rail { border-right: 1px solid var(--b1); }
+
+    /* ── Toolbar — minimal hairline, title pinned to thread column ─── */
+    body[data-active="chat"] .hx-chat-toolbar {
+      min-height: 46px;
+      padding: 0 var(--s4);
+      border-bottom: 1px solid var(--b1);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    body[data-active="chat"] .hx-chat-toolbar > * { position: relative; }
+    body[data-active="chat"] .hx-chat-toolbar .hx-chat-head {
+      max-width: var(--col);
+      margin: 0 auto;
+      padding: 0 var(--col-x);
+      flex: 1; min-width: 0;
+    }
+    body[data-active="chat"] .hx-chat-toolbar .hx-chat-title {
+      font-size: 13px;
+      letter-spacing: -0.007em;
+      color: var(--t2);
+      font-weight: 500;
+    }
+    body[data-active="chat"] .hx-chat-drawer-toggle {
+      position: absolute;
+      left: var(--s3);
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px; height: 28px;
+    }
+    body[data-active="chat"] .hx-chat-head-actions {
+      position: absolute;
+      right: var(--s3);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* ── Thread — quiet, generous, no avatar gutter for assistant ──── */
+    body[data-active="chat"] .hx-chat-thread-inner {
+      max-width: var(--col);
+      padding: var(--s8) var(--col-x) var(--s6);
+      gap: var(--s8);
+    }
+    body[data-active="chat"] .hx-msg {
+      display: block;
+      animation: hx-fade-up var(--mo-slow) both;
+    }
+    body[data-active="chat"] .hx-msg.is-user {
+      display: flex; justify-content: flex-end;
+    }
+    body[data-active="chat"] .hx-msg-avatar {
+      display: none !important;
+    }
+    body[data-active="chat"] .hx-msg-body {
+      width: 100%; min-width: 0;
+      max-width: 100%;
+    }
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-body {
+      width: auto;
+      max-width: min(540px, 76%);
+    }
+
+    /* Assistant — runs the full column, more luxurious reading size */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 15.5px;
+      line-height: 1.74;
+      letter-spacing: -0.006em;
+      color: var(--t1);
+      padding-top: 0;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > * { margin: 0; }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > * + * { margin-top: var(--s4); }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h + *,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h + *,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h + * { margin-top: var(--s2); }
+
+    /* User bubble — quiet container, asymmetric corner only on top-right */
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+      background: var(--bg-soft);
+      border: 0;
+      border-radius: var(--r4);
+      border-top-right-radius: 5px;
+      padding: 10px 14px;
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: var(--t1);
+      letter-spacing: -0.004em;
+      max-width: 100%;
+    }
+
+    /* Action row — left-aligned under prose, icons only, hover reveal */
+    body[data-active="chat"] .hx-msg-actions {
+      margin-top: var(--s3);
+      margin-left: -4px;
+      gap: 0;
+      opacity: 0;
+      transition: opacity var(--mo-fast);
+    }
+    body[data-active="chat"] .hx-msg:hover .hx-msg-actions,
+    body[data-active="chat"] .hx-msg-actions:focus-within { opacity: 1; }
+    body[data-active="chat"] .hx-msg-act {
+      width: 26px; height: 26px;
+      padding: 0;
+      border-radius: var(--r1);
+      color: var(--t3);
+      font-size: 0;
+      gap: 0;
+      justify-content: center;
+    }
+    body[data-active="chat"] .hx-msg-act:hover {
+      background: var(--bg-hover);
+      color: var(--t1);
+    }
+    body[data-active="chat"] .hx-msg-act svg { width: 13px; height: 13px; opacity: 0.9; }
+    body[data-active="chat"] .hx-msg-speak-ico svg { width: 12px; height: 12px; }
+
+    /* ── Headings — premium harmony ────────────────────────────────── */
+    body[data-active="chat"] .hx-md-h1 { font-size: 22px; letter-spacing: -0.022em; line-height: 1.22; font-weight: 600; }
+    body[data-active="chat"] .hx-md-h2 { font-size: 17px; letter-spacing: -0.014em; line-height: 1.28; font-weight: 600; border: 0; padding: 0; text-transform: none; }
+    body[data-active="chat"] .hx-md-h3 { font-size: 14.5px; letter-spacing: -0.006em; line-height: 1.35; font-weight: 600; }
+    body[data-active="chat"] .hx-md-h4 { font-size: 10.5px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--t3); font-weight: 600; }
+
+    /* ── Reasoning — collapsible, integrated into prose ────────────── */
+    body[data-active="chat"] .hx-rsn {
+      margin: var(--s3) 0;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    body[data-active="chat"] .hx-rsn > summary {
+      list-style: none;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s2);
+      padding: 6px 9px 6px 8px;
+      margin-left: -8px;
+      border-radius: var(--r2);
+      cursor: pointer;
+      color: var(--t3);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: -0.004em;
+      user-select: none;
+      transition: background var(--mo-fast), color var(--mo-fast);
+    }
+    body[data-active="chat"] .hx-rsn > summary::-webkit-details-marker { display: none; }
+    body[data-active="chat"] .hx-rsn > summary::marker { display: none; content: ''; }
+    body[data-active="chat"] .hx-rsn > summary:hover {
+      background: var(--bg-hover);
+      color: var(--t1);
+    }
+    .hx-rsn-state {
+      width: 12px; height: 12px;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--hx-accent, var(--hx-yellow-deep));
+    }
+    .hx-rsn-pulse {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--hx-accent, var(--hx-yellow-deep));
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 40%, transparent);
+      animation: hx-rsn-pulse 1.6s ease-out infinite;
+    }
+    @keyframes hx-rsn-pulse {
+      0%   { box-shadow: 0 0 0 0   color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 50%, transparent); }
+      70%  { box-shadow: 0 0 0 6px transparent; }
+      100% { box-shadow: 0 0 0 0   transparent; }
+    }
+    .hx-rsn-done { width: 11px; height: 11px; opacity: 0.65; }
+    .hx-rsn-caret {
+      width: 10px; height: 10px;
+      color: var(--t4);
+      transition: transform var(--mo-base);
+    }
+    body[data-active="chat"] .hx-rsn[open] > summary .hx-rsn-caret { transform: rotate(180deg); }
+
+    body[data-active="chat"] .hx-rsn-steps {
+      list-style: none;
+      padding: 6px 0 4px 14px;
+      margin: 2px 0 0 8px;
+      border-left: 1px solid var(--b1);
+      display: flex; flex-direction: column;
+      gap: var(--s1);
+    }
+    body[data-active="chat"] .hx-rsn-step {
+      display: flex; align-items: baseline;
+      gap: var(--s2);
+      padding: 3px 0;
+      position: relative;
+    }
+    .hx-rsn-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--t4);
+      flex-shrink: 0;
+      transform: translateY(-1px);
+    }
+    .hx-rsn-step.is-done .hx-rsn-dot {
+      background: var(--hx-accent, var(--hx-yellow-deep));
+    }
+    .hx-rsn-text {
+      font-size: 13.25px;
+      font-weight: 400;
+      line-height: 1.55;
+      letter-spacing: -0.004em;
+      color: var(--t2);
+    }
+    .hx-rsn-step.is-done .hx-rsn-text { color: var(--t3); }
+
+    /* Kill the old plan-card chrome entirely — V11 uses .hx-rsn only */
+    body[data-active="chat"] .hx-md-plan { all: revert; }
+    body[data-active="chat"] .hx-md-plan-head,
+    body[data-active="chat"] .hx-md-plan-progress,
+    body[data-active="chat"] .hx-md-plan-progress-track,
+    body[data-active="chat"] .hx-md-plan-progress-fill,
+    body[data-active="chat"] .hx-md-plan-count,
+    body[data-active="chat"] .hx-md-plan-eyebrow,
+    body[data-active="chat"] .hx-md-plan-icon,
+    body[data-active="chat"] .hx-md-plan-steps,
+    body[data-active="chat"] .hx-md-plan-step,
+    body[data-active="chat"] .hx-md-plan-status,
+    body[data-active="chat"] .hx-md-plan-check,
+    body[data-active="chat"] .hx-md-plan-pulse,
+    body[data-active="chat"] .hx-md-plan-num,
+    body[data-active="chat"] .hx-md-plan-label,
+    body[data-active="chat"] .hx-md-plan-body { all: revert; }
+
+    /* ── Empty state — pure greeting, vertically centered ──────────── */
+    body[data-active="chat"] .hx-chat-blank {
+      padding: var(--s8) var(--col-x);
+      align-items: center; justify-content: center;
+    }
+    .hx-chat-blank-inner {
+      gap: var(--s2);
+      max-width: 540px;
+      text-align: center;
+    }
+    .hx-chat-blank-mark-v3 { display: none !important; }
+    .hx-chat-blank-greet {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 500;
+      font-size: 28px;
+      letter-spacing: -0.024em;
+      line-height: 1.18;
+      color: var(--t2);
+    }
+    .hx-chat-blank-lede { display: none !important; }
+    body[data-active="chat"] .hx-chat-blank-chips { display: none !important; }
+
+    /* ── Composer — single 1px hairline, no shadow ever ────────────── */
+    body[data-active="chat"] .hx-chat-compose {
+      padding: 0 var(--col-x) var(--s5);
+      background: var(--hx-bg);
+    }
+    body[data-active="chat"] .hx-chat-compose-inner {
+      max-width: var(--col);
+      gap: 6px;
+    }
+    body[data-active="chat"] .hx-chat-input-row {
+      background: var(--hx-bg);
+      border: 1px solid var(--b2);
+      border-radius: var(--r4);
+      padding: 4px 5px 4px var(--s3);
+      box-shadow: none;
+      transition: border-color var(--mo-base), background var(--mo-base);
+    }
+    body[data-active="chat"] .hx-chat-input-row:hover {
+      border-color: color-mix(in srgb, var(--hx-text) 18%, transparent);
+    }
+    body[data-active="chat"] .hx-chat-input-row:focus-within {
+      border-color: color-mix(in srgb, var(--hx-text) 38%, transparent);
+      background: var(--hx-surface);
+      box-shadow: none;
+    }
+    body[data-active="chat"] .hx-chat-input-bar { min-height: 30px; gap: 2px; }
+    body[data-active="chat"] .hx-chat-textarea {
+      font-size: 14.5px;
+      line-height: 1.55;
+      padding: 5px 4px;
+      letter-spacing: -0.005em;
+    }
+    body[data-active="chat"] .hx-chat-textarea::placeholder {
+      color: var(--t4);
+      font-weight: 400;
+    }
+    body[data-active="chat"] .hx-chat-tool-btn {
+      width: 28px; height: 28px;
+      border-radius: var(--r1);
+      color: var(--t3);
+    }
+    body[data-active="chat"] .hx-chat-tool-btn:hover {
+      background: var(--bg-hover);
+      color: var(--t1);
+    }
+    body[data-active="chat"] .hx-chat-tool-btn svg { width: 15px; height: 15px; stroke-width: 1.6; }
+    body[data-active="chat"] .hx-chat-send {
+      width: 28px; height: 28px;
+      border-radius: var(--r1);
+    }
+    body[data-active="chat"] .hx-chat-send:disabled {
+      background: transparent;
+      color: var(--t4);
+      border: 0;
+    }
+    body[data-active="chat"] .hx-chat-send:not(:disabled) {
+      background: var(--t1);
+      color: var(--hx-bg);
+      box-shadow: none;
+    }
+    body[data-active="chat"] .hx-chat-send:not(:disabled):hover {
+      background: color-mix(in srgb, var(--t1) 90%, #000);
+    }
+    body[data-active="chat"] .hx-chat-send svg { width: 14px; height: 14px; stroke-width: 2; }
+
+    /* ── Bottom strip — quiet to the point of invisibility ─────────── */
+    body[data-active="chat"] .hx-cc-compose-bar {
+      padding: 0 var(--s2);
+      min-height: 18px;
+      gap: var(--s2);
+    }
+    body[data-active="chat"] .hx-cc-compose-bar::before {
+      font-size: 10px;
+      color: var(--t4);
+      font-weight: 400;
+      letter-spacing: -0.002em;
+    }
+    body[data-active="chat"] .hx-cc-model-pick {
+      height: 18px;
+      padding: 0 5px 0 6px;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--t3);
+      border: 0;
+      background: transparent;
+      border-radius: var(--r1);
+    }
+    body[data-active="chat"] .hx-cc-model-pick:hover {
+      background: var(--bg-hover);
+      color: var(--t1);
+    }
+    body[data-active="chat"] .hx-cc-model-name { color: var(--t2); font-weight: 500; font-size: 10px; }
+    body[data-active="chat"] .hx-cc-model-tier { font-size: 8px; padding: 1px 3px; background: var(--bg-soft); color: var(--t3); }
+    body[data-active="chat"] .hx-cc-model-caret { width: 8px; height: 8px; opacity: 0.4; }
+
+    /* Mobile final */
+    @media (max-width: 720px) {
+      body[data-active="chat"] {
+        --col: 100%;
+        --col-x: 16px;
+      }
+      body[data-active="chat"] .hx-chat-toolbar { min-height: 44px; }
+      body[data-active="chat"] .hx-chat-thread-inner { padding: var(--s6) var(--s4) var(--s5); gap: var(--s6); }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content { font-size: 15px; line-height: 1.7; }
+      .hx-chat-blank-greet { font-size: 22px; }
+      body[data-active="chat"] .hx-chat-compose { padding: 0 var(--col-x) var(--s4); }
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -7187,17 +7563,8 @@
           <div class="hx-chat-thread" id="hx-c-thread">
             <div class="hx-chat-blank" id="hx-c-blank">
               <div class="hx-chat-blank-inner">
-                <div class="hx-chat-blank-mark-v3" aria-hidden="true">
-                  <svg viewBox="0 0 32 32" fill="none">
-                    <ellipse cx="16" cy="16" rx="13" ry="4.4" stroke="currentColor" stroke-width="1.4" stroke-opacity="0.95"/>
-                    <ellipse cx="16" cy="16" rx="13" ry="4.4" stroke="currentColor" stroke-width="1.4" stroke-opacity="0.55" transform="rotate(60 16 16)"/>
-                    <ellipse cx="16" cy="16" rx="13" ry="4.4" stroke="currentColor" stroke-width="1.4" stroke-opacity="0.35" transform="rotate(120 16 16)"/>
-                    <circle cx="16" cy="16" r="3" fill="currentColor"/>
-                  </svg>
-                </div>
-                <h2 class="hx-chat-blank-greet">How can I help today?</h2>
-                <p class="hx-chat-blank-lede">Ask anything — research, drafting, code, planning. Every reply is saved to your workspace.</p>
-                <div class="hx-chat-blank-chips" role="list">
+                <h2 class="hx-chat-blank-greet">How can I help, today?</h2>
+                <div class="hx-chat-blank-chips" role="list" hidden aria-hidden="true">
                   <button class="hx-chat-blank-chip" type="button" role="listitem" data-prompt="Draft a short, professional launch email announcing ">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
                     <span>Draft an email</span>
@@ -7703,54 +8070,37 @@
           var content = quotes[parseInt(n, 10)] || '';
           return '<blockquote class="hx-md-quote">' + renderInlineFragments(content) + '</blockquote>';
         });
-        // Expand checklist placeholders — rendered as a premium AI
-        // workflow timeline. Each item gets a numbered status indicator,
-        // a refined connector line on its left edge, and proper
-        // typography. No raw HTML checkbox look anywhere.
+        // Expand checklist placeholders — Helix reasoning, rendered as
+        // a collapsible "Reasoned · N steps" summary that expands into a
+        // quiet step list. Matches the Claude / ChatGPT cognition pattern
+        // — feels like part of the response, not a developer-tool widget.
         s = s.replace(/\x00CHECKLIST_(\d+)\x00/g, function (_, n) {
           var items = checklists[parseInt(n, 10)] || [];
           var total = items.length;
           var doneCount = items.filter(function (it) { return it.done; }).length;
-          var active = -1;
-          for (var i2 = 0; i2 < items.length; i2++) {
-            if (!items[i2].done) { active = i2; break; }
-          }
-          var headLabel = doneCount === total
-            ? 'Plan complete'
-            : (doneCount === 0 ? 'Plan' : 'In progress · ' + doneCount + ' of ' + total);
-          var html = '<div class="hx-md-plan' + (doneCount === total ? ' is-complete' : '') + '">' +
-            '<div class="hx-md-plan-head">' +
-              '<span class="hx-md-plan-eyebrow">' +
-                '<svg class="hx-md-plan-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
-                  '<circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.55"/>' +
-                  '<circle cx="8" cy="8" r="2" fill="currentColor"/>' +
-                '</svg>' +
-                '<span>' + escape(headLabel) + '</span>' +
-              '</span>' +
-              '<span class="hx-md-plan-progress" aria-hidden="true">' +
-                '<span class="hx-md-plan-progress-track">' +
-                  '<span class="hx-md-plan-progress-fill" style="width:' + (total ? Math.round((doneCount/total)*100) : 0) + '%"></span>' +
-                '</span>' +
-                '<span class="hx-md-plan-count">' + doneCount + '/' + total + '</span>' +
-              '</span>' +
-            '</div>' +
-            '<ol class="hx-md-plan-steps">';
-          items.forEach(function (it, idx) {
-            var status = it.done ? 'done' : (idx === active ? 'active' : 'pending');
-            var statusInner = it.done
-              ? '<svg class="hx-md-plan-check" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 6.4l2.2 2.2 3.8-4.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-              : (status === 'active'
-                  ? '<span class="hx-md-plan-pulse" aria-hidden="true"></span>'
-                  : '');
-            html += '<li class="hx-md-plan-step is-' + status + '">' +
-              '<span class="hx-md-plan-status" aria-hidden="true">' + statusInner + '</span>' +
-              '<span class="hx-md-plan-body">' +
-                '<span class="hx-md-plan-num">' + String(idx + 1).padStart(2, '0') + '</span>' +
-                '<span class="hx-md-plan-label">' + renderInlineFragments(it.label) + '</span>' +
-              '</span>' +
+          var inProgress = doneCount < total;
+          var summaryText = inProgress
+            ? ('Reasoning · ' + doneCount + ' of ' + total + ' steps')
+            : ('Reasoned · ' + total + ' step' + (total === 1 ? '' : 's'));
+          var openAttr = inProgress ? ' open' : '';
+          var statePulse = inProgress
+            ? '<span class="hx-rsn-pulse" aria-hidden="true"></span>'
+            : '<svg class="hx-rsn-done" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 6.4l2.2 2.2 3.8-4.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+          var html = '<details class="hx-rsn' + (inProgress ? ' is-active' : ' is-done') + '"' + openAttr + '>' +
+            '<summary class="hx-rsn-summary">' +
+              '<span class="hx-rsn-state">' + statePulse + '</span>' +
+              '<span class="hx-rsn-label">' + escape(summaryText) + '</span>' +
+              '<svg class="hx-rsn-caret" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M4 5l2 2 2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            '</summary>' +
+            '<ol class="hx-rsn-steps">';
+          items.forEach(function (it) {
+            var status = it.done ? 'done' : 'pending';
+            html += '<li class="hx-rsn-step is-' + status + '">' +
+              '<span class="hx-rsn-dot" aria-hidden="true"></span>' +
+              '<span class="hx-rsn-text">' + renderInlineFragments(it.label) + '</span>' +
             '</li>';
           });
-          html += '</ol></div>';
+          html += '</ol></details>';
           return html;
         });
         // Expand tool cards LAST so they survive other transformations.
