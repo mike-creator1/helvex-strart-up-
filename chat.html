@@ -12988,14 +12988,26 @@
     /* Hide divider after Copy (cluster 1 → cluster 2) on container hover
        for a calmer look — V40 keeps them visible but soft */
 
-    /* Active states: liked / disliked persistence */
+    /* Active states: liked / disliked persistence — ICON COLOR ONLY,
+       never a background fill (user explicitly asked not to "cover"
+       these two buttons). The colour change is enough to communicate
+       state without framing the icon in a coloured box. */
     body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[aria-pressed="true"][data-act="like"] {
-      color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 90%, transparent);
-      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 9%, transparent);
+      color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 90%, transparent) !important;
+      background: transparent !important;
     }
     body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[aria-pressed="true"][data-act="dislike"] {
-      color: color-mix(in srgb, #C2410C 88%, transparent);
-      background: color-mix(in srgb, #C2410C 8%, transparent);
+      color: color-mix(in srgb, #C2410C 88%, transparent) !important;
+      background: transparent !important;
+    }
+    /* Even on hover/focus while pressed — keep the icon naked */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[aria-pressed="true"][data-act="like"]:hover,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[aria-pressed="true"][data-act="like"]:focus-visible {
+      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 5%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[aria-pressed="true"][data-act="dislike"]:hover,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[aria-pressed="true"][data-act="dislike"]:focus-visible {
+      background: color-mix(in srgb, #C2410C 5%, transparent) !important;
     }
     /* Speak (TTS) playing state — gold accent fill */
     body[data-active="chat"] .hx-msg.is-assistant .hx-msg-speak.is-playing {
