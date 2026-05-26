@@ -12666,6 +12666,68 @@
     body[data-active="chat"] .hx-voice-timer {
       color: color-mix(in srgb, var(--hx-text) 64%, transparent);
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V35 — LIVE TRANSCRIPT PREVIEW
+       Web Speech API runs in parallel with MediaRecorder; partial words
+       appear inside the voice panel as the user speaks. The waveform
+       fades back when transcript is showing so the text is the focus.
+       ═════════════════════════════════════════════════════════════════ */
+
+    body[data-active="chat"] .hx-voice-live {
+      flex: 1;
+      min-width: 0;
+      padding: 0 12px;
+      font-family: var(--sans);
+      font-size: 13.5px;
+      line-height: 1.4;
+      letter-spacing: -0.004em;
+      color: var(--t1);
+      max-height: 44px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      direction: rtl;             /* show the most recent words */
+      text-align: left;
+      opacity: 0;
+      transform: translateY(2px);
+      transition:
+        opacity 220ms cubic-bezier(0.2, 0.7, 0.2, 1),
+        transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+      pointer-events: none;
+    }
+    body[data-active="chat"] .hx-voice-live.is-active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* When live transcript shows, fade the waveform back so text is primary */
+    body[data-active="chat"] .hx-voice-panel:has(.hx-voice-live.is-active) .hx-voice-wave {
+      opacity: 0.32;
+      transition: opacity 240ms cubic-bezier(0.2, 0.7, 0.2, 1),
+                  flex 240ms cubic-bezier(0.2, 0.7, 0.2, 1);
+      flex: 0 1 80px;
+    }
+    body[data-active="chat"] .hx-voice-panel:has(.hx-voice-live.is-active) .hx-voice-wave > span {
+      transform: scaleY(0.4);
+      opacity: 0.6;
+    }
+    /* During transcribing, the live preview becomes the "frozen" final
+       text awaiting Whisper — keep it visible but slightly dim */
+    body[data-active="chat"] .hx-voice-live.is-final-preview {
+      color: color-mix(in srgb, var(--hx-text) 78%, transparent);
+      font-style: italic;
+    }
+    body[data-active="chat"] .hx-voice-panel.is-transcribing .hx-voice-live {
+      opacity: 0.7;
+    }
+
+    /* Mobile */
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-voice-live { font-size: 12.5px; padding: 0 8px; }
+      body[data-active="chat"] .hx-voice-panel:has(.hx-voice-live.is-active) .hx-voice-wave {
+        flex: 0 1 48px;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -12792,6 +12854,7 @@
                     <span class="hx-voice-panel-label">Listening</span>
                     <span class="hx-voice-timer" id="hx-c-voice-timer">00:00</span>
                   </div>
+                  <div class="hx-voice-live" id="hx-c-voice-live" aria-live="polite"></div>
                   <div class="hx-voice-wave" aria-hidden="true">
                     <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                     <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
@@ -15316,10 +15379,97 @@
 
         function cleanupMicStream() {
           stopVoiceAnalyser();
+          stopLiveRecognition();
           if (micStream) {
             try { micStream.getTracks().forEach(function (t) { try { t.stop(); } catch (e) {} }); }
             catch (e) {}
             micStream = null;
+          }
+        }
+
+        // ─── Web Speech API — live partial transcript while recording ──
+        // Runs in parallel with MediaRecorder. The browser's SR engine
+        // gives instant partial words so the voice panel can show what
+        // the user is saying as they speak. The Whisper backend (called
+        // on stop) still provides the final accurate transcript.
+        var liveRecognition = null;
+        var liveTranscript  = '';   // best-effort current text from SR
+        var liveFinalParts  = [];   // confirmed final segments from SR
+        var liveEl          = $('hx-c-voice-live');
+
+        function hasLiveRecognition() {
+          return typeof (window.SpeechRecognition || window.webkitSpeechRecognition) === 'function';
+        }
+        function startLiveRecognition() {
+          if (!hasLiveRecognition()) return;
+          stopLiveRecognition();
+          try {
+            var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            liveRecognition = new SR();
+            liveRecognition.continuous = true;
+            liveRecognition.interimResults = true;
+            var lang = navigator.language || 'en-US';
+            try { liveRecognition.lang = lang; } catch (e) {}
+            liveRecognition.maxAlternatives = 1;
+
+            liveFinalParts = [];
+            liveTranscript = '';
+
+            liveRecognition.onresult = function (event) {
+              var interim = '';
+              for (var i = event.resultIndex; i < event.results.length; i++) {
+                var r = event.results[i];
+                var t = (r[0] && r[0].transcript) || '';
+                if (r.isFinal) liveFinalParts.push(t);
+                else interim += t;
+              }
+              liveTranscript = (liveFinalParts.join(' ') + ' ' + interim).trim();
+              renderLiveTranscript();
+            };
+            liveRecognition.onerror = function (e) {
+              // 'no-speech', 'aborted', 'audio-capture' etc. — silent fail
+              // The Whisper backend on stop will still produce the final
+              // transcript. We just lose the live preview.
+            };
+            liveRecognition.onend = function () {
+              // Auto-restart if still recording (some browsers stop after
+              // silence; Whisper still needs the audio chunks for final)
+              if (voiceState === 'recording' && liveRecognition) {
+                try { liveRecognition.start(); } catch (e) {}
+              }
+            };
+            liveRecognition.start();
+          } catch (e) {
+            liveRecognition = null;
+          }
+        }
+        function stopLiveRecognition() {
+          if (liveRecognition) {
+            try { liveRecognition.onend = null; } catch (e) {}
+            try { liveRecognition.onresult = null; } catch (e) {}
+            try { liveRecognition.onerror = null; } catch (e) {}
+            try { liveRecognition.stop(); } catch (e) {}
+            try { liveRecognition.abort(); } catch (e) {}
+            liveRecognition = null;
+          }
+        }
+        function renderLiveTranscript() {
+          if (!liveEl) return;
+          var txt = liveTranscript.trim();
+          if (!txt) {
+            liveEl.textContent = '';
+            liveEl.classList.remove('is-active');
+            return;
+          }
+          liveEl.textContent = txt;
+          liveEl.classList.add('is-active');
+        }
+        function clearLiveTranscript() {
+          liveTranscript = '';
+          liveFinalParts = [];
+          if (liveEl) {
+            liveEl.textContent = '';
+            liveEl.classList.remove('is-active');
           }
         }
 
@@ -15549,12 +15699,35 @@
           // so the bar elements exist in the DOM and the AnalyserNode can
           // start writing amplitudes immediately.
           startVoiceAnalyser(micStream);
+          // Run the browser SpeechRecognition in parallel so the user sees
+          // partial words land inside the panel while they speak.
+          clearLiveTranscript();
+          startLiveRecognition();
         }
 
         async function transcribeAudio(blob) {
           setVoiceState('transcribing');
+
+          // Snapshot the live browser-transcript BEFORE we stop it, then
+          // commit it to the composer immediately so the user sees their
+          // words appear without waiting for the network round-trip to
+          // Whisper. The accurate Whisper result will replace it.
+          var livePreview = (liveTranscript || '').trim();
+          stopLiveRecognition();
+          var liveInserted = false;
+          var liveLength   = 0;
+          if (livePreview) {
+            liveLength = livePreview.length;
+            insertTranscript(livePreview);
+            liveInserted = true;
+            // The voice panel shows the same preview text during the
+            // upload — visual continuity from speech → composer
+            if (liveEl) liveEl.classList.add('is-final-preview');
+          }
+
           var sess = (await sb.auth.getSession()).data.session;
           if (!sess || !sess.access_token) {
+            if (liveInserted) revertLiveInsert(liveLength);
             setVoiceState('idle');
             throw new Error('Not signed in.');
           }
@@ -15591,17 +15764,42 @@
                     || ('Transcription failed (HTTP ' + resp.status + ').');
             // Long messages are clipped so the banner stays a single line.
             if (msg.length > 200) msg = msg.slice(0, 197) + '…';
-            throw new Error(msg);
+            // If we already inserted the live preview, keep it — the
+            // user has SOME usable transcript even on backend failure.
+            if (!liveInserted) throw new Error(msg);
+            return;
           }
 
           var data = await resp.json().catch(function () { return null; });
           var text = data && typeof data.text === 'string' ? data.text : '';
           setVoiceState('idle');
           if (!text.trim()) {
-            showVoiceError("I didn't catch any speech. Try again.");
+            if (!liveInserted) showVoiceError("I didn't catch any speech. Try again.");
             return;
           }
-          insertTranscript(text);
+          if (liveInserted) {
+            // Replace the live preview with the accurate Whisper text
+            replaceLiveInsert(liveLength, text);
+          } else {
+            insertTranscript(text);
+          }
+        }
+
+        function revertLiveInsert(length) {
+          if (!inputEl || length <= 0) return;
+          var v = inputEl.value;
+          // Strip the trailing inserted preview (it was appended with one
+          // leading space when the composer had prior text)
+          var stripCount = length;
+          if (v.length >= length + 1 && v.charAt(v.length - length - 1) === ' ') stripCount += 1;
+          inputEl.value = v.slice(0, Math.max(0, v.length - stripCount));
+          autoSize(inputEl);
+          refreshSendDisabled();
+        }
+        function replaceLiveInsert(length, finalText) {
+          if (!inputEl) { insertTranscript(finalText); return; }
+          revertLiveInsert(length);
+          insertTranscript(finalText);
         }
 
         function stopVoice() {
