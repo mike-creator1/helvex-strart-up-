@@ -12195,6 +12195,160 @@
         padding-left: 0;
       }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V32 — REMOVE DECORATIVE CHROME — TEXT-FIRST PHILOSOPHY
+       Strips the visible "designed" elements that kept reading as
+       custom UI: the gold identity rail / dot, the breathing empty-
+       state halo, the "ready" pill, the streaming caret glow.
+       What remains is pure typography on a calm canvas — the OpenAI /
+       Claude / Notion approach.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* ── Assistant — no identity rail, no dot, just text ───────────── */
+    body[data-active="chat"] .hx-msg.is-assistant > .hx-msg-body {
+      padding-left: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant > .hx-msg-body::before,
+    body[data-active="chat"] .hx-msg.is-assistant > .hx-msg-body::after {
+      display: none !important;
+      content: none !important;
+    }
+    /* Thinking turn inherits the same rule */
+    body[data-active="chat"] .hx-msg.hx-msg-thinking > .hx-msg-body {
+      padding-left: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking > .hx-msg-body::before,
+    body[data-active="chat"] .hx-msg.hx-msg-thinking > .hx-msg-body::after {
+      display: none !important;
+      content: none !important;
+    }
+
+    /* ── Streaming caret — slimmer, no glow ──────────────────────── */
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content::after {
+      content: '';
+      display: inline-block;
+      width: 1.5px;
+      height: 0.95em;
+      vertical-align: -1px;
+      margin-left: 2px;
+      background: color-mix(in srgb, var(--hx-text) 50%, transparent);
+      border-radius: 0;
+      box-shadow: none;
+      animation: hx-stream-caret-32 1s steps(2, end) infinite;
+    }
+    @keyframes hx-stream-caret-32 {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    /* ── Empty state — no breathing halo, no Ready pill ──────────── */
+    body[data-active="chat"] .hx-chat-blank::before {
+      content: none !important;
+      display: none !important;
+    }
+    body[data-active="chat"] .hx-chat-blank-ready {
+      display: none !important;
+    }
+    body[data-active="chat"] .hx-chat-blank {
+      padding: var(--s8) var(--col-x);
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+    .hx-chat-blank-inner {
+      gap: 0;
+      text-align: center;
+      max-width: 600px;
+    }
+    .hx-chat-blank-greet {
+      font-family: var(--sans);
+      font-weight: 500;
+      font-size: 30px;
+      letter-spacing: -0.025em;
+      line-height: 1.18;
+      color: color-mix(in srgb, var(--hx-text) 76%, transparent);
+      margin: 0;
+      animation: hx-greet-32 600ms cubic-bezier(0.2, 0.65, 0.2, 1) both;
+    }
+    @keyframes hx-greet-32 {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Reasoning — drop the em-dash, just italic muted text ────── */
+    body[data-active="chat"] .hx-rsn-label::before {
+      content: none !important;
+    }
+    body[data-active="chat"] .hx-rsn > summary {
+      padding: 2px 0;
+      margin-left: 0;
+      background: transparent !important;
+    }
+    body[data-active="chat"] .hx-rsn > summary:hover {
+      background: transparent !important;
+      color: color-mix(in srgb, var(--hx-text) 60%, transparent);
+    }
+
+    /* ── Lead paragraph — drop the bigger size, keep editorial weight ─ */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p:first-child,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > details.hx-rsn + p {
+      font-size: 15.5px;
+      line-height: 1.72;
+      letter-spacing: -0.006em;
+      color: var(--t1);
+      font-weight: 400;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > details.hx-rsn + p {
+      margin-top: 16px;
+    }
+
+    /* ── Action toolbar — even quieter, no panel background ──────── */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-actions {
+      background: transparent !important;
+      padding: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant:hover .hx-msg-actions {
+      background: transparent !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act {
+      color: color-mix(in srgb, var(--hx-text) 36%, transparent);
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act:hover {
+      background: color-mix(in srgb, var(--hx-text) 5%, transparent);
+      color: var(--t1);
+    }
+    /* Drop the hairline divider — too "designed" */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act:nth-child(3)::after {
+      display: none !important;
+    }
+
+    /* ── Lists — gold dots become neutral dots (less "branded") ─── */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li::before {
+      background: color-mix(in srgb, var(--hx-text) 38%, transparent);
+      box-shadow: none;
+    }
+
+    /* ── Thread spacing — slightly tighter for calmer rhythm ─────── */
+    body[data-active="chat"] .hx-chat-thread-inner {
+      padding: 48px var(--col-x) 36px;
+      gap: 40px;
+    }
+
+    /* ── Sidebar — drop the gold dot on active conversation ──────── */
+    body[data-active="chat"] .hx-chat-item.is-active::before {
+      background: color-mix(in srgb, var(--hx-text) 48%, transparent) !important;
+      box-shadow: none !important;
+    }
+
+    /* Reduced motion fallback */
+    @media (prefers-reduced-motion: reduce) {
+      .hx-chat-blank-greet { animation: none !important; }
+      body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content::after {
+        animation: none !important;
+        opacity: 0.6;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
