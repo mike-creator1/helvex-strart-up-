@@ -12700,17 +12700,16 @@
       opacity: 1;
       transform: translateY(0);
     }
-    /* When live transcript shows, fade the waveform back so text is primary */
+    /* When live transcript shows, share width with it but keep the
+       waveform fully amplitude-driven — DON'T override the per-bar
+       scaleY (the analyser writes it via --amp). Only adjust opacity. */
     body[data-active="chat"] .hx-voice-panel:has(.hx-voice-live.is-active) .hx-voice-wave {
-      opacity: 0.32;
+      opacity: 0.78;
       transition: opacity 240ms cubic-bezier(0.2, 0.7, 0.2, 1),
                   flex 240ms cubic-bezier(0.2, 0.7, 0.2, 1);
-      flex: 0 1 80px;
+      flex: 0 1 140px;
     }
-    body[data-active="chat"] .hx-voice-panel:has(.hx-voice-live.is-active) .hx-voice-wave > span {
-      transform: scaleY(0.4);
-      opacity: 0.6;
-    }
+    /* No forced scaleY here — leave var(--amp) free to drive each bar */
     /* During transcribing, the live preview becomes the "frozen" final
        text awaiting Whisper — keep it visible but slightly dim */
     body[data-active="chat"] .hx-voice-live.is-final-preview {
@@ -12725,8 +12724,104 @@
     @media (max-width: 720px) {
       body[data-active="chat"] .hx-voice-live { font-size: 12.5px; padding: 0 8px; }
       body[data-active="chat"] .hx-voice-panel:has(.hx-voice-live.is-active) .hx-voice-wave {
-        flex: 0 1 48px;
+        flex: 0 1 80px;
       }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V36 — VOICE WAVEFORM REACTIVITY + GLOBAL POLISH
+       Fixes the bar override that was killing amplitude motion when
+       the live transcript was active. Tunes the analyser for snappier
+       attack + softer release. Refines voice panel rhythm.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* Wave bars — slightly wider + more responsive transition */
+    body[data-active="chat"] .hx-voice-wave {
+      gap: 2.5px;
+      height: 26px;
+    }
+    body[data-active="chat"] .hx-voice-wave > span {
+      --amp: 0.05;
+      width: 2.5px;
+      height: 26px;
+      border-radius: 1.5px;
+      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 90%, transparent);
+      transform-origin: center center;
+      transform: scaleY(var(--amp));
+      animation: none !important;
+      opacity: calc(0.45 + (var(--amp) * 0.55));
+      transition:
+        transform 70ms cubic-bezier(0.16, 0.84, 0.44, 1),
+        opacity 110ms ease;
+      will-change: transform, opacity;
+    }
+    /* Even when live text is showing, bars should still react to mic */
+    body[data-active="chat"] .hx-voice-panel:has(.hx-voice-live.is-active) .hx-voice-wave > span {
+      opacity: calc(0.40 + (var(--amp) * 0.60));
+    }
+
+    /* Voice panel — refined spacing + atmosphere */
+    body[data-active="chat"] .hx-voice-panel {
+      padding: 4px 4px 4px 12px;
+      gap: 12px;
+    }
+    body[data-active="chat"] .hx-voice-panel-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    /* The "Listening" label gets a quieter weight */
+    body[data-active="chat"] .hx-voice-panel-label {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 500;
+      font-style: italic;
+      letter-spacing: -0.003em;
+      color: color-mix(in srgb, var(--hx-text) 52%, transparent);
+      text-transform: none;
+    }
+    /* Timer — refined mono with calmer chroma */
+    body[data-active="chat"] .hx-voice-timer {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: color-mix(in srgb, var(--hx-text) 68%, transparent);
+      font-variant-numeric: tabular-nums;
+      padding: 0 0 0 12px;
+      margin: 0;
+      border-left: 1px solid color-mix(in srgb, var(--hx-text) 9%, transparent);
+    }
+    /* Recording dot — bigger gold, softer breathing halo */
+    body[data-active="chat"] .hx-voice-rec-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--hx-accent, var(--hx-yellow-deep));
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 40%, transparent);
+      animation: hx-voice-breath-36 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    @keyframes hx-voice-breath-36 {
+      0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 40%, transparent); opacity: 0.92; }
+      50%      { box-shadow: 0 0 0 5px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 0%, transparent);  opacity: 1; }
+    }
+
+    /* Live text — slightly larger + premium */
+    body[data-active="chat"] .hx-voice-live {
+      font-size: 14px;
+      padding: 0 14px;
+      max-height: none;
+      color: var(--t1);
+    }
+
+    /* Recording-mode container — gold accent border subtler */
+    body[data-active="chat"] .hx-chat-input-row.is-recording-mode {
+      border-color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 28%, color-mix(in srgb, var(--hx-text) 14%, transparent));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 6%, transparent),
+        0 0 0 3px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 7%, transparent),
+        0 6px 18px -10px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 22%, transparent),
+        0 16px 36px -18px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 16%, transparent);
     }
   </style>
 </head>
@@ -15164,11 +15259,12 @@
           var freqBuf = new Uint8Array(voiceAnalyser.frequencyBinCount);
 
           // True silence gate — anything quieter than this is treated as
-          // exactly silence. With opus-grade mics, ambient room noise
-          // typically sits at RMS ≈ 0.004 – 0.008, so 0.012 is a safe
-          // floor that voice (even whispers) easily exceeds.
-          var SILENCE_RMS = 0.012;
-          var IDLE_AMP    = 0.04;
+          // exactly silence. Lowered to 0.007 so quiet conversational
+          // speech still drives the meter visibly. Ambient room noise
+          // typically sits at RMS ≈ 0.003 – 0.006 so this still keeps
+          // the bars calm when the user is not speaking.
+          var SILENCE_RMS = 0.007;
+          var IDLE_AMP    = 0.05;
           var silenceFrames = 0;
 
           function tick() {
@@ -15218,12 +15314,13 @@
 
             silenceFrames = 0;
             // Auto-gain: track recent peak so a quiet voice fills the bars too
-            voicePeak = Math.max(voicePeak * 0.985, rms * 1.35, 0.06);
+            voicePeak = Math.max(voicePeak * 0.985, rms * 1.20, 0.05);
 
-            // Per-bar frequency envelopes
+            // Per-bar frequency envelopes — voice energy sits in 80–4kHz
             voiceAnalyser.getByteFrequencyData(freqBuf);
             var binsTotal = freqBuf.length;
-            var usable = Math.max(8, Math.floor(binsTotal * 0.28));
+            // Sample the lower-frequency speech band more densely
+            var usable = Math.max(8, Math.floor(binsTotal * 0.30));
             var perBar = Math.max(1, Math.floor(usable / n));
 
             for (var b = 0; b < n; b++) {
@@ -15232,11 +15329,16 @@
               var acc = 0, cnt = 0;
               for (var k = start; k < end; k++) { acc += freqBuf[k]; cnt++; }
               var avg = cnt ? (acc / cnt) / 255 : 0;
-              var normalised = Math.min(1, avg / Math.max(0.06, voicePeak * 1.6));
-              normalised *= 0.7 + 0.3 * Math.sin((b / n) * Math.PI);
+              // More aggressive normalisation — bars actually swell when
+              // the user speaks at normal volume. divisor 1.05 (was 1.6).
+              var normalised = Math.min(1, (avg * 1.6) / Math.max(0.05, voicePeak * 1.05));
+              // Centre-weighted shaping so middle bars react more than the
+              // edges (mimics how real audio meters look)
+              normalised *= 0.55 + 0.45 * Math.sin((b / Math.max(1, n - 1)) * Math.PI);
               var prev = voiceBarLevels[b];
               var target = Math.max(IDLE_AMP, normalised);
-              var smoothed = prev + (target - prev) * (target > prev ? 0.55 : 0.20);
+              // Snappier attack, longer release — feels like a real meter
+              var smoothed = prev + (target - prev) * (target > prev ? 0.65 : 0.16);
               voiceBarLevels[b] = smoothed;
               voiceBars[b].style.setProperty('--amp', smoothed.toFixed(3));
             }
