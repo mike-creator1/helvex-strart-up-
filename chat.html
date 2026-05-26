@@ -12823,6 +12823,58 @@
         0 6px 18px -10px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 22%, transparent),
         0 16px 36px -18px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 16%, transparent);
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V37 — REFINED VOICE ERROR / FALLBACK NOTICE
+       Errors and degraded-provider notices no longer scream from a red
+       banner. Inline, refined, calm — fits inside the composer rhythm.
+       ═════════════════════════════════════════════════════════════════ */
+
+    body[data-active="chat"] .hx-voice-error {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      max-width: 100%;
+      margin: 6px 0 0 2px;
+      padding: 5px 10px 5px 9px;
+      background: color-mix(in srgb, var(--hx-text) 4%, transparent);
+      border: 1px solid color-mix(in srgb, var(--hx-text) 8%, transparent);
+      border-radius: 999px;
+      color: color-mix(in srgb, var(--hx-text) 64%, transparent);
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: -0.003em;
+      line-height: 1.4;
+      box-shadow: 0 1px 1px color-mix(in srgb, var(--hx-text) 3%, transparent);
+      transition: opacity 320ms cubic-bezier(0.2, 0.7, 0.2, 1);
+      animation: hx-voice-err-in 240ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      word-wrap: normal;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    @keyframes hx-voice-err-in {
+      from { opacity: 0; transform: translateY(2px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    body[data-active="chat"] .hx-voice-error::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--hx-text) 32%, transparent);
+      flex-shrink: 0;
+    }
+    /* Fallback notice — quieter accent variant (gold dot, calm tone) */
+    body[data-active="chat"] .hx-voice-error.is-fallback {
+      color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 88%, var(--hx-text));
+      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 5%, transparent);
+      border-color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 14%, transparent);
+    }
+    body[data-active="chat"] .hx-voice-error.is-fallback::before {
+      background: var(--hx-accent, var(--hx-yellow-deep));
+      box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 22%, transparent);
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -15454,6 +15506,27 @@
           if (voiceErrTimer) { clearTimeout(voiceErrTimer); voiceErrTimer = null; }
           voiceErrEl.style.display = 'none';
           voiceErrEl.textContent = '';
+          voiceErrEl.classList.remove('is-fallback');
+        }
+        // Quiet notice shown when Whisper is unavailable but the browser
+        // Web-Speech result was committed instead. Communicates the
+        // degraded provider without alarming the user — auto-dismisses.
+        function showVoiceFallbackNotice() {
+          if (!voiceErrEl) return;
+          voiceErrEl.textContent = 'Transcribed locally — voice backend is paused';
+          voiceErrEl.classList.add('is-fallback');
+          voiceErrEl.style.display = '';
+          voiceErrEl.style.opacity = '1';
+          if (voiceErrTimer) clearTimeout(voiceErrTimer);
+          voiceErrTimer = setTimeout(function () {
+            voiceErrEl.style.opacity = '0';
+            setTimeout(function () {
+              if (voiceErrEl) {
+                voiceErrEl.style.display = 'none';
+                voiceErrEl.classList.remove('is-fallback');
+              }
+            }, 320);
+          }, 3600);
         }
 
         function pickRecordingMime() {
@@ -15859,15 +15932,39 @@
             var errBody = null;
             try { errBody = await resp.json(); } catch (e) { /* ignore */ }
             setVoiceState('idle');
-            // The Edge Function always emits a clean human-readable
-            // `message` field; never display raw upstream JSON.
+            var errCode = (errBody && typeof errBody.error === 'string') ? errBody.error : '';
             var msg = (errBody && typeof errBody.message === 'string' && errBody.message)
                     || (errBody && typeof errBody.hint === 'string' && errBody.hint)
                     || ('Transcription failed (HTTP ' + resp.status + ').');
-            // Long messages are clipped so the banner stays a single line.
+            // Provider-degradation errors (out of credits, unauthorized,
+            // provider unavailable) should never block the user — if we
+            // have any usable text from the browser engine, commit it
+            // silently and move on. Only a brief inline notice tells the
+            // admin what's going on.
+            var degraded = (
+              errCode === 'provider_out_of_credits' ||
+              errCode === 'provider_unauthorized' ||
+              errCode === 'provider_unavailable' ||
+              errCode === 'provider_rate_limited' ||
+              errCode === 'transcription_unconfigured'
+            );
+            if (degraded) {
+              if (!liveInserted && livePreview) {
+                insertTranscript(livePreview);
+                liveInserted = true;
+              }
+              if (liveInserted) {
+                // Silent fallback — user already has their text in the
+                // composer via the browser-side Web Speech result.
+                showVoiceFallbackNotice();
+                return;
+              }
+              // No browser transcript available at all (Firefox / no SR support)
+              showVoiceError(msg);
+              return;
+            }
+            // Other errors: only show if we don't have a live preview
             if (msg.length > 200) msg = msg.slice(0, 197) + '…';
-            // If we already inserted the live preview, keep it — the
-            // user has SOME usable transcript even on backend failure.
             if (!liveInserted) throw new Error(msg);
             return;
           }
