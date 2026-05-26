@@ -12480,6 +12480,192 @@
         border-color 220ms cubic-bezier(0.2, 0.7, 0.2, 1),
         box-shadow 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V34 — VOICE FLOW: TRANSCRIBE PRESENCE + FRESH-TEXT REVEAL
+       Three connected refinements:
+       (a) Refined gold check button — softer gradient, calmer glow
+       (b) Transcribing state morphs the voice panel in place (waveform
+           settles, label switches to "Transcribing your message…",
+           cancel/done hide) — visual continuity, no panel disappear
+       (c) When the transcribed text lands in the composer, a soft gold
+           underline reveals across the input — the speech "becomes"
+           text in front of the user
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* ── Refined check button — softer, more cinematic ─────────────── */
+    body[data-active="chat"] .hx-voice-done {
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      padding: 0;
+      border: 0;
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 100%, transparent) 0%,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 86%, #000) 100%);
+      color: #fff;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 22%, transparent),
+        0 1px 2px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 32%, transparent),
+        0 4px 12px -4px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 36%, transparent);
+      transition:
+        background 160ms ease,
+        transform 140ms cubic-bezier(0.2, 0.7, 0.2, 1),
+        box-shadow 200ms ease;
+    }
+    body[data-active="chat"] .hx-voice-done:hover {
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 96%, transparent) 0%,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 78%, #000) 100%);
+      transform: translateY(-1px);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 26%, transparent),
+        0 2px 4px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 38%, transparent),
+        0 8px 20px -6px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 46%, transparent),
+        0 0 0 3px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 14%, transparent);
+    }
+    body[data-active="chat"] .hx-voice-done:active { transform: translateY(0) scale(0.95); }
+    body[data-active="chat"] .hx-voice-done svg {
+      width: 14px; height: 14px;
+      stroke-width: 2.2;
+      color: #fff;
+    }
+    body[data-active="chat"] .hx-voice-cancel {
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      color: color-mix(in srgb, var(--hx-text) 40%, transparent);
+      background: transparent;
+      border: 0;
+      transition: background 140ms ease, color 140ms ease;
+    }
+    body[data-active="chat"] .hx-voice-cancel:hover {
+      background: color-mix(in srgb, var(--hx-text) 6%, transparent);
+      color: var(--t1);
+    }
+    body[data-active="chat"] .hx-voice-cancel svg {
+      width: 13.5px; height: 13.5px;
+      stroke-width: 2;
+    }
+
+    /* ── Transcribing state — morph in place ──────────────────────── */
+    body[data-active="chat"] .hx-voice-panel.is-transcribing .hx-voice-panel-label {
+      content: 'Transcribing';
+    }
+    body[data-active="chat"] .hx-voice-panel.is-transcribing .hx-voice-panel-label::after {
+      content: ' your message';
+      color: inherit;
+      opacity: 0.7;
+    }
+    /* Override the static "Listening" label text when transcribing */
+    body[data-active="chat"] .hx-voice-panel.is-transcribing .hx-voice-panel-label {
+      font-size: 0;
+    }
+    body[data-active="chat"] .hx-voice-panel.is-transcribing .hx-voice-panel-label::before {
+      content: 'Transcribing';
+      font-family: var(--sans);
+      font-size: 11.5px;
+      font-weight: 500;
+      font-style: italic;
+      letter-spacing: -0.003em;
+      color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 80%, transparent);
+    }
+    /* Timer becomes a 3-dot pulse during transcribe */
+    body[data-active="chat"] .hx-voice-panel.is-transcribing .hx-voice-timer {
+      font-size: 0;
+      padding-left: 8px;
+      border-left: 0;
+      position: relative;
+      width: 26px;
+    }
+    body[data-active="chat"] .hx-voice-panel.is-transcribing .hx-voice-timer::before {
+      content: '';
+      position: absolute;
+      left: 8px; top: 50%;
+      transform: translateY(-50%);
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 70%, transparent);
+      box-shadow:
+        7px 0 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 70%, transparent),
+        14px 0 0 color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 70%, transparent);
+      animation: hx-transcribe-dots 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes hx-transcribe-dots {
+      0%, 100% { opacity: 0.45; }
+      33%      { opacity: 1; }
+    }
+    /* Recording dot calms to static during transcribe */
+    body[data-active="chat"] .hx-voice-panel.is-transcribing .hx-voice-rec-dot {
+      animation: none;
+      opacity: 0.55;
+    }
+    /* Waveform settles to a flat row of dots — "listening completed" */
+    body[data-active="chat"] .hx-voice-panel.is-transcribing .hx-voice-wave > span {
+      transition: transform 400ms cubic-bezier(0.2, 0.7, 0.2, 1),
+                  opacity 400ms cubic-bezier(0.2, 0.7, 0.2, 1) !important;
+      transform: scaleY(0.18) !important;
+      opacity: 0.5 !important;
+      animation: none !important;
+    }
+    /* Hide done/cancel controls during transcribing — the action is over */
+    body[data-active="chat"] .hx-voice-panel.is-transcribing .hx-voice-panel-actions {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+    }
+
+    /* ── Fresh transcript reveal — gold underline sweep ───────────── */
+    body[data-active="chat"] .hx-chat-input-row.is-fresh-transcript {
+      position: relative;
+    }
+    body[data-active="chat"] .hx-chat-input-row.is-fresh-transcript::after {
+      content: '';
+      position: absolute;
+      left: 12px; right: 12px; bottom: 6px;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 80%, transparent) 50%,
+        transparent 100%);
+      transform: scaleX(0);
+      transform-origin: left center;
+      animation: hx-fresh-sweep 1.3s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      pointer-events: none;
+    }
+    @keyframes hx-fresh-sweep {
+      0%   { transform: scaleX(0); opacity: 0; }
+      30%  { transform: scaleX(1); opacity: 1; }
+      80%  { transform: scaleX(1); opacity: 0.6; }
+      100% { transform: scaleX(1); opacity: 0; }
+    }
+    body[data-active="chat"] .hx-chat-input-row.is-fresh-transcript .hx-chat-textarea {
+      animation: hx-fresh-text 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    @keyframes hx-fresh-text {
+      0%   { background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 8%, transparent); }
+      100% { background: transparent; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-chat-input-row.is-fresh-transcript::after,
+      body[data-active="chat"] .hx-chat-input-row.is-fresh-transcript .hx-chat-textarea {
+        animation: none !important;
+      }
+    }
+
+    /* ── Refined waveform colour — softer gold, less saturated ───── */
+    body[data-active="chat"] .hx-voice-wave > span {
+      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 88%, transparent);
+    }
+    /* The recording dot uses a slightly softer fill */
+    body[data-active="chat"] .hx-voice-rec-dot {
+      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 92%, transparent);
+    }
+    /* Listening label slightly more refined */
+    body[data-active="chat"] .hx-voice-panel-label {
+      color: color-mix(in srgb, var(--hx-text) 48%, transparent);
+    }
+    body[data-active="chat"] .hx-voice-timer {
+      color: color-mix(in srgb, var(--hx-text) 64%, transparent);
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -15042,26 +15228,45 @@
           if (next === 'recording') {
             micBtn.classList.add('is-recording');
             micBtn.setAttribute('aria-pressed', 'true');
-            if (voicePanel) voicePanel.hidden = false;
-            if (inputRowEl) inputRowEl.classList.add('is-recording-mode');
+            if (voicePanel) {
+              voicePanel.hidden = false;
+              voicePanel.classList.remove('is-transcribing');
+            }
+            if (inputRowEl) {
+              inputRowEl.classList.add('is-recording-mode');
+              inputRowEl.classList.remove('is-transcribing-mode');
+            }
             if (listeningEl) listeningEl.style.display = 'none';
             startVoiceTimer();
           } else if (next === 'transcribing') {
             micBtn.classList.remove('is-recording');
             micBtn.setAttribute('aria-pressed', 'false');
-            if (voicePanel) voicePanel.hidden = true;
-            if (inputRowEl) inputRowEl.classList.remove('is-recording-mode');
-            stopVoiceTimer();
-            if (listeningEl) {
-              listeningEl.style.display = '';
-              listeningEl.querySelector('span:last-child').textContent = 'Transcribing…';
+            // Keep the voice panel visible but morph it into a "processing"
+            // state — the waveform calms, the label switches to "Transcribing",
+            // the cancel/done controls hide. Visual continuity from speech
+            // → transcript instead of a hard panel hide.
+            if (voicePanel) {
+              voicePanel.hidden = false;
+              voicePanel.classList.add('is-transcribing');
             }
+            if (inputRowEl) {
+              inputRowEl.classList.remove('is-recording-mode');
+              inputRowEl.classList.add('is-transcribing-mode');
+            }
+            stopVoiceTimer();
+            if (listeningEl) listeningEl.style.display = 'none';
           } else {
             // idle / starting
             micBtn.classList.remove('is-recording');
             micBtn.setAttribute('aria-pressed', 'false');
-            if (voicePanel) voicePanel.hidden = true;
-            if (inputRowEl) inputRowEl.classList.remove('is-recording-mode');
+            if (voicePanel) {
+              voicePanel.hidden = true;
+              voicePanel.classList.remove('is-transcribing');
+            }
+            if (inputRowEl) {
+              inputRowEl.classList.remove('is-recording-mode');
+              inputRowEl.classList.remove('is-transcribing-mode');
+            }
             stopVoiceTimer();
             if (listeningEl) listeningEl.style.display = 'none';
           }
@@ -15230,6 +15435,18 @@
           inputEl.focus();
           try { inputEl.selectionStart = inputEl.selectionEnd = inputEl.value.length; }
           catch (e) {}
+          // Briefly highlight the input row to signal "fresh transcript
+          // delivered" — feels like the voice text has landed in the
+          // conversation, not just dropped silently.
+          if (inputRowEl) {
+            inputRowEl.classList.remove('is-fresh-transcript');
+            // Force reflow so the animation restarts on consecutive transcripts
+            void inputRowEl.offsetWidth;
+            inputRowEl.classList.add('is-fresh-transcript');
+            setTimeout(function () {
+              if (inputRowEl) inputRowEl.classList.remove('is-fresh-transcript');
+            }, 1400);
+          }
         }
 
         async function startVoice() {
