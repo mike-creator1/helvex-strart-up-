@@ -13458,6 +13458,37 @@
         height: 16.5px !important;
       }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V46 — COPY CONFIRMATION (icon swap, ChatGPT-style)
+       The "Copied" feedback now renders as a check icon for 1.4s
+       instead of replacing the button with text (which V40's hide-text
+       rule was making invisible — that's why the button went blank).
+       ═════════════════════════════════════════════════════════════════ */
+
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act.is-copied {
+      color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 92%, transparent) !important;
+      animation: hx-copied-pop 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act.is-copied svg {
+      animation: hx-copied-icon 280ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    @keyframes hx-copied-icon {
+      0%   { transform: scale(0.5); opacity: 0; }
+      60%  { transform: scale(1.18); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes hx-copied-pop {
+      0%   { background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 18%, transparent); }
+      100% { background: transparent; }
+    }
+    /* Keep the sr-only "Copied" label hidden visually but announced */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act.is-copied .hx-msg-act-label {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -14936,9 +14967,20 @@
               var msg = state.messages[idx];
               if (!msg) return;
               if (act === 'copy') {
-                navigator.clipboard && navigator.clipboard.writeText(msg.content || '').then(function () {
-                  var l = b.textContent; b.innerHTML = 'Copied'; setTimeout(function () { b.innerHTML = l; }, 1200);
-                });
+                if (!navigator.clipboard) return;
+                navigator.clipboard.writeText(msg.content || '').then(function () {
+                  // Save the original button HTML (icon + sr-only label)
+                  var originalHTML = b.innerHTML;
+                  // Swap to a refined check icon — ChatGPT-style feedback
+                  b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span class="hx-msg-act-label" aria-live="polite">Copied</span>';
+                  b.classList.add('is-copied');
+                  b.setAttribute('aria-label', 'Copied');
+                  setTimeout(function () {
+                    b.innerHTML = originalHTML;
+                    b.classList.remove('is-copied');
+                    b.setAttribute('aria-label', 'Copy');
+                  }, 1400);
+                }).catch(function () { /* clipboard denied — silent */ });
               }
               if (act === 'regenerate') regenerate(idx);
               if (act === 'speak') speakMessage(b, msg);
