@@ -11697,6 +11697,139 @@
       body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content { font-size: 15px; line-height: 1.7; }
       body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li { font-size: 14.75px; }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V29 — STREAMING + EMPTY STATE ATMOSPHERE
+       Adds a refined blinking gold cursor at the end of streaming
+       responses, atmospheric ambient halo behind the empty greeting,
+       and refined directional entrance animations (user from right,
+       assistant from below). The conversation feels alive.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* ── Streaming cursor — Helix-branded caret at the end ───────── */
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content::after {
+      content: '';
+      display: inline-block;
+      width: 2px;
+      height: 1.05em;
+      vertical-align: -2px;
+      margin-left: 2px;
+      background: var(--hx-accent, var(--hx-yellow-deep));
+      border-radius: 1px;
+      box-shadow: 0 0 6px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 55%, transparent);
+      animation: hx-stream-caret 1.05s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    /* If the last child of the streaming content is a block element, the
+       ::after caret sits below; we also surface a fallback via a small
+       text-end marker — but the inline marker is the primary visual */
+    @keyframes hx-stream-caret {
+      0%, 45% { opacity: 1;   transform: scaleY(1); }
+      50%     { opacity: 0;   transform: scaleY(0.85); }
+      55%, 100% { opacity: 1; transform: scaleY(1); }
+    }
+
+    /* During streaming, the identity rail breathes subtly to signal the
+       model is actively thinking */
+    body[data-active="chat"] .hx-msg.is-streaming > .hx-msg-body::after {
+      animation: hx-stream-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes hx-stream-dot {
+      0%, 100% { box-shadow:
+        0 0 0 3px var(--hx-bg),
+        0 0 6px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 45%, transparent); }
+      50%      { box-shadow:
+        0 0 0 3px var(--hx-bg),
+        0 0 14px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 80%, transparent); }
+    }
+
+    /* ── Empty state — atmospheric ambient halo ──────────────────── */
+    body[data-active="chat"] .hx-chat-blank {
+      padding: var(--s8) var(--col-x);
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    body[data-active="chat"] .hx-chat-blank::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 640px;
+      height: 640px;
+      background: radial-gradient(circle at 50% 50%,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 10%, transparent) 0%,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 4%, transparent) 30%,
+        transparent 65%);
+      pointer-events: none;
+      filter: blur(40px);
+      animation: hx-blank-breathe 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      z-index: 0;
+    }
+    @keyframes hx-blank-breathe {
+      0%, 100% { opacity: 0.65; transform: translate(-50%, -50%) scale(0.95); }
+      50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.02); }
+    }
+    body[data-active="chat"] .hx-chat-blank > * {
+      position: relative;
+      z-index: 1;
+    }
+    .hx-chat-blank-inner {
+      gap: 0;
+      text-align: center;
+      max-width: 620px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .hx-chat-blank-mark-v3 { display: none !important; }
+    .hx-chat-blank-greet {
+      font-family: var(--sans);
+      font-weight: 500;
+      font-size: 32px;
+      letter-spacing: -0.026em;
+      line-height: 1.16;
+      color: var(--t2);
+      margin: 0;
+      animation: hx-blank-fade 720ms cubic-bezier(0.2, 0.65, 0.2, 1) both;
+    }
+    @keyframes hx-blank-fade {
+      from { opacity: 0; transform: translateY(8px); filter: blur(2px); }
+      to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    .hx-chat-blank-lede { display: none !important; }
+    body[data-active="chat"] .hx-chat-blank-chips { display: none !important; }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-chat-blank::before { animation: none; opacity: 0.7; }
+      .hx-chat-blank-greet { animation: none; }
+    }
+
+    /* ── Directional message entrance ──────────────────────────────── */
+    body[data-active="chat"] .hx-msg.is-user {
+      animation: hx-msg-user-in 420ms cubic-bezier(0.2, 0.65, 0.2, 1) both;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant {
+      animation: hx-msg-assist-in 520ms cubic-bezier(0.2, 0.65, 0.2, 1) both;
+    }
+    @keyframes hx-msg-user-in {
+      from { opacity: 0; transform: translateY(6px) translateX(6px); }
+      to   { opacity: 1; transform: translateY(0) translateX(0); }
+    }
+    @keyframes hx-msg-assist-in {
+      from { opacity: 0; transform: translateY(8px); filter: blur(2px); }
+      to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    /* Streaming messages don't replay the entrance every chunk */
+    body[data-active="chat"] .hx-msg.is-assistant.is-streaming {
+      animation: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-msg.is-user,
+      body[data-active="chat"] .hx-msg.is-assistant {
+        animation: none;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -13307,7 +13440,10 @@
               '</div>'
             : '';
 
-          return '<div class="hx-msg ' + (isAssist ? 'is-assistant' : 'is-user') + (m.__error ? ' hx-msg-error' : '') + '" data-msg-key="' + escape(m.id) + '">' +
+          var classes = 'hx-msg ' + (isAssist ? 'is-assistant' : 'is-user') +
+            (m.__error ? ' hx-msg-error' : '') +
+            (isAssist && m.__streaming ? ' is-streaming' : '');
+          return '<div class="' + classes + '" data-msg-key="' + escape(m.id) + '">' +
             avatar +
             '<div class="hx-msg-body">' +
               renderAttachmentsForMsg(atts) +
