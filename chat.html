@@ -15513,6 +15513,137 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       V63 — EDITORIAL TYPOGRAPHY LOCKDOWN
+       The assistant prose was producing gigantic gaps between
+       headings, paragraphs, and lists — 60–80px of dead air where
+       there should be 8–16px. The cause: V47/V57/V59 stacked three
+       different "> * + *" margins (20px / 14px / etc), V31 added
+       a 12px list margin-top on top of that, list `gap` of 8px
+       between bullets was too generous, and line-height 1.72–1.78
+       was inflating every line.
+
+       V63 sets one tight, professional rhythm — Claude-density —
+       that wins everything before it. The reading flow is dense,
+       cohesive, immersive.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* (1) Block-to-block rhythm — the single source of truth */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > * + * {
+      margin-top: 10px !important;
+    }
+
+    /* (2) Headings — tight to the content that follows */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h {
+      margin-top: 18px !important;
+      margin-bottom: 0 !important;
+      line-height: 1.25 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h:first-child,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h:first-child,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h:first-child,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h:first-child {
+      margin-top: 0 !important;
+    }
+    /* The element immediately after a heading hugs it — kill the
+       generic > * + * 10px and use a much tighter 4px instead */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h + *,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h + *,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h + *,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h + * {
+      margin-top: 4px !important;
+    }
+    /* Two adjacent headings — no breathing room (rare but possible) */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h + h2.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h + h3.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h + h4.hx-md-h {
+      margin-top: 12px !important;
+    }
+
+    /* (3) Paragraphs — calmer line-height, not editorial-stretched */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p {
+      line-height: 1.62 !important;
+      letter-spacing: -0.003em !important;
+    }
+
+    /* (4) Lists — tight gap, no big margin, no fluffy line-height */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-list,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content ul,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content ol {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      gap: 3px !important;
+      padding-left: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content ul > li,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content ol > li {
+      line-height: 1.5 !important;
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+    /* When the list contains <p> children (markdown "loose" lists),
+       crush the paragraph margin so li doesn't double-space */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li > p,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content li > p {
+      margin: 0 !important;
+      line-height: 1.5 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li > p + p,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content li > p + p {
+      margin-top: 4px !important;
+    }
+    /* The element AFTER a list — keep the generic 10px, but trim if
+       it's another list or another heading */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > ul + ul,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > ol + ol,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > ul + ol,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > ol + ul {
+      margin-top: 6px !important;
+    }
+
+    /* (5) Empty <p></p> elements (markdown blank lines) — zero them */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p:empty {
+      display: none !important;
+    }
+
+    /* (6) Pre / blockquote / table — slightly more air around code &
+       quoted content (they need to feel like "blocks") */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > pre,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > blockquote,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > table,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > details.hx-rsn,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > figure {
+      margin-top: 14px !important;
+      margin-bottom: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > pre:first-child,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > blockquote:first-child,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > details.hx-rsn:first-child {
+      margin-top: 0 !important;
+    }
+
+    /* (7) Reasoning preamble — almost no air before the first paragraph */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > details.hx-rsn + p {
+      margin-top: 8px !important;
+    }
+
+    /* (8) Mobile — same rhythm, scale paragraph line-height a touch */
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p {
+        line-height: 1.58 !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li {
+        line-height: 1.48 !important;
+      }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        V61 — REMOVE GLOBAL TOPBAR ON THE CHAT PAGE
        The shared site topbar ("Workspace / Chat" breadcrumb + global
        ⌘K search field) is injected into <div class="hx-topbar"></div>
