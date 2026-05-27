@@ -22270,6 +22270,94 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       V91 — REASONING STATE = MODEL LOGO ONLY
+       Kill the generic "Planning / Thinking / Reasoning" text label
+       AND the V68 "·· " prefix dots. The animated model logo IS the
+       state. Bump the mark to 48px premium presence with a soft halo
+       behind it. Model becomes the identity of the cognition.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* Hide the text label entirely + kill V68's "·· " prefix */
+    body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-label {
+      display: none !important;
+      content: none !important;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-label::before,
+    body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-label::after {
+      content: none !important;
+      display: none !important;
+    }
+
+    /* Make the model mark the focal presence — larger, with soft halo */
+    body[data-active="chat"] .hx-msg.hx-msg-thinking > .hx-msg-body {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      padding: 8px 0 !important;
+      min-height: 56px !important;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-mark {
+      position: relative !important;
+      width: 48px !important;
+      height: 48px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+      opacity: 1 !important;
+    }
+    /* Soft ambient halo behind the model mark — colors per model */
+    body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-mark::before {
+      content: '' !important;
+      position: absolute !important;
+      inset: -8px !important;
+      border-radius: 50% !important;
+      background: radial-gradient(circle at center,
+        currentColor 0%,
+        transparent 65%) !important;
+      opacity: 0.12 !important;
+      animation: hx-think-halo 2.8s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+      pointer-events: none !important;
+      z-index: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-mark svg {
+      position: relative !important;
+      z-index: 1 !important;
+      width: 100% !important;
+      height: 100% !important;
+      display: block !important;
+      overflow: visible !important;
+    }
+    @keyframes hx-think-halo {
+      0%, 100% { opacity: 0.08; transform: scale(0.95); }
+      50%      { opacity: 0.20; transform: scale(1.08); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-mark::before {
+        animation: none !important;
+        opacity: 0.12 !important;
+      }
+    }
+
+    /* Strengthen the per-model halo intensity to read at the new size */
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-ether .hx-think-mark {
+      filter:
+        drop-shadow(0 0 10px color-mix(in srgb, var(--hx-accent, #C9A227) 42%, transparent))
+        drop-shadow(0 0 28px color-mix(in srgb, var(--hx-accent, #C9A227) 22%, transparent)) !important;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-think-mark {
+      filter:
+        drop-shadow(0 0 10px color-mix(in srgb, #d04a14 42%, transparent))
+        drop-shadow(0 0 28px color-mix(in srgb, #d04a14 22%, transparent)) !important;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-prometheus .hx-think-mark {
+      filter:
+        drop-shadow(0 -3px 14px color-mix(in srgb, #CC1016 48%, transparent))
+        drop-shadow(0 -6px 28px color-mix(in srgb, #CC1016 28%, transparent))
+        drop-shadow(0 0 22px color-mix(in srgb, #f0c450 35%, transparent)) !important;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        V88 — CINEMATIC TRANSITIONS PASS
        Three additions that smooth out the rough state transitions:
 
@@ -24588,7 +24676,9 @@
             html += '<div class="hx-msg is-assistant hx-msg-thinking is-' + escape(activeModel) + '">' +
               '<div class="hx-msg-body">' +
                 '<span class="hx-think-mark" aria-hidden="true">' + thinkMark + '</span>' +
-                '<span class="hx-think-label" aria-label="' + escape(thinkLabel) + '">' + escape(thinkLabel) + '</span>' +
+                // V91 — label rendered visually-hidden for screen readers only.
+                // The animated model logo IS the visible state.
+                '<span class="hx-think-label hx-sr-only" aria-label="' + escape(thinkLabel) + '">' + escape(thinkLabel) + '</span>' +
               '</div>' +
             '</div>';
           }
