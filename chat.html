@@ -15321,6 +15321,198 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       V62 — CONVERSATIONS RAIL: CLAUDE/CHATGPT-STANDARD REBUILD
+       Iteration fatigue — the user is done. Stripped every decorative
+       touch the rail had accumulated (sun-ray Helix logo, gold left
+       accent bar on active item, model badge chip on every row,
+       timestamp meta row, count chip in the group header, the dark
+       solid + button) and rebuilt it as the calm, dense, professional
+       sidebar that real AI products ship: title-only rows, ellipsis,
+       hover = surface tint, active = stronger surface tint, three-
+       dots only on hover. Same energy as ChatGPT / Claude. End of
+       discussion.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* (a) Rail head — drop the conic-gradient sun logo, keep wordmark */
+    body[data-active="chat"] .hx-chat-rail-title::before {
+      content: none !important;
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      margin: 0 !important;
+    }
+    body[data-active="chat"] .hx-chat-rail-title::after {
+      content: 'Helix' !important;
+      font-family: var(--sans);
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      letter-spacing: -0.014em !important;
+      color: var(--hx-text) !important;
+    }
+    body[data-active="chat"] .hx-chat-rail-head {
+      padding: 16px 14px 10px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+    }
+
+    /* (b) New-chat button — light bordered icon button (no black slab) */
+    body[data-active="chat"] .hx-chat-new {
+      width: 30px !important;
+      height: 30px !important;
+      border-radius: 8px !important;
+      background: transparent !important;
+      border: 1px solid color-mix(in srgb, var(--hx-text) 14%, transparent) !important;
+      color: var(--hx-text) !important;
+      box-shadow: none !important;
+      transition: background 140ms ease, border-color 140ms ease !important;
+    }
+    body[data-active="chat"] .hx-chat-new:hover {
+      background: color-mix(in srgb, var(--hx-text) 5%, transparent) !important;
+      border-color: color-mix(in srgb, var(--hx-text) 22%, transparent) !important;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    body[data-active="chat"] .hx-chat-new:active { transform: none !important; }
+    body[data-active="chat"] .hx-chat-new svg {
+      width: 14px !important;
+      height: 14px !important;
+      stroke-width: 2 !important;
+    }
+
+    /* (c) Collapse button — match the new-chat button visual weight */
+    body[data-active="chat"] .hx-chat-rail-collapse {
+      width: 30px !important;
+      height: 30px !important;
+      border-radius: 8px !important;
+    }
+
+    /* (d) Group header — calmer label, NO count chip */
+    body[data-active="chat"] .hx-rail-group { padding: 14px 0 4px !important; }
+    body[data-active="chat"] .hx-rail-group:first-child { padding-top: 6px !important; }
+    body[data-active="chat"] .hx-rail-group-head {
+      padding: 0 14px 6px !important;
+      font-size: 11px !important;
+      font-weight: 500 !important;
+      letter-spacing: 0 !important;
+      text-transform: none !important;
+      color: color-mix(in srgb, var(--hx-text) 48%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-rail-group-count {
+      display: none !important;
+    }
+
+    /* (e) Conversation row — single line, no glyph, no chip, no bar */
+    body[data-active="chat"] .hx-chat-item {
+      margin: 0 8px !important;
+      padding: 8px 10px !important;
+      border-radius: 8px !important;
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      transform: none !important;
+      transition: background 120ms ease !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+    }
+    body[data-active="chat"] .hx-chat-item::before {
+      display: none !important;
+      content: none !important;
+    }
+    body[data-active="chat"] .hx-chat-item:hover {
+      background: color-mix(in srgb, var(--hx-text) 5%, transparent) !important;
+      transform: none !important;
+    }
+    body[data-active="chat"] .hx-chat-item.is-active {
+      background: color-mix(in srgb, var(--hx-text) 7%, transparent) !important;
+      border: 0 !important;
+      box-shadow: none !important;
+    }
+    body[data-active="chat"] .hx-chat-item.is-active::before {
+      display: none !important;
+      content: none !important;
+    }
+
+    /* Body wrapper: keep flex but no gap, since we're hiding meta */
+    body[data-active="chat"] .hx-chat-item-body {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0 !important;
+      min-width: 0 !important;
+      flex: 1 !important;
+    }
+
+    /* Title — single line, ellipsis, normal weight; active is +1 weight */
+    body[data-active="chat"] .hx-chat-item-title {
+      font-family: var(--sans) !important;
+      font-size: 13.5px !important;
+      font-weight: 450 !important;
+      letter-spacing: -0.005em !important;
+      color: var(--hx-text) !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      line-height: 1.35 !important;
+    }
+    body[data-active="chat"] .hx-chat-item.is-active .hx-chat-item-title {
+      font-weight: 600 !important;
+    }
+
+    /* Hide the model badge + timestamp meta row entirely.
+       Real AI products show only the title — model is in the chat
+       composer, timestamp is on the conversation itself. */
+    body[data-active="chat"] .hx-chat-item-meta,
+    body[data-active="chat"] .hx-chat-item-glyph,
+    body[data-active="chat"] .hx-chat-item-chip {
+      display: none !important;
+    }
+
+    /* Three-dots menu — only on hover, smaller, quiet */
+    body[data-active="chat"] .hx-chat-item-more {
+      width: 24px !important;
+      height: 24px !important;
+      border-radius: 5px !important;
+      color: color-mix(in srgb, var(--hx-text) 42%, transparent) !important;
+      background: transparent !important;
+      border: 0 !important;
+      opacity: 0 !important;
+      flex-shrink: 0 !important;
+      transition: opacity 140ms ease, background 120ms ease, color 120ms ease !important;
+    }
+    body[data-active="chat"] .hx-chat-item:hover .hx-chat-item-more {
+      opacity: 1 !important;
+    }
+    body[data-active="chat"] .hx-chat-item.is-active .hx-chat-item-more {
+      opacity: 0.6 !important;
+    }
+    body[data-active="chat"] .hx-chat-item-more:hover {
+      background: color-mix(in srgb, var(--hx-text) 10%, transparent) !important;
+      color: var(--hx-text) !important;
+      opacity: 1 !important;
+    }
+    body[data-active="chat"] .hx-chat-item-more svg {
+      width: 13px !important;
+      height: 13px !important;
+    }
+
+    /* (f) Search row — already decent, refine spacing */
+    body[data-active="chat"] .hx-rail-search-row {
+      margin: 0 14px 6px !important;
+      height: 34px !important;
+      border-radius: 8px !important;
+    }
+    body[data-active="chat"] .hx-rail-search { font-size: 13px !important; }
+
+    /* (g) Empty list message — quieter */
+    body[data-active="chat"] .hx-chat-empty-list {
+      padding: 36px 18px !important;
+      font-size: 12.5px !important;
+      color: color-mix(in srgb, var(--hx-text) 44%, transparent) !important;
+      text-align: center !important;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        V61 — REMOVE GLOBAL TOPBAR ON THE CHAT PAGE
        The shared site topbar ("Workspace / Chat" breadcrumb + global
        ⌘K search field) is injected into <div class="hx-topbar"></div>
