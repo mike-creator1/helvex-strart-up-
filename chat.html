@@ -14704,6 +14704,47 @@
       }
       .hx-think-label { animation: none !important; opacity: 0.78; }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V55 — USER BUBBLE WIDTH FIX (no more "τι ειναι / trading" split)
+       The bubble was rendering at min-content width because its parent
+       used align-items:flex-end without a width hint. Now the bubble
+       uses width:max-content (preferring the longest unbroken line)
+       capped by max-width — short messages stay on one line, long
+       messages wrap naturally inside the 620px ceiling.
+       ═════════════════════════════════════════════════════════════════ */
+
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+      width: max-content !important;
+      min-width: 0;
+      max-width: min(620px, 82%) !important;
+      white-space: pre-wrap !important;
+      overflow-wrap: anywhere;
+      word-break: normal;
+      hyphens: none;
+    }
+
+    /* Ensure the body container doesn't fight the bubble width */
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-body {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-end !important;
+      gap: 6px !important;
+      width: 100%;
+      min-width: 0;
+    }
+
+    /* The message row itself stays a flex container right-aligning the body */
+    body[data-active="chat"] .hx-msg.is-user {
+      display: flex !important;
+      justify-content: flex-end !important;
+    }
+
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+        max-width: 84% !important;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
