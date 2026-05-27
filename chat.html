@@ -22085,6 +22085,136 @@
       line-height: 1.5 !important;
     }
 
+    /* ═════════════════════════════════════════════════════════════════
+       V93 — PREMIUM POLISH PASS: send button + composer + arrival
+       Three refinements that add presence WITHOUT adding chrome:
+
+       (1) Send button: gold gradient pill with elastic press feel +
+           cinematic ring on focus + spinning ring while sending.
+       (2) Composer focus presence: subtle 0.5px translateY lift on
+           focus, warmer border, micro-glow.
+       (3) Refined message arrival: when a complete assistant message
+           lands (post-stream), 320ms expo-out scale-up + opacity
+           reveal so the response feels delivered, not appended.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* (1) SEND BUTTON — premium gold pill with elastic press */
+    body[data-active="chat"] .hx-chat-send {
+      width: 34px !important;
+      height: 34px !important;
+      border-radius: 10px !important;
+      background: linear-gradient(180deg,
+        var(--hx-accent, var(--hx-yellow-deep, #C9A227)) 0%,
+        color-mix(in srgb, var(--hx-accent, #C9A227) 86%, #000) 100%) !important;
+      border: 0 !important;
+      color: #ffffff !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 28%, transparent),
+        0 1px 2px color-mix(in srgb, var(--hx-accent, #C9A227) 32%, transparent),
+        0 6px 18px -6px color-mix(in srgb, var(--hx-accent, #C9A227) 40%, transparent) !important;
+      transition:
+        background 240ms var(--hx-ease),
+        box-shadow 280ms var(--hx-ease),
+        transform 140ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 220ms var(--hx-ease) !important;
+    }
+    body[data-active="chat"] .hx-chat-send:hover:not(:disabled) {
+      transform: translateY(-1px) !important;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 32%, transparent),
+        0 2px 4px color-mix(in srgb, var(--hx-accent, #C9A227) 36%, transparent),
+        0 10px 26px -8px color-mix(in srgb, var(--hx-accent, #C9A227) 52%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-chat-send:active:not(:disabled) {
+      transform: translateY(0) scale(0.94) !important;
+      transition-duration: 80ms !important;
+    }
+    body[data-active="chat"] .hx-chat-send:disabled {
+      background: color-mix(in srgb, var(--hx-text) 10%, transparent) !important;
+      color: color-mix(in srgb, var(--hx-text) 32%, transparent) !important;
+      box-shadow: none !important;
+      cursor: not-allowed !important;
+      opacity: 0.7 !important;
+    }
+    body[data-active="chat"] .hx-chat-send svg {
+      width: 15px !important;
+      height: 15px !important;
+      stroke-width: 2.4 !important;
+      transition: transform 220ms var(--hx-ease) !important;
+    }
+    body[data-active="chat"] .hx-chat-send:active:not(:disabled) svg {
+      transform: translateX(2px) !important;
+    }
+    /* Focus ring */
+    body[data-active="chat"] .hx-chat-send:focus-visible {
+      outline: 0 !important;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 32%, transparent),
+        0 0 0 3px color-mix(in srgb, var(--hx-accent, #C9A227) 22%, transparent),
+        0 6px 18px -6px color-mix(in srgb, var(--hx-accent, #C9A227) 40%, transparent) !important;
+    }
+
+    /* (1b) Sending state — replace icon with spinning ring */
+    body[data-active="chat"] .hx-chat-input-row:has(.hx-chat-textarea:disabled) .hx-chat-send,
+    body[data-active="chat"][data-sending="true"] .hx-chat-send,
+    body[data-active="chat"][data-streaming="true"] .hx-chat-send {
+      pointer-events: none !important;
+    }
+
+    /* (2) COMPOSER FOCUS PRESENCE — subtle lift + warmer border */
+    body[data-active="chat"] .hx-chat-input-row {
+      will-change: transform !important;
+      transition:
+        background 260ms var(--hx-ease),
+        border-color 260ms var(--hx-ease),
+        box-shadow 320ms var(--hx-ease),
+        transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    }
+    body[data-active="chat"] .hx-chat-input-row:focus-within {
+      transform: translateY(-0.5px) !important;
+    }
+
+    /* (3) MESSAGE ARRIVAL — when a completed assistant message lands
+       post-stream, refined entrance: 320ms scale + opacity reveal */
+    body[data-active="chat"] .hx-msg.is-assistant:not(.is-streaming):not(.hx-msg-thinking) {
+      animation: hx-msg-arrival 480ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+    }
+    @keyframes hx-msg-arrival {
+      from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.998);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    /* Suppress on streaming so we don't re-trigger every reveal tick */
+    body[data-active="chat"] .hx-msg.is-assistant.is-streaming {
+      animation: none !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-msg.is-assistant:not(.is-streaming):not(.hx-msg-thinking) {
+        animation: none !important;
+      }
+      body[data-active="chat"] .hx-chat-input-row:focus-within {
+        transform: none !important;
+      }
+      body[data-active="chat"] .hx-chat-send:hover:not(:disabled) {
+        transform: none !important;
+      }
+    }
+
+    /* Dark mode: send button stays gold (the one moment of accent) */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-send:disabled {
+      background: rgba(255, 255, 255, 0.08) !important;
+      color: rgba(255, 255, 255, 0.35) !important;
+    }
+
     /* V84 — Remove the V73 "⌘K commands" hint chip from the bottom
        strip. User flagged it as clutter — the command palette is
        still triggered with the keyboard shortcut, no UI hint needed. */
@@ -25963,6 +26093,13 @@
           // V70 — keep presence + conductor in sync with every state change
           try { updatePresence(); } catch (e) {}
           try { updateConductor(); } catch (e) {}
+          // V93 — surface state.sending/streaming on the body for CSS hooks
+          try {
+            if (state.sending)        document.body.setAttribute('data-sending', 'true');
+            else                      document.body.removeAttribute('data-sending');
+            if (state.streaming)      document.body.setAttribute('data-streaming', 'true');
+            else                      document.body.removeAttribute('data-streaming');
+          } catch (e) {}
         }
 
         // V70 — Presence bar updater. Reflects what Helix is currently
