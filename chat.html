@@ -15319,6 +15319,23 @@
       body[data-active="chat"] .hx-cc-model-name { font-size: 12px !important; }
       body[data-active="chat"] .hx-cc-model-tier { font-size: 9px !important; }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V61 — REMOVE GLOBAL TOPBAR ON THE CHAT PAGE
+       The shared site topbar ("Workspace / Chat" breadcrumb + global
+       ⌘K search field) is injected into <div class="hx-topbar"></div>
+       by site-wide JS. On the chat page it's pure noise — the rail on
+       the left already shows where you are, and search lives in the
+       conversations rail itself. Hide it and reclaim the height.
+       ═════════════════════════════════════════════════════════════════ */
+    body[data-active="chat"] .hx-topbar {
+      display: none !important;
+    }
+    /* Zero out the topbar-height variable so layout calcs that
+       depend on it (sidebar height, sticky offsets) collapse the gap */
+    body[data-active="chat"] {
+      --hx-topbar-h: 0px !important;
+    }
   </style>
 </head>
 <body data-active="chat">
