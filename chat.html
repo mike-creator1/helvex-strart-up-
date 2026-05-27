@@ -14745,6 +14745,90 @@
         max-width: 84% !important;
       }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V56 — STRICT LEFT-ALIGN FOR ALL CONVERSATION MESSAGES
+       Prior versions floated the user bubble to the right (flex-end) and
+       allowed the visible result to feel centered when the column had
+       room. Every message — user, assistant, thinking — now anchors to
+       the left edge of the column. ChatGPT/Claude-style continuous flow.
+       This block is intentionally last + uses !important to win against
+       V52-V55 right-aligned rules without rewriting them.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* Every message row anchors to the left of the column */
+    body[data-active="chat"] .hx-msg,
+    body[data-active="chat"] .hx-msg.is-user,
+    body[data-active="chat"] .hx-msg.is-assistant,
+    body[data-active="chat"] .hx-msg.hx-msg-thinking {
+      display: flex !important;
+      justify-content: flex-start !important;
+      align-items: flex-start !important;
+      width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    /* The body wrapper inside each message also stays left-anchored.
+       Removes the V55 align-items:flex-end that stacked the bubble +
+       its actions row on the right. */
+    body[data-active="chat"] .hx-msg .hx-msg-body,
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-body,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-body {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      justify-content: flex-start !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    /* The user bubble itself keeps its distinct background but now
+       hugs the left edge. width:max-content preserves the V55 single-
+       line behaviour for short messages; the max-width ceiling keeps
+       long messages readable. */
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+      width: max-content !important;
+      max-width: min(620px, 82%) !important;
+      margin-left: 0 !important;
+      margin-right: auto !important;
+      align-self: flex-start !important;
+    }
+
+    /* Actions row under the user bubble — also left-anchored so it
+       reads as one continuous unit with the bubble above it. */
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-user-actions,
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-actions {
+      align-self: flex-start !important;
+      margin-left: 0 !important;
+      margin-right: auto !important;
+      justify-content: flex-start !important;
+    }
+
+    /* Assistant message body — make sure nothing pushes its content
+       toward the centre. The avatar/prose stay flush left. */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content,
+    body[data-active="chat"] .hx-msg.is-assistant > .hx-msg-body {
+      margin-left: 0 !important;
+      margin-right: auto !important;
+      text-align: left !important;
+    }
+
+    /* The thread column itself keeps its left anchor (V53). Belt &
+       braces: kill any inherited margin:auto centering. */
+    body[data-active="chat"] .hx-chat-thread-inner {
+      margin-left: 0 !important;
+      margin-right: auto !important;
+    }
+
+    /* Mobile: same left-anchor rules, with a tighter bubble width */
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+        max-width: 86% !important;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
