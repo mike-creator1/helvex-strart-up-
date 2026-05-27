@@ -15513,6 +15513,290 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       V78 — ATMOSPHERIC CONTINUITY
+       The user is right: even after V77's depth + lighting, the chat
+       still reads as "rectangles with shadows on a dark canvas". V78
+       removes the rectangle thinking entirely. Cards become GLOW
+       ZONES of attention instead of bordered boxes. The latest
+       response gets a soft spotlight behind it. Section dividers
+       become gradient fades. Tables lose their card frame.
+
+       Goal: the user FEELS atmosphere, not components.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* ───── (1) DE-CARD THE ARTIFACTS (light + dark) ───────────────── */
+    /* Replace the hard border with a softer gradient + glow, so cards
+       blend into the canvas rather than sitting on top of it. */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-art {
+      border-color: color-mix(in srgb, var(--hx-text) 5%, transparent) !important;
+      box-shadow:
+        0 1px 1px color-mix(in srgb, var(--hx-text) 2%, transparent),
+        0 14px 40px -24px color-mix(in srgb, var(--hx-text) 8%, transparent),
+        0 32px 80px -56px color-mix(in srgb, var(--hx-text) 5%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-art:hover {
+      border-color: color-mix(in srgb, var(--hx-text) 10%, transparent) !important;
+      box-shadow:
+        0 1px 1px color-mix(in srgb, var(--hx-text) 3%, transparent),
+        0 18px 48px -22px color-mix(in srgb, var(--hx-text) 12%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 8%, transparent) !important;
+    }
+
+    /* ───── (2) SOFT SPOTLIGHT BEHIND THE LATEST RESPONSE ─────────── */
+    /* The most recent assistant message gets a barely-visible radial
+       warmth behind it, anchored to the top-left of its body. Reads
+       as "the AI is speaking to you right now" without any UI chrome. */
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.is-assistant:last-child:not(.hx-msg-thinking) > .hx-msg-body {
+      position: relative;
+    }
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.is-assistant:last-child:not(.hx-msg-thinking) > .hx-msg-body::before {
+      content: '';
+      position: absolute;
+      left: -40px;
+      top: -32px;
+      right: -20px;
+      bottom: -20px;
+      background: radial-gradient(ellipse 60% 50% at 20% 0%,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 5%, transparent) 0%,
+        transparent 60%);
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0;
+      animation: hx-spotlight-in 900ms var(--hx-ease) 240ms both;
+    }
+    @keyframes hx-spotlight-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    /* Suppress during streaming (would re-trigger every reveal tick) */
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.is-assistant:last-child.is-streaming > .hx-msg-body::before {
+      animation: none !important;
+      opacity: 0.4 !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.is-assistant:last-child > .hx-msg-body::before {
+        animation: none !important;
+        opacity: 0.7 !important;
+      }
+    }
+
+    /* ───── (3) DEHARDEN MARKDOWN TABLES — no more "card frame" ──── */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content table,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-table {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content thead,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead {
+      background: transparent !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content thead th,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead th {
+      background: transparent !important;
+      border-bottom: 1px solid color-mix(in srgb, var(--hx-text) 12%, transparent) !important;
+      padding-bottom: 8px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content td,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody td {
+      background: transparent !important;
+      border-bottom: 1px solid color-mix(in srgb, var(--hx-text) 5%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content tbody tr:nth-child(even) td {
+      background: transparent !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content tbody tr:hover td {
+      background: color-mix(in srgb, var(--hx-text) 2%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content tbody tr:last-child td,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody tr:last-child td {
+      border-bottom: 0 !important;
+    }
+    /* Wrap div: stays for horizontal scroll on small screens */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-table-wrap {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+    }
+
+    /* ───── (4) DETAILS CARDS — top hairline only, no frame ──────── */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) {
+      background: transparent !important;
+      border: 0 !important;
+      border-top: 1px solid color-mix(in srgb, var(--hx-text) 8%, transparent) !important;
+      border-bottom: 1px solid color-mix(in srgb, var(--hx-text) 8%, transparent) !important;
+      border-radius: 0 !important;
+      padding: 4px 0 !important;
+      box-shadow: none !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn)[open] {
+      background: transparent !important;
+      border-top-color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 30%, transparent) !important;
+      box-shadow: none !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) > summary {
+      padding: 8px 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) > *:not(summary) {
+      padding: 0 0 12px !important;
+    }
+
+    /* ───── (5) BLOCKQUOTES — fade left rule into the page ────────── */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content blockquote {
+      border-left: 0 !important;
+      position: relative !important;
+      padding-left: 18px !important;
+      background: transparent !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content blockquote::before {
+      content: '' !important;
+      position: absolute !important;
+      left: 0 !important;
+      top: 6px !important;
+      bottom: 6px !important;
+      width: 2px !important;
+      background: linear-gradient(180deg,
+        transparent 0%,
+        color-mix(in srgb, var(--hx-text) 22%, transparent) 20%,
+        color-mix(in srgb, var(--hx-text) 22%, transparent) 80%,
+        transparent 100%) !important;
+      border-radius: 2px !important;
+    }
+
+    /* ───── (6) SECTION DIVIDERS — softer, longer fade ────────────── */
+    body[data-active="chat"] .hx-msg.is-user:not(:first-of-type)::after,
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.is-user:not(:first-child)::after {
+      height: 1px !important;
+      top: -36px !important;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        color-mix(in srgb, var(--hx-text) 5%, transparent) 8%,
+        color-mix(in srgb, var(--hx-text) 12%, transparent) 50%,
+        color-mix(in srgb, var(--hx-text) 5%, transparent) 92%,
+        transparent 100%) !important;
+    }
+
+    /* ───── (7) BREATHING SPACE — more atmospheric ────────────────── */
+    body[data-active="chat"] .hx-chat-thread-inner {
+      gap: 80px !important;
+    }
+    @media (min-width: 1440px) {
+      body[data-active="chat"] .hx-chat-thread-inner {
+        gap: 96px !important;
+      }
+    }
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-chat-thread-inner {
+        gap: 52px !important;
+      }
+    }
+    /* Q-to-A inside a turn */
+    body[data-active="chat"] .hx-msg.is-assistant {
+      margin-top: 28px !important;
+    }
+
+    /* ───── (8) PRESENCE PILL — slimmer, more atmospheric ─────────── */
+    body[data-active="chat"] .hx-presence {
+      padding: 4px 12px 4px 10px !important;
+      font-size: 10.5px !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.005em !important;
+    }
+    body[data-active="chat"] .hx-presence-dot {
+      width: 6px !important;
+      height: 6px !important;
+    }
+
+    /* ───── (9) DARK MODE OVERRIDES ───────────────────────────────── */
+    @media (prefers-color-scheme: dark) {
+      /* Spotlight stronger in dark — the warmth is the lighting */
+      body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.is-assistant:last-child:not(.hx-msg-thinking) > .hx-msg-body::before {
+        background: radial-gradient(ellipse 70% 60% at 18% 0%,
+          rgba(201, 162, 39, 0.08) 0%,
+          rgba(201, 162, 39, 0.025) 35%,
+          transparent 70%) !important;
+      }
+      /* Artifact card: keep d3->d2 gradient + diffused shadow, but
+         soften the visible border further */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art {
+        border-color: rgba(236, 227, 208, 0.04) !important;
+        box-shadow:
+          0 1px 1px rgba(0, 0, 0, 0.25),
+          0 16px 44px -22px rgba(0, 0, 0, 0.6),
+          0 36px 96px -56px rgba(0, 0, 0, 0.45) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art:hover {
+        border-color: rgba(236, 227, 208, 0.10) !important;
+        box-shadow:
+          0 1px 1px rgba(0, 0, 0, 0.3),
+          0 22px 56px -22px rgba(0, 0, 0, 0.7),
+          0 0 0 1px color-mix(in srgb, var(--hx-accent, #C9A227) 10%, transparent) !important;
+      }
+      /* Tables: hairline cream dividers (no card frame) */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content table,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-md-table {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: 0 !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content thead,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead {
+        background: transparent !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content thead th,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead th {
+        background: transparent !important;
+        border-bottom-color: rgba(236, 227, 208, 0.14) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content td,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody td {
+        background: transparent !important;
+        border-bottom-color: rgba(236, 227, 208, 0.05) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content tbody tr:hover td {
+        background: rgba(236, 227, 208, 0.03) !important;
+      }
+      /* Details: top + bottom hairline (cream) */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) {
+        background: transparent !important;
+        border-top-color: rgba(236, 227, 208, 0.08) !important;
+        border-bottom-color: rgba(236, 227, 208, 0.08) !important;
+        box-shadow: none !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn)[open] {
+        background: transparent !important;
+        border-top-color: color-mix(in srgb, var(--hx-accent, #C9A227) 35%, transparent) !important;
+      }
+      /* Blockquote: cream gradient rule */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content blockquote::before {
+        background: linear-gradient(180deg,
+          transparent 0%,
+          rgba(236, 227, 208, 0.18) 20%,
+          rgba(236, 227, 208, 0.18) 80%,
+          transparent 100%) !important;
+      }
+      /* Section dividers between turns: cream */
+      body[data-active="chat"] .hx-msg.is-user:not(:first-of-type)::after,
+      body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.is-user:not(:first-child)::after {
+        background: linear-gradient(90deg,
+          transparent 0%,
+          rgba(236, 227, 208, 0.04) 8%,
+          rgba(236, 227, 208, 0.10) 50%,
+          rgba(236, 227, 208, 0.04) 92%,
+          transparent 100%) !important;
+      }
+      /* H2 accent bar in dark: brighter gold + tiny glow */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h::before {
+        box-shadow: 0 0 8px color-mix(in srgb, var(--hx-accent, #C9A227) 40%, transparent) !important;
+      }
+      /* Empty state H2: very subtle pearl glow for cinematic feel */
+      body[data-active="chat"] .hx-chat-blank h2 {
+        text-shadow: 0 1px 24px rgba(201, 162, 39, 0.08) !important;
+      }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        V77 — CINEMATIC DARK MODE REBUILD
        V74 added a dark mode but it was still "inverted light theme"
        in feel — pure black background with surfaces floating on top
