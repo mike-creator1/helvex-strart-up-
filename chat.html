@@ -21025,6 +21025,149 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       V83 — TRUE BLACK MODE (page + sidebar + conversation = #000)
+       The user said MAKE IT BLACK. V82's #0c0b0a was not black enough
+       — page bg, sidebar bg, and conversation area all read as dark
+       charcoal, not true black. V83 forces TRUE BLACK on:
+         - page background
+         - sidebar / rail background
+         - chat pane background
+         - chat thread + thread-inner background
+         - all parent containers
+       Cards and elevated surfaces stay at #141414 / #1c1c1c so they
+       have minimal visual separation from the pure black canvas.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* TRUE BLACK CANVAS — every parent of conversation content */
+    html[data-theme="dark"],
+    html[data-theme="dark"] body,
+    html[data-theme="dark"] body[data-active="chat"],
+    html[data-theme="dark"] body[data-active="chat"] .hx-app,
+    html[data-theme="dark"] body[data-active="chat"] .hx-main,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread-inner,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-compose,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-compose-inner,
+    html[data-theme="dark"] body[data-active="chat"] .hx-sidebar,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail-head,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-list {
+      background: #000000 !important;
+    }
+
+    /* Strip every ambient lighting layer that might tint the black */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane::before,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane::after,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread::before {
+      content: none !important;
+      display: none !important;
+      background: none !important;
+      opacity: 0 !important;
+    }
+
+    /* Composer pill — slightly elevated charcoal so it's visible
+       against the true black canvas */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row {
+      background: #141414 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row:focus-within {
+      background: #1a1a1a !important;
+      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 35%, transparent) !important;
+      box-shadow:
+        0 0 0 4px color-mix(in srgb, var(--hx-accent, #C9A227) 12%, transparent),
+        0 18px 48px -16px rgba(0, 0, 0, 0.9) !important;
+    }
+    /* Composer fade transition goes to TRUE BLACK */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-compose::before {
+      background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(0, 0, 0, 0.5) 35%,
+        rgba(0, 0, 0, 0.9) 75%,
+        #000000 100%) !important;
+    }
+
+    /* Sidebar items + active state */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail {
+      border-right-color: rgba(255, 255, 255, 0.06) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-item:hover {
+      background: rgba(255, 255, 255, 0.04) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-item.is-active {
+      background: rgba(255, 255, 255, 0.07) !important;
+      box-shadow: inset 2px 0 0 var(--hx-accent, #C9A227) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search-row {
+      background: rgba(255, 255, 255, 0.04) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search-row:focus-within {
+      background: #141414 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-new {
+      background: transparent !important;
+      border-color: rgba(255, 255, 255, 0.12) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-new:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    /* Artifact cards on true black canvas — slightly elevated */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tradeoff,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-timeline,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-workflow,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-framework,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-compare,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-note {
+      background: #141414 !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-win,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-risk,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw-cell {
+      background: #141414 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art:hover {
+      background: #1c1c1c !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl-dot {
+      box-shadow:
+        0 0 0 3px #000000,
+        0 0 0 4px color-mix(in srgb, var(--hx-accent, #C9A227) 35%, transparent) !important;
+    }
+
+    /* Presence pill + palette + model picker on true black */
+    html[data-theme="dark"] body[data-active="chat"] .hx-presence {
+      background: color-mix(in srgb, #141414 90%, transparent) !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] .hx-palette {
+      background: #141414 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-pick {
+      background: #141414 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-pick:hover {
+      background: #1c1c1c !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-compose-bar::after {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-chip {
+      background: #141414 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-chip:hover {
+      background: #1c1c1c !important;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        V82 — DARK MODE: TRUE NEUTRAL BLACK (no brown, no muddy gold tints)
        The user is right — my V74-V81 dark surfaces used gold-tinted
        gradients (linear-gradient with color-mix gold-7%) on stat,
@@ -21053,10 +21196,16 @@
       --hx-blk-3: #26241f;
     }
 
-    /* ── Page bg = true neutral near-black ───────────────────────── */
+    /* ── Page bg = TRUE BLACK (V83 — user wants pure black) ──────── */
     html[data-theme="dark"] body[data-active="chat"],
-    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane {
-      background: #0c0b0a !important;
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread-inner,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail,
+    html[data-theme="dark"] body[data-active="chat"] .hx-sidebar,
+    html[data-theme="dark"] body[data-active="chat"] .hx-main,
+    html[data-theme="dark"] body[data-active="chat"] .hx-app {
+      background: #000000 !important;
     }
 
     /* ── ARTIFACTS — pure neutral charcoal, NO gold tinting ──────── */
@@ -21667,7 +21816,137 @@
       -webkit-font-smoothing: antialiased !important;
       -moz-osx-font-smoothing: grayscale !important;
       text-rendering: optimizeLegibility !important;
-      background: #100e0c !important;
+      background: #000000 !important;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V83 — TRUE BLACK FINAL (last-in-file = wins everything)
+       User asked for PURE BLACK on every conversation surface +
+       sidebar. This block sits at the absolute end of styles, after
+       V81/V82, so the cascade resolves to #000 for every parent
+       container. Elevated surfaces (cards, composer, palette) sit
+       slightly above the canvas at #141414.
+       ═════════════════════════════════════════════════════════════════ */
+
+    html[data-theme="dark"],
+    html[data-theme="dark"] body,
+    html[data-theme="dark"] body[data-active="chat"],
+    html[data-theme="dark"] body[data-active="chat"] .hx-app,
+    html[data-theme="dark"] body[data-active="chat"] .hx-main,
+    html[data-theme="dark"] body[data-active="chat"] .hx-sidebar,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail-head,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-list,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread-inner,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-compose,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-compose-inner {
+      background: #000000 !important;
+      background-color: #000000 !important;
+    }
+
+    /* Strip ambient layers that could tint the black */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane::before,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane::after,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread::before {
+      display: none !important;
+      content: none !important;
+      background: none !important;
+      opacity: 0 !important;
+    }
+
+    /* Elevated surfaces on the black canvas */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row {
+      background: #141414 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row:focus-within {
+      background: #1a1a1a !important;
+      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 35%, transparent) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tradeoff,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-timeline,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-workflow,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-framework,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-compare,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-note,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-win,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-risk,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw-cell {
+      background: #141414 !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-quote {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art:hover {
+      background: #1c1c1c !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl-dot {
+      box-shadow:
+        0 0 0 3px #000000,
+        0 0 0 4px color-mix(in srgb, var(--hx-accent, #C9A227) 35%, transparent) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-presence {
+      background: #141414 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] .hx-palette {
+      background: #141414 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-pick {
+      background: #141414 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-pick:hover {
+      background: #1c1c1c !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-chip {
+      background: #141414 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-chip:hover {
+      background: #1c1c1c !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search-row {
+      background: #141414 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search-row:focus-within {
+      background: #1a1a1a !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-item:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-item.is-active {
+      background: rgba(255, 255, 255, 0.08) !important;
+      box-shadow: inset 2px 0 0 var(--hx-accent, #C9A227) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-compose-bar::after {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-conductor-chip,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-followup-chip {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-conductor-chip:hover,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-followup-chip:hover {
+      background: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    /* Composer fade to TRUE BLACK */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-compose::before {
+      background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(0, 0, 0, 0.5) 35%,
+        rgba(0, 0, 0, 0.9) 75%,
+        #000000 100%) !important;
     }
   </style>
 </head>
