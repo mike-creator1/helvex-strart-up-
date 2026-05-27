@@ -15513,6 +15513,131 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       V72 — PREMIUM STREAMING REVEAL
+       Token bursts no longer dump instantly. A 60fps RAF loop pulls
+       characters from a buffer at ~220 chars/sec (accelerating to
+       ~1000/sec if the model gets ahead of the reveal). The visible
+       text flows steadily — never sluggish, never burst-dumpy.
+
+       Visual polish layers on top:
+         • Bottom-edge mask: the last ~22px of streaming text fades
+           into transparency, so new text "rises" into view as the
+           response grows. Pure CSS, zero JS cost.
+         • Streaming caret: thin gold inline marker at the end of
+           the revealed text.
+         • Subtle baseline shimmer: a faint, very slow gradient
+           sweep at the end of the text suggests active writing.
+         • Stable layout: the reveal never resizes the message box
+           (font-size locked, line-height locked, max-width locked).
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* (1) Bottom-edge soft reveal — new text rises into view */
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content {
+      mask-image: linear-gradient(180deg,
+        #000 0,
+        #000 calc(100% - 28px),
+        color-mix(in srgb, #000 60%, transparent) calc(100% - 14px),
+        color-mix(in srgb, #000 18%, transparent) calc(100% - 4px),
+        transparent 100%) !important;
+      -webkit-mask-image: linear-gradient(180deg,
+        #000 0,
+        #000 calc(100% - 28px),
+        color-mix(in srgb, #000 60%, transparent) calc(100% - 14px),
+        color-mix(in srgb, #000 18%, transparent) calc(100% - 4px),
+        transparent 100%) !important;
+      padding-bottom: 6px !important;
+    }
+
+    /* (2) Streaming caret — refined inline gold marker */
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content::after {
+      content: '' !important;
+      display: inline-block !important;
+      width: 7px !important;
+      height: 1em !important;
+      vertical-align: -2px !important;
+      margin-left: 3px !important;
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 90%, transparent) 0%,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 60%, transparent) 100%) !important;
+      border-radius: 2px !important;
+      box-shadow: 0 0 8px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 50%, transparent) !important;
+      opacity: 0.85 !important;
+      animation: hx-stream-pulse-72 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+      transform-origin: center bottom !important;
+    }
+    @keyframes hx-stream-pulse-72 {
+      0%, 100% { opacity: 0.95; transform: scaleY(1); }
+      50%      { opacity: 0.55; transform: scaleY(0.9); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content::after {
+        animation: none !important;
+        opacity: 0.7 !important;
+      }
+    }
+
+    /* (3) Subtle baseline shimmer at the end of the streaming text —
+       a barely-there gold wash that suggests active intelligence. */
+    body[data-active="chat"] .hx-msg.is-streaming > .hx-msg-body {
+      position: relative !important;
+    }
+    body[data-active="chat"] .hx-msg.is-streaming > .hx-msg-body::after {
+      content: '' !important;
+      position: absolute !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      height: 36px !important;
+      background: linear-gradient(180deg,
+        transparent 0%,
+        color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 4%, transparent) 100%) !important;
+      pointer-events: none !important;
+      animation: hx-stream-shimmer-72 2.4s ease-in-out infinite !important;
+    }
+    @keyframes hx-stream-shimmer-72 {
+      0%, 100% { opacity: 0.4; }
+      50%      { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-msg.is-streaming > .hx-msg-body::after {
+        animation: none !important;
+        opacity: 0.6 !important;
+      }
+    }
+
+    /* (4) Lock layout during streaming — defensive against any
+       resize/jump bugs from prior versions */
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content,
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content > * {
+      animation-name: none !important;
+      transform: none !important;
+      filter: none !important;
+    }
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content {
+      contain: layout style !important;
+    }
+    /* Re-allow the caret + body shimmer specifically */
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content::after {
+      animation: hx-stream-pulse-72 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+    }
+    body[data-active="chat"] .hx-msg.is-streaming > .hx-msg-body::after {
+      animation: hx-stream-shimmer-72 2.4s ease-in-out infinite !important;
+    }
+
+    /* (5) Smooth auto-scroll — chat thread tracks the bottom calmly */
+    body[data-active="chat"] .hx-chat-thread {
+      scroll-behavior: smooth !important;
+      scroll-padding-bottom: 80px !important;
+    }
+
+    /* (6) Suppress the V68 hairline finale during streaming so it
+       doesn't appear/disappear with every reveal tick */
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content::before {
+      content: none !important;
+      display: none !important;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        V71 — STAGE LAYOUT (radical rebuild #2)
        Stops treating the conversation as a chat log entirely. Treats
        it as a STAGE — the latest exchange is the focal scene, older
@@ -20364,39 +20489,120 @@
             if (nearBottom) thread.scrollTop = thread.scrollHeight;
           }
 
-          // Throttled markdown re-render during streaming. Latest content
-          // always wins; a trailing render fires after the burst settles.
-          var streamRenderPending = false;
-          var streamRenderLastAt = 0;
+          // V72 — Smooth streaming reveal.
+          // Tokens arrive in network bursts (~100-400ms apart). Instead
+          // of dumping each burst instantly, we run a 60fps reveal loop
+          // that pulls characters from a buffer at a steady rate. The
+          // visible output flows smoothly even when the network is bursty.
+          // Rate adapts: accelerates if we're falling behind so we never
+          // appear "slow" relative to actual model speed.
+          var streamRenderRaf = null;
+          var streamRenderLastTick = 0;
+          var streamRevealedLen = 0;
+          // Speed config (characters per millisecond):
+          //   baseRate     = ~ 220 chars/sec — fast typing, never sluggish
+          //   catchupRate  = up to ~ 600 chars/sec when buffer is deep
+          //   stallTarget  = if more than 240 chars are queued, accelerate
+          var STREAM_BASE_RATE   = 0.22;   // chars/ms
+          var STREAM_FAST_RATE   = 0.55;
+          var STREAM_TURBO_RATE  = 1.0;
+          var STREAM_FAST_THRESH = 80;
+          var STREAM_TURBO_THRESH = 240;
+
           function scheduleStreamRender() {
-            var now = Date.now();
-            var elapsed = now - streamRenderLastAt;
-            if (elapsed >= 120) {
-              streamRenderLastAt = now;
-              runStreamRender();
+            // First call kicks off the RAF loop; subsequent calls are
+            // no-ops because the loop is already pulling from the buffer.
+            if (streamRenderRaf === null) {
+              streamRenderLastTick = performance.now();
+              streamRenderRaf = requestAnimationFrame(streamRevealTick);
+            }
+          }
+          function streamRevealTick(now) {
+            streamRenderRaf = null;
+            if (!streamNode) return;
+            var totalLen = (assistantText || '').length;
+            // Already caught up? park until next scheduleStreamRender
+            if (streamRevealedLen >= totalLen) {
+              streamRenderLastTick = now;
               return;
             }
-            if (streamRenderPending) return;
-            streamRenderPending = true;
-            setTimeout(function () {
-              streamRenderPending = false;
-              streamRenderLastAt = Date.now();
-              runStreamRender();
-            }, 120 - elapsed);
+            var elapsed = now - streamRenderLastTick;
+            if (elapsed > 100) elapsed = 100; // cap large RAF gaps
+            streamRenderLastTick = now;
+
+            var lag = totalLen - streamRevealedLen;
+            var rate = STREAM_BASE_RATE;
+            if (lag > STREAM_TURBO_THRESH)      rate = STREAM_TURBO_RATE;
+            else if (lag > STREAM_FAST_THRESH)  rate = STREAM_FAST_RATE;
+            var toReveal = Math.max(1, Math.ceil(elapsed * rate));
+            streamRevealedLen = Math.min(totalLen, streamRevealedLen + toReveal);
+
+            // Render markdown on the REVEALED slice (not the full text)
+            // so the user sees a steady reveal rather than burst dumps.
+            // To avoid garbling mid-fence or mid-artifact, snap forward
+            // to the end of any unterminated `:::` or "```" block.
+            var slice = assistantText.slice(0, streamRevealedLen);
+            slice = snapStreamReveal(assistantText, streamRevealedLen);
+            try {
+              streamNode.innerHTML = renderRichContent(slice, true);
+            } catch (e) {
+              streamNode.textContent = slice;
+            }
+            // Keep ticking until we've revealed everything
+            if (streamRevealedLen < totalLen) {
+              streamRenderRaf = requestAnimationFrame(streamRevealTick);
+            }
           }
-          function runStreamRender() {
+          // Snap the reveal forward to the end of an open code fence or
+          // artifact so we don't render half a ``` block — that would
+          // flicker between a fenced block and prose every frame.
+          function snapStreamReveal(full, len) {
+            var view = full.slice(0, len);
+            var lastFence = view.lastIndexOf('```');
+            if (lastFence !== -1) {
+              // Count fences in the revealed slice — if odd, we're inside one
+              var n = (view.match(/```/g) || []).length;
+              if (n % 2 === 1) {
+                // Find the matching close after `len`
+                var closeIdx = full.indexOf('```', len);
+                if (closeIdx === -1) {
+                  // No close yet — just don't reveal the open fence
+                  return full.slice(0, lastFence);
+                }
+              }
+            }
+            var lastArt = view.lastIndexOf(':::');
+            if (lastArt !== -1) {
+              // Count ::: occurrences (open + close pairs)
+              var na = (view.match(/^:::|\n:::/gm) || []).length;
+              if (na % 2 === 1) {
+                var closeArt = full.indexOf('\n:::', len);
+                if (closeArt === -1) {
+                  return full.slice(0, lastArt);
+                }
+              }
+            }
+            return view;
+          }
+          // Called once after the final delta — make sure we end at
+          // the true tail (not just whatever the RAF last revealed).
+          function flushStreamReveal() {
             if (!streamNode) return;
-            // V57: NEVER wrap streaming updates in View Transitions.
-            // Cross-fading every token burst (~120ms) caused full-page
-            // snapshots + opacity flicker that the user perceives as the
-            // whole chat "breaking" during a response. Plain re-render
-            // is fast, stable, and produces a continuous reading flow —
-            // the same approach Claude and ChatGPT use.
+            streamRevealedLen = (assistantText || '').length;
             try {
               streamNode.innerHTML = renderRichContent(assistantText, true);
             } catch (e) {
               streamNode.textContent = assistantText;
             }
+            if (streamRenderRaf !== null) {
+              cancelAnimationFrame(streamRenderRaf);
+              streamRenderRaf = null;
+            }
+          }
+          // Back-compat wrapper — anywhere that calls runStreamRender()
+          // gets the same behaviour (final flush + render).
+          function runStreamRender() {
+            flushStreamReveal();
           }
 
           function finalizeError(msg) {
@@ -20559,6 +20765,12 @@
               ensureStreamMessage();
               if (streamNode) streamNode.textContent = assistantText;
             }
+
+            // V72 — Final reveal: any characters still queued by the
+            // smooth-reveal RAF loop get rendered immediately on the
+            // last tick. The user always sees the complete response
+            // when streaming ends.
+            try { flushStreamReveal(); } catch (e) {}
 
             state.streaming = false;
             state.sending   = false;
