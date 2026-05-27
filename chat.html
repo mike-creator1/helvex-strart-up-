@@ -15513,6 +15513,442 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       V80 — DARK MODE FOR REAL (correct selector mechanism)
+       BUG FOUND: platform.js sets `<html data-theme="dark">` for both
+       OS-preference AND manual-toggle. My V74-V79 dark CSS only used
+       `@media (prefers-color-scheme: dark)`, which ONLY fires when
+       the OS is dark. Users who manually toggle dark while their OS
+       is light saw all the V69/V76 hardcoded white backgrounds.
+
+       V80 mirrors every dark rule under the proper `html[data-theme=
+       "dark"]` selector, AND bumps text contrast to fully readable
+       (white primary, pearl mid, legible muted).
+       ═════════════════════════════════════════════════════════════════ */
+
+    html[data-theme="dark"] body[data-active="chat"] {
+      /* Text contrast bumped to readable. Primary is FULLY white;
+         muted is still muted but never grey-blurry. */
+      --hx-text:       #ffffff !important;
+      --hx-text-mid:   #d8d2c2 !important;
+      --hx-text-dim:   #a8a293 !important;
+      --hx-text-faint: #6e695e !important;
+      /* Solid surface tokens (no var fallback chain) */
+      --hx-d0: #0a0908;
+      --hx-d1: #100e0c;
+      --hx-d2: #161412;
+      --hx-d3: #1c1916;
+      --hx-d4: #221e1a;
+      --hx-d5: #2a2520;
+      --hx-dark-line:   rgba(248, 244, 232, 0.07);
+      --hx-dark-line-2: rgba(248, 244, 232, 0.12);
+      --hx-dark-line-3: rgba(248, 244, 232, 0.18);
+      background: #100e0c !important;
+      color: #ffffff !important;
+    }
+
+    /* ───── ARTIFACTS — force charcoal (all 9 variants) ───────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tradeoff,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-timeline,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-workflow,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-framework,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-compare,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-note,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-insight {
+      background: linear-gradient(180deg, #1c1916 0%, #161412 100%) !important;
+      border-color: rgba(248, 244, 232, 0.07) !important;
+      box-shadow:
+        0 1px 1px rgba(0, 0, 0, 0.4),
+        0 16px 44px -22px rgba(0, 0, 0, 0.65),
+        0 36px 96px -56px rgba(0, 0, 0, 0.5) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-quote {
+      background: transparent !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art:hover {
+      border-color: rgba(248, 244, 232, 0.14) !important;
+      box-shadow:
+        0 1px 1px rgba(0, 0, 0, 0.4),
+        0 22px 56px -22px rgba(0, 0, 0, 0.75),
+        0 0 0 1px color-mix(in srgb, var(--hx-accent, #C9A227) 10%, transparent) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat {
+      background: linear-gradient(180deg, #1c1916 0%, #1d1813 100%) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tradeoff {
+      background: #1c1916 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-win {
+      background: #1f1c17 !important;
+      border-right-color: rgba(248, 244, 232, 0.07) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-risk {
+      background: #1c1916 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw {
+      background: rgba(248, 244, 232, 0.07) !important;
+      border-color: rgba(248, 244, 232, 0.07) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw-cell {
+      background: #1c1916 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-note {
+      background: linear-gradient(180deg, #221d14 0%, #1d1913 100%) !important;
+      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 25%, transparent) !important;
+    }
+
+    /* Artifact internals — readable text */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-head { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat-value { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat-label { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat-sub { color: #a8a293 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col li { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-win .hx-art-col-head { color: #f0c450 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-risk .hx-art-col-head { color: #ff9a5e !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl-meta { color: color-mix(in srgb, var(--hx-accent, #C9A227) 75%, #ffffff) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl-title { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl-body { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl::before { background: rgba(248, 244, 232, 0.14) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl-dot {
+      box-shadow: 0 0 0 3px #1c1916, 0 0 0 4px color-mix(in srgb, var(--hx-accent, #C9A227) 35%, transparent) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-wf-step {
+      border-bottom-color: rgba(248, 244, 232, 0.07) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-wf-num {
+      background: rgba(248, 244, 232, 0.08) !important;
+      color: #d8d2c2 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-wf-title { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-wf-sub { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw-key { color: var(--hx-accent, #C9A227) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw-desc { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-note-head { color: color-mix(in srgb, var(--hx-accent, #C9A227) 70%, #ffffff) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-note-body { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-quote blockquote { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-quote figcaption { color: #a8a293 !important; }
+
+    /* Compare table internals */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp thead th {
+      color: #d8d2c2 !important;
+      border-bottom-color: rgba(248, 244, 232, 0.14) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp tbody th,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp tbody td {
+      color: #ffffff !important;
+      border-bottom-color: rgba(248, 244, 232, 0.07) !important;
+    }
+
+    /* ───── MARKDOWN TABLES — de-framed, readable ─────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content table,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content thead,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead {
+      background: transparent !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content thead th,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead th {
+      color: #d8d2c2 !important;
+      background: transparent !important;
+      border-bottom-color: rgba(248, 244, 232, 0.18) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content tbody td,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody td {
+      color: #ffffff !important;
+      background: transparent !important;
+      border-bottom-color: rgba(248, 244, 232, 0.07) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody th { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content tbody tr:nth-child(even) td {
+      background: transparent !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content tbody tr:hover td {
+      background: rgba(248, 244, 232, 0.04) !important;
+    }
+
+    /* ───── COMPOSER ──────────────────────────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row {
+      background: linear-gradient(180deg, #1c1916 0%, #161412 100%) !important;
+      border-color: rgba(248, 244, 232, 0.12) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(248, 244, 232, 0.04),
+        0 1px 1px rgba(0, 0, 0, 0.4),
+        0 16px 44px -20px rgba(0, 0, 0, 0.65),
+        0 36px 96px -48px rgba(0, 0, 0, 0.5) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row:focus-within {
+      background: #221e1a !important;
+      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 32%, transparent) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(248, 244, 232, 0.06),
+        0 0 0 4px color-mix(in srgb, var(--hx-accent, #C9A227) 12%, transparent),
+        0 18px 48px -16px rgba(0, 0, 0, 0.7) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-textarea {
+      color: #ffffff !important;
+      background: transparent !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-textarea::placeholder {
+      color: #a8a293 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-tool-btn {
+      color: #d8d2c2 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-tool-btn:hover {
+      background: rgba(248, 244, 232, 0.08) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-compose::before {
+      background: linear-gradient(180deg,
+        transparent 0%,
+        color-mix(in srgb, #100e0c 35%, transparent) 35%,
+        color-mix(in srgb, #100e0c 85%, transparent) 75%,
+        #100e0c 100%) !important;
+    }
+
+    /* ───── COMMAND PALETTE ───────────────────────────────────────── */
+    html[data-theme="dark"] .hx-palette {
+      background: linear-gradient(180deg, #1c1916 0%, #161412 100%) !important;
+      border-color: rgba(248, 244, 232, 0.12) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(248, 244, 232, 0.05),
+        0 2px 6px rgba(0, 0, 0, 0.5),
+        0 32px 80px -20px rgba(0, 0, 0, 0.85),
+        0 64px 160px -40px rgba(0, 0, 0, 0.7) !important;
+    }
+    html[data-theme="dark"] .hx-palette-input { color: #ffffff !important; }
+    html[data-theme="dark"] .hx-palette-input::placeholder { color: #a8a293 !important; }
+    html[data-theme="dark"] .hx-palette-row { color: #ffffff !important; }
+    html[data-theme="dark"] .hx-palette-row-label { color: #ffffff !important; }
+    html[data-theme="dark"] .hx-palette-row-hint { color: #a8a293 !important; }
+    html[data-theme="dark"] .hx-palette-group-label { color: #d8d2c2 !important; }
+    html[data-theme="dark"] .hx-palette-foot-hint,
+    html[data-theme="dark"] .hx-palette-foot-brand { color: #d8d2c2 !important; }
+    html[data-theme="dark"] .hx-palette-foot { background: rgba(0, 0, 0, 0.3) !important; border-top-color: rgba(248, 244, 232, 0.08) !important; }
+    html[data-theme="dark"] .hx-palette-head { border-bottom-color: rgba(248, 244, 232, 0.08) !important; }
+    html[data-theme="dark"] .hx-palette-row-ico { background: rgba(248, 244, 232, 0.07) !important; color: #d8d2c2 !important; }
+    html[data-theme="dark"] .hx-palette-row.is-active,
+    html[data-theme="dark"] .hx-palette-row:hover {
+      background: linear-gradient(90deg,
+        color-mix(in srgb, var(--hx-accent, #C9A227) 12%, rgba(248, 244, 232, 0.03)) 0%,
+        rgba(248, 244, 232, 0.06) 100%) !important;
+    }
+    html[data-theme="dark"] .hx-palette-row.is-active .hx-palette-row-ico,
+    html[data-theme="dark"] .hx-palette-row:hover .hx-palette-row-ico {
+      background: color-mix(in srgb, var(--hx-accent, #C9A227) 28%, transparent) !important;
+      color: color-mix(in srgb, var(--hx-accent, #C9A227) 80%, #ffffff) !important;
+    }
+    html[data-theme="dark"] .hx-palette-kbd-close,
+    html[data-theme="dark"] .hx-palette-foot-hint kbd,
+    html[data-theme="dark"] .hx-palette-empty kbd {
+      background: rgba(248, 244, 232, 0.06) !important;
+      border-color: rgba(248, 244, 232, 0.12) !important;
+      color: #d8d2c2 !important;
+    }
+    html[data-theme="dark"] .hx-palette-backdrop { background: rgba(0, 0, 0, 0.7) !important; }
+
+    /* ───── PRESENCE PILL ─────────────────────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-presence {
+      background: color-mix(in srgb, #1c1916 84%, transparent) !important;
+      border-color: rgba(248, 244, 232, 0.12) !important;
+      color: #ffffff !important;
+      box-shadow:
+        0 4px 16px -6px rgba(0, 0, 0, 0.55),
+        0 12px 36px -16px rgba(0, 0, 0, 0.45) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-presence-label { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-presence[data-state="thinking"],
+    html[data-theme="dark"] body[data-active="chat"] .hx-presence[data-state="drafting"] {
+      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 32%, transparent) !important;
+    }
+
+    /* ───── MODEL PICKER + BOTTOM STRIP ──────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-pick {
+      background: #1c1916 !important;
+      border-color: rgba(248, 244, 232, 0.12) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-pick:hover {
+      background: #221e1a !important;
+      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 26%, transparent) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-name { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-caret { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-compose-bar::before { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-compose-bar::after {
+      background: rgba(248, 244, 232, 0.05) !important;
+      border-color: rgba(248, 244, 232, 0.1) !important;
+      color: #d8d2c2 !important;
+    }
+
+    /* ───── SIDEBAR / RAIL ───────────────────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail {
+      background: linear-gradient(180deg, #100e0c 0%, #0a0908 100%) !important;
+      border-right-color: rgba(248, 244, 232, 0.07) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail-title::after { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-new {
+      background: transparent !important;
+      border-color: rgba(248, 244, 232, 0.12) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-new:hover {
+      background: rgba(248, 244, 232, 0.05) !important;
+      border-color: rgba(248, 244, 232, 0.18) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail-collapse { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail-collapse:hover {
+      background: rgba(248, 244, 232, 0.05) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search-row {
+      background: rgba(248, 244, 232, 0.04) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search-row:focus-within {
+      background: #1c1916 !important;
+      border-color: rgba(248, 244, 232, 0.18) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search::placeholder { color: #a8a293 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-item:hover {
+      background: rgba(248, 244, 232, 0.05) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-item.is-active {
+      background: linear-gradient(90deg,
+        color-mix(in srgb, var(--hx-accent, #C9A227) 14%, transparent) 0%,
+        rgba(248, 244, 232, 0.06) 100%) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-item-title { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-item-more { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-group-head { color: #d8d2c2 !important; }
+
+    /* ───── EMPTY STATE CHIPS + CONDUCTOR + FOLLOWUP CHIPS ───────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-chip {
+      background: #1c1916 !important;
+      border-color: rgba(248, 244, 232, 0.12) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-chip:hover {
+      background: #221e1a !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-chip span { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-conductor-chip,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-followup-chip {
+      background: rgba(248, 244, 232, 0.03) !important;
+      border-color: rgba(248, 244, 232, 0.12) !important;
+      color: #d8d2c2 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-conductor-chip:hover,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-followup-chip:hover {
+      background: rgba(248, 244, 232, 0.08) !important;
+      border-color: rgba(248, 244, 232, 0.2) !important;
+      color: #ffffff !important;
+    }
+
+    /* ───── USER PULL-QUOTE + ASSISTANT TEXT ─────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+      background: transparent !important;
+      color: #ffffff !important;
+      border-left: 2px solid color-mix(in srgb, var(--hx-accent, #C9A227) 80%, transparent) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-user::before { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p:first-of-type,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > details.hx-rsn + p {
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content strong { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content em { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h {
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li::before {
+      background: color-mix(in srgb, var(--hx-accent, #C9A227) 75%, transparent) !important;
+    }
+
+    /* ───── BLOCKQUOTE + DETAILS + CODE ──────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content blockquote {
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content blockquote::before {
+      background: linear-gradient(180deg, transparent 0%, rgba(248, 244, 232, 0.3) 20%, rgba(248, 244, 232, 0.3) 80%, transparent 100%) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) {
+      background: transparent !important;
+      border-top-color: rgba(248, 244, 232, 0.12) !important;
+      border-bottom-color: rgba(248, 244, 232, 0.12) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) > summary { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-inline,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant code:not(pre code) {
+      background: rgba(248, 244, 232, 0.06) !important;
+      border-color: rgba(248, 244, 232, 0.12) !important;
+      color: color-mix(in srgb, var(--hx-accent, #C9A227) 60%, #ffffff) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant a:not(.hx-msg-act):not(.hx-msg-attach-file):not(.hx-conductor-chip):not(.hx-msg-followup-chip) {
+      color: color-mix(in srgb, var(--hx-accent, #C9A227) 70%, #ffffff) !important;
+      border-bottom-color: color-mix(in srgb, var(--hx-accent, #C9A227) 45%, transparent) !important;
+    }
+
+    /* ───── EMPTY STATE ───────────────────────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank h2 { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank p { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank p strong { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-eyebrow { color: #d8d2c2 !important; }
+
+    /* ───── ACTION TOOLBAR + THINKING ────────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act:hover {
+      background: rgba(248, 244, 232, 0.1) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-user .hx-msg-user-act { color: #d8d2c2 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-user .hx-msg-user-act:hover {
+      background: rgba(248, 244, 232, 0.1) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-label {
+      color: #d8d2c2 !important;
+    }
+
+    /* ───── ATMOSPHERIC LAYERS (chat pane lighting) ──────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane {
+      background: #100e0c !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane::before {
+      background:
+        radial-gradient(ellipse 90% 70% at 24% 0%,
+          color-mix(in srgb, var(--hx-accent, #C9A227) 8%, transparent) 0%,
+          color-mix(in srgb, var(--hx-accent, #C9A227) 2.5%, transparent) 30%,
+          transparent 65%),
+        radial-gradient(ellipse 70% 50% at 88% 100%,
+          color-mix(in srgb, #4a3a14 14%, transparent) 0%,
+          transparent 55%) !important;
+      opacity: 1 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane::after {
+      opacity: 0.06 !important;
+    }
+
+    /* ─── Sharp font rendering in dark ─── */
+    html[data-theme="dark"] body[data-active="chat"] {
+      -webkit-font-smoothing: antialiased !important;
+      -moz-osx-font-smoothing: grayscale !important;
+      text-rendering: optimizeLegibility !important;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        V79 — DARK MODE: NO MORE WHITE LEAKS (final lockdown)
        Comprehensive audit + aggressive override. Every named class
        that hardcoded #ffffff anywhere in V64-V78 gets explicitly
