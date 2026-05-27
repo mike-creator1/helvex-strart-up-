@@ -14518,6 +14518,192 @@
         max-width: 100% !important;
       }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V54 — MODEL-SPECIFIC COGNITION MARKS
+       The "Thinking" state now shows the active model's identity icon
+       with its own signature motion:
+         • Ether → atom orbit, smooth continuous spin
+         • Nexus → network burst, rays + nodes pulsing inward + out
+         • Prometheus → flame, organic flicker with breath
+       ═════════════════════════════════════════════════════════════════ */
+
+    body[data-active="chat"] .hx-msg.hx-msg-thinking > .hx-msg-body {
+      display: inline-flex !important;
+      align-items: center;
+      gap: 12px;
+      padding-left: 0 !important;
+      animation: hx-think-fade-in 360ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking > .hx-msg-body::before,
+    body[data-active="chat"] .hx-msg.hx-msg-thinking > .hx-msg-body::after {
+      content: none !important;
+      display: none !important;
+    }
+    @keyframes hx-think-fade-in {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hx-think-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+    .hx-think-mark svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+    }
+    .hx-think-label {
+      font-family: var(--sans);
+      font-size: 13.5px;
+      font-weight: 500;
+      font-style: italic;
+      letter-spacing: -0.004em;
+      color: color-mix(in srgb, var(--hx-text) 56%, transparent);
+      line-height: 1;
+      animation: hx-think-label-breath 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes hx-think-label-breath {
+      0%, 100% { opacity: 0.7; }
+      50%      { opacity: 1; }
+    }
+
+    /* ── ETHER — atom orbits spinning smoothly ──────────────────── */
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-ether .hx-think-mark {
+      color: var(--hx-yellow-deep, #B8911E);
+      filter:
+        drop-shadow(0 0 6px color-mix(in srgb, var(--hx-yellow-deep, #B8911E) 28%, transparent))
+        drop-shadow(0 0 14px color-mix(in srgb, var(--hx-yellow-deep, #B8911E) 14%, transparent));
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-ether .hx-tm-o1 {
+      animation: hx-tm-ether-spin1 3.6s linear infinite;
+      transform-origin: 16px 16px;
+      transform-box: fill-box;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-ether .hx-tm-o2 {
+      animation: hx-tm-ether-spin2 4.6s linear infinite;
+      transform-origin: 16px 16px;
+      transform-box: fill-box;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-ether .hx-tm-o3 {
+      animation: hx-tm-ether-spin3 5.4s linear infinite;
+      transform-origin: 16px 16px;
+      transform-box: fill-box;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-ether .hx-tm-nucleus {
+      animation: hx-tm-ether-pulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      transform-origin: 16px 16px;
+      transform-box: fill-box;
+    }
+    @keyframes hx-tm-ether-spin1 { from { transform: rotate(0deg);   } to { transform: rotate(360deg); } }
+    @keyframes hx-tm-ether-spin2 { from { transform: rotate(60deg);  } to { transform: rotate(420deg); } }
+    @keyframes hx-tm-ether-spin3 { from { transform: rotate(120deg); } to { transform: rotate(480deg); } }
+    @keyframes hx-tm-ether-pulse {
+      0%, 100% { transform: scale(0.88); opacity: 0.88; }
+      50%      { transform: scale(1.08); opacity: 1; }
+    }
+
+    /* ── NEXUS — rays + nodes pulse ─────────────────────────── */
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-think-mark {
+      color: #C2410C;
+      filter:
+        drop-shadow(0 0 6px color-mix(in srgb, #C2410C 32%, transparent))
+        drop-shadow(0 0 16px color-mix(in srgb, #C2410C 16%, transparent));
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-ray {
+      animation: hx-tm-nexus-ray 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      stroke-opacity: 0.4;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-ray:nth-child(2) { animation-delay: 0.05s; }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-ray:nth-child(3) { animation-delay: 0.10s; }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-ray:nth-child(4) { animation-delay: 0.15s; }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-ray:nth-child(5) { animation-delay: 0.20s; }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-ray:nth-child(6) { animation-delay: 0.25s; }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-node {
+      animation: hx-tm-nexus-node 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      transform-origin: center;
+      transform-box: fill-box;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-n2 { animation-delay: 0.10s; }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-n3 { animation-delay: 0.20s; }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-n4 { animation-delay: 0.30s; }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-n5 { animation-delay: 0.40s; }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-n6 { animation-delay: 0.50s; }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-nexus .hx-tm-core {
+      animation: hx-tm-nexus-core 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      transform-origin: 16px 16px;
+      transform-box: fill-box;
+    }
+    @keyframes hx-tm-nexus-ray {
+      0%, 100% { stroke-opacity: 0.30; }
+      50%      { stroke-opacity: 0.95; }
+    }
+    @keyframes hx-tm-nexus-node {
+      0%, 100% { opacity: 0.45; transform: scale(0.78); }
+      50%      { opacity: 1;    transform: scale(1.12); }
+    }
+    @keyframes hx-tm-nexus-core {
+      0%, 100% { transform: scale(0.92); }
+      50%      { transform: scale(1.10); }
+    }
+
+    /* ── PROMETHEUS — flame flickers organically ─────────────── */
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-prometheus .hx-think-mark {
+      color: var(--hx-text);
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-prometheus .hx-tm-prom {
+      transform-origin: 16px 28px;
+      transform-box: fill-box;
+      animation: hx-tm-prom-breath 1.4s cubic-bezier(0.4, 0, 0.4, 1) infinite;
+      filter:
+        drop-shadow(0 -2px 8px color-mix(in srgb, #CC1016 38%, transparent))
+        drop-shadow(0 -4px 16px color-mix(in srgb, #CC1016 22%, transparent));
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-prometheus .hx-tm-outer {
+      animation: hx-tm-prom-flicker 1.4s cubic-bezier(0.4, 0, 0.4, 1) infinite;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking.is-prometheus .hx-tm-inner {
+      animation: hx-tm-prom-inner 0.9s cubic-bezier(0.4, 0, 0.4, 1) infinite;
+      transform-origin: 16px 28px;
+      transform-box: fill-box;
+    }
+    @keyframes hx-tm-prom-breath {
+      0%, 100% { transform: scale(0.92, 0.96)  skewX(0deg); }
+      18%      { transform: scale(1.06, 1.18)  skewX(-1.5deg); }
+      36%      { transform: scale(0.96, 1.02)  skewX(1deg); }
+      55%      { transform: scale(1.12, 1.28)  skewX(-0.8deg); }
+      78%      { transform: scale(0.98, 1.08)  skewX(0.6deg); }
+    }
+    @keyframes hx-tm-prom-flicker {
+      0%, 100% { fill-opacity: 0.22; }
+      35%      { fill-opacity: 0.32; }
+      62%      { fill-opacity: 0.18; }
+    }
+    @keyframes hx-tm-prom-inner {
+      0%, 100% { transform: scaleY(0.92); opacity: 0.85; }
+      50%      { transform: scaleY(1.18); opacity: 1; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-orbit,
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-nucleus,
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-ray,
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-node,
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-core,
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-prom,
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-outer,
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-inner {
+        animation: none !important;
+      }
+      .hx-think-label { animation: none !important; opacity: 0.78; }
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -15996,16 +16182,56 @@
           });
           if (state.sending) {
             var activeModel = ($('hx-c-model') && $('hx-c-model').value) || 'ether';
-            // Minimal thinking indicator: just the active model's logo
-            // doing its signature animation. No pill, no labels, no dots.
-            html += '<div class="hx-msg is-assistant hx-msg-thinking">' +
-              '<div class="hx-msg-avatar is-assistant" aria-hidden="true">' +
-                '<svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="12" rx="9" ry="3.2" stroke="currentColor" stroke-width="1.3" stroke-opacity=".95"/><ellipse cx="12" cy="12" rx="9" ry="3.2" stroke="currentColor" stroke-width="1.3" stroke-opacity=".6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.2" stroke="currentColor" stroke-width="1.3" stroke-opacity=".4" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="2.1" fill="currentColor"/></svg>' +
-              '</div>' +
+            var thinkLabel = activeModel === 'prometheus' ? 'Planning'
+                          : activeModel === 'nexus'      ? 'Reasoning'
+                          : 'Thinking';
+            // Model-specific cognition mark — each model has its own
+            // identity icon + signature motion that signals active
+            // intelligence. Real AI cognition presence, not generic dots.
+            var thinkMark;
+            if (activeModel === 'nexus') {
+              thinkMark =
+                '<svg viewBox="0 0 32 32" fill="none" aria-hidden="true">' +
+                  '<g class="hx-tm-nexus">' +
+                    '<line class="hx-tm-ray" x1="16" y1="16" x2="16"  y2="4"   stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>' +
+                    '<line class="hx-tm-ray" x1="16" y1="16" x2="26.4" y2="10"  stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>' +
+                    '<line class="hx-tm-ray" x1="16" y1="16" x2="26.4" y2="22"  stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>' +
+                    '<line class="hx-tm-ray" x1="16" y1="16" x2="16"  y2="28"  stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>' +
+                    '<line class="hx-tm-ray" x1="16" y1="16" x2="5.6"  y2="22"  stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>' +
+                    '<line class="hx-tm-ray" x1="16" y1="16" x2="5.6"  y2="10"  stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>' +
+                    '<circle class="hx-tm-node hx-tm-n1" cx="16"  cy="4"  r="1.9" fill="currentColor"/>' +
+                    '<circle class="hx-tm-node hx-tm-n2" cx="26.4" cy="10" r="1.7" fill="currentColor"/>' +
+                    '<circle class="hx-tm-node hx-tm-n3" cx="26.4" cy="22" r="1.7" fill="currentColor"/>' +
+                    '<circle class="hx-tm-node hx-tm-n4" cx="16"  cy="28" r="1.7" fill="currentColor"/>' +
+                    '<circle class="hx-tm-node hx-tm-n5" cx="5.6"  cy="22" r="1.7" fill="currentColor"/>' +
+                    '<circle class="hx-tm-node hx-tm-n6" cx="5.6"  cy="10" r="1.7" fill="currentColor"/>' +
+                    '<circle class="hx-tm-core" cx="16" cy="16" r="2.6" fill="currentColor"/>' +
+                  '</g>' +
+                '</svg>';
+            } else if (activeModel === 'prometheus') {
+              thinkMark =
+                '<svg viewBox="0 0 32 32" fill="none" aria-hidden="true">' +
+                  '<g class="hx-tm-prom">' +
+                    '<path class="hx-tm-outer" d="M16 3 C 12 8 9.3 12.7 10.7 18 C 11.3 22 14 26 16 28 C 18 26 20.7 22 21.3 18 C 21.7 14.7 20 12 19 9.3 C 18 12 17 13.3 16 14 C 15 12 14.7 9.3 16 3 Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="currentColor" fill-opacity=".22"/>' +
+                    '<path class="hx-tm-inner" d="M16 16 C 14 19 13.3 21 15.3 24 C 16 25 17.3 24 17.3 22.7 C 17.3 21.3 16.7 19 16 16 Z" fill="currentColor"/>' +
+                  '</g>' +
+                '</svg>';
+            } else {
+              // ether — atom orbit
+              thinkMark =
+                '<svg viewBox="0 0 32 32" fill="none" aria-hidden="true">' +
+                  '<g class="hx-tm-ether">' +
+                    '<ellipse class="hx-tm-orbit hx-tm-o1" cx="16" cy="16" rx="13" ry="4.4" stroke="currentColor" stroke-width="1.3" stroke-opacity=".95"/>' +
+                    '<ellipse class="hx-tm-orbit hx-tm-o2" cx="16" cy="16" rx="13" ry="4.4" stroke="currentColor" stroke-width="1.3" stroke-opacity=".7"  transform="rotate(60 16 16)"/>' +
+                    '<ellipse class="hx-tm-orbit hx-tm-o3" cx="16" cy="16" rx="13" ry="4.4" stroke="currentColor" stroke-width="1.3" stroke-opacity=".5"  transform="rotate(120 16 16)"/>' +
+                    '<circle class="hx-tm-nucleus" cx="16" cy="16" r="2.6" fill="currentColor"/>' +
+                  '</g>' +
+                '</svg>';
+            }
+            html += '<div class="hx-msg is-assistant hx-msg-thinking is-' + escape(activeModel) + '">' +
               '<div class="hx-msg-body">' +
-                '<span class="hx-thinking-typing" aria-label="' + (isAgentModel(activeModel) ? 'Planning' : 'Thinking') + '">' +
-                  '<span></span><span></span><span></span>' +
-                '</span>' +
+                '<span class="hx-think-mark" aria-hidden="true">' + thinkMark + '</span>' +
+                '<span class="hx-think-label" aria-label="' + escape(thinkLabel) + '">' + escape(thinkLabel) + '</span>' +
               '</div>' +
             '</div>';
           }
