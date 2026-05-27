@@ -15513,6 +15513,342 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       V79 — DARK MODE: NO MORE WHITE LEAKS (final lockdown)
+       Comprehensive audit + aggressive override. Every named class
+       that hardcoded #ffffff anywhere in V64-V78 gets explicitly
+       forced to a dark surface inside @media (prefers-color-scheme:
+       dark). Text palette bumped for proper readability — muted is
+       still muted but never grey-unreadable.
+
+       This is the definitive dark-mode pass. No white leaks.
+       ═════════════════════════════════════════════════════════════════ */
+
+    @media (prefers-color-scheme: dark) {
+
+      /* ───── (A) STRONGER TEXT PALETTE ─────────────────────────── */
+      /* Near-white primary, readable mid, readable dim. Below this,
+         text becomes unusable on dark — the V77 dim was too grey. */
+      body[data-active="chat"] {
+        --hx-text:       #f6f0e1 !important;   /* near-white cream */
+        --hx-text-mid:   #d4ccba !important;   /* readable secondary */
+        --hx-text-dim:   #a39d8b !important;   /* still readable muted (was #807a6c) */
+        --hx-text-faint: #6e695e !important;
+      }
+
+      /* ───── (B) ARTIFACT BACKGROUNDS — force charcoal ──────────── */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art.hx-art-stat,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art.hx-art-tradeoff,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art.hx-art-timeline,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art.hx-art-workflow,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art.hx-art-framework,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art.hx-art-compare,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art.hx-art-note,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art.hx-art-quote {
+        background: linear-gradient(180deg, var(--hx-d3, #1c1916) 0%, var(--hx-d2, #161412) 100%) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art.hx-art-quote {
+        background: transparent !important;
+      }
+
+      /* Specific cells inside artifacts that hardcoded #fff */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat {
+        background: linear-gradient(180deg,
+          var(--hx-d3, #1c1916) 0%,
+          color-mix(in srgb, var(--hx-accent, #C9A227) 6%, var(--hx-d2, #161412)) 100%) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-win {
+        background: color-mix(in srgb, var(--hx-accent, #C9A227) 4%, var(--hx-d3, #1c1916)) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-risk {
+        background: var(--hx-d3, #1c1916) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-tradeoff {
+        background: var(--hx-d3, #1c1916) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw-cell {
+        background: var(--hx-d3, #1c1916) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw {
+        background: rgba(246, 240, 225, 0.08) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-note {
+        background: linear-gradient(180deg,
+          color-mix(in srgb, var(--hx-accent, #C9A227) 8%, var(--hx-d3, #1c1916)) 0%,
+          color-mix(in srgb, var(--hx-accent, #C9A227) 4%, var(--hx-d3, #1c1916)) 100%) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-note-body,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat-value,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl-title,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-wf-title,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw-desc,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-col li,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp tbody th {
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat-label,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp tbody td {
+        color: var(--hx-text-mid) !important;
+      }
+
+      /* ───── (C) COMPOSER — force dark ─────────────────────────── */
+      body[data-active="chat"] .hx-chat-input-row,
+      body[data-active="chat"] .hx-chat-input-row:focus-within {
+        background: linear-gradient(180deg, var(--hx-d3, #1c1916) 0%, var(--hx-d2, #161412) 100%) !important;
+      }
+      body[data-active="chat"] .hx-chat-input-row:focus-within {
+        background: var(--hx-d4, #221e1a) !important;
+      }
+      body[data-active="chat"] .hx-chat-input-row .hx-chat-textarea {
+        background: transparent !important;
+        color: var(--hx-text) !important;
+      }
+
+      /* ───── (D) COMMAND PALETTE — force dark glass ────────────── */
+      .hx-palette {
+        background: linear-gradient(180deg,
+          color-mix(in srgb, #1c1916 96%, transparent) 0%,
+          color-mix(in srgb, #161412 97%, transparent) 100%) !important;
+      }
+      .hx-palette-input,
+      .hx-palette-row-label {
+        color: #f6f0e1 !important;
+      }
+      .hx-palette-input::placeholder,
+      .hx-palette-row-hint,
+      .hx-palette-group-label,
+      .hx-palette-foot-hint,
+      .hx-palette-foot-brand,
+      .hx-palette-empty {
+        color: #a39d8b !important;
+      }
+
+      /* ───── (E) PRESENCE PILL — force dark glass ──────────────── */
+      body[data-active="chat"] .hx-presence {
+        background: color-mix(in srgb, #1c1916 82%, transparent) !important;
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-presence-label {
+        color: var(--hx-text) !important;
+      }
+
+      /* ───── (F) MODEL PICKER + BOTTOM STRIP ───────────────────── */
+      body[data-active="chat"] .hx-cc-model-pick {
+        background: var(--hx-d3, #1c1916) !important;
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-cc-model-pick:hover {
+        background: var(--hx-d4, #221e1a) !important;
+      }
+      body[data-active="chat"] .hx-cc-model-name {
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-cc-compose-bar::before {
+        color: var(--hx-text-mid) !important;
+      }
+      body[data-active="chat"] .hx-cc-compose-bar::after {
+        background: rgba(246, 240, 225, 0.05) !important;
+        color: var(--hx-text-dim) !important;
+        border-color: rgba(246, 240, 225, 0.1) !important;
+      }
+
+      /* ───── (G) SIDEBAR / RAIL — force dark ───────────────────── */
+      body[data-active="chat"] .hx-sidebar,
+      body[data-active="chat"] .hx-chat-rail,
+      body[data-active="chat"] .hx-chat-rail-head,
+      body[data-active="chat"] .hx-rail-search-row,
+      body[data-active="chat"] .hx-chat-list,
+      body[data-active="chat"] .hx-chat-item {
+        background-color: transparent !important;
+      }
+      body[data-active="chat"] .hx-chat-rail {
+        background: linear-gradient(180deg, var(--hx-d1, #100e0c) 0%, var(--hx-d0, #0a0908) 100%) !important;
+      }
+      body[data-active="chat"] .hx-rail-search-row {
+        background: rgba(246, 240, 225, 0.04) !important;
+      }
+      body[data-active="chat"] .hx-rail-search-row:focus-within {
+        background: var(--hx-d3, #1c1916) !important;
+      }
+      body[data-active="chat"] .hx-chat-item:hover {
+        background: rgba(246, 240, 225, 0.05) !important;
+      }
+      body[data-active="chat"] .hx-chat-item.is-active {
+        background: linear-gradient(90deg,
+          color-mix(in srgb, var(--hx-accent, #C9A227) 12%, transparent) 0%,
+          rgba(246, 240, 225, 0.06) 100%) !important;
+      }
+      body[data-active="chat"] .hx-chat-item-title { color: var(--hx-text) !important; }
+      body[data-active="chat"] .hx-chat-item-more { color: var(--hx-text-mid) !important; }
+      body[data-active="chat"] .hx-rail-group-head { color: var(--hx-text-mid) !important; }
+      body[data-active="chat"] .hx-rail-search { color: var(--hx-text) !important; }
+      body[data-active="chat"] .hx-rail-search::placeholder { color: var(--hx-text-dim) !important; }
+
+      /* ───── (H) EMPTY-STATE CHIPS (if surfaced) ───────────────── */
+      body[data-active="chat"] .hx-chat-blank-chip {
+        background: var(--hx-d3, #1c1916) !important;
+        border-color: rgba(246, 240, 225, 0.1) !important;
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-chat-blank-chip:hover {
+        background: var(--hx-d4, #221e1a) !important;
+        border-color: rgba(246, 240, 225, 0.18) !important;
+      }
+      body[data-active="chat"] .hx-chat-blank-chip svg {
+        color: var(--hx-text-mid) !important;
+      }
+      body[data-active="chat"] .hx-chat-blank-chip span {
+        color: var(--hx-text) !important;
+      }
+
+      /* ───── (I) CONDUCTOR + FOLLOWUP CHIPS — readable ────────── */
+      body[data-active="chat"] .hx-conductor-chip,
+      body[data-active="chat"] .hx-msg-followup-chip {
+        background: rgba(246, 240, 225, 0.02) !important;
+        border-color: rgba(246, 240, 225, 0.1) !important;
+        color: var(--hx-text-mid) !important;
+      }
+      body[data-active="chat"] .hx-conductor-chip:hover,
+      body[data-active="chat"] .hx-msg-followup-chip:hover {
+        background: rgba(246, 240, 225, 0.06) !important;
+        border-color: rgba(246, 240, 225, 0.18) !important;
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-conductor-chip span,
+      body[data-active="chat"] .hx-msg-followup-chip span {
+        color: inherit !important;
+      }
+
+      /* ───── (J) USER PULL-QUOTE — readable ────────────────────── */
+      body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+        background: transparent !important;
+        color: var(--hx-text) !important;
+        border-left: 2px solid color-mix(in srgb, var(--hx-accent, #C9A227) 75%, transparent) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-user::before {
+        color: var(--hx-text-mid) !important;
+      }
+
+      /* ───── (K) ASSISTANT BODY TEXT — readable ────────────────── */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p:first-of-type,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > details.hx-rsn + p {
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content strong {
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h {
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h {
+        color: var(--hx-text-mid) !important;
+      }
+
+      /* ───── (L) LIST DOTS in dark ─────────────────────────────── */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li::before {
+        background: color-mix(in srgb, var(--hx-accent, #C9A227) 70%, transparent) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li {
+        color: var(--hx-text) !important;
+      }
+
+      /* ───── (M) MARKDOWN TABLE TEXT (de-framed) ───────────────── */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content thead th,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead th {
+        color: var(--hx-text) !important;
+        border-bottom-color: rgba(246, 240, 225, 0.18) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content tbody td,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody td {
+        color: var(--hx-text) !important;
+        border-bottom-color: rgba(246, 240, 225, 0.07) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody th {
+        color: var(--hx-text) !important;
+      }
+
+      /* ───── (N) DETAILS (non-reasoning) — readable hairline ───── */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) {
+        background: transparent !important;
+        border-top-color: rgba(246, 240, 225, 0.1) !important;
+        border-bottom-color: rgba(246, 240, 225, 0.1) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) > summary {
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) > summary::before {
+        border-color: var(--hx-text-mid) !important;
+      }
+
+      /* ───── (O) BLOCKQUOTE — readable ─────────────────────────── */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content blockquote {
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content blockquote::before {
+        background: linear-gradient(180deg,
+          transparent 0%,
+          rgba(246, 240, 225, 0.25) 20%,
+          rgba(246, 240, 225, 0.25) 80%,
+          transparent 100%) !important;
+      }
+
+      /* ───── (P) EMPTY STATE — readable ────────────────────────── */
+      body[data-active="chat"] .hx-chat-blank h2 { color: var(--hx-text) !important; }
+      body[data-active="chat"] .hx-chat-blank p { color: var(--hx-text-mid) !important; }
+      body[data-active="chat"] .hx-chat-blank p strong { color: var(--hx-text) !important; }
+      body[data-active="chat"] .hx-chat-blank-eyebrow { color: var(--hx-text-mid) !important; }
+
+      /* ───── (Q) ACTION TOOLBAR — readable icons ───────────────── */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act {
+        color: var(--hx-text-mid) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act:hover {
+        background: rgba(246, 240, 225, 0.08) !important;
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-user .hx-msg-user-act {
+        color: var(--hx-text-mid) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-user .hx-msg-user-act:hover {
+        background: rgba(246, 240, 225, 0.08) !important;
+        color: var(--hx-text) !important;
+      }
+
+      /* ───── (R) COMPOSER TOOL BUTTONS (attach / mic) ──────────── */
+      body[data-active="chat"] .hx-chat-tool-btn {
+        color: var(--hx-text-mid) !important;
+      }
+      body[data-active="chat"] .hx-chat-tool-btn:hover {
+        background: rgba(246, 240, 225, 0.08) !important;
+        color: var(--hx-text) !important;
+      }
+
+      /* ───── (S) THINKING INDICATOR — readable italic ──────────── */
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-label {
+        color: var(--hx-text-mid) !important;
+      }
+
+      /* ───── (T) BACKDROP / OVERLAY SAFETY ─────────────────────── */
+      .hx-palette-backdrop {
+        background: rgba(0, 0, 0, 0.7) !important;
+      }
+
+      /* ───── (U) DEFENSIVE: any leftover white-ish bg ──────────── */
+      /* If any layer hardcoded white(255,255,255), neutralize. The
+         selector is precise enough to avoid hitting masks, gradients,
+         or transparent surfaces. */
+      body[data-active="chat"] .hx-art[style*="rgb(255"],
+      body[data-active="chat"] .hx-art[style*="#fff"],
+      body[data-active="chat"] .hx-chat-item[style*="rgb(255"] {
+        background: var(--hx-d3, #1c1916) !important;
+      }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        V78 — ATMOSPHERIC CONTINUITY
        The user is right: even after V77's depth + lighting, the chat
        still reads as "rectangles with shadows on a dark canvas". V78
