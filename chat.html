@@ -15126,6 +15126,139 @@
         gap: 20px !important;
       }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V59 — REMOVE TOP TOOLBAR + LET THE CONVERSATION BREATHE
+       The top "New chat • Ether Max" toolbar plus its corner Share /
+       More buttons were eating real estate without adding value. The
+       conversations rail on the left already shows the current
+       conversation; the model is shown in the bottom strip; sharing
+       lives in each message's per-message action toolbar. So the
+       whole header is redundant. Removed entirely.
+
+       Then V58 went too tight in response to a "too sparse" complaint
+       and produced the opposite problem (cramped). V59 restores
+       breathing room with proper Claude/ChatGPT proportions while
+       keeping the composer integration from V58.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* (a) Toolbar — gone. */
+    body[data-active="chat"] .hx-chat-toolbar,
+    body[data-active="chat"] #hx-c-toolbar {
+      display: none !important;
+    }
+    /* Belt & braces — the two right-corner buttons specifically */
+    body[data-active="chat"] .hx-chat-head-actions,
+    body[data-active="chat"] #hx-c-share-btn,
+    body[data-active="chat"] #hx-c-more-btn,
+    body[data-active="chat"] .hx-chat-head-divider {
+      display: none !important;
+    }
+
+    /* (b) Restore the top breathing room the toolbar used to provide */
+    body[data-active="chat"] .hx-chat-pane {
+      padding-top: 0 !important;
+    }
+    body[data-active="chat"] .hx-chat-thread {
+      padding-top: 0 !important;
+    }
+    body[data-active="chat"] .hx-chat-thread-inner {
+      padding-top: 56px !important;
+      padding-bottom: 16px !important;
+      gap: 28px !important;
+    }
+    @media (min-width: 1280px) {
+      body[data-active="chat"] .hx-chat-thread-inner {
+        padding-top: 64px !important;
+        padding-bottom: 20px !important;
+        gap: 32px !important;
+      }
+    }
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-chat-thread-inner {
+        padding-top: 28px !important;
+        padding-bottom: 12px !important;
+        gap: 22px !important;
+      }
+    }
+
+    /* (c) Message pairing — tight enough to read as one turn, but not
+        glued. -2px keeps the visual relationship without crushing it. */
+    body[data-active="chat"] .hx-msg.is-user + .hx-msg.is-assistant,
+    body[data-active="chat"] .hx-msg.is-user + .hx-msg.is-streaming,
+    body[data-active="chat"] .hx-msg.is-user + .hx-msg.hx-msg-thinking {
+      margin-top: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant + .hx-msg.is-user {
+      margin-top: 14px !important;
+    }
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg:last-child {
+      margin-bottom: 16px !important;
+    }
+
+    /* (d) User bubble — comfortable padding, not crammed */
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+      padding: 13px 18px !important;
+    }
+
+    /* (e) Assistant prose — breathing between blocks */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > * + * {
+      margin-top: 14px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h {
+      margin-top: 24px !important;
+      margin-bottom: 4px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h:first-child,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h:first-child,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h:first-child {
+      margin-top: 0 !important;
+    }
+    /* Lists breathe more — bullets feel cramped at 10px */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content ul,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content ol {
+      margin-top: 8px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content li + li {
+      margin-top: 8px !important;
+    }
+
+    /* (f) Action toolbars — closer to their message, not floating */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-actions {
+      margin-top: 10px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-user-actions,
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-actions {
+      margin-top: 6px !important;
+    }
+
+    /* (g) Composer — keep V58 integration (no border, no slab) but
+        give it a bit more breathing distance from the last message */
+    body[data-active="chat"] .hx-chat-compose {
+      padding-top: 8px !important;
+      padding-bottom: 18px !important;
+    }
+    body[data-active="chat"] .hx-chat-compose::before {
+      top: -56px !important;
+      height: 56px !important;
+    }
+    body[data-active="chat"] .hx-chat-compose-inner {
+      gap: 8px !important;
+    }
+
+    /* (h) Empty state — let it breathe at the top */
+    body[data-active="chat"] .hx-chat-blank {
+      padding-top: 80px !important;
+      padding-bottom: 28px !important;
+    }
+    @media (min-width: 1280px) {
+      body[data-active="chat"] .hx-chat-blank {
+        padding-top: 96px !important;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
