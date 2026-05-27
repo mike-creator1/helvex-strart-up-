@@ -15513,6 +15513,259 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       V66 — ORCHESTRATION PASS (no new features, only restraint)
+       The platform had been accumulating "improvements" — each one
+       defensible alone, all of them together still reading as a
+       collection of clever ideas rather than one product. V66 takes
+       a step back and removes whatever the user doesn't need RIGHT
+       NOW from view, lengthens motion to the cinematic ease, softens
+       the color/text palette toward warmth, and adds the barely-
+       perceptible environmental presence that makes a digital
+       surface feel like a place instead of a webpage.
+
+       The principle: features ship as PRESENCE, not announcements.
+       Nothing in this layer is new. Everything is calmer, quieter,
+       slower, warmer.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* (1) Slightly warmer text + page tone (graphite, not pure black).
+       Real flagship products never use #000 — it reads as harsh on
+       cream/paper backgrounds. */
+    body[data-active="chat"] {
+      --hx-text: #1e1c17;
+      --hx-text-mid: #4a463c;
+      --hx-text-dim: #76705f;
+      --hx-text-faint: #a39d8b;
+    }
+
+    /* (2) Environmental presence — a barely-perceptible warm vignette
+       behind the entire chat pane. Apple/Arc convention: places have
+       light, screens don't. Almost subliminal at 5% opacity. */
+    body[data-active="chat"] .hx-chat-pane {
+      position: relative;
+    }
+    body[data-active="chat"] .hx-chat-pane::before {
+      content: '' !important;
+      position: absolute !important;
+      inset: 0 !important;
+      background:
+        radial-gradient(ellipse 80% 60% at 30% 8%,
+          color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 4%, transparent) 0%,
+          transparent 60%),
+        radial-gradient(ellipse 70% 50% at 80% 100%,
+          color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 3%, transparent) 0%,
+          transparent 55%) !important;
+      pointer-events: none !important;
+      z-index: 0 !important;
+      opacity: 0.7 !important;
+      animation: none !important;
+    }
+    body[data-active="chat"] .hx-chat-pane > * { position: relative; z-index: 1; }
+
+    /* (3) Disclaimer dot removed — pure text, calmer */
+    body[data-active="chat"] .hx-cc-compose-bar::before {
+      background: none !important;
+      padding-left: 0 !important;
+      color: color-mix(in srgb, var(--hx-text) 56%, transparent) !important;
+      font-weight: 400 !important;
+    }
+
+    /* (4) Drop the "MAX" tier badge on the model chip — chrome */
+    body[data-active="chat"] .hx-cc-model-tier {
+      display: none !important;
+    }
+    body[data-active="chat"] .hx-cc-model-pick {
+      padding: 0 12px !important;
+      height: 28px !important;
+    }
+    body[data-active="chat"] .hx-cc-model-name {
+      font-size: 12.5px !important;
+    }
+
+    /* (5) Streaming caret — even quieter; only on the LAST line of the
+       LAST assistant message, never on intermediate state */
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content::after {
+      width: 1px !important;
+      height: 0.85em !important;
+      background: color-mix(in srgb, var(--hx-text) 30%, transparent) !important;
+      animation-duration: 1.4s !important;
+    }
+
+    /* (6) Follow-up chips appear with a calm delay — never snap in.
+       The eye reaches the end of the response before they're there. */
+    body[data-active="chat"] .hx-msg.is-assistant:not(.is-streaming) .hx-msg-followups {
+      animation: hx-followups-settle 520ms var(--hx-ease) 380ms both;
+    }
+    @keyframes hx-followups-settle {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* During streaming, chips are completely hidden */
+    body[data-active="chat"] .hx-msg.is-assistant.is-streaming .hx-msg-followups {
+      display: none !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-msg.is-assistant:not(.is-streaming) .hx-msg-followups {
+        animation: none !important;
+      }
+    }
+
+    /* (7) Empty state — drop the chip grid, just the wordmark + a
+       single line of gentle invitation. Cinematic restraint. */
+    body[data-active="chat"] .hx-chat-blank-chips {
+      display: none !important;
+    }
+    body[data-active="chat"] .hx-chat-blank h2 {
+      font-family: var(--sans) !important;
+      font-size: 38px !important;
+      font-weight: 500 !important;
+      letter-spacing: -0.022em !important;
+      color: var(--hx-text) !important;
+      margin: 0 !important;
+      line-height: 1.12 !important;
+    }
+    body[data-active="chat"] .hx-chat-blank p {
+      font-size: 14px !important;
+      font-weight: 400 !important;
+      color: color-mix(in srgb, var(--hx-text) 52%, transparent) !important;
+      line-height: 1.55 !important;
+      max-width: 460px !important;
+      margin: 14px 0 0 !important;
+    }
+    body[data-active="chat"] .hx-chat-blank-eyebrow {
+      font-size: 10.5px !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.12em !important;
+      text-transform: uppercase !important;
+      color: color-mix(in srgb, var(--hx-text) 42%, transparent) !important;
+      margin-bottom: 16px !important;
+    }
+    body[data-active="chat"] .hx-chat-blank-mark {
+      display: none !important;
+    }
+
+    /* (8) Body prose — slightly warmer color, slightly more generous
+       line-height. The reader's eye glides instead of scanning. */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p {
+      color: var(--hx-text) !important;
+      line-height: 1.66 !important;
+    }
+
+    /* (9) Sidebar item rhythm — match the chat pane warmth + ease */
+    body[data-active="chat"] .hx-chat-item {
+      transition: background 220ms var(--hx-ease) !important;
+    }
+    body[data-active="chat"] .hx-chat-rail-collapse,
+    body[data-active="chat"] .hx-chat-new {
+      transition:
+        background 240ms var(--hx-ease),
+        border-color 240ms var(--hx-ease),
+        color 220ms var(--hx-ease) !important;
+    }
+
+    /* (10) Composer — gentler shadow + warmer border at rest, expensive
+       glow on focus (single moment of accent presence) */
+    body[data-active="chat"] .hx-chat-input-row {
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 50%, transparent),
+        0 1px 2px color-mix(in srgb, var(--hx-text) 3%, transparent),
+        0 8px 24px -12px color-mix(in srgb, var(--hx-text) 6%, transparent) !important;
+      border-color: color-mix(in srgb, var(--hx-text) 10%, transparent) !important;
+      transition:
+        background 320ms var(--hx-ease),
+        border-color 320ms var(--hx-ease),
+        box-shadow 380ms var(--hx-ease) !important;
+    }
+    body[data-active="chat"] .hx-chat-input-row:focus-within {
+      border-color: color-mix(in srgb, var(--hx-text) 18%, transparent) !important;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+        0 0 0 3px color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 8%, transparent),
+        0 8px 30px -10px color-mix(in srgb, var(--hx-text) 12%, transparent) !important;
+    }
+
+    /* (11) User bubble — softer cream + gentler border */
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 3.5%, #fbf8f1) !important;
+      border: 1px solid color-mix(in srgb, var(--hx-text) 7%, transparent) !important;
+      box-shadow: none !important;
+      color: var(--hx-text) !important;
+    }
+
+    /* (12) Thinking indicator — calm, embedded; just italic + breath */
+    body[data-active="chat"] .hx-msg.hx-msg-thinking > .hx-msg-body {
+      padding: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-label {
+      font-style: italic !important;
+      font-weight: 400 !important;
+      font-size: 14.5px !important;
+      color: color-mix(in srgb, var(--hx-text) 48%, transparent) !important;
+      letter-spacing: 0 !important;
+      animation: hx-think-breathe 2.4s ease-in-out infinite !important;
+    }
+    @keyframes hx-think-breathe {
+      0%, 100% { opacity: 0.62; }
+      50%      { opacity: 1; }
+    }
+    /* Hide the per-model atom/network/flame marks — they read as
+       "we built three different cognition animations". The calm
+       italic + breath is enough presence. */
+    body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-ether,
+    body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-nexus,
+    body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-prom,
+    body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-outer,
+    body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-tm-inner,
+    body[data-active="chat"] .hx-msg.hx-msg-thinking [class*="hx-tm-"] {
+      display: none !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-label {
+        animation: none !important;
+        opacity: 0.78 !important;
+      }
+    }
+
+    /* (13) Message entrance — drop the blur filter (was clever, reads
+       as overproduced), keep only opacity + small lift */
+    body[data-active="chat"] .hx-msg.is-assistant {
+      animation: hx-msg-settle 480ms var(--hx-ease) both !important;
+    }
+    body[data-active="chat"] .hx-msg.is-user {
+      animation: hx-msg-settle 380ms var(--hx-ease) both !important;
+    }
+    @keyframes hx-msg-settle {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    body[data-active="chat"] .hx-msg.is-assistant.is-streaming {
+      animation: none !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-msg.is-assistant,
+      body[data-active="chat"] .hx-msg.is-user {
+        animation: none !important;
+      }
+    }
+
+    /* (14) Mobile — same orchestration applied at scale */
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-chat-blank h2 {
+        font-size: 30px !important;
+      }
+      body[data-active="chat"] .hx-chat-blank p {
+        font-size: 13px !important;
+      }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        V65 — SYSTEM-NATIVE REFINEMENT PASS
        Strips the "look what we added" energy from every new V64
        feature. Replaces bouncy translateY hovers with opacity/bg
