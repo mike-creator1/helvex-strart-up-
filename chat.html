@@ -21960,6 +21960,70 @@
       padding: 0 !important;
       margin: 0 !important;
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V85 — CONDUCTOR CHIPS AS REAL WORKFLOW CONTROLS
+       The chips now do REAL work (mode A wraps composer text, mode B
+       acts on the conversation, mode C prefills a starter). This block
+       gives them the premium visual weight that matches their new
+       function — no longer decorative shortcuts.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* Chip base — slightly more presence than V77 hairline */
+    body[data-active="chat"] .hx-conductor-chip {
+      padding: 7px 12px !important;
+      font-size: 12.5px !important;
+      font-weight: 500 !important;
+      letter-spacing: -0.003em !important;
+      border-radius: 8px !important;
+      border: 1px solid color-mix(in srgb, var(--hx-text) 13%, transparent) !important;
+      background: color-mix(in srgb, var(--hx-text) 3%, transparent) !important;
+      color: color-mix(in srgb, var(--hx-text) 78%, transparent) !important;
+      transition:
+        background 200ms var(--hx-ease),
+        border-color 200ms var(--hx-ease),
+        color 200ms var(--hx-ease),
+        transform 140ms var(--hx-ease) !important;
+    }
+    body[data-active="chat"] .hx-conductor-chip:hover {
+      background: color-mix(in srgb, var(--hx-text) 6%, transparent) !important;
+      border-color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 32%, transparent) !important;
+      color: var(--hx-text) !important;
+    }
+    body[data-active="chat"] .hx-conductor-chip:hover svg {
+      color: var(--hx-accent, var(--hx-yellow-deep)) !important;
+    }
+    body[data-active="chat"] .hx-conductor-chip:active {
+      transform: scale(0.97) !important;
+    }
+
+    /* "is-sent" — brief gold flash after click confirms the action */
+    body[data-active="chat"] .hx-conductor-chip.is-sent {
+      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 18%, transparent) !important;
+      border-color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 55%, transparent) !important;
+      color: var(--hx-text) !important;
+      transition: background 100ms var(--hx-ease), border-color 100ms var(--hx-ease) !important;
+    }
+    body[data-active="chat"] .hx-conductor-chip.is-sent svg {
+      color: var(--hx-accent, var(--hx-yellow-deep)) !important;
+    }
+
+    /* Dark mode variants for both states */
+    html[data-theme="dark"] body[data-active="chat"] .hx-conductor-chip {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border-color: rgba(255, 255, 255, 0.12) !important;
+      color: #d0cabb !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-conductor-chip:hover {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 38%, transparent) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-conductor-chip.is-sent {
+      background: color-mix(in srgb, var(--hx-accent, #C9A227) 25%, transparent) !important;
+      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 60%, transparent) !important;
+      color: #ffffff !important;
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -25001,21 +25065,100 @@
         var conductorEl = document.getElementById('hx-c-conductor');
         function updateConductor() {
           if (!conductorEl) return;
-          var hasText = inputEl && !!inputEl.value.trim();
           var busy    = state.sending || state.streaming;
-          var visible = !hasText && !busy;
-          conductorEl.classList.toggle('is-hidden', !visible);
+          // V85: chips stay visible whenever Helix is idle, regardless of
+          // whether the composer has draft text. They now do real work
+          // either way (wrap the draft, or act on the conversation).
+          conductorEl.classList.toggle('is-hidden', !!busy);
         }
+        // V85 — Conductor chips become REAL workflow actions.
+        // Three modes per click:
+        //   (a) Composer has text   → wrap user's text with the action
+        //                              instruction and send.
+        //   (b) Composer is empty + conversation has messages
+        //                            → send a contextual meta-prompt
+        //                              that acts on the conversation
+        //                              so far (uses model's session
+        //                              memory). e.g. "Summarize what
+        //                              we discussed above."
+        //   (c) Composer empty + no messages → prefill a starter
+        //                                       (asks the user for the
+        //                                       topic), focuses cursor.
+        // All branches auto-fire send() when a real prompt is built —
+        // the chips are now genuine workflow controls, not shortcuts.
+        var COMMAND_PROMPTS = {
+          plan: {
+            onText:    function (t) { return 'Turn the following into a clear step-by-step plan. Include milestones, priorities, a realistic timeline, and a "Next step:" line at the end. Use an ordered list.\n\nTopic:\n' + t; },
+            onContext: function ()  { return 'Turn the conversation above into a clear step-by-step plan: list the milestones, priorities, a realistic timeline, and end with **Next step:** naming the very next concrete action. Use an ordered list.'; },
+            onEmpty:   'I want to plan: ',
+          },
+          research: {
+            onText:    function (t) { return 'Research the following thoroughly. Separate confirmed facts from your inferences/assumptions, cite sources when you can (use web_search if available), and clearly flag anything uncertain or time-sensitive.\n\nTopic:\n' + t; },
+            onContext: function ()  { return 'Research the topic we are discussing above. Use web_search where it helps. Separate confirmed facts from inferences, cite sources naturally, and flag anything time-sensitive or uncertain. Add anything important I should know that I have not asked about yet.'; },
+            onEmpty:   'Research: ',
+          },
+          compare: {
+            onText:    function (t) { return 'Compare the following options in a markdown table with columns for the most relevant attributes (cost, effort, risk, fit, etc.). End with a one-line recommendation under **Best fit:** and a short reason why.\n\nOptions to compare:\n' + t; },
+            onContext: function ()  { return 'Compare the options or ideas we have discussed above. Build a markdown table with columns for the most relevant attributes (cost, effort, risk, who it is best for, etc.). End with a one-line recommendation under **Best fit:** and a short reason why.'; },
+            onEmpty:   'Compare: ',
+          },
+          draft: {
+            onText:    function (t) { return 'Write a polished, ready-to-send draft based on this request. Match the tone to the context (formal/casual). End with **Next step:** for the user. Draft request:\n\n' + t; },
+            onContext: function ()  { return 'Based on the conversation above, write a polished, ready-to-send draft (email, message, proposal, or document — pick the right form). Match the tone to the context. End with **Next step:** under the draft.'; },
+            onEmpty:   'Draft a ',
+          },
+          explain: {
+            onText:    function (t) { return 'Explain this clearly in plain language with a concrete example. Then add one deeper level of detail at the end for someone who wants to go further.\n\nTopic:\n' + t; },
+            onContext: function ()  { return 'Explain what we are discussing above in plain language with a concrete example. Then add one deeper level of detail at the end for the reader who wants to go further. Use headings if it helps the structure.'; },
+            onEmpty:   'Explain in plain language: ',
+          },
+          summarize: {
+            onText:    function (t) { return 'Summarize the following in exactly 3 bullets: (1) what is established, (2) key open questions, (3) the most important takeaway. End with a single **Next step:** line.\n\n' + t; },
+            onContext: function ()  { return 'Summarize the conversation so far in exactly 3 bullets: (1) what we have established, (2) any open questions, (3) the most important takeaway. Then end with **Next step:** naming the next concrete move.'; },
+            onEmpty:   'Summarize: ',
+          },
+        };
         if (conductorEl) {
           conductorEl.querySelectorAll('.hx-conductor-chip').forEach(function (chip) {
             chip.addEventListener('click', function () {
-              var p = chip.getAttribute('data-prompt') || '';
-              if (!p) return;
-              inputEl.value = p.replace(/\\n/g, '\n');
+              var action = chip.getAttribute('data-conduct');
+              var spec = COMMAND_PROMPTS[action];
+              if (!spec) return;
+              if (state.sending || state.streaming) return; // ignore mid-turn
+
+              var text = (inputEl && inputEl.value || '').trim();
+              var hasMessages = !!(state.messages && state.messages.length);
+              var prompt;
+              var autoSend = false;
+
+              if (text) {
+                // Mode A: wrap user's draft with the action
+                prompt = spec.onText(text);
+                autoSend = true;
+              } else if (hasMessages) {
+                // Mode B: act on the conversation context
+                prompt = spec.onContext();
+                autoSend = true;
+              } else {
+                // Mode C: empty everything — prefill a starter
+                prompt = spec.onEmpty;
+                autoSend = false;
+              }
+
+              // Visual feedback
+              chip.classList.add('is-sent');
+              setTimeout(function () { chip.classList.remove('is-sent'); }, 600);
+
+              inputEl.value = prompt;
               try { autoSize(inputEl); } catch (e) {}
               try { refreshSendDisabled(); } catch (e) {}
-              inputEl.focus();
-              try { inputEl.selectionStart = inputEl.selectionEnd = inputEl.value.length; } catch (e) {}
+
+              if (autoSend) {
+                try { send(); } catch (e) { inputEl.focus(); }
+              } else {
+                inputEl.focus();
+                try { inputEl.selectionStart = inputEl.selectionEnd = inputEl.value.length; } catch (e) {}
+              }
               updateConductor();
               updatePresence();
             });
