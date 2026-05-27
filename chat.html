@@ -21949,6 +21949,142 @@
         #000000 100%) !important;
     }
 
+    /* ═════════════════════════════════════════════════════════════════
+       V92 — RENDERING BUG FIX PACK (final cleanup)
+       Three bugs the user is reporting, all fixed at the end of the
+       stylesheet so nothing upstream wins:
+
+       (1) OLD MESSAGES BLURRY — V71 Stage layout had dimmed every
+           message except the latest 2 with opacity:0.38 + saturate(0.85).
+           Killed entirely. Every message stays at full opacity + full
+           saturation. No fading during streaming.
+
+       (2) STREAMING TEXT BREAKS LETTER-BY-LETTER — V55 used
+           overflow-wrap: anywhere on user bubbles, which combined with
+           the V57 contain:layout and V72 mask-image could cause
+           character-level vertical wrapping when content width
+           collapsed momentarily during reveal. Locked to normal word
+           wrapping rules.
+
+       (3) TABLES UNREADABLE — words stacked vertically in cells
+           because nested overflow-wrap rules cascaded into tables.
+           Tables now use table-layout: auto, white-space: normal on
+           cells, word-break: normal, overflow-wrap: break-word, and
+           wrap in a horizontal-scroll container at narrow widths.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* (1) Kill the Stage dimming — every message stays sharp */
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg,
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.is-user,
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.is-assistant,
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg:nth-last-child(-n+2),
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.is-streaming,
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.hx-msg-thinking,
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg:hover {
+      opacity: 1 !important;
+      filter: none !important;
+      transition: none !important;
+    }
+    /* No backdrop blur on messages */
+    body[data-active="chat"] .hx-chat-thread-inner > .hx-msg,
+    body[data-active="chat"] .hx-msg .hx-msg-body,
+    body[data-active="chat"] .hx-msg .hx-msg-content {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    /* (2) Lock streaming + assistant text to normal word wrapping */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p,
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content,
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content > * {
+      width: auto !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      word-break: normal !important;
+      overflow-wrap: break-word !important;
+      white-space: normal !important;
+      hyphens: none !important;
+      contain: none !important;
+      mask-image: none !important;
+      -webkit-mask-image: none !important;
+    }
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+      word-break: normal !important;
+      overflow-wrap: break-word !important;
+      white-space: pre-wrap !important;
+    }
+    /* Remove the V72 streaming bottom-edge mask that was visually
+       fading the last lines and causing the perceived "letter break" */
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content {
+      mask-image: none !important;
+      -webkit-mask-image: none !important;
+      padding-bottom: 0 !important;
+    }
+    /* And kill the body-level shimmer overlay that sat above the text */
+    body[data-active="chat"] .hx-msg.is-streaming > .hx-msg-body::after {
+      content: none !important;
+      display: none !important;
+    }
+
+    /* (3) Tables — proper layout, no vertical word stacking */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content table,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-table {
+      table-layout: auto !important;
+      width: auto !important;
+      min-width: 100% !important;
+      max-width: none !important;
+      border-collapse: collapse !important;
+      white-space: normal !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content th,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content td,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-table th,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-table td {
+      white-space: normal !important;
+      word-break: normal !important;
+      overflow-wrap: break-word !important;
+      hyphens: none !important;
+      min-width: 80px !important;
+      vertical-align: top !important;
+      line-height: 1.5 !important;
+      padding: 10px 14px !important;
+    }
+    /* Wrap tables in a horizontal-scroll container when content exceeds
+       the column width (the markdown renderer already wraps in
+       .hx-md-table-wrap; this ensures it scrolls cleanly). */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-table-wrap,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp-wrap {
+      overflow-x: auto !important;
+      max-width: 100% !important;
+      -webkit-overflow-scrolling: touch !important;
+      scrollbar-width: thin !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-table-wrap::-webkit-scrollbar,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp-wrap::-webkit-scrollbar {
+      height: 6px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-table-wrap::-webkit-scrollbar-thumb,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp-wrap::-webkit-scrollbar-thumb {
+      background: color-mix(in srgb, var(--hx-text) 14%, transparent) !important;
+      border-radius: 999px !important;
+    }
+    /* Compare artifact table parity */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp {
+      table-layout: auto !important;
+      width: auto !important;
+      min-width: 100% !important;
+      white-space: normal !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp th,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp td {
+      white-space: normal !important;
+      word-break: normal !important;
+      overflow-wrap: break-word !important;
+      min-width: 90px !important;
+      line-height: 1.5 !important;
+    }
+
     /* V84 — Remove the V73 "⌘K commands" hint chip from the bottom
        strip. User flagged it as clutter — the command palette is
        still triggered with the keyboard shortcut, no UI hint needed. */
