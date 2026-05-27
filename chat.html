@@ -15513,6 +15513,293 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       V65 — SYSTEM-NATIVE REFINEMENT PASS
+       Strips the "look what we added" energy from every new V64
+       feature. Replaces bouncy translateY hovers with opacity/bg
+       shifts (Apple/Linear convention). Mutes the gold flash to
+       gold-as-accent-only. Compresses action toolbars. Removes the
+       assistant avatar. Quiets the follow-up chips. Lengthens motion
+       to the 280ms / cubic-bezier(0.16, 1, 0.3, 1) "expo out" curve
+       used by Linear, Arc, Apple. Everything reads as part of the
+       system, not as visiting features.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* Reusable motion curve token */
+    body[data-active="chat"] {
+      --hx-ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --hx-ease-fast: cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    /* ───── (1) Remove assistant avatar — Claude/ChatGPT clean ────── */
+    body[data-active="chat"] .hx-msg-avatar,
+    body[data-active="chat"] .hx-msg-avatar.is-assistant {
+      display: none !important;
+    }
+    /* The body wrapper was offset by the avatar — flatten it */
+    body[data-active="chat"] .hx-msg .hx-msg-body {
+      margin-left: 0 !important;
+      padding-left: 0 !important;
+      width: 100% !important;
+    }
+
+    /* ───── (2) Action toolbar — invisible until needed ───────────── */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-actions {
+      opacity: 0 !important;
+      gap: 2px !important;
+      margin-top: 8px !important;
+      padding: 0 !important;
+      background: transparent !important;
+      border: 0 !important;
+      transition: opacity 220ms var(--hx-ease) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant:hover .hx-msg-actions,
+    body[data-active="chat"] .hx-msg.is-assistant:focus-within .hx-msg-actions,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-actions:focus-within {
+      opacity: 1 !important;
+    }
+    /* Individual buttons — smaller, neutral, no border */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act {
+      width: 28px !important;
+      height: 28px !important;
+      padding: 0 !important;
+      border-radius: 6px !important;
+      background: transparent !important;
+      border: 0 !important;
+      color: color-mix(in srgb, var(--hx-text) 42%, transparent) !important;
+      transition: background 180ms var(--hx-ease), color 180ms var(--hx-ease) !important;
+      transform: none !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act:hover {
+      background: color-mix(in srgb, var(--hx-text) 7%, transparent) !important;
+      color: var(--hx-text) !important;
+      transform: none !important;
+      box-shadow: none !important;
+      border: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act svg {
+      width: 14.5px !important;
+      height: 14.5px !important;
+      stroke-width: 1.7 !important;
+    }
+    /* Like = gold tint when pressed (single moment that uses accent) */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[aria-pressed="true"][data-act="like"] {
+      color: var(--hx-accent, var(--hx-yellow-deep)) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[aria-pressed="true"][data-act="dislike"] {
+      color: #c2410c !important;
+    }
+
+    /* User-message actions — same quiet pattern */
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-user-actions {
+      opacity: 0 !important;
+      transition: opacity 220ms var(--hx-ease) !important;
+      gap: 2px !important;
+      margin-top: 6px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-user:hover .hx-msg-user-actions,
+    body[data-active="chat"] .hx-msg.is-user:focus-within .hx-msg-user-actions {
+      opacity: 1 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-user-act {
+      width: 26px !important;
+      height: 26px !important;
+      padding: 0 !important;
+      border-radius: 6px !important;
+      background: transparent !important;
+      border: 0 !important;
+      color: color-mix(in srgb, var(--hx-text) 38%, transparent) !important;
+      transition: background 180ms var(--hx-ease), color 180ms var(--hx-ease) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-user-act:hover {
+      background: color-mix(in srgb, var(--hx-text) 6%, transparent) !important;
+      color: var(--hx-text) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-user-act svg {
+      width: 13px !important;
+      height: 13px !important;
+    }
+
+    /* ───── (3) Follow-up chips — quieter, system-native ──────────── */
+    /* The V64 chips had gold hover, lifted shadow, big icons — read
+       as "feature, look at me". V65 makes them feel like part of the
+       conversation: no gold flash, no lift, smaller icons, neutral
+       border that brightens slightly on hover. */
+    body[data-active="chat"] .hx-msg-followups {
+      gap: 6px !important;
+      margin-top: 16px !important;
+      padding-top: 0 !important;
+      border-top: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg-followup-chip {
+      padding: 6px 11px !important;
+      background: transparent !important;
+      border: 1px solid color-mix(in srgb, var(--hx-text) 12%, transparent) !important;
+      border-radius: 8px !important;
+      font-size: 12.5px !important;
+      font-weight: 500 !important;
+      color: color-mix(in srgb, var(--hx-text) 72%, transparent) !important;
+      box-shadow: none !important;
+      transition:
+        background 220ms var(--hx-ease),
+        border-color 220ms var(--hx-ease),
+        color 220ms var(--hx-ease) !important;
+    }
+    body[data-active="chat"] .hx-msg-followup-chip:hover {
+      background: color-mix(in srgb, var(--hx-text) 4%, transparent) !important;
+      border-color: color-mix(in srgb, var(--hx-text) 22%, transparent) !important;
+      color: var(--hx-text) !important;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    body[data-active="chat"] .hx-msg-followup-chip:active {
+      background: color-mix(in srgb, var(--hx-text) 7%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-msg-followup-chip svg {
+      width: 13px !important;
+      height: 13px !important;
+      color: color-mix(in srgb, var(--hx-text) 42%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-msg-followup-chip:hover svg {
+      color: color-mix(in srgb, var(--hx-text) 70%, transparent) !important;
+    }
+    /* "Sent" state — subtle, no gold flash */
+    body[data-active="chat"] .hx-msg-followup-chip.is-sent {
+      background: color-mix(in srgb, var(--hx-text) 5%, transparent) !important;
+      border-color: color-mix(in srgb, var(--hx-text) 16%, transparent) !important;
+      color: color-mix(in srgb, var(--hx-text) 40%, transparent) !important;
+      opacity: 0.7 !important;
+    }
+
+    /* ───── (4) Streaming caret — thinner, calmer ─────────────────── */
+    body[data-active="chat"] .hx-msg.is-streaming .hx-msg-content::after {
+      width: 1px !important;
+      height: 0.9em !important;
+      background: color-mix(in srgb, var(--hx-text) 38%, transparent) !important;
+      box-shadow: none !important;
+      animation: hx-stream-caret-65 1.2s steps(2, end) infinite !important;
+    }
+    @keyframes hx-stream-caret-65 {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    /* ───── (5) Collapsible details — quieter open state ──────────── */
+    /* The V64 open state had gold border + glow — felt promotional.
+       V65 makes the open state a subtle neutral border bump. */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) {
+      background: transparent !important;
+      border-color: color-mix(in srgb, var(--hx-text) 9%, transparent) !important;
+      transition: border-color 240ms var(--hx-ease) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn):hover {
+      border-color: color-mix(in srgb, var(--hx-text) 14%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn)[open] {
+      border-color: color-mix(in srgb, var(--hx-text) 16%, transparent) !important;
+      box-shadow: none !important;
+      background: color-mix(in srgb, var(--hx-text) 2%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) > summary {
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      padding: 10px 14px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) > summary::before {
+      width: 6px !important;
+      height: 6px !important;
+      border-width: 1.5px !important;
+      border-color: color-mix(in srgb, var(--hx-text) 50%, transparent) !important;
+    }
+
+    /* ───── (6) Tables — neutral header, less gold ────────────────── */
+    /* V64 table hover had gold tint — feels like a brand flex. Replace
+       with subtle neutral row hover. */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content table {
+      box-shadow: none !important;
+      border-color: color-mix(in srgb, var(--hx-text) 9%, transparent) !important;
+      font-size: 13px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content thead {
+      background: color-mix(in srgb, var(--hx-text) 3%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content th {
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.005em !important;
+      color: color-mix(in srgb, var(--hx-text) 78%, transparent) !important;
+      padding: 9px 13px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content td {
+      padding: 9px 13px !important;
+      font-size: 13px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content tbody tr:hover td {
+      background: color-mix(in srgb, var(--hx-text) 3%, transparent) !important;
+    }
+
+    /* ───── (7) Blockquote — neutral by default, gold ONLY for callouts ─ */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content blockquote {
+      border-left-color: color-mix(in srgb, var(--hx-text) 18%, transparent) !important;
+      background: transparent !important;
+      padding: 4px 14px !important;
+      font-style: normal !important;
+      color: color-mix(in srgb, var(--hx-text) 78%, transparent) !important;
+    }
+
+    /* ───── (8) Section heading — refined accent ──────────────────── */
+    /* The 3x16 gold bar before h2 was a touch heavy. Slim it down. */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h::before {
+      width: 2px !important;
+      height: 14px !important;
+      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 80%, transparent) !important;
+      margin-right: 2px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h {
+      font-size: 16.5px !important;
+      font-weight: 600 !important;
+      gap: 9px !important;
+    }
+
+    /* ───── (9) Composer focus — gentler, longer ease ─────────────── */
+    body[data-active="chat"] .hx-chat-input-row {
+      transition:
+        background 280ms var(--hx-ease),
+        border-color 280ms var(--hx-ease),
+        box-shadow 320ms var(--hx-ease) !important;
+    }
+
+    /* ───── (10) Universal hover refinement — kill bouncy transforms ─ */
+    /* Many chrome/button hovers had translateY(-1px) micro-jumps.
+       Replace with opacity/bg only — Apple/Linear convention. */
+    body[data-active="chat"] .hx-chat-item:hover,
+    body[data-active="chat"] .hx-chat-rail-collapse:hover,
+    body[data-active="chat"] .hx-chat-new:hover,
+    body[data-active="chat"] .hx-cc-model-pick:hover {
+      transform: none !important;
+    }
+
+    /* ───── (11) Smooth scroll behavior on the thread ─────────────── */
+    body[data-active="chat"] .hx-chat-thread {
+      scroll-behavior: smooth !important;
+    }
+
+    /* ───── (12) Mobile parity ────────────────────────────────────── */
+    @media (max-width: 720px) {
+      /* On touch devices, action toolbar should NOT be hidden by
+         default — there's no hover. Show at 0.7 opacity, tap to use. */
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-actions,
+      body[data-active="chat"] .hx-msg.is-user .hx-msg-user-actions {
+        opacity: 0.7 !important;
+      }
+    }
+    @media (hover: none) {
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-actions,
+      body[data-active="chat"] .hx-msg.is-user .hx-msg-user-actions {
+        opacity: 0.65 !important;
+      }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        V64 — INTELLIGENT RESPONSE SURFACE
        Three things ship together:
          (a) Follow-up suggestion chips under each completed assistant
