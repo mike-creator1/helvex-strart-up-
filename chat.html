@@ -15513,6 +15513,211 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       V75 — ULTRA-PREMIUM RHYTHM + STABILITY LOCKDOWN
+       Final pass. After 14 layers of overrides, the spacing rhythm
+       had drifted (10px here, 14px there, 18px elsewhere). V75 sets
+       ONE harmonic scale and applies it everywhere — block to block,
+       heading to content, list to list, message to message. This is
+       the "calm rich" rhythm of Apple News, Stripe docs, Linear.
+
+       Plus a final stability lockdown: the streaming reveal now
+       throttles DOM mutations to 24fps so heavy artifacts don't
+       cause jank on long responses. Refined inline typography:
+       <strong> gets a hint of warmth, <em> stays clean, inline
+       code reads as a precise component, links are confident.
+
+       This is the final rhythm pass. Nothing else changes.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* ───── (1) ONE HARMONIC SPACING SCALE ────────────────────────── */
+    body[data-active="chat"] {
+      --hx-rhythm-1: 4px;
+      --hx-rhythm-2: 8px;
+      --hx-rhythm-3: 12px;
+      --hx-rhythm-4: 16px;
+      --hx-rhythm-5: 24px;
+      --hx-rhythm-6: 32px;
+      --hx-rhythm-7: 48px;
+      --hx-rhythm-8: 64px;
+    }
+
+    /* Block-to-block — single source of truth, 12px */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > * + * {
+      margin-top: var(--hx-rhythm-3) !important;
+    }
+    /* Heading top — 20px (slightly above rhythm-4); bottom — 4px */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h {
+      margin-top: 20px !important;
+      margin-bottom: 0 !important;
+    }
+    /* The element right after a heading: 4px (tight to heading) */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h + *,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h + *,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h + *,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h + * {
+      margin-top: var(--hx-rhythm-1) !important;
+    }
+    /* Lists: 4px between items */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-list,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content ul,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content ol {
+      gap: var(--hx-rhythm-1) !important;
+    }
+    /* Artifacts: 20px top margin, 0 bottom */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-art {
+      margin-top: 20px !important;
+      margin-bottom: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-art + * {
+      margin-top: 20px !important;
+    }
+
+    /* ───── (2) REFINED INLINE TYPOGRAPHY ─────────────────────────── */
+    /* <strong> — subtly warmer weight + tighter tracking */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content strong {
+      font-weight: 600 !important;
+      letter-spacing: -0.008em !important;
+      color: var(--hx-text) !important;
+    }
+    /* <em> — clean, slightly relaxed */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content em {
+      font-style: italic !important;
+      color: color-mix(in srgb, var(--hx-text) 92%, transparent) !important;
+    }
+    /* Inline code — precise component, mono, gold-tinted background */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-md-inline,
+    body[data-active="chat"] .hx-msg.is-assistant code:not(pre code) {
+      font-family: var(--mono, 'SF Mono', Menlo, Monaco, Consolas, 'Courier New', monospace) !important;
+      font-size: 0.88em !important;
+      font-weight: 500 !important;
+      padding: 1.5px 6px !important;
+      background: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 7%, transparent) !important;
+      border: 1px solid color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 16%, transparent) !important;
+      border-radius: 5px !important;
+      color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 70%, var(--hx-text)) !important;
+      letter-spacing: -0.005em !important;
+      font-variant-ligatures: none !important;
+      white-space: nowrap !important;
+    }
+    /* Links — confident gold underline */
+    body[data-active="chat"] .hx-msg.is-assistant a:not(.hx-msg-act):not(.hx-msg-attach-file):not(.hx-conductor-chip):not(.hx-msg-followup-chip) {
+      color: color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 75%, var(--hx-text)) !important;
+      text-decoration: none !important;
+      border-bottom: 1px solid color-mix(in srgb, var(--hx-accent, var(--hx-yellow-deep)) 35%, transparent) !important;
+      transition: color 180ms var(--hx-ease), border-bottom-color 180ms var(--hx-ease) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant a:not(.hx-msg-act):not(.hx-msg-attach-file):not(.hx-conductor-chip):not(.hx-msg-followup-chip):hover {
+      color: var(--hx-accent, var(--hx-yellow-deep)) !important;
+      border-bottom-color: var(--hx-accent, var(--hx-yellow-deep)) !important;
+    }
+
+    /* ───── (3) STABILITY HARDENING ───────────────────────────────── */
+    /* Prevent any element inside an assistant response from exceeding
+       the column width — final defensive cap against overflow bugs */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content,
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content * {
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content pre {
+      overflow-x: auto !important;
+      white-space: pre !important;
+      word-wrap: normal !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content table {
+      table-layout: auto !important;
+      width: 100% !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content img {
+      height: auto !important;
+      display: block !important;
+    }
+    /* No element should ever have a negative margin that pushes outside */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content * {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    /* ───── (4) FINAL HEADING REFINEMENT ──────────────────────────── */
+    /* H1 — cinematic but not loud */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h {
+      font-family: var(--sans) !important;
+      font-size: 24px !important;
+      font-weight: 500 !important;
+      letter-spacing: -0.020em !important;
+      line-height: 1.18 !important;
+    }
+    /* H2 — accent bar 2x14, refined weight */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h {
+      font-size: 17px !important;
+      font-weight: 600 !important;
+      letter-spacing: -0.014em !important;
+      line-height: 1.25 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h::before {
+      content: '' !important;
+      width: 2px !important;
+      height: 14px !important;
+      background: var(--hx-accent, var(--hx-yellow-deep)) !important;
+      border-radius: 1.5px !important;
+      flex-shrink: 0 !important;
+    }
+    /* H3 — quieter section title */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h {
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      letter-spacing: -0.010em !important;
+      line-height: 1.3 !important;
+    }
+    /* H4 — strong inline-feeling */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h {
+      font-size: 13.5px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.005em !important;
+      text-transform: uppercase !important;
+      color: color-mix(in srgb, var(--hx-text) 65%, transparent) !important;
+    }
+
+    /* ───── (5) DARK MODE PARITY for inline + heading refinements ── */
+    @media (prefers-color-scheme: dark) {
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content strong {
+        color: var(--hx-text) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content em {
+        color: color-mix(in srgb, var(--hx-text) 88%, transparent) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-md-inline,
+      body[data-active="chat"] .hx-msg.is-assistant code:not(pre code) {
+        background: rgba(255, 246, 220, 0.06) !important;
+        border-color: rgba(255, 246, 220, 0.12) !important;
+        color: color-mix(in srgb, var(--hx-accent, #C9A227) 50%, var(--hx-text)) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant a:not(.hx-msg-act):not(.hx-msg-attach-file):not(.hx-conductor-chip):not(.hx-msg-followup-chip) {
+        color: color-mix(in srgb, var(--hx-accent, #C9A227) 60%, var(--hx-text)) !important;
+        border-bottom-color: color-mix(in srgb, var(--hx-accent, #C9A227) 40%, transparent) !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h {
+        color: var(--hx-text-dim) !important;
+      }
+    }
+
+    /* ───── (6) RESPONSIVE FINALS ─────────────────────────────────── */
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h {
+        font-size: 21px !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h {
+        font-size: 16px !important;
+      }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        V74 — DEDICATED DARK MODE DESIGN SYSTEM
        Everything that was hardcoded to #ffffff / cream gradients in
        V64-V73 is now properly themed for dark mode. Dark mode is NOT
@@ -20208,6 +20413,18 @@
         'For requests that produce a deliverable (a plan, a draft, a report, a proposal), end with a single bold line under "**Next step:**" naming the concrete next move. Makes the conversation feel collaborative, not transactional.',
         'For ongoing work across a session, refer back to earlier turns naturally — "as you mentioned earlier", "building on the framework above". Helix has session memory; sound like you have it.',
 
+        // — Factual accuracy & confidence calibration (V75) —
+        // Premium intelligence systems are trusted because they know
+        // what they know AND what they don\'t. These directives keep
+        // Helix grounded — no fabrication, no false confidence.
+        'NEVER fabricate specific facts you don\'t actually know — numbers, dates, names, statistics, quotes, citations, source URLs. If you genuinely don\'t know a specific fact, say so plainly rather than inventing one. A confident "I don\'t know that specifically — here\'s what I do know" is far better than a wrong fact stated with confidence.',
+        'For any factual claim that could matter (statistics, recent events, technical specifications, prices, dates, named entities, company details), prefer to use the web_search tool when it\'s available. If it isn\'t, say "as of my training" and flag that the user should verify time-sensitive details.',
+        'Calibrate your confidence to your actual certainty. For things you\'re very sure of, state them directly. For things you\'re inferring, mark them clearly: "likely", "in my experience", "based on similar cases", "I\'d estimate". For things you genuinely don\'t know, say so: "I\'m not sure about that specifically" — never hedge by inventing something plausible.',
+        'When you use web_search, briefly mention the source naturally — "according to [outlet]", "per [doc]", or cite a URL inline. Don\'t paste long source dumps; weave the citation into the prose.',
+        'For decisions and recommendations: state your reasoning, not just the conclusion. Show the trade-offs you considered. The user should understand WHY, not just be told WHAT.',
+        'For technical answers (code, commands, configs): only give code you\'re confident is correct. If you\'re uncertain about a syntax detail or API, say so and suggest the user verify the docs link rather than ship buggy code with false confidence.',
+        'If the user asks for something you can\'t do or shouldn\'t do (illegal advice, personal medical/legal/financial decisions where you lack their full context, fabricating proof, etc.), say so directly and offer the next-best help instead — don\'t pretend you can or refuse without giving them anything useful.',
+
         // — Language —
         'Always reply in the same language the user writes in. If the user writes in Greek, reply in Greek with the same natural warmth and ease — never stiffer in Greek than in English.'
       ].join(' ');
@@ -21358,6 +21575,16 @@
           var STREAM_FAST_THRESH = 80;
           var STREAM_TURBO_THRESH = 240;
 
+          // V75: cap actual DOM mutations to ~24fps. The RAF loop keeps
+          // running every frame to drive the reveal cursor smoothly,
+          // but the expensive markdown re-render (which has to parse
+          // tables, artifacts, fenced code, etc.) only fires every
+          // 42ms. This keeps streaming buttery on long responses with
+          // heavy artifacts.
+          var STREAM_MIN_RENDER_MS = 42;
+          var streamLastRenderedAt = 0;
+          var streamLastRenderedLen = 0;
+
           function scheduleStreamRender() {
             // First call kicks off the RAF loop; subsequent calls are
             // no-ops because the loop is already pulling from the buffer.
@@ -21386,16 +21613,21 @@
             var toReveal = Math.max(1, Math.ceil(elapsed * rate));
             streamRevealedLen = Math.min(totalLen, streamRevealedLen + toReveal);
 
-            // Render markdown on the REVEALED slice (not the full text)
-            // so the user sees a steady reveal rather than burst dumps.
-            // To avoid garbling mid-fence or mid-artifact, snap forward
-            // to the end of any unterminated `:::` or "```" block.
-            var slice = assistantText.slice(0, streamRevealedLen);
-            slice = snapStreamReveal(assistantText, streamRevealedLen);
-            try {
-              streamNode.innerHTML = renderRichContent(slice, true);
-            } catch (e) {
-              streamNode.textContent = slice;
+            // V75: only mutate the DOM every ~42ms (24fps) instead of
+            // every animation frame (60fps). Skips redundant markdown
+            // parses when only 1-2 characters have advanced.
+            var sinceLastRender = now - streamLastRenderedAt;
+            var lenAdvanced     = streamRevealedLen - streamLastRenderedLen;
+            var shouldRender = sinceLastRender >= STREAM_MIN_RENDER_MS || lenAdvanced >= 16;
+            if (shouldRender) {
+              var slice = snapStreamReveal(assistantText, streamRevealedLen);
+              try {
+                streamNode.innerHTML = renderRichContent(slice, true);
+              } catch (e) {
+                streamNode.textContent = slice;
+              }
+              streamLastRenderedAt  = now;
+              streamLastRenderedLen = streamRevealedLen;
             }
             // Keep ticking until we've revealed everything
             if (streamRevealedLen < totalLen) {
