@@ -13694,6 +13694,125 @@
     }
     .hx-raw-copy:active { transform: translateY(0) scale(0.97); }
     .hx-raw-copy svg { width: 13px; height: 13px; }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V48 — EMOTIONAL WARMTH
+       Softer reading rhythm, friendlier microcopy, gentler animation
+       curves, warmer hover/focus feedback. The product should feel
+       welcoming and human, not corporate and cold.
+       ═════════════════════════════════════════════════════════════════ */
+
+    /* Friendlier disclaimer — warmer, less robotic */
+    body[data-active="chat"] .hx-cc-compose-bar::before {
+      content: 'Helix gets a lot right — but always double-check anything important.' !important;
+    }
+
+    /* Reading rhythm — more breathing, warmer letter-spacing */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content {
+      line-height: 1.78 !important;
+      letter-spacing: -0.004em !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > * + * {
+      margin-top: 20px !important;
+    }
+
+    /* User bubble — slightly warmer cream tone with refined corner */
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+      background: color-mix(in srgb, #C9A227 4%, var(--hx-surface)) !important;
+      border-radius: 18px !important;
+      border-top-right-radius: 6px !important;
+      padding: 12px 16px !important;
+      line-height: 1.6 !important;
+    }
+
+    /* Empty-state greeting — softer weight, generous spacing */
+    .hx-chat-blank-greet {
+      font-weight: 500 !important;
+      letter-spacing: -0.026em !important;
+      line-height: 1.18 !important;
+      color: color-mix(in srgb, var(--hx-text) 78%, transparent) !important;
+      animation: hx-greet-warm 620ms cubic-bezier(0.22, 0.61, 0.36, 1) both !important;
+    }
+    @keyframes hx-greet-warm {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Message entrance — gentler ease, no blur, slightly slower for warmth */
+    body[data-active="chat"] .hx-msg.is-assistant {
+      animation: hx-msg-warm-in 560ms cubic-bezier(0.22, 0.61, 0.36, 1) both !important;
+    }
+    body[data-active="chat"] .hx-msg.is-user {
+      animation: hx-msg-user-warm 460ms cubic-bezier(0.22, 0.61, 0.36, 1) both !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant.is-streaming {
+      animation: none !important;
+    }
+    @keyframes hx-msg-warm-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes hx-msg-user-warm {
+      from { opacity: 0; transform: translateY(6px) translateX(4px); }
+      to   { opacity: 1; transform: translateY(0) translateX(0); }
+    }
+
+    /* Action buttons — gentler hover bounce (slight overshoot) */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act {
+      transition:
+        background 180ms cubic-bezier(0.22, 0.61, 0.36, 1) !important,
+        color 180ms cubic-bezier(0.22, 0.61, 0.36, 1) !important,
+        transform 140ms cubic-bezier(0.34, 1.36, 0.64, 1) !important;
+    }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act:hover {
+      transform: translateY(-0.5px);
+    }
+
+    /* Composer — gentler focus glow */
+    body[data-active="chat"] .hx-chat-input-row {
+      transition:
+        background 260ms cubic-bezier(0.22, 0.61, 0.36, 1) !important,
+        border-color 260ms cubic-bezier(0.22, 0.61, 0.36, 1) !important,
+        box-shadow 300ms cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+    }
+    body[data-active="chat"] .hx-chat-input-row:focus-within {
+      border-color: color-mix(in srgb, #C9A227 22%, color-mix(in srgb, var(--hx-text) 14%, transparent)) !important;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 50%, transparent),
+        0 0 0 3px color-mix(in srgb, #C9A227 7%, transparent),
+        0 6px 18px -8px color-mix(in srgb, #C9A227 12%, transparent),
+        0 16px 36px -18px color-mix(in srgb, var(--hx-text) 12%, transparent) !important;
+    }
+
+    /* Model selector — warmer hover (subtle gold tint instead of grey) */
+    body[data-active="chat"] .hx-cc-model-pick:hover {
+      background: color-mix(in srgb, #C9A227 3%, var(--hx-surface)) !important;
+      border-color: color-mix(in srgb, #C9A227 22%, transparent) !important;
+    }
+
+    /* Sidebar conversation cards — softer warmth on hover */
+    body[data-active="chat"] .hx-chat-item:hover {
+      background: color-mix(in srgb, #C9A227 2.5%, color-mix(in srgb, var(--hx-text) 3%, transparent)) !important;
+    }
+    body[data-active="chat"] .hx-chat-item.is-active {
+      background: color-mix(in srgb, #C9A227 3%, color-mix(in srgb, var(--hx-text) 4.5%, var(--hx-surface))) !important;
+    }
+
+    /* Scroll-to-bottom button — gentler bounce */
+    body[data-active="chat"] .hx-chat-scroll-fab {
+      transition: transform 220ms cubic-bezier(0.34, 1.36, 0.64, 1),
+                  opacity 240ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                  box-shadow 260ms ease;
+    }
+
+    /* Reduced motion fallback */
+    @media (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-msg.is-user,
+      body[data-active="chat"] .hx-msg.is-assistant,
+      .hx-chat-blank-greet {
+        animation: none !important;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -13784,7 +13903,7 @@
           <div class="hx-chat-thread" id="hx-c-thread">
             <div class="hx-chat-blank" id="hx-c-blank">
               <div class="hx-chat-blank-inner">
-                <h2 class="hx-chat-blank-greet">How can I help, today?</h2>
+                <h2 class="hx-chat-blank-greet" id="hx-c-blank-greet">Hi there — how can I help?</h2>
                 <span class="hx-chat-blank-ready" aria-hidden="true">Helix · ready</span>
                 <div class="hx-chat-blank-chips" role="list" hidden aria-hidden="true">
                   <button class="hx-chat-blank-chip" type="button" role="listitem" data-prompt="Draft a short, professional launch email announcing ">
@@ -17490,6 +17609,30 @@
         })();
 
         // ─── Collapsible conversation rail ─────────────────────────────
+        // ─── Friendly, time-aware empty-state greeting ───────────────
+        (function wireGreeting() {
+          var greetEl = document.getElementById('hx-c-blank-greet');
+          if (!greetEl) return;
+          var h = new Date().getHours();
+          var greet;
+          if (h >= 5 && h < 12)       greet = ["Good morning. What's on your mind?", "Morning — how can I help?", "Good morning. Where would you like to begin?"];
+          else if (h >= 12 && h < 17) greet = ["Good afternoon. How can I help?", "Hi — what can I help with?", "Good afternoon. What are you working on?"];
+          else if (h >= 17 && h < 22) greet = ["Good evening. What can I do for you?", "Evening — how can I help?", "Good evening. Where shall we start?"];
+          else                         greet = ["Working late? I'm here.", "Hi — what's on your mind?", "Still here. How can I help?"];
+          // Pick one stable for the session
+          var pick;
+          try {
+            var stamp = sessionStorage.getItem('hx-greet-h-' + h);
+            if (stamp != null) pick = greet[parseInt(stamp, 10) % greet.length];
+            else {
+              var idx = Math.floor(Math.random() * greet.length);
+              sessionStorage.setItem('hx-greet-h-' + h, String(idx));
+              pick = greet[idx];
+            }
+          } catch (e) { pick = greet[0]; }
+          greetEl.textContent = pick;
+        })();
+
         (function wireRailCollapse() {
           var rail   = document.getElementById('hx-c-rail');
           var btn    = document.getElementById('hx-c-rail-collapse');
