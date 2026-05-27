@@ -21025,6 +21025,456 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       V82 — DARK MODE: TRUE NEUTRAL BLACK (no brown, no muddy gold tints)
+       The user is right — my V74-V81 dark surfaces used gold-tinted
+       gradients (linear-gradient with color-mix gold-7%) on stat,
+       note, framework, tradeoff-win, etc. Those reads as MUDDY BROWN
+       in the rendered output, not as premium dark surfaces.
+
+       V82 strips ALL gold-tinted backgrounds from dark mode. Every
+       dark surface uses one of three TRUE NEUTRAL charcoal levels:
+         --hx-blk-0  #0c0b0a   page bg
+         --hx-blk-1  #161514   surface (cards, composer)
+         --hx-blk-2  #1e1d1b   elevated (hover/focus/active)
+       Gold is RESERVED for: accents (single-pixel dots, left rules,
+       focus rings, header bars). Never a fill.
+
+       Also: V82 contains ONLY color tokens. Zero spacing/layout
+       overrides. Light mode and dark mode are now structurally
+       identical — only colors change.
+
+       This is the final dark mode pass. Last-in-file = wins.
+       ═════════════════════════════════════════════════════════════════ */
+
+    html[data-theme="dark"] body[data-active="chat"] {
+      --hx-blk-0: #0c0b0a;
+      --hx-blk-1: #161514;
+      --hx-blk-2: #1e1d1b;
+      --hx-blk-3: #26241f;
+    }
+
+    /* ── Page bg = true neutral near-black ───────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"],
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane {
+      background: #0c0b0a !important;
+    }
+
+    /* ── ARTIFACTS — pure neutral charcoal, NO gold tinting ──────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tradeoff,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-timeline,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-workflow,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-framework,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-compare,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-note,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-insight {
+      background: #161514 !important;
+      border-color: rgba(255, 255, 255, 0.06) !important;
+      color: #ffffff !important;
+      box-shadow:
+        0 1px 1px rgba(0, 0, 0, 0.45),
+        0 16px 44px -22px rgba(0, 0, 0, 0.7) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-quote {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art:hover {
+      background: #1e1d1b !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+    }
+
+    /* ── Cells inside artifacts — neutral, gold accent only as
+          1px border or icon color, NEVER as a fill tint ──────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tradeoff,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-win,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-risk,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw-cell,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-note {
+      background: #161514 !important;
+    }
+    /* Tradeoff: win column gets a left gold accent rule, not fill */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-win {
+      border-right-color: rgba(255, 255, 255, 0.06) !important;
+      box-shadow: inset 2px 0 0 color-mix(in srgb, var(--hx-accent, #C9A227) 55%, transparent) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-risk {
+      box-shadow: inset 2px 0 0 rgba(224, 134, 84, 0.5) !important;
+    }
+    /* Framework grid — neutral gap lines, neutral cells */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw {
+      background: rgba(255, 255, 255, 0.06) !important;
+      border-color: rgba(255, 255, 255, 0.06) !important;
+    }
+    /* Note artifact — gold left rule, neutral fill */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-note {
+      background: #161514 !important;
+      border-color: rgba(255, 255, 255, 0.06) !important;
+      box-shadow:
+        inset 3px 0 0 color-mix(in srgb, var(--hx-accent, #C9A227) 70%, transparent),
+        0 1px 1px rgba(0, 0, 0, 0.45),
+        0 16px 44px -22px rgba(0, 0, 0, 0.7) !important;
+    }
+    /* Note artifact: remove its ::before gold bar so we don't double-up */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-note::before {
+      content: none !important;
+      display: none !important;
+    }
+
+    /* ── Artifact text — readable hierarchy ──────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat-value,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl-title,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-wf-title,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw-desc,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col li,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-note-body,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp tbody th,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp tbody td,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-quote blockquote {
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-head,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat-label,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl-body,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-wf-sub,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat-sub,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-cmp thead th,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-quote figcaption {
+      color: #d0cabb !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-wf-num {
+      background: rgba(255, 255, 255, 0.08) !important;
+      color: #d0cabb !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-wf-step {
+      border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl::before {
+      background: rgba(255, 255, 255, 0.12) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl-dot {
+      box-shadow:
+        0 0 0 3px #161514,
+        0 0 0 4px color-mix(in srgb, var(--hx-accent, #C9A227) 35%, transparent) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-win .hx-art-col-head {
+      color: #f0c450 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-risk .hx-art-col-head {
+      color: #ff9a5e !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw-key {
+      color: var(--hx-accent, #C9A227) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-note-head {
+      color: color-mix(in srgb, var(--hx-accent, #C9A227) 65%, #ffffff) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-tl-meta {
+      color: color-mix(in srgb, var(--hx-accent, #C9A227) 70%, #ffffff) !important;
+    }
+
+    /* ── Composer — neutral charcoal, gold only on focus ring ────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row {
+      background: #161514 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+      box-shadow:
+        0 1px 1px rgba(0, 0, 0, 0.4),
+        0 16px 44px -20px rgba(0, 0, 0, 0.6) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row:focus-within {
+      background: #1e1d1b !important;
+      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 32%, transparent) !important;
+      box-shadow:
+        0 0 0 4px color-mix(in srgb, var(--hx-accent, #C9A227) 12%, transparent),
+        0 18px 48px -16px rgba(0, 0, 0, 0.7) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-textarea {
+      color: #ffffff !important;
+      background: transparent !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-textarea::placeholder {
+      color: #a8a293 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-tool-btn {
+      color: #d0cabb !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-tool-btn:hover {
+      background: rgba(255, 255, 255, 0.08) !important;
+      color: #ffffff !important;
+    }
+
+    /* ── Composer fade-into-page transitions to true black ───────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-compose::before {
+      background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(12, 11, 10, 0.4) 35%,
+        rgba(12, 11, 10, 0.85) 75%,
+        #0c0b0a 100%) !important;
+    }
+
+    /* ── Presence pill — neutral charcoal glass ──────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-presence {
+      background: color-mix(in srgb, #161514 88%, transparent) !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+      color: #ffffff !important;
+      box-shadow:
+        0 4px 16px -6px rgba(0, 0, 0, 0.55),
+        0 12px 36px -16px rgba(0, 0, 0, 0.45) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-presence-label { color: #ffffff !important; }
+
+    /* ── Command palette — neutral charcoal glass ────────────────── */
+    html[data-theme="dark"] .hx-palette {
+      background: #161514 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+      box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.55),
+        0 32px 80px -20px rgba(0, 0, 0, 0.85),
+        0 64px 160px -40px rgba(0, 0, 0, 0.7) !important;
+    }
+    html[data-theme="dark"] .hx-palette-input,
+    html[data-theme="dark"] .hx-palette-row-label,
+    html[data-theme="dark"] .hx-palette-row { color: #ffffff !important; }
+    html[data-theme="dark"] .hx-palette-input::placeholder,
+    html[data-theme="dark"] .hx-palette-row-hint,
+    html[data-theme="dark"] .hx-palette-group-label,
+    html[data-theme="dark"] .hx-palette-foot-hint,
+    html[data-theme="dark"] .hx-palette-foot-brand,
+    html[data-theme="dark"] .hx-palette-empty { color: #a8a293 !important; }
+    html[data-theme="dark"] .hx-palette-foot {
+      background: rgba(0, 0, 0, 0.3) !important;
+      border-top-color: rgba(255, 255, 255, 0.08) !important;
+    }
+    html[data-theme="dark"] .hx-palette-head { border-bottom-color: rgba(255, 255, 255, 0.08) !important; }
+    html[data-theme="dark"] .hx-palette-row-ico {
+      background: rgba(255, 255, 255, 0.07) !important;
+      color: #d0cabb !important;
+    }
+    html[data-theme="dark"] .hx-palette-row.is-active,
+    html[data-theme="dark"] .hx-palette-row:hover {
+      background: rgba(255, 255, 255, 0.06) !important;
+    }
+    html[data-theme="dark"] .hx-palette-row.is-active .hx-palette-row-ico,
+    html[data-theme="dark"] .hx-palette-row:hover .hx-palette-row-ico {
+      background: color-mix(in srgb, var(--hx-accent, #C9A227) 28%, transparent) !important;
+      color: color-mix(in srgb, var(--hx-accent, #C9A227) 80%, #ffffff) !important;
+    }
+    html[data-theme="dark"] .hx-palette-kbd-close,
+    html[data-theme="dark"] .hx-palette-foot-hint kbd,
+    html[data-theme="dark"] .hx-palette-empty kbd {
+      background: rgba(255, 255, 255, 0.06) !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+      color: #d0cabb !important;
+    }
+    html[data-theme="dark"] .hx-palette-backdrop { background: rgba(0, 0, 0, 0.75) !important; }
+
+    /* ── Model picker + bottom strip ──────────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-pick {
+      background: #161514 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-pick:hover {
+      background: #1e1d1b !important;
+      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 26%, transparent) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-name { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-caret { color: #d0cabb !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-compose-bar::before { color: #d0cabb !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-compose-bar::after {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+      color: #d0cabb !important;
+    }
+
+    /* ── Sidebar / rail — true neutral, no warmth ────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail {
+      background: #0c0b0a !important;
+      border-right-color: rgba(255, 255, 255, 0.06) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail-title::after { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-new {
+      background: transparent !important;
+      border-color: rgba(255, 255, 255, 0.12) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-new:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border-color: rgba(255, 255, 255, 0.18) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail-collapse { color: #d0cabb !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail-collapse:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search-row {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border-color: transparent !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search-row:focus-within {
+      background: #161514 !important;
+      border-color: rgba(255, 255, 255, 0.18) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search::placeholder { color: #a8a293 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-item:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-item.is-active {
+      background: rgba(255, 255, 255, 0.08) !important;
+      box-shadow: inset 2px 0 0 var(--hx-accent, #C9A227) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-item-title { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-item-more { color: #d0cabb !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-group-head { color: #d0cabb !important; }
+
+    /* ── Empty state + chips ─────────────────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank h2 { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank p { color: #d0cabb !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank p strong { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-eyebrow { color: #d0cabb !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-chip {
+      background: #161514 !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-chip:hover {
+      background: #1e1d1b !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-chip span { color: #ffffff !important; }
+
+    /* ── Conductor + followup chips ──────────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-conductor-chip,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-followup-chip {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+      color: #d0cabb !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-conductor-chip:hover,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-followup-chip:hover {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border-color: rgba(255, 255, 255, 0.18) !important;
+      color: #ffffff !important;
+    }
+
+    /* ── User pull-quote + assistant text ────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+      background: transparent !important;
+      color: #ffffff !important;
+      border-left: 2px solid color-mix(in srgb, var(--hx-accent, #C9A227) 80%, transparent) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-user::before { color: #d0cabb !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p:first-of-type,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > details.hx-rsn + p,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content strong,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content em,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h1.hx-md-h,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h2.hx-md-h,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h3.hx-md-h,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li {
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h { color: #d0cabb !important; }
+
+    /* ── Blockquote + details + code ─────────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content blockquote {
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content blockquote::before {
+      background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.25) 20%, rgba(255, 255, 255, 0.25) 80%, transparent 100%) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) {
+      background: transparent !important;
+      border-top-color: rgba(255, 255, 255, 0.10) !important;
+      border-bottom-color: rgba(255, 255, 255, 0.10) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content details:not(.hx-rsn) > summary { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-inline,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant code:not(pre code) {
+      background: rgba(255, 255, 255, 0.06) !important;
+      border-color: rgba(255, 255, 255, 0.10) !important;
+      color: color-mix(in srgb, var(--hx-accent, #C9A227) 55%, #ffffff) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant a:not(.hx-msg-act):not(.hx-msg-attach-file):not(.hx-conductor-chip):not(.hx-msg-followup-chip) {
+      color: color-mix(in srgb, var(--hx-accent, #C9A227) 70%, #ffffff) !important;
+      border-bottom-color: color-mix(in srgb, var(--hx-accent, #C9A227) 45%, transparent) !important;
+    }
+
+    /* ── Markdown tables — transparent fill, hairline cream rows ─── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content table,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content thead,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead {
+      background: transparent !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content thead th,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead th {
+      color: #d0cabb !important;
+      background: transparent !important;
+      border-bottom-color: rgba(255, 255, 255, 0.18) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content tbody td,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody td {
+      color: #ffffff !important;
+      background: transparent !important;
+      border-bottom-color: rgba(255, 255, 255, 0.07) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody th { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content tbody tr:hover td {
+      background: rgba(255, 255, 255, 0.04) !important;
+    }
+
+    /* ── Action toolbars + thinking label ────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act { color: #d0cabb !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act:hover {
+      background: rgba(255, 255, 255, 0.10) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-user .hx-msg-user-act { color: #d0cabb !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-user .hx-msg-user-act:hover {
+      background: rgba(255, 255, 255, 0.10) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-label {
+      color: #d0cabb !important;
+    }
+
+    /* ── Kill the V77 warm gold ambient lighting that read as brown ── */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane::before {
+      content: none !important;
+      display: none !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane::after {
+      opacity: 0.04 !important;
+      mix-blend-mode: overlay !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread::before {
+      content: none !important;
+      display: none !important;
+    }
+    /* Kill the V78 spotlight behind latest response (was warm orange) */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.is-assistant:last-child > .hx-msg-body::before {
+      content: none !important;
+      display: none !important;
+    }
+
+    /* ── Sharp font rendering ───────────────────────────────────── */
+    html[data-theme="dark"] body[data-active="chat"] {
+      -webkit-font-smoothing: antialiased !important;
+      -moz-osx-font-smoothing: grayscale !important;
+      text-rendering: optimizeLegibility !important;
+      color: #ffffff !important;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        V81 — DARK MODE CASCADE FIX (final, last-in-file = wins)
        V80 added html[data-theme="dark"] rules but they were inserted
        at line ~15516 — earlier than V69's hardcoded #ffffff at line
