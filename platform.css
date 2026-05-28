@@ -2795,3 +2795,54 @@ html[data-theme="dark"] .hx-table td { color: var(--hx-text, #fff); }
     background-color: #000000 !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   V102 — MOBILE PERFORMANCE PASS (shared)
+   backdrop-filter, large multi-layer shadows, and infinite decorative
+   animations are the top mobile jank sources. Strip/soften them on
+   phones so scrolling stays at 60fps. Applies to every page.
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* (1) Kill backdrop-filter everywhere — the #1 mobile perf killer */
+  .hx-topbar, .hx-sidebar, .hx-menu, .hx-dropdown, .hx-popover,
+  .hx-cmdk, .hx-modal, .hx-sheet, [class*="glass"], [class*="blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  /* (2) Simplify shadows to a single cheap layer */
+  .hx-card, .hx-stat, .hx-panel, .hx-tile, .hx-menu, .hx-dropdown,
+  .hx-popover, .hx-modal {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.10) !important;
+  }
+  html[data-theme="dark"] .hx-card,
+  html[data-theme="dark"] .hx-stat,
+  html[data-theme="dark"] .hx-panel,
+  html[data-theme="dark"] .hx-menu,
+  html[data-theme="dark"] .hx-popover {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5) !important;
+  }
+  /* (3) GPU-friendly scrolling on the main scroll containers */
+  .hx-main, .hx-sidebar, .hx-table-wrap {
+    -webkit-overflow-scrolling: touch;
+  }
+  /* (4) Disable infinite/decorative animations on mobile (keep
+     one-shot transitions which are cheap). Targets common ambient
+     pulse/shimmer/float utility names. */
+  [class*="pulse"], [class*="shimmer"], [class*="float"],
+  [class*="glow"], [class*="breathe"], [class*="aura"] {
+    animation: none !important;
+  }
+  /* (5) Decorative ambient layers off on mobile */
+  .hx-aura, .hx-ambient, .hx-grain, .hx-noise, .hx-vignette {
+    display: none !important;
+  }
+}
+/* (6) Honor reduced-motion globally — no decorative motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -24326,6 +24326,128 @@
         padding-bottom: env(safe-area-inset-bottom, 0px) !important;
       }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V102 — MOBILE PERFORMANCE PASS (chat)
+       The chat accumulated many GPU-heavy effects: backdrop-filter
+       blurs (presence, composer, palette, menu, mobile button),
+       infinite pulse/shimmer/halo animations, multi-layer shadows,
+       atmospheric gradient + paper-grain layers, and the spinning
+       atom/flame thinking animations. On phones these cause scroll
+       jank + lag. V102 strips/softens them at <=768px so mobile
+       scrolls at 60fps. Last-in-file = wins.
+       ═════════════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      /* (1) Kill ALL backdrop-filter in the chat on mobile */
+      body[data-active="chat"] .hx-presence,
+      body[data-active="chat"] .hx-chat-input-row,
+      body[data-active="chat"] .hx-cc-model-menu,
+      body[data-active="chat"] .hx-cc-model-pick,
+      body[data-active="chat"] .hx-chat-backdrop,
+      body[data-active="chat"] .hx-workspace,
+      .hx-mobile-menu-btn,
+      .hx-palette,
+      .hx-palette-backdrop {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+      /* Give the now-unblurred glass surfaces a solid bg so they
+         stay legible without the blur */
+      body[data-active="chat"] .hx-presence {
+        background: color-mix(in srgb, var(--hx-bg, #fff) 94%, transparent) !important;
+      }
+      html[data-theme="dark"] body[data-active="chat"] .hx-presence {
+        background: #161514 !important;
+      }
+      .hx-mobile-menu-btn {
+        background: color-mix(in srgb, var(--hx-bg, #fff) 96%, transparent) !important;
+      }
+      html[data-theme="dark"] .hx-mobile-menu-btn {
+        background: #1a1a1a !important;
+      }
+
+      /* (2) Remove the atmospheric gradient + paper-grain layers */
+      body[data-active="chat"] .hx-chat-pane::before,
+      body[data-active="chat"] .hx-chat-pane::after,
+      body[data-active="chat"] .hx-chat-thread::before {
+        display: none !important;
+        content: none !important;
+      }
+
+      /* (3) Disable infinite decorative animations on mobile.
+         Keeps streaming caret (essential feedback) but as a simple
+         opacity blink, not transform/glow. */
+      body[data-active="chat"] .hx-presence-dot,
+      body[data-active="chat"] .hx-conductor-chip.is-active-mode::before,
+      body[data-active="chat"] .hx-msg.is-streaming > .hx-msg-body::after,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-tool-card.is-running::after,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-tool-card.is-running .hx-tool-card-ico,
+      body[data-active="chat"] .hx-chat-pane:has(.hx-msg.is-streaming)::after,
+      body[data-active="chat"] .hx-chat-pane:has(.hx-msg-thinking)::after {
+        animation: none !important;
+      }
+
+      /* (4) Thinking indicator — simplify the GPU-heavy atom/network/
+         flame spins to a single calm opacity pulse on mobile. The
+         model identity color stays; the expensive transforms + multi-
+         drop-shadow filters go. */
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-mark {
+        filter: none !important;
+        animation: hx-think-mark-pulse-m 1.6s ease-in-out infinite !important;
+      }
+      body[data-active="chat"] .hx-msg.hx-msg-thinking .hx-think-mark::before {
+        animation: none !important;
+        opacity: 0.1 !important;
+      }
+      body[data-active="chat"] .hx-msg.hx-msg-thinking [class*="hx-tm-"] {
+        animation: none !important;
+      }
+      @keyframes hx-think-mark-pulse-m {
+        0%, 100% { opacity: 0.55; }
+        50%      { opacity: 1; }
+      }
+
+      /* (5) Simplify shadows — single cheap layer everywhere */
+      body[data-active="chat"] .hx-chat-input-row,
+      body[data-active="chat"] .hx-cc-model-menu,
+      body[data-active="chat"] .hx-cc-model-pick,
+      body[data-active="chat"] .hx-presence,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art,
+      body[data-active="chat"] .hx-workspace,
+      .hx-palette,
+      .hx-mobile-menu-btn {
+        box-shadow: 0 1px 4px rgba(0,0,0,0.12) !important;
+      }
+      html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row,
+      html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-menu,
+      html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art,
+      html[data-theme="dark"] body[data-active="chat"] .hx-workspace,
+      html[data-theme="dark"] .hx-palette {
+        box-shadow: 0 1px 4px rgba(0,0,0,0.5) !important;
+      }
+
+      /* (6) Drop one-shot entrance animations on mobile to avoid
+         first-paint jank when many messages render at once */
+      body[data-active="chat"] .hx-msg.is-assistant,
+      body[data-active="chat"] .hx-msg.is-user,
+      body[data-active="chat"] .hx-msg.is-assistant .hx-art,
+      body[data-active="chat"] .hx-msg-followups,
+      body[data-active="chat"] .hx-cc-model-menu {
+        animation: none !important;
+      }
+
+      /* (7) Remove will-change (frees GPU memory on mobile) */
+      body[data-active="chat"] .hx-chat-input-row {
+        will-change: auto !important;
+      }
+
+      /* (8) GPU-friendly thread scroll */
+      body[data-active="chat"] .hx-chat-thread {
+        -webkit-overflow-scrolling: touch !important;
+        scroll-behavior: auto !important;
+        overscroll-behavior: contain !important;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
