@@ -24983,6 +24983,24 @@
         margin-bottom: 7px !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V110 — COMPOSER + NATIVE-SCROLL POLISH (<=720px)
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 720px) {
+      /* Send button reads idle until there's something to send */
+      body[data-active="chat"] .hx-chat-send:disabled {
+        opacity: 0.4 !important;
+        filter: saturate(0.45) !important;
+      }
+      /* Native momentum scroll, no page rubber-banding, no scrollbar track */
+      body[data-active="chat"] .hx-chat-thread {
+        overscroll-behavior: contain !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+      }
+      body[data-active="chat"] .hx-chat-thread::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
+    }
   </style>
 </head>
 <body data-active="chat">
