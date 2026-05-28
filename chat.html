@@ -24448,6 +24448,45 @@
         overscroll-behavior: contain !important;
       }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V103 — CRITICAL: respect [hidden] on all menus/popovers
+       ROOT CAUSE of the stuck model selector on iPhone Safari: the
+       V97 model-menu rule set `display: flex !important`, which
+       OVERRODE the browser's display:none for the [hidden] attribute.
+       The JS correctly sets menu.hidden = true on close — but the
+       !important flex kept it mounted + visible. On mobile the menu
+       is position:fixed covering the screen, so it captured every
+       touch permanently and froze the whole app. (Same class of bug
+       as the V90 workspace-pane fix.)
+
+       This block sits at the absolute end of the stylesheet so the
+       [hidden] guard beats every earlier display:flex/grid !important.
+       Belt-and-braces: display:none + visibility:hidden + pointer-
+       events:none + opacity:0 so a hidden menu can NEVER capture
+       touch, regardless of any upstream rule.
+       ═════════════════════════════════════════════════════════════════ */
+    html body[data-active="chat"] .hx-cc-model-menu[hidden],
+    html body[data-active="chat"] .hx-cc-mode-menu[hidden],
+    html body[data-active="chat"] .hx-cc-mic-menu[hidden],
+    html body[data-active="chat"] .hx-cc-usage-menu[hidden],
+    html body[data-active="chat"] .hx-tools-menu[hidden],
+    html body[data-active="chat"] [role="menu"][hidden],
+    html body[data-active="chat"] .hx-cc-model-menu.is-closing {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    /* The workspace pane + palette already guard [hidden]; reinforce
+       here so nothing fixed-position can ever freeze the UI. */
+    html body[data-active="chat"] .hx-workspace[hidden],
+    html .hx-palette[hidden],
+    html .hx-palette-backdrop[hidden],
+    html body[data-active="chat"] .hx-chat-backdrop[hidden] {
+      display: none !important;
+      pointer-events: none !important;
+    }
   </style>
 </head>
 <body data-active="chat">
