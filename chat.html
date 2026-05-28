@@ -22094,7 +22094,7 @@
        layout late in the file so no upstream rule can break it.
        ═════════════════════════════════════════════════════════════════ */
 
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu {
+    html body[data-active="chat"] .hx-cc-model-menu {
       position: absolute !important;
       bottom: calc(100% + 10px) !important;
       right: 0 !important;
@@ -22115,7 +22115,7 @@
       gap: 2px !important;
     }
 
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-menu-section {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-menu-section {
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
@@ -22127,17 +22127,17 @@
       color: color-mix(in srgb, #1a1812 44%, transparent) !important;
       line-height: 1 !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-menu-section-top {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-menu-section-top {
       margin-top: 6px !important;
       padding-top: 14px !important;
       border-top: 1px solid color-mix(in srgb, #1a1812 7%, transparent) !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-menu-kbd {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-menu-kbd {
       display: inline-flex !important;
       align-items: center !important;
       gap: 2px !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-menu-kbd > span {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-menu-kbd > span {
       display: inline-block !important;
       padding: 1px 5px !important;
       background: color-mix(in srgb, #1a1812 5%, transparent) !important;
@@ -22152,7 +22152,7 @@
 
     /* THE FIX — every model row uses CSS Grid. Four columns:
        [glyph 36px | body 1fr | check auto | num auto] */
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt {
       display: grid !important;
       grid-template-columns: 36px 1fr auto auto !important;
       align-items: center !important;
@@ -22169,19 +22169,19 @@
       overflow: hidden !important;
       transition: background 160ms cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt::before {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt::before {
       content: none !important;
       display: none !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt:hover {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt:hover {
       background: color-mix(in srgb, #1a1812 5%, transparent) !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt.is-active {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt.is-active {
       background: linear-gradient(90deg,
         color-mix(in srgb, var(--hx-accent, #C9A227) 10%, transparent) 0%,
         color-mix(in srgb, #1a1812 3%, transparent) 100%) !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt.is-active::after {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt.is-active::after {
       content: '' !important;
       position: absolute !important;
       left: 0 !important;
@@ -22194,7 +22194,7 @@
     }
 
     /* GRID COL 1 — glyph chip */
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-opt-glyph {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-opt-glyph {
       grid-column: 1 !important;
       grid-row: 1 !important;
       display: inline-flex !important;
@@ -22208,29 +22208,29 @@
       color: color-mix(in srgb, #1a1812 60%, transparent) !important;
       transition: background 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-opt-glyph svg {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-opt-glyph svg {
       width: 18px !important;
       height: 18px !important;
       display: block !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt:hover .hx-cc-opt-glyph,
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt.is-active .hx-cc-opt-glyph {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt:hover .hx-cc-opt-glyph,
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt.is-active .hx-cc-opt-glyph {
       background: color-mix(in srgb, var(--hx-accent, #C9A227) 18%, transparent) !important;
       color: var(--hx-accent, #C9A227) !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt[data-model="nexus"]:hover .hx-cc-opt-glyph,
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt[data-model="nexus"].is-active .hx-cc-opt-glyph {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt[data-model="nexus"]:hover .hx-cc-opt-glyph,
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt[data-model="nexus"].is-active .hx-cc-opt-glyph {
       background: color-mix(in srgb, #d04a14 18%, transparent) !important;
       color: #d04a14 !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt[data-model="prometheus"]:hover .hx-cc-opt-glyph,
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt[data-model="prometheus"].is-active .hx-cc-opt-glyph {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt[data-model="prometheus"]:hover .hx-cc-opt-glyph,
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt[data-model="prometheus"].is-active .hx-cc-opt-glyph {
       background: color-mix(in srgb, #CC1016 16%, transparent) !important;
       color: #CC1016 !important;
     }
 
     /* GRID COL 2 — body (name + sub) as flex column */
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-opt-body {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-opt-body {
       grid-column: 2 !important;
       grid-row: 1 !important;
       display: flex !important;
@@ -22242,7 +22242,7 @@
       overflow: hidden !important;
       position: static !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-opt-name {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-opt-name {
       display: block !important;
       font-family: var(--sans) !important;
       font-size: 13.5px !important;
@@ -22258,10 +22258,10 @@
       padding: 0 !important;
       position: static !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt.is-active .hx-cc-opt-name {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt.is-active .hx-cc-opt-name {
       font-weight: 700 !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-opt-sub {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-opt-sub {
       display: block !important;
       font-family: var(--sans) !important;
       font-size: 11.5px !important;
@@ -22279,7 +22279,7 @@
     }
 
     /* GRID COL 3 — check */
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-check {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-check {
       grid-column: 3 !important;
       grid-row: 1 !important;
       width: 14px !important;
@@ -22289,12 +22289,12 @@
       flex-shrink: 0 !important;
       transition: opacity 180ms cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt.is-active .hx-cc-check {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt.is-active .hx-cc-check {
       opacity: 1 !important;
     }
 
     /* GRID COL 4 — number badge */
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-num {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-num {
       grid-column: 4 !important;
       grid-row: 1 !important;
       display: inline-block !important;
@@ -22309,12 +22309,12 @@
       line-height: 1.3 !important;
       margin-left: 4px !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt.is-active .hx-cc-num {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-model-opt.is-active .hx-cc-num {
       background: transparent !important;
     }
 
     /* EFFORT — 3-col grid: [label | bars | check] */
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-opt {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-opt {
       display: grid !important;
       grid-template-columns: 1fr auto 16px !important;
       align-items: center !important;
@@ -22333,36 +22333,36 @@
       color: #1a1812 !important;
       transition: background 160ms cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-opt:hover {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-opt:hover {
       background: color-mix(in srgb, #1a1812 5%, transparent) !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-opt > span:first-child {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-opt > span:first-child {
       grid-column: 1 !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars {
       grid-column: 2 !important;
       display: inline-flex !important;
       align-items: flex-end !important;
       gap: 2px !important;
       height: 14px !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars i {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars i {
       width: 3px !important;
       background: color-mix(in srgb, #1a1812 16%, transparent) !important;
       border-radius: 1px !important;
       display: inline-block !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars i:nth-child(1) { height: 30% !important; }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars i:nth-child(2) { height: 50% !important; }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars i:nth-child(3) { height: 70% !important; }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars i:nth-child(4) { height: 85% !important; }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars i:nth-child(5) { height: 100% !important; }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars[data-level="1"] i:nth-child(-n+1),
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars[data-level="2"] i:nth-child(-n+3),
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars[data-level="3"] i:nth-child(-n+5) {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars i:nth-child(1) { height: 30% !important; }
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars i:nth-child(2) { height: 50% !important; }
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars i:nth-child(3) { height: 70% !important; }
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars i:nth-child(4) { height: 85% !important; }
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars i:nth-child(5) { height: 100% !important; }
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars[data-level="1"] i:nth-child(-n+1),
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars[data-level="2"] i:nth-child(-n+3),
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-bars[data-level="3"] i:nth-child(-n+5) {
       background: var(--hx-accent, #C9A227) !important;
     }
-    html[data-active] body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-opt .hx-cc-check {
+    html body[data-active="chat"] .hx-cc-model-menu .hx-cc-effort-opt .hx-cc-check {
       grid-column: 3 !important;
     }
 
@@ -22413,7 +22413,7 @@
     }
 
     @media (max-width: 720px) {
-      html[data-active] body[data-active="chat"] .hx-cc-model-menu {
+      html body[data-active="chat"] .hx-cc-model-menu {
         min-width: 280px !important;
         max-width: calc(100vw - 32px) !important;
       }
