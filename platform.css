@@ -2626,3 +2626,172 @@ html[data-theme="dark"] .hx-table th {
   color: var(--hx-text-mid, #B5B5B5);
 }
 html[data-theme="dark"] .hx-table td { color: var(--hx-text, #fff); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   V101 — MOBILE DESIGN SYSTEM (token-driven, root level)
+   A proper mobile design language, not desktop squeezed down. Defines
+   a mobile spacing scale, type scale, radii, and tap-target sizing as
+   tokens scoped to <=768px, then applies them consistently to every
+   shared component. Includes safe-area insets for notched phones.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  :root, html[data-theme="dark"] {
+    /* Mobile spacing scale — purposeful 4px rhythm */
+    --m-1: 4px;
+    --m-2: 8px;
+    --m-3: 12px;
+    --m-4: 16px;   /* base page padding */
+    --m-5: 20px;
+    --m-6: 28px;   /* section gap */
+    --m-7: 40px;
+    --m-8: 56px;
+
+    /* Mobile type scale */
+    --m-text-xs:    11.5px;
+    --m-text-sm:    13px;
+    --m-text-base:  15px;
+    --m-text-md:    16px;   /* >=16 stops iOS focus-zoom */
+    --m-text-lg:    18px;
+    --m-text-xl:    22px;
+    --m-text-2xl:   26px;
+    --m-display:    clamp(28px, 8vw, 34px);
+
+    /* Mobile radii */
+    --m-radius-sm: 8px;
+    --m-radius:    12px;
+    --m-radius-lg: 16px;
+
+    /* Tap target floor (Apple HIG / Material) */
+    --m-tap: 44px;
+
+    /* Safe-area insets (notch / home indicator) */
+    --m-safe-top:    env(safe-area-inset-top, 0px);
+    --m-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --m-safe-left:   env(safe-area-inset-left, 0px);
+    --m-safe-right:  env(safe-area-inset-right, 0px);
+  }
+
+  /* ── PAGE RHYTHM ──────────────────────────────────────────────── */
+  .hx-main {
+    padding: var(--m-4) var(--m-4) calc(var(--m-8) + var(--m-safe-bottom)) !important;
+    padding-left: max(var(--m-4), var(--m-safe-left)) !important;
+    padding-right: max(var(--m-4), var(--m-safe-right)) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--m-6) !important;
+  }
+  .hx-section, section.hx-block, .hx-page-section {
+    margin: 0 !important;
+  }
+
+  /* ── TYPOGRAPHY HIERARCHY ─────────────────────────────────────── */
+  .hx-pg-hero h1, .hx-hero h1, .hx-page-title, h1.hx-h1 {
+    font-size: var(--m-display) !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.022em !important;
+    font-weight: 600 !important;
+    margin: 0 0 var(--m-3) !important;
+  }
+  .hx-page-head h2, h2.hx-h2, .hx-section-title {
+    font-size: var(--m-text-xl) !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.014em !important;
+    margin: 0 0 var(--m-2) !important;
+  }
+  h3.hx-h3, .hx-card h3 {
+    font-size: var(--m-text-lg) !important;
+    line-height: 1.3 !important;
+  }
+  .hx-pg-hero p, .hx-hero p, .hx-lede, .hx-page-sub {
+    font-size: var(--m-text-base) !important;
+    line-height: 1.55 !important;
+    color: var(--hx-text-mid) !important;
+  }
+  body, p, .hx-body { font-size: var(--m-text-base) !important; line-height: 1.55 !important; }
+
+  /* ── CARDS — generous, breathing, consistent ──────────────────── */
+  .hx-card, .hx-stat, .hx-panel, .hx-tile, .hx-surface-card {
+    padding: var(--m-5) !important;
+    border-radius: var(--m-radius) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .hx-card-head, .hx-card-head-row { margin-bottom: var(--m-3) !important; }
+  .hx-stat-value { font-size: var(--m-text-2xl) !important; line-height: 1.05 !important; }
+  .hx-stat-label { font-size: var(--m-text-xs) !important; }
+
+  /* ── TAP TARGETS — everything tappable is >=44px ─────────────── */
+  .hx-btn, button.hx-btn, .hx-btn-primary, .hx-btn-secondary,
+  .hx-icon-btn, .hx-topbar-actions button, a.hx-btn {
+    min-height: var(--m-tap) !important;
+    padding: 0 var(--m-4) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: var(--m-text-sm) !important;
+    border-radius: var(--m-radius-sm) !important;
+  }
+  .hx-btn.hx-btn-full, .hx-btn-block { width: 100% !important; }
+
+  /* ── INPUTS — 16px font (no iOS zoom), comfortable height ─────── */
+  input, textarea, select, .hx-input, .hx-field {
+    font-size: var(--m-text-md) !important;
+    min-height: var(--m-tap) !important;
+    border-radius: var(--m-radius-sm) !important;
+    box-sizing: border-box !important;
+  }
+  textarea, .hx-textarea { min-height: 0 !important; }
+
+  /* ── TOPBAR — comfortable, safe-area aware ────────────────────── */
+  .hx-topbar {
+    padding: var(--m-2) var(--m-4) !important;
+    padding-top: max(var(--m-2), var(--m-safe-top)) !important;
+    gap: var(--m-2) !important;
+    min-height: 56px !important;
+  }
+
+  /* ── SIDEBAR DRAWER — safe-area + premium spacing ─────────────── */
+  .hx-sidebar {
+    width: min(88%, 320px) !important;
+    padding: calc(var(--m-3) + var(--m-safe-top)) var(--m-3) calc(var(--m-3) + var(--m-safe-bottom)) !important;
+  }
+  .hx-sidebar-link, .hx-nav-item {
+    min-height: var(--m-tap) !important;
+    display: flex !important;
+    align-items: center !important;
+    border-radius: var(--m-radius-sm) !important;
+  }
+
+  /* ── TABLES — token padding ───────────────────────────────────── */
+  .hx-table th, .hx-table td { padding: var(--m-3) !important; }
+
+  /* ── SECTION GAPS — consistent breathing ──────────────────────── */
+  .hx-grid-2, .hx-grid-3, .hx-grid-4,
+  .hx-cols-2, .hx-cols-3, .hx-cols-4 {
+    gap: var(--m-3) !important;
+  }
+}
+
+/* ── LIGHT MODE mobile polish — softer surfaces, consistent lines ─ */
+@media (max-width: 768px) {
+  .hx-card, .hx-stat, .hx-panel {
+    border: 1px solid var(--hx-line) !important;
+    box-shadow: var(--hx-shadow-xs) !important;
+  }
+}
+/* ── DARK MODE mobile polish — true black + consistent elevation ─ */
+@media (max-width: 768px) {
+  html[data-theme="dark"] .hx-card,
+  html[data-theme="dark"] .hx-stat,
+  html[data-theme="dark"] .hx-panel,
+  html[data-theme="dark"] .hx-tile {
+    background-color: var(--hx-surface-2, #0A0A0A) !important;
+    border: 1px solid var(--hx-line, #222) !important;
+    box-shadow: none !important;
+  }
+  html[data-theme="dark"] .hx-topbar,
+  html[data-theme="dark"] .hx-sidebar {
+    background-color: #000000 !important;
+  }
+}

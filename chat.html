@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Chat — HelveX</title>
   <meta name="description" content="HelveX chat — your real AI workspace." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
@@ -24286,6 +24286,45 @@
         padding-right: 14px !important;
       }
       body[data-active="chat"] .hx-msg.is-user .hx-msg-content { font-size: 15px !important; }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       V101 — SAFE-AREA INSETS (notch / home indicator) for chat
+       Composer clears the home indicator; menu button + presence pill
+       clear the notch. Makes the chat feel native on modern phones.
+       ═════════════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      /* Composer sits above the home indicator */
+      body[data-active="chat"] .hx-chat-compose {
+        padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+        padding-left:  max(14px, env(safe-area-inset-left, 0px)) !important;
+        padding-right: max(14px, env(safe-area-inset-right, 0px)) !important;
+      }
+      /* Thread bottom clears the home indicator too */
+      body[data-active="chat"] .hx-chat-thread-inner {
+        padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      /* Menu button + presence clear the notch */
+      .hx-mobile-menu-btn {
+        top: calc(12px + env(safe-area-inset-top, 0px)) !important;
+        left: max(12px, env(safe-area-inset-left, 0px)) !important;
+      }
+      body[data-active="chat"] .hx-presence {
+        top: calc(14px + env(safe-area-inset-top, 0px)) !important;
+        right: max(12px, env(safe-area-inset-right, 0px)) !important;
+      }
+      /* Workspace pane respects the notch + home indicator */
+      body[data-active="chat"] .hx-ws-head {
+        padding-top: calc(16px + env(safe-area-inset-top, 0px)) !important;
+      }
+      body[data-active="chat"] .hx-ws-body {
+        padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      /* Rail drawer respects insets */
+      body[data-active="chat"] .hx-chat-rail {
+        padding-top: env(safe-area-inset-top, 0px) !important;
+        padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+      }
     }
   </style>
 </head>
