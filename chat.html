@@ -4152,7 +4152,11 @@
     }
 
     /* Dark-mode polish where the platform supports it */
-    @media (prefers-color-scheme: dark) {
+    /* V105: was @media (prefers-color-scheme: dark) — converted to the
+       manual-theme selector so it follows the user's choice, not the OS
+       (the OS-media form bled dark styling into light mode on dark-OS
+       machines). Native CSS nesting scopes the inner selectors. */
+    html[data-theme="dark"] {
       body[data-active="chat"] .hx-chat-toolbar {
         background: color-mix(in srgb, var(--hx-bg) 70%, transparent);
         border-bottom-color: rgba(255,255,255,0.06);
@@ -15528,9 +15532,11 @@
     html[data-theme="dark"] body[data-active="chat"] {
       /* Text contrast bumped to readable. Primary is FULLY white;
          muted is still muted but never grey-blurry. */
-      --hx-text:       #ffffff !important;
-      --hx-text-mid:   #d8d2c2 !important;
-      --hx-text-dim:   #a8a293 !important;
+      /* Soft warm-white, NOT pure #fff: pure white on true black haloes
+         ("blurry text"). #f0eee8 keeps full readability without the buzz. */
+      --hx-text:       #f0eee8 !important;
+      --hx-text-mid:   #d6cfbf !important;
+      --hx-text-dim:   #aaa392 !important;
       --hx-text-faint: #6e695e !important;
       /* Solid surface tokens (no var fallback chain) */
       --hx-d0: #0a0908;
@@ -15539,11 +15545,13 @@
       --hx-d3: #1c1916;
       --hx-d4: #221e1a;
       --hx-d5: #2a2520;
-      --hx-dark-line:   rgba(248, 244, 232, 0.07);
-      --hx-dark-line-2: rgba(248, 244, 232, 0.12);
-      --hx-dark-line-3: rgba(248, 244, 232, 0.18);
+      /* Hairlines lifted so elevated surfaces separate from the black
+         canvas instead of reading "muddy". */
+      --hx-dark-line:   rgba(248, 244, 232, 0.10);
+      --hx-dark-line-2: rgba(248, 244, 232, 0.16);
+      --hx-dark-line-3: rgba(248, 244, 232, 0.22);
       background: #100e0c !important;
-      color: #ffffff !important;
+      color: #f0eee8 !important;
     }
 
     /* ───── ARTIFACTS — force charcoal (all 9 variants) ───────────── */
@@ -15862,7 +15870,7 @@
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p,
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > p:first-of-type,
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > details.hx-rsn + p {
-      color: #ffffff !important;
+      color: #f0eee8 !important;
     }
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content strong { color: #ffffff !important; }
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content em { color: #ffffff !important; }
@@ -15872,7 +15880,7 @@
       color: #ffffff !important;
     }
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > h4.hx-md-h { color: #d8d2c2 !important; }
-    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li { color: #ffffff !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li { color: #f0eee8 !important; }
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li::before {
       background: color-mix(in srgb, var(--hx-accent, #C9A227) 75%, transparent) !important;
     }
@@ -15959,7 +15967,11 @@
        This is the definitive dark-mode pass. No white leaks.
        ═════════════════════════════════════════════════════════════════ */
 
-    @media (prefers-color-scheme: dark) {
+    /* V105: was @media (prefers-color-scheme: dark) — converted to the
+       manual-theme selector so it follows the user's choice, not the OS
+       (the OS-media form bled dark styling into light mode on dark-OS
+       machines). Native CSS nesting scopes the inner selectors. */
+    html[data-theme="dark"] {
 
       /* ───── (A) STRONGER TEXT PALETTE ─────────────────────────── */
       /* Near-white primary, readable mid, readable dim. Below this,
@@ -16481,7 +16493,11 @@
     }
 
     /* ───── (9) DARK MODE OVERRIDES ───────────────────────────────── */
-    @media (prefers-color-scheme: dark) {
+    /* V105: was @media (prefers-color-scheme: dark) — converted to the
+       manual-theme selector so it follows the user's choice, not the OS
+       (the OS-media form bled dark styling into light mode on dark-OS
+       machines). Native CSS nesting scopes the inner selectors. */
+    html[data-theme="dark"] {
       /* Spotlight stronger in dark — the warmth is the lighting */
       body[data-active="chat"] .hx-chat-thread-inner > .hx-msg.is-assistant:last-child:not(.hx-msg-thinking) > .hx-msg-body::before {
         background: radial-gradient(ellipse 70% 60% at 18% 0%,
@@ -16595,7 +16611,11 @@
        dark, Things 3 dark — not a developer console.
        ═════════════════════════════════════════════════════════════════ */
 
-    @media (prefers-color-scheme: dark) {
+    /* V105: was @media (prefers-color-scheme: dark) — converted to the
+       manual-theme selector so it follows the user's choice, not the OS
+       (the OS-media form bled dark styling into light mode on dark-OS
+       machines). Native CSS nesting scopes the inner selectors. */
+    html[data-theme="dark"] {
       body[data-active="chat"] {
         /* ── (a) Five-layer charcoal depth scale ──────────────────── */
         --hx-d0: #0a0908;   /* deepest base */
@@ -17367,7 +17387,11 @@
     body[data-active="chat"] .hx-msg-followup-chip:nth-child(4) { --i: 3; }
 
     /* ─── DARK MODE PARITY: artifact hover state needs dark shadow ─── */
-    @media (prefers-color-scheme: dark) {
+    /* V105: was @media (prefers-color-scheme: dark) — converted to the
+       manual-theme selector so it follows the user's choice, not the OS
+       (the OS-media form bled dark styling into light mode on dark-OS
+       machines). Native CSS nesting scopes the inner selectors. */
+    html[data-theme="dark"] {
       body[data-active="chat"] .hx-msg.is-assistant .hx-art:hover {
         border-color: rgba(255, 246, 220, 0.16) !important;
         box-shadow:
@@ -17550,7 +17574,11 @@
     }
 
     /* ───── (5) DARK MODE PARITY for inline + heading refinements ── */
-    @media (prefers-color-scheme: dark) {
+    /* V105: was @media (prefers-color-scheme: dark) — converted to the
+       manual-theme selector so it follows the user's choice, not the OS
+       (the OS-media form bled dark styling into light mode on dark-OS
+       machines). Native CSS nesting scopes the inner selectors. */
+    html[data-theme="dark"] {
       body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content strong {
         color: var(--hx-text) !important;
       }
@@ -17596,7 +17624,11 @@
        Reminders dark.
        ═════════════════════════════════════════════════════════════════ */
 
-    @media (prefers-color-scheme: dark) {
+    /* V105: was @media (prefers-color-scheme: dark) — converted to the
+       manual-theme selector so it follows the user's choice, not the OS
+       (the OS-media form bled dark styling into light mode on dark-OS
+       machines). Native CSS nesting scopes the inner selectors. */
+    html[data-theme="dark"] {
       body[data-active="chat"] {
         /* Dedicated dark palette — warm-cream text on charcoal, not
            bluish-gray text on near-black. Avoids the "VS Code with
@@ -21858,12 +21890,12 @@
 
     /* Elevated surfaces on the black canvas */
     html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row {
-      background: #141414 !important;
-      border-color: rgba(255, 255, 255, 0.10) !important;
+      background: #1c1b1a !important;
+      border-color: rgba(255, 255, 255, 0.14) !important;
     }
     html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row:focus-within {
-      background: #1a1a1a !important;
-      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 35%, transparent) !important;
+      background: #232220 !important;
+      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 45%, transparent) !important;
     }
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art,
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-stat,
@@ -21876,8 +21908,8 @@
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-win,
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-col-risk,
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-fw-cell {
-      background: #141414 !important;
-      border-color: rgba(255, 255, 255, 0.08) !important;
+      background: #1c1b1a !important;
+      border-color: rgba(255, 255, 255, 0.12) !important;
     }
     html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-art-quote {
       background: transparent !important;
@@ -21892,8 +21924,8 @@
         0 0 0 4px color-mix(in srgb, var(--hx-accent, #C9A227) 35%, transparent) !important;
     }
     html[data-theme="dark"] body[data-active="chat"] .hx-presence {
-      background: #141414 !important;
-      border-color: rgba(255, 255, 255, 0.10) !important;
+      background: #1c1b1a !important;
+      border-color: rgba(255, 255, 255, 0.14) !important;
     }
     html[data-theme="dark"] .hx-palette {
       background: #141414 !important;
@@ -24609,6 +24641,84 @@
       /* (8) Defensive: the chat page must never show the generic
          dashboard section gaps from platform.css V101 */
       html body[data-active="chat"] .hx-main > * { margin: 0 !important; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V105 — DARK MODE: CANONICAL PALETTE (authoritative, last-in-file)
+       ───────────────────────────────────────────────────────────────────
+       After ~100 layered passes the dark cascade drifted: pure #fff on
+       true #000 haloed ("blurry text"); elevated surfaces sat only ~8%
+       above the canvas with faint hairlines ("muddy surfaces"); and a
+       stale color-mix left the presence strip rendering near-white in
+       dark (a light leak). This block is the SINGLE source of truth for
+       dark surface/text colour — change dark colours HERE, not upstream.
+       The canvas stays TRUE BLACK (intentional, per V83); only colour
+       changes, never layout.
+       ═══════════════════════════════════════════════════════════════════ */
+
+    /* Canonical dark tokens — last in file, so these are the values that
+       actually resolve (var(--hx-text) drives 240+ colour usages). */
+    html[data-theme="dark"] body[data-active="chat"] {
+      --hx-text:       #f0eee8 !important;
+      --hx-text-mid:   #d6cfbf !important;
+      --hx-text-dim:   #aaa392 !important;
+    }
+
+    /* Primary reading text — soft warm-white, never pure #fff (kills the
+       halation on true black that reads as "blurry"). */
+    html[data-theme="dark"] body[data-active="chat"],
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content p,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content li,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant:not(.is-streaming) .hx-msg-content > p,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant:not(.is-streaming) .hx-msg-content > p:first-child,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant:not(.is-streaming) .hx-msg-content > p:first-of-type,
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-list > li {
+      color: #f0eee8 !important;
+    }
+
+    /* Elevated surfaces — one charcoal step that reads clearly on black,
+       with a hairline strong enough to define the edge. Also repairs the
+       presence-strip white leak. */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row,
+    html[data-theme="dark"] body[data-active="chat"] .hx-presence,
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search-row,
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-pick,
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-usage-pick,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-chip,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-suggest-chip,
+    html[data-theme="dark"] body[data-active="chat"] .hx-ws-head,
+    html[data-theme="dark"] .hx-palette {
+      background: #1c1b1a !important;
+      border-color: rgba(255, 255, 255, 0.14) !important;
+    }
+
+    /* Hover / focus — a clear, calm step up so controls feel responsive. */
+    html[data-theme="dark"] body[data-active="chat"] .hx-rail-search-row:focus-within,
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-pick:hover,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-blank-chip:hover,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-suggest-chip:hover {
+      background: #232220 !important;
+      border-color: rgba(255, 255, 255, 0.20) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row:focus-within {
+      background: #232220 !important;
+      border-color: color-mix(in srgb, var(--hx-accent, #C9A227) 48%, transparent) !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V105 — MOBILE TOUCH TARGET (sizing only, no layout change)
+       The primary send control rendered at 34–36px, under the comfortable
+       touch minimum. Bump it; keep the textarea at 16px so iOS never
+       zoom-jumps on focus.
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-chat-send {
+        width: 40px !important;
+        height: 40px !important;
+      }
+      body[data-active="chat"] .hx-chat-send svg { width: 17px !important; height: 17px !important; }
+      body[data-active="chat"] .hx-chat-textarea { font-size: 16px !important; }
     }
   </style>
 </head>
