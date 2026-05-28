@@ -24860,6 +24860,63 @@
         color: #f0eee8 !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V108 — MOBILE MOTION & TACTILITY (<=720px)
+       Static surfaces feel like a webpage; tactile, springy motion feels
+       like a native app. Press feedback on every interactive element,
+       a gentle staggered entrance for the new-session cards, and a soft
+       composer focus lift. Subtle, GPU-cheap, and fully reduced-motion
+       guarded.
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 720px) {
+      body[data-active="chat"] .hx-chat-suggest-chip,
+      body[data-active="chat"] .hx-chat-blank-chip,
+      body[data-active="chat"] .hx-cc-model-pick,
+      body[data-active="chat"] .hx-cc-usage-pick,
+      body[data-active="chat"] .hx-chat-send,
+      body[data-active="chat"] .hx-chat-item,
+      .hx-mobile-menu-btn {
+        transition: transform 0.16s cubic-bezier(0.2,0.8,0.2,1),
+                    background 0.2s ease, box-shadow 0.22s ease, border-color 0.2s ease !important;
+        -webkit-tap-highlight-color: transparent !important;
+      }
+      body[data-active="chat"] .hx-chat-suggest-chip:active,
+      body[data-active="chat"] .hx-chat-blank-chip:active,
+      body[data-active="chat"] .hx-cc-model-pick:active,
+      body[data-active="chat"] .hx-cc-usage-pick:active,
+      body[data-active="chat"] .hx-chat-item:active,
+      .hx-mobile-menu-btn:active {
+        transform: scale(0.97) !important;
+      }
+      body[data-active="chat"] .hx-chat-send:active:not(:disabled) {
+        transform: scale(0.9) !important;
+      }
+
+      /* New-session cards drift in, gently staggered — feels alive */
+      body[data-active="chat"] .hx-chat-blank .hx-chat-suggest-chip {
+        animation: hx-chip-in 0.5s cubic-bezier(0.16,1,0.3,1) both !important;
+      }
+      body[data-active="chat"] .hx-chat-blank .hx-chat-suggest-chip:nth-child(1){ animation-delay:0.04s !important; }
+      body[data-active="chat"] .hx-chat-blank .hx-chat-suggest-chip:nth-child(2){ animation-delay:0.10s !important; }
+      body[data-active="chat"] .hx-chat-blank .hx-chat-suggest-chip:nth-child(3){ animation-delay:0.16s !important; }
+      body[data-active="chat"] .hx-chat-blank .hx-chat-suggest-chip:nth-child(4){ animation-delay:0.22s !important; }
+      @keyframes hx-chip-in { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+      /* Composer: a soft lift when focused */
+      body[data-active="chat"] .hx-chat-input-row {
+        transition: border-color 0.2s ease, box-shadow 0.25s ease, transform 0.2s cubic-bezier(0.16,1,0.3,1) !important;
+      }
+      body[data-active="chat"] .hx-chat-input-row:focus-within { transform: translateY(-1px) !important; }
+    }
+    @media (max-width: 720px) and (prefers-reduced-motion: reduce) {
+      body[data-active="chat"] .hx-chat-blank .hx-chat-suggest-chip { animation: none !important; }
+      body[data-active="chat"] .hx-chat-suggest-chip:active,
+      body[data-active="chat"] .hx-chat-send:active:not(:disabled),
+      body[data-active="chat"] .hx-cc-model-pick:active,
+      body[data-active="chat"] .hx-chat-input-row:focus-within,
+      .hx-mobile-menu-btn:active { transform: none !important; }
+    }
   </style>
 </head>
 <body data-active="chat">
