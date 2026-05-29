@@ -26530,6 +26530,16 @@
     html[data-theme="dark"]  body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model].is-active .hx-cc-opt-glyph { background: rgba(255,255,255,0.06) !important; }
     html[data-theme="light"] body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model].is-active .hx-cc-opt-glyph svg { color: rgba(26,23,20,0.6) !important; }
     html[data-theme="dark"]  body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model].is-active .hx-cc-opt-glyph svg { color: rgba(240,238,232,0.62) !important; }
+
+    /* V222b — fix white-on-light text left over from the dark menu + broken check */
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt.is-active .hx-cc-opt-name { color: #1a1714 !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-effort-opt { color: rgba(26,23,20,0.58) !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-effort-opt.is-active { color: #1a1714 !important; }
+    /* hide the broken 0×0 check — the active-row highlight is the indicator */
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt .hx-cc-check { display: none !important; }
+    /* clearer selected row */
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model].is-active { background: rgba(20,18,15,0.07) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model].is-active { background: rgba(255,255,255,0.08) !important; }
   </style>
 </head>
 <body data-active="chat">
