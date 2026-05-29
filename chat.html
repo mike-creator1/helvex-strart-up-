@@ -25313,6 +25313,52 @@
         line-height: 1.7 !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V119 — RESTRAINED PREMIUM PASS (from screenshots)
+       (1) Kill the gold focus glow on the input — neutral focus only.
+       (2) Dial the mustard/gold back so it reads premium, not childish:
+           neutral quick-action icons.
+       (3) Clean, premium message action buttons (copy/like/share…).
+       (4) Sharper markdown hierarchy (headings + bold).
+       ═══════════════════════════════════════════════════════════════════ */
+
+    /* (1) NEUTRAL input focus — no gold ring/border, ever */
+    body[data-active="chat"] .hx-chat-input-row:focus-within {
+      border-color: rgba(15,14,12,0.18) !important;
+      box-shadow: 0 1px 2px rgba(15,14,12,0.04), 0 10px 28px -16px rgba(15,14,12,0.12) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-row:focus-within {
+      border-color: rgba(255,255,255,0.22) !important;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.5), 0 12px 30px -16px rgba(0,0,0,0.7) !important;
+    }
+    body[data-active="chat"] .hx-chat-textarea:focus,
+    body[data-active="chat"] .hx-chat-textarea:focus-visible { outline: none !important; box-shadow: none !important; }
+
+    /* (2) Restrained accent — neutral quick-action icons (gold read as mustard) */
+    body[data-active="chat"] .hx-conductor-chip svg { color: var(--hx-text-dim, #8a8475) !important; }
+    body[data-active="chat"] .hx-conductor-chip:hover svg { color: inherit !important; }
+
+    /* (3) Premium message action buttons — clean, borderless, tactile */
+    body[data-active="chat"] .hx-msg-act {
+      border: none !important;
+      background: transparent !important;
+      width: 30px !important; height: 30px !important;
+      border-radius: 8px !important;
+      transition: background .15s ease, color .15s ease, transform .12s ease !important;
+    }
+    body[data-active="chat"] .hx-msg-act svg { width: 15px !important; height: 15px !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-act { color: rgba(15,14,12,0.42) !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-act:hover { background: rgba(15,14,12,0.06) !important; color: rgba(15,14,12,0.9) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-act { color: rgba(255,255,255,0.5) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-act:hover { background: rgba(255,255,255,0.09) !important; color: #f0eee8 !important; }
+    body[data-active="chat"] .hx-msg-act:active { transform: scale(.9) !important; }
+
+    /* (4) Sharper markdown hierarchy */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content h1.hx-md-h { font-size: 21px !important; font-weight: 650 !important; letter-spacing: -0.02em !important; margin: 26px 0 10px !important; }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content h2.hx-md-h { font-size: 18px !important; font-weight: 640 !important; letter-spacing: -0.014em !important; margin: 24px 0 8px !important; }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content h3.hx-md-h { font-size: 15.5px !important; font-weight: 640 !important; margin: 20px 0 6px !important; }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content strong { font-weight: 640 !important; }
   </style>
 </head>
 <body data-active="chat">
