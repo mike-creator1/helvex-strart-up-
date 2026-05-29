@@ -25286,6 +25286,33 @@
       margin-left: 0 !important;
       margin-right: auto !important;
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V118 — CLAUDE-STYLE READING COLUMN (desktop/tablet >=721px)
+       Messages ran the full pane width and touched the right edge — no
+       centered column. Center a comfortable max-width reading column (like
+       Claude / ChatGPT / Perplexity) with real gutters, align the composer
+       to the same column, and open the line-height for readability.
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (min-width: 721px) {
+      body[data-active="chat"] .hx-chat-thread {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+      }
+      body[data-active="chat"] .hx-chat-thread .hx-msg {
+        max-width: 768px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+      body[data-active="chat"] .hx-chat-compose-inner {
+        max-width: 768px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+      body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content {
+        line-height: 1.7 !important;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
