@@ -26319,6 +26319,30 @@
     html[data-theme="dark"]  body[data-active="chat"] .hx-chat-blank h2 { color: #f4f2ec !important; }
     html body[data-active="chat"] .hx-chat-blank p { animation: hx-welcome-in 0.72s cubic-bezier(.2,.7,.2,1) both !important; animation-delay: 0.2s !important; }
     html body[data-active="chat"] .hx-chat-suggest { animation: hx-welcome-in 0.74s cubic-bezier(.2,.7,.2,1) both !important; animation-delay: 0.28s !important; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       V215 — ANSWER POLISH · fix broken <hr> dots + premium list markers
+       (verified on the live structure: hr was 2px wide → stray dots;
+        list bullets were a faint default disc)
+       ════════════════════════════════════════════════════════════════════ */
+    /* premium section rule (kills the tiny 2px "dot") */
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content hr {
+      width: 100% !important; height: 1px !important; border: 0 !important; padding: 0 !important;
+      margin: 1.7em 0 !important; background: transparent !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content hr { background: linear-gradient(90deg, transparent 0%, rgba(20,18,15,0.11) 22%, rgba(20,18,15,0.11) 78%, transparent 100%) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content hr { background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 22%, rgba(255,255,255,0.12) 78%, transparent 100%) !important; }
+
+    /* premium unordered-list markers — refined gold dot */
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content ul { list-style: none !important; padding-left: 1.35em !important; }
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content ul > li { position: relative !important; padding-left: 0.5em !important; }
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content ul > li::before {
+      content: '' !important; position: absolute !important; left: -0.85em !important; top: 0.66em !important;
+      width: 5px !important; height: 5px !important; border-radius: 50% !important;
+      background: var(--hx-accent, #C9A227) !important; opacity: 0.9 !important;
+    }
+    /* premium ordered-list numbers — gold, medium weight */
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content ol > li::marker { color: var(--hx-accent, #C9A227) !important; font-weight: 600 !important; }
   </style>
 </head>
 <body data-active="chat">
