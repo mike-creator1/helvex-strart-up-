@@ -26741,6 +26741,33 @@
         padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px)) !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V234 — DESKTOP: tighter turn rhythm + lower composer toolbar
+       ───────────────────────────────────────────────────────────────────
+       Two desktop asks. (1) The gap between turns was cavernous — a 56px
+       (≥1280px: 64px) flex gap plus an 80/96px top pad made ~88px of empty
+       space sit between an answer and the next question. (2) The composer
+       toolbar floated ~34px above the viewport bottom (mostly the 20px
+       compose padding), leaving dead space beneath the buttons. Halve the
+       turn spacing and drop the toolbar toward the bottom edge for a calmer,
+       denser column. Scoped ≥721px so the mobile rhythm is untouched.
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (min-width: 721px) {
+      html body[data-active="chat"] #hx-c-thread .hx-chat-thread-inner {
+        gap: 30px !important;
+        padding-top: 44px !important;
+        padding-bottom: 24px !important;
+      }
+      /* keep the section hairline centred inside the smaller turn gap */
+      html body[data-active="chat"] #hx-c-thread .hx-chat-thread-inner > .hx-msg.is-user:not(:first-child)::after {
+        top: -18px !important;
+      }
+      /* drop the composer toolbar closer to the bottom edge */
+      html body[data-active="chat"] .hx-chat-compose {
+        padding-bottom: 10px !important;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
