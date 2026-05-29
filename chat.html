@@ -25253,6 +25253,39 @@
       body[data-active="chat"] #hx-c-send:not(:disabled):hover { transform: translateY(-1px) !important; filter: brightness(1.05) !important; }
       body[data-active="chat"] #hx-c-send:not(:disabled):active { transform: scale(.92) !important; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V117 — USER MESSAGES LEFT-ALIGNED (fix: were floating mid-screen)
+       .hx-msg.is-user used justify-content:flex-end with a wide body, so a
+       short message's bubble sat at that block's left edge — mid-screen,
+       not at the gutter. Align the whole user turn (the "YOU ASKED" label
+       + the bubble) to the LEFT, matching the assistant. Covers both flex
+       row and column layouts.
+       ═══════════════════════════════════════════════════════════════════ */
+    body[data-active="chat"] .hx-msg.is-user {
+      align-items: flex-start !important;
+      justify-content: flex-start !important;
+      text-align: left !important;
+    }
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-body {
+      width: auto !important;
+      max-width: min(680px, 92%) !important;
+      margin-left: 0 !important;
+      margin-right: auto !important;
+      align-self: flex-start !important;
+      align-items: flex-start !important;
+      text-align: left !important;
+    }
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-content {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-meta {
+      text-align: left !important;
+      align-self: flex-start !important;
+      margin-left: 0 !important;
+      margin-right: auto !important;
+    }
   </style>
 </head>
 <body data-active="chat">
