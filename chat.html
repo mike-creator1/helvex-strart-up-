@@ -25929,6 +25929,88 @@
     html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-effort-opt { height: 28px !important; font-size: 11.5px !important; }
     html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-effort-opt.is-active { background: rgba(255,255,255,0.18) !important; color: #ffffff !important; }
     html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-fast-row { padding: 7px 12px 10px !important; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       V203 — SELECTOR: more premium, more compact, stronger animation
+       Depth (gradients + inner highlights), refined active glow, tighter
+       footprint, and a spring-in open with a clear card stagger.
+       ════════════════════════════════════════════════════════════════════ */
+
+    /* stronger, redefined open animation (same names → these win) */
+    @keyframes hx-menu-pop-strong {
+      0%   { opacity: 0; transform: translateY(18px) scale(0.88); filter: blur(10px); }
+      52%  { opacity: 1; filter: blur(0); }
+      72%  { transform: translateY(-3px) scale(1.018); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+    @keyframes hx-card-rise {
+      0%   { opacity: 0; transform: translateY(18px) scale(0.95); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* premium surface + animation */
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu {
+      min-width: 296px !important; max-width: min(322px, calc(100vw - 24px)) !important;
+      padding: 7px !important;
+      background: linear-gradient(180deg, #19191e 0%, #121215 100%) !important;
+      border: 1px solid rgba(255,255,255,0.10) !important;
+      border-radius: 20px !important;
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.6),
+        0 30px 72px -20px rgba(0,0,0,0.75),
+        0 10px 26px -14px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.06) !important;
+      animation: hx-menu-pop-strong 0.46s cubic-bezier(0.34,1.4,0.5,1) both !important;
+    }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-menu-section { padding: 10px 12px 5px !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-menu-section:first-child { padding-top: 6px !important; }
+
+    /* premium + compact CARD */
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt {
+      min-height: 0 !important; padding: 10px 12px 11px !important; margin: 0 1px 6px !important;
+      border-radius: 15px !important;
+      border: 1px solid rgba(255,255,255,0.08) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.045) !important;
+      animation: hx-card-rise 0.52s cubic-bezier(0.34,1.3,0.5,1) both !important;
+    }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model="ether"]      { animation-delay: 0.07s !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model="nexus"]      { animation-delay: 0.14s !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model="prometheus"] { animation-delay: 0.21s !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt:hover { transform: translateY(-1.5px) !important; border-color: rgba(255,255,255,0.15) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 14px 30px -14px rgba(0,0,0,0.65) !important; }
+
+    /* premium glyph tile */
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-glyph {
+      top: 11px !important; left: 11px !important; width: 34px !important; height: 34px !important; border-radius: 10px !important;
+      background: linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.03) 100%) !important;
+      border: 1px solid rgba(255,255,255,0.10) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08) !important;
+    }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-glyph svg { width: 18px !important; height: 18px !important; }
+
+    /* refined badge — smaller, crisper */
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-badge {
+      top: 11px !important; right: 11px !important; padding: 3px 8px !important; gap: 4px !important;
+      font-size: 8px !important; letter-spacing: 0.12em !important;
+    }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-badge::before { width: 4px !important; height: 4px !important; }
+
+    /* tight identity group */
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-head { margin-left: 46px !important; gap: 1px !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-eyebrow { font-size: 9px !important; letter-spacing: 0.14em !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-name,
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt.is-active .hx-cc-opt-name { font-size: 18px !important; line-height: 1.08 !important; letter-spacing: -0.02em !important; margin: 1px 0 !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-path { font-size: 9.5px !important; }
+
+    /* premium active glow (per model) */
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model="ether"].is-active { border-color: rgba(227,185,71,0.55) !important; box-shadow: 0 0 0 1px rgba(227,185,71,0.5), 0 0 26px -4px rgba(227,185,71,0.4), inset 0 1px 0 rgba(255,255,255,0.06) !important; background: radial-gradient(140% 100% at 100% 0%, rgba(227,185,71,0.18), transparent 58%), linear-gradient(180deg, #211d16 0%, #1a1812 100%) !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model="nexus"].is-active { border-color: rgba(229,72,77,0.55) !important; box-shadow: 0 0 0 1px rgba(229,72,77,0.5), 0 0 26px -4px rgba(229,72,77,0.42), inset 0 1px 0 rgba(255,255,255,0.06) !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model="prometheus"].is-active { border-color: rgba(231,227,217,0.42) !important; box-shadow: 0 0 0 1px rgba(231,227,217,0.32), 0 0 24px -6px rgba(231,227,217,0.25), inset 0 1px 0 rgba(255,255,255,0.06) !important; }
+
+    /* compact effort (robust height) + fast */
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-effort-seg { margin: 0 8px 6px !important; padding: 3px !important; }
+    html body[data-active="chat"] .hx-cc-effort-seg.hx-cc-effort-seg .hx-cc-effort-opt,
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-effort-opt { height: 28px !important; font-size: 11.5px !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-fast-row { padding: 6px 12px 9px !important; }
   </style>
 </head>
 <body data-active="chat">
