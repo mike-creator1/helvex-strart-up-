@@ -29533,18 +29533,21 @@
           var idleTimer   = null;
           var aborted     = false;
           function armHeadTimeout() {
+            // 120s for the first byte — web_search + model thinking can take ≥60s.
             headTimer = setTimeout(function () {
               aborted = true;
               try { ac.abort(); } catch (e) {}
-            }, 60000);
+            }, 120000);
           }
           function clearHeadTimeout() { if (headTimer) { clearTimeout(headTimer); headTimer = null; } }
           function armIdleWatchdog() {
+            // 90s without a delta — during web_search the model emits no text
+            // until the search finishes, so 30s was too tight.
             if (idleTimer) clearTimeout(idleTimer);
             idleTimer = setTimeout(function () {
               aborted = true;
               try { ac.abort(); } catch (e) {}
-            }, 30000);
+            }, 90000);
           }
           function clearIdleWatchdog() { if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; } }
 
