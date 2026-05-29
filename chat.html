@@ -26149,6 +26149,91 @@
       animation: hx-stop-pulse 1.5s ease-out infinite !important;
     }
     @keyframes hx-stop-pulse { 0% { opacity: 0.45; transform: scale(0.8); } 100% { opacity: 0; transform: scale(1.35); } }
+
+    /* ════════════════════════════════════════════════════════════════════
+       V208 — MESSAGE ACTIONS · premium row, refined states, real feedback
+       ════════════════════════════════════════════════════════════════════ */
+    html body[data-active="chat"] .hx-msg-actions {
+      display: flex !important; align-items: center !important; gap: 2px !important;
+      margin-top: 10px !important; opacity: 1 !important;
+    }
+    html body[data-active="chat"] .hx-msg-act {
+      width: 32px !important; height: 32px !important; padding: 0 !important;
+      display: inline-flex !important; align-items: center !important; justify-content: center !important;
+      border: none !important; background: transparent !important; border-radius: 9px !important;
+      cursor: pointer !important; position: relative !important;
+      transition: background .15s ease, color .15s ease, transform .12s ease !important;
+    }
+    html body[data-active="chat"] .hx-msg-act svg { width: 16px !important; height: 16px !important; }
+    html body[data-active="chat"] .hx-msg-act:active { transform: scale(.9) !important; }
+    html body[data-active="chat"] .hx-msg-act:focus-visible { outline: 2px solid var(--hx-accent, #C9A227) !important; outline-offset: 2px !important; }
+    html body[data-active="chat"] .hx-msg-act .hx-msg-act-label { font-size: 12px !important; font-weight: 600 !important; letter-spacing: -0.01em !important; }
+    html body[data-active="chat"] .hx-msg-act.is-copied { width: auto !important; padding: 0 11px !important; gap: 5px !important; }
+
+    /* light */
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-act { color: rgba(26,23,20,0.48) !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-act:hover { background: rgba(20,18,15,0.06) !important; color: #1a1714 !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-act[aria-pressed="true"][data-act="like"] { color: #9A7B1A !important; background: rgba(201,162,39,0.13) !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-act[aria-pressed="true"][data-act="dislike"] { color: #1a1714 !important; background: rgba(20,18,15,0.08) !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-act.is-copied { color: #9A7B1A !important; background: rgba(201,162,39,0.13) !important; }
+
+    /* dark */
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-act { color: rgba(240,238,232,0.5) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-act:hover { background: rgba(255,255,255,0.07) !important; color: #f0eee8 !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-act[aria-pressed="true"][data-act="like"] { color: #E3B947 !important; background: rgba(227,185,71,0.15) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-act[aria-pressed="true"][data-act="dislike"] { color: #f0eee8 !important; background: rgba(255,255,255,0.1) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-msg-act.is-copied { color: #E3B947 !important; background: rgba(227,185,71,0.15) !important; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       V209 — CHATS SIDEBAR · Pin visuals (functional: pin lives in the menu)
+       ════════════════════════════════════════════════════════════════════ */
+    html body[data-active="chat"] .hx-rail-group-pinned .hx-rail-group-head span:first-child { color: var(--hx-accent, #C9A227) !important; letter-spacing: 0.05em !important; }
+    html body[data-active="chat"] .hx-chat-item-pinmark { display: inline-flex !important; align-items: center !important; justify-content: center !important; width: 16px !important; height: 16px !important; flex-shrink: 0 !important; color: var(--hx-accent, #C9A227) !important; opacity: 0.9 !important; margin-left: 2px !important; }
+    html body[data-active="chat"] .hx-chat-item-pinmark svg { width: 13px !important; height: 13px !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-chat-item.is-pinned { box-shadow: inset 2px 0 0 rgba(201,162,39,0.55) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-chat-item.is-pinned { box-shadow: inset 2px 0 0 rgba(227,185,71,0.55) !important; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       V210 — QUICK CHIPS · premium card chips with gold-accent hover lift
+       ════════════════════════════════════════════════════════════════════ */
+    html body[data-active="chat"] .hx-chat-suggest-chip {
+      border-radius: 14px !important;
+      transition: transform .16s cubic-bezier(.2,.7,.2,1), box-shadow .16s ease, border-color .16s ease, background .16s ease, color .16s ease !important;
+    }
+    html body[data-active="chat"] .hx-chat-suggest-chip:hover { transform: translateY(-2px) !important; }
+    html body[data-active="chat"] .hx-chat-suggest-chip:active { transform: translateY(0) scale(.99) !important; }
+    /* light */
+    html[data-theme="light"] body[data-active="chat"] .hx-chat-suggest-chip {
+      background: #ffffff !important; border: 1px solid rgba(20,18,15,0.08) !important;
+      box-shadow: 0 1px 2px rgba(20,18,15,0.04) !important; color: #1a1714 !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-chat-suggest-chip:hover {
+      background: #fffdf7 !important; border-color: rgba(201,162,39,0.42) !important;
+      box-shadow: 0 8px 20px -10px rgba(20,18,15,0.16), 0 0 0 1px rgba(201,162,39,0.16) !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-chat-suggest-chip svg { color: rgba(26,23,20,0.42) !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-chat-suggest-chip:hover svg { color: #B8901E !important; }
+    /* dark */
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-suggest-chip {
+      background: rgba(255,255,255,0.035) !important; border: 1px solid rgba(255,255,255,0.09) !important;
+      box-shadow: none !important; color: #f0eee8 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-suggest-chip:hover {
+      background: rgba(255,255,255,0.06) !important; border-color: rgba(227,185,71,0.42) !important;
+      box-shadow: 0 10px 24px -12px rgba(0,0,0,0.6) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-suggest-chip svg { color: rgba(240,238,232,0.45) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-suggest-chip:hover svg { color: #E3B947 !important; }
+
+    /* V211 — message actions: win sizing + active tint (beats themed #/.row rules) */
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-actions .hx-msg-act,
+    html[data-theme="dark"]  body[data-active="chat"] .hx-msg-actions .hx-msg-act { width: 32px !important; height: 32px !important; border-radius: 10px !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-actions .hx-msg-act:hover { background: rgba(20,18,15,0.06) !important; color: #1a1714 !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-msg-actions .hx-msg-act:hover { background: rgba(255,255,255,0.07) !important; color: #f0eee8 !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-actions .hx-msg-act[aria-pressed="true"][data-act="like"] { background: rgba(201,162,39,0.14) !important; color: #9A7B1A !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-msg-actions .hx-msg-act[aria-pressed="true"][data-act="like"] { background: rgba(227,185,71,0.16) !important; color: #E3B947 !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-actions .hx-msg-act.is-copied { background: rgba(201,162,39,0.14) !important; color: #9A7B1A !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-msg-actions .hx-msg-act.is-copied { background: rgba(227,185,71,0.16) !important; color: #E3B947 !important; }
   </style>
 </head>
 <body data-active="chat">
@@ -27720,6 +27805,19 @@
           renderList();
         }
 
+        // ─── Pinned conversations (local, per-device) ─────────
+        function getPinnedIds() {
+          try { return JSON.parse(localStorage.getItem('hx-pinned') || '[]') || []; } catch (e) { return []; }
+        }
+        function isPinned(id) { return getPinnedIds().indexOf(id) !== -1; }
+        function togglePin(id) {
+          var arr = getPinnedIds();
+          var i = arr.indexOf(id);
+          if (i === -1) arr.unshift(id); else arr.splice(i, 1);
+          try { localStorage.setItem('hx-pinned', JSON.stringify(arr)); } catch (e) {}
+          renderList();
+        }
+
         function renderList() {
           var host = $('hx-c-list');
           if (!state.conversations.length) {
@@ -27760,6 +27858,10 @@
               return;
             }
           }
+          // Pinned conversations float into a dedicated group at the very top.
+          var pinnedSet = {}; getPinnedIds().forEach(function (id) { pinnedSet[id] = 1; });
+          var pinnedItems = sourceList.filter(function (c) { return pinnedSet[c.id]; });
+
           // Group conversations by recency bucket: Today / Yesterday / Last 7 days / Older
           var buckets = [
             { key: 'today',     label: 'Today',        items: [] },
@@ -27773,6 +27875,7 @@
           var startOfYday  = startOfToday - 86400000;
           var sevenDaysAgo = now - 7 * 86400000;
           sourceList.forEach(function (c) {
+            if (pinnedSet[c.id]) return;  // rendered in the Pinned group instead
             var t = new Date(c.updated_at).getTime();
             if      (t >= startOfToday) buckets[0].items.push(c);
             else if (t >= startOfYday)  buckets[1].items.push(c);
@@ -27798,6 +27901,32 @@
           }
 
           var html = '';
+          if (pinnedItems.length) {
+            html += '<div class="hx-rail-group hx-rail-group-pinned">' +
+              '<div class="hx-rail-group-head">' +
+                '<span>Pinned</span>' +
+                '<span class="hx-rail-group-count">' + pinnedItems.length + '</span>' +
+              '</div>';
+            pinnedItems.forEach(function (c) {
+              var pactive = state.conversation && state.conversation.id === c.id;
+              html += '<div class="hx-chat-item is-pinned' + (pactive ? ' is-active' : '') + '" data-id="' + escape(c.id) + '">' +
+                modelDot(c.model) +
+                '<div class="hx-chat-item-body">' +
+                  '<span class="hx-chat-item-title">' + escape(c.title || 'Untitled') + '</span>' +
+                  '<span class="hx-chat-item-meta">' +
+                    '<span>' + escape(relTime(c.updated_at)) + '</span>' +
+                    '<span class="dot" aria-hidden="true"></span>' +
+                    modelChip(c.model) +
+                  '</span>' +
+                '</div>' +
+                '<span class="hx-chat-item-pinmark" aria-hidden="true">' + svgInline('pin') + '</span>' +
+                '<button class="hx-chat-item-more" type="button" data-id="' + escape(c.id) + '" aria-label="Session options" title="Options">' +
+                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5"  r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="19" r="1.2"/></svg>' +
+                '</button>' +
+              '</div>';
+            });
+            html += '</div>';
+          }
           buckets.forEach(function (bucket) {
             if (!bucket.items.length) return;
             html += '<div class="hx-rail-group">' +
@@ -27853,6 +27982,7 @@
           menu.setAttribute('role', 'menu');
           menu.innerHTML =
             '<button class="hx-cmenu-item" data-act="open">'   + svgInline('open')   + '<span>Open</span></button>' +
+            '<button class="hx-cmenu-item" data-act="pin">'    + svgInline('pin')    + '<span>' + (isPinned(convId) ? 'Unpin' : 'Pin') + '</span><kbd>P</kbd></button>' +
             '<button class="hx-cmenu-item" data-act="rename">' + svgInline('edit')   + '<span>Rename</span><kbd>R</kbd></button>' +
             '<button class="hx-cmenu-item" data-act="copy">'   + svgInline('link')   + '<span>Copy link</span><kbd>C</kbd></button>' +
             '<div class="hx-cmenu-sep"></div>' +
@@ -27872,6 +28002,7 @@
               var act = it.getAttribute('data-act');
               closeConversationMenu();
               if (act === 'open')    openConversation(convId);
+              else if (act === 'pin')    togglePin(convId);
               else if (act === 'rename') renameConversation(convId, conv.title);
               else if (act === 'copy')   copyConversationLink(convId);
               else if (act === 'archive') archiveConversation(convId);
@@ -27903,7 +28034,8 @@
             edit:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
             link:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
             archive: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>',
-            trash:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>'
+            trash:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>',
+            pin:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8a2 2 0 0 0 .55 1.38l1.9 2.02A1 1 0 0 1 16.72 16H7.28a1 1 0 0 1-.73-1.8l1.9-2.02A2 2 0 0 0 9 10.8z"/></svg>'
           };
           return paths[name] || '';
         }
