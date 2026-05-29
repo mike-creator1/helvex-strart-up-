@@ -29184,14 +29184,19 @@
 
         // ─── Send message (SSE streaming) ────────────────────
         async function send(retryFromIdx) {
-          // PANIC RESET: if the previous turn left state.sending/streaming
-          // stuck (network drop, JS error before finally, page reload mid-
-          // stream), break out instead of swallowing the click. We treat
-          // a second click while "stuck" as the user's intent to retry.
-          if (state.sending || state.streaming) {
+          // PANIC RESET + abort: if the previous turn is still in-flight or
+          // left state stuck, abort the old fetch first so the two streams
+          // don't race (the race was causing back-to-back sends to error).
+          if (state.sending || state.streaming || state.activeAbort) {
+            try { if (state.activeAbort) state.activeAbort.abort(); } catch (e) {}
+            state.activeAbort = null;
+            state.userStopped = false;
             state.sending  = false;
             state.streaming = false;
             renderThread();
+            // Tiny breath so the aborted fetch's finally{} actually runs and
+            // clears its timers before we kick off the new turn.
+            await new Promise(function (r) { setTimeout(r, 30); });
           }
           // Stop any active voice recording so it can't keep dictating
           // into a new turn after the user has hit send.
