@@ -25083,6 +25083,71 @@
         transform: scale(0.985) !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V113 — PREMIUM MOBILE HEADER + STRUCTURE (<=720px)
+       Mobile had NO real header: the toolbar was collapsed to height:0 with
+       the title + model badge display:none, leaving a floating menu button
+       overlapping the presence pill. This rebuilds a proper premium sticky
+       header — menu · conversation title · active model — notch-aware, with
+       the redundant presence pill folded away. Real structure.
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 720px) {
+      body[data-active="chat"] #hx-c-toolbar {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        height: auto !important;
+        min-height: 52px !important;
+        /* left pad clears the floating menu button; top pad clears the notch */
+        padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px 58px !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 45 !important;
+        pointer-events: auto !important;
+        overflow: visible !important;
+      }
+      html[data-theme="dark"] body[data-active="chat"] .hx-chat-toolbar {
+        background: #0c0b0a !important;
+        border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+      }
+      html[data-theme="light"] body[data-active="chat"] .hx-chat-toolbar {
+        background: #fbfaf7 !important;
+        border-bottom: 1px solid rgba(15,14,12,0.08) !important;
+      }
+      /* Show the title + active model */
+      body[data-active="chat"] #hx-c-toolbar .hx-chat-head {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+      }
+      body[data-active="chat"] #hx-c-toolbar .hx-chat-title {
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.01em !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        min-width: 0 !important;
+      }
+      body[data-active="chat"] #hx-c-toolbar .hx-chat-model-badge {
+        display: inline-flex !important;
+        align-items: center !important;
+        flex-shrink: 0 !important;
+        font-size: 12px !important;
+        padding: 3px 9px !important;
+      }
+      /* Align the (working) floating menu button into the header */
+      .hx-mobile-menu-btn { top: calc(9px + env(safe-area-inset-top, 0px)) !important; }
+      /* Fold away the now-redundant pieces */
+      body[data-active="chat"] .hx-chat-drawer-toggle { display: none !important; }
+      body[data-active="chat"] .hx-presence { display: none !important; }
+      body[data-active="chat"] #hx-c-share-btn,
+      body[data-active="chat"] .hx-chat-head-divider,
+      body[data-active="chat"] #hx-c-more-btn { display: none !important; }
+    }
   </style>
 </head>
 <body data-active="chat">
