@@ -23840,8 +23840,8 @@
     @media (max-width: 1099px) {
       /* On smaller viewports, workspace takes full width over the chat */
       body[data-active="chat"] .hx-workspace {
-        width: 100vw !important;
-        max-width: 100vw !important;
+        width: 100% !important;
+        max-width: 100% !important;
         min-width: 0 !important;
       }
     }
@@ -24270,8 +24270,8 @@
 
       /* ── (11) WORKSPACE PANE — full screen overlay + safe close ─── */
       body[data-active="chat"] .hx-workspace {
-        width: 100vw !important;
-        max-width: 100vw !important;
+        width: 100% !important;
+        max-width: 100% !important;
         min-width: 0 !important;
         z-index: 90 !important;
       }
@@ -24288,7 +24288,7 @@
       /* ── (12) COMMAND PALETTE — full width ──────────────────────── */
       .hx-palette {
         top: 7vh !important;
-        width: calc(100vw - 20px) !important;
+        width: calc(100% - 20px) !important;
         max-height: 80vh !important;
       }
 
@@ -25147,6 +25147,29 @@
       body[data-active="chat"] #hx-c-share-btn,
       body[data-active="chat"] .hx-chat-head-divider,
       body[data-active="chat"] #hx-c-more-btn { display: none !important; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V114 — MOBILE CLIPPING / OVERFLOW FIX (iOS Safari, <=900px)
+       Off-screen drawers (global sidebar, conversations rail, workspace
+       overlay) sit off-canvas via negative left/transform. iOS Safari lets
+       those extend the scrollable width, so the page drifts right and the
+       left edge clips — the "zoomed/cropped/shifted" feel. Clip horizontal
+       overflow at the root and pin the chat shell to the viewport width.
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      html, body {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+      }
+      body[data-active="chat"] .hx-app,
+      body[data-active="chat"] .hx-main,
+      body[data-active="chat"] .hx-chat-pane,
+      body[data-active="chat"] .hx-chat-thread,
+      body[data-active="chat"] .hx-chat-compose {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+      }
     }
   </style>
 </head>
@@ -27852,6 +27875,29 @@
             renderThread();
           }
 
+          // Map raw backend error codes/messages to clean, user-facing text
+          // so things like "insufficient_credits" never surface verbatim.
+          function friendlyError(raw, status) {
+            var s = String(raw == null ? '' : raw).toLowerCase();
+            if (status === 402 || s.indexOf('insufficient_credit') !== -1 || s.indexOf('insufficient credit') !== -1 || s.indexOf('not enough credit') !== -1) {
+              return 'You don’t have enough credits to use this model.';
+            }
+            if (status === 429 || s.indexOf('rate limit') !== -1 || s.indexOf('too many requests') !== -1) {
+              return 'You’re sending messages too quickly — give it a moment and try again.';
+            }
+            if (status === 401 || status === 403 || s.indexOf('unauthorized') !== -1 || s.indexOf('not signed in') !== -1 || s.indexOf('jwt') !== -1) {
+              return 'Your session has expired. Please sign in again.';
+            }
+            if ((typeof status === 'number' && status >= 500) || s.indexOf('overloaded') !== -1 || s.indexOf('unavailable') !== -1) {
+              return 'Something went wrong on our end. Please try again in a moment.';
+            }
+            // Never surface a raw error-code token (e.g. "insufficient_credits").
+            if (!raw || /^[a-z0-9_.\-]+$/.test(String(raw).trim())) {
+              return 'Something went wrong. Please try again.';
+            }
+            return raw;
+          }
+
           // Hard guards so the spinner can NEVER hang forever:
           //   - 60s ceiling waiting for the first response byte
           //   - 30s "idle" watchdog: if no SSE delta arrives, abort
@@ -27912,8 +27958,11 @@
             if (!resp.ok) {
               var errBody = null;
               try { errBody = await resp.json(); } catch (e) { /* ignore */ }
-              var emsg = (errBody && (errBody.hint || errBody.message || errBody.error)) || ('HTTP ' + resp.status);
-              finalizeError(emsg);
+              var eb = errBody || {};
+              var rawMsg = eb.hint || eb.message
+                || (typeof eb.error === 'string' ? eb.error : (eb.error && (eb.error.message || eb.error.code)))
+                || '';
+              finalizeError(friendlyError(rawMsg, resp.status));
               return;
             }
 
@@ -27976,8 +28025,8 @@
                   }
                 } else if (evname === 'helvex_done') {
                   if (obj.trace_id) traceCell.textContent = obj.trace_id;
-                } else if (evname === 'error' && obj.error && obj.error.message) {
-                  finalizeError(obj.error.message);
+                } else if (evname === 'error' && obj.error && (obj.error.message || obj.error.code)) {
+                  finalizeError(friendlyError(obj.error.message || obj.error.code, 0));
                 }
               }
             }
