@@ -26379,6 +26379,10 @@
     /* generous, calm turn spacing */
     html body[data-active="chat"] .hx-chat-thread-inner .hx-msg.is-user { margin-top: 56px !important; }
     html body[data-active="chat"] .hx-chat-thread-inner .hx-msg.is-assistant { margin-top: 26px !important; }
+
+    /* V217 — remove the "Helix · Ready" presence pill (cleaner, ChatGPT/Claude-style) */
+    html body[data-active="chat"] #hx-c-presence,
+    html body[data-active="chat"] .hx-presence { display: none !important; }
   </style>
 </head>
 <body data-active="chat">
