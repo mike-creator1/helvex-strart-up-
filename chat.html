@@ -26650,6 +26650,36 @@
     html body[data-active="chat"] .hx-chat-thread-inner .hx-msg.is-assistant .hx-msg-content a { text-decoration: underline !important; text-underline-offset: 2px !important; text-decoration-thickness: 1px !important; }
     html[data-theme="light"] body[data-active="chat"] .hx-chat-thread-inner .hx-msg.is-assistant .hx-msg-content a { color: #1a1714 !important; text-decoration-color: rgba(20,18,15,0.4) !important; }
     html[data-theme="dark"]  body[data-active="chat"] .hx-chat-thread-inner .hx-msg.is-assistant .hx-msg-content a { color: #f0eee8 !important; text-decoration-color: rgba(240,238,232,0.42) !important; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       V229 — SOURCES panel (web-search citations at the end of an answer)
+       ════════════════════════════════════════════════════════════════════ */
+    html body[data-active="chat"] .hx-msg-sources { margin-top: 18px !important; padding-top: 14px !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-sources { border-top: 1px solid rgba(20,18,15,0.08) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-msg-sources { border-top: 1px solid rgba(255,255,255,0.08) !important; }
+    html body[data-active="chat"] .hx-msg-sources-head { display: flex !important; align-items: center !important; gap: 6px !important; margin-bottom: 10px !important; font-size: 11px !important; font-weight: 600 !important; letter-spacing: 0.07em !important; text-transform: uppercase !important; }
+    html body[data-active="chat"] .hx-msg-sources-head svg { width: 13px !important; height: 13px !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-sources-head { color: rgba(26,23,20,0.5) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-msg-sources-head { color: rgba(240,238,232,0.5) !important; }
+    html body[data-active="chat"] .hx-msg-sources-count { min-width: 17px !important; height: 16px !important; padding: 0 5px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; border-radius: 6px !important; font-size: 10px !important; letter-spacing: 0 !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-msg-sources-count { background: rgba(20,18,15,0.06) !important; color: rgba(26,23,20,0.55) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-msg-sources-count { background: rgba(255,255,255,0.08) !important; color: rgba(240,238,232,0.55) !important; }
+    html body[data-active="chat"] .hx-msg-sources-list { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)) !important; gap: 8px !important; }
+    html body[data-active="chat"] .hx-source-chip { display: flex !important; align-items: center !important; gap: 9px !important; padding: 9px 11px !important; border-radius: 11px !important; text-decoration: none !important; transition: transform .16s cubic-bezier(.2,.7,.2,1), border-color .16s ease, background .16s ease, box-shadow .16s ease !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-source-chip { background: #ffffff !important; border: 1px solid rgba(20,18,15,0.09) !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-source-chip:hover { transform: translateY(-1px) !important; border-color: rgba(20,18,15,0.16) !important; box-shadow: 0 6px 16px -8px rgba(20,18,15,0.16) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-source-chip { background: rgba(255,255,255,0.04) !important; border: 1px solid rgba(255,255,255,0.09) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-source-chip:hover { transform: translateY(-1px) !important; border-color: rgba(255,255,255,0.16) !important; background: rgba(255,255,255,0.06) !important; }
+    html body[data-active="chat"] .hx-source-num { flex-shrink: 0 !important; width: 18px !important; height: 18px !important; border-radius: 6px !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 10px !important; font-weight: 600 !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-source-num { background: rgba(20,18,15,0.06) !important; color: rgba(26,23,20,0.6) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-source-num { background: rgba(255,255,255,0.08) !important; color: rgba(240,238,232,0.6) !important; }
+    html body[data-active="chat"] .hx-source-meta { display: flex !important; flex-direction: column !important; min-width: 0 !important; gap: 1px !important; }
+    html body[data-active="chat"] .hx-source-title { font-size: 12.5px !important; font-weight: 500 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-source-title { color: #1a1714 !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-source-title { color: #f0eee8 !important; }
+    html body[data-active="chat"] .hx-source-domain { font-size: 11px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-source-domain { color: rgba(26,23,20,0.45) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-source-domain { color: rgba(240,238,232,0.45) !important; }
   </style>
 </head>
 <body data-active="chat">
@@ -28882,6 +28912,7 @@
           return html;
         }
 
+        function srcKey(c) { return (c || '').replace(/\s+/g, ' ').trim().slice(0, 140); }
         function renderMessage(m) {
           var i = state.messages.indexOf(m);
           var isAssist = m.role === 'assistant';
@@ -28968,6 +28999,26 @@
             }
           }
 
+          // Sources panel — web-search citations captured this turn
+          var sourcesHtml = '';
+          var __src = (isAssist && m.content && !m.__streaming)
+            ? (m.__sources || (state.sourcesMap && state.sourcesMap[srcKey(m.content)]))
+            : null;
+          if (__src && __src.length) {
+            sourcesHtml = '<div class="hx-msg-sources"><div class="hx-msg-sources-head">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="16.65" y2="16.65"/></svg>' +
+              '<span>Sources</span><span class="hx-msg-sources-count">' + __src.length + '</span></div>' +
+              '<div class="hx-msg-sources-list">';
+            __src.slice(0, 8).forEach(function (sc, n) {
+              var dom = sc.url; try { dom = new URL(sc.url).hostname.replace(/^www\./, ''); } catch (e) {}
+              sourcesHtml += '<a class="hx-source-chip" href="' + escape(sc.url) + '" target="_blank" rel="noopener noreferrer">' +
+                '<span class="hx-source-num">' + (n + 1) + '</span>' +
+                '<span class="hx-source-meta"><span class="hx-source-title">' + escape(sc.title || dom) + '</span>' +
+                '<span class="hx-source-domain">' + escape(dom) + '</span></span></a>';
+            });
+            sourcesHtml += '</div></div>';
+          }
+
           var classes = 'hx-msg ' + (isAssist ? 'is-assistant' : 'is-user') +
             (m.__error ? ' hx-msg-error' : '') +
             (isAssist && m.__streaming ? ' is-streaming' : '');
@@ -28976,6 +29027,7 @@
             '<div class="hx-msg-body">' +
               renderAttachmentsForMsg(atts) +
               contentHtml +
+              sourcesHtml +
               actions +
               followups +
             '</div>' +
@@ -29476,6 +29528,7 @@
           var ac          = new AbortController();
           state.activeAbort = ac;        // expose so the Stop button can abort
           state.userStopped = false;
+          var streamSources = [];        // web_search source URLs captured this turn
           var headTimer   = null;
           var idleTimer   = null;
           var aborted     = false;
@@ -29590,6 +29643,14 @@
                   } else if (cb.type === 'web_search_tool_result' || cb.type === 'code_execution_tool_result') {
                     var resultTool = cb.type === 'code_execution_tool_result' ? 'code_execution' : 'web_search';
                     appendDelta('\n\n<<HXTOOL:done:' + resultTool + '>>\n\n');
+                    // Capture the web-search source URLs for the Sources panel
+                    if (cb.type === 'web_search_tool_result' && Array.isArray(cb.content)) {
+                      cb.content.forEach(function (it) {
+                        if (it && it.url && !streamSources.some(function (x) { return x.url === it.url; })) {
+                          streamSources.push({ url: it.url, title: (it.title || '').trim() || it.url });
+                        }
+                      });
+                    }
                   }
                 } else if (evname === 'message_delta' && obj.delta && obj.delta.stop_reason) {
                   // If the model stopped because it hit max_tokens, tell the user
@@ -29607,7 +29668,16 @@
             // Stream complete — commit final state.
             if (streamId) {
               var s = state.messages.find(function (m) { return m.id === streamId; });
-              if (s) { s.content = assistantText; s.__streaming = false; }
+              if (s) {
+                s.content = assistantText; s.__streaming = false;
+                if (streamSources.length) {
+                  s.__sources = streamSources.slice();
+                  // Keep them keyed by content so they survive the realtime
+                  // dedup/replace (the canonical row has the same text).
+                  state.sourcesMap = state.sourcesMap || {};
+                  state.sourcesMap[srcKey(assistantText)] = streamSources.slice();
+                }
+              }
             } else if (assistantText) {
               // No deltas were ever observed but a final blob came through —
               // unlikely, but cover it.
