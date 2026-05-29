@@ -26438,6 +26438,37 @@
     .hx-mini-toast.is-in { opacity: 1; transform: translate(-50%, 0); }
     html[data-theme="light"] .hx-mini-toast { background: #1a1714; color: #f6f4ef; }
     html[data-theme="dark"]  .hx-mini-toast { background: #f0eee8; color: #1a1714; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       V221 — COMPOSER · strong animated focus design
+       On focus: a flowing gradient border races around the input + a soft
+       lift/shadow. Neutral tones (no gold glow). Send arrow micro-anim.
+       ════════════════════════════════════════════════════════════════════ */
+    @property --hx-cangle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+    html body[data-active="chat"] #hx-c-input-row {
+      position: relative !important;
+      transition: transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s ease, border-color .25s ease !important;
+    }
+    html body[data-active="chat"] #hx-c-input-row::before {
+      content: '' !important; position: absolute !important; inset: 0 !important;
+      border-radius: inherit !important; padding: 1.6px !important;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
+      -webkit-mask-composite: xor !important; mask-composite: exclude !important;
+      opacity: 0 !important; transition: opacity .35s ease !important; pointer-events: none !important; z-index: 2 !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] #hx-c-input-row::before { background: conic-gradient(from var(--hx-cangle), transparent 0%, rgba(20,18,15,0.55) 16%, transparent 36%, rgba(20,18,15,0.55) 66%, transparent 86%) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] #hx-c-input-row::before { background: conic-gradient(from var(--hx-cangle), transparent 0%, rgba(255,255,255,0.6) 16%, transparent 36%, rgba(255,255,255,0.6) 66%, transparent 86%) !important; }
+    html body[data-active="chat"] #hx-c-input-row:focus-within::before { opacity: 1 !important; animation: hx-input-spin 3.2s linear infinite !important; }
+    @keyframes hx-input-spin { to { --hx-cangle: 360deg; } }
+    html body[data-active="chat"] #hx-c-input-row:focus-within { transform: translateY(-1.5px) !important; }
+    html[data-theme="light"] body[data-active="chat"] #hx-c-input-row:focus-within { box-shadow: 0 10px 30px -12px rgba(20,18,15,0.22) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] #hx-c-input-row:focus-within { box-shadow: 0 12px 32px -12px rgba(0,0,0,0.6) !important; }
+    @media (prefers-reduced-motion: reduce) {
+      html body[data-active="chat"] #hx-c-input-row:focus-within::before { animation: none !important; }
+    }
+    /* send arrow micro-animation (skip while it's the Stop button) */
+    html body[data-active="chat"] #hx-c-send svg { transition: transform .16s cubic-bezier(.2,.7,.2,1) !important; }
+    html body[data-active="chat"] #hx-c-send:not([data-stop]):hover svg { transform: translateX(2px) !important; }
   </style>
 </head>
 <body data-active="chat">
