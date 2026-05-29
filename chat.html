@@ -26425,6 +26425,19 @@
     html body[data-active="chat"] #hx-cc-model-pick { background: transparent !important; border: none !important; box-shadow: none !important; }
     html[data-theme="light"] body[data-active="chat"] #hx-cc-model-pick:hover { background: rgba(20,18,15,0.055) !important; }
     html[data-theme="dark"]  body[data-active="chat"] #hx-cc-model-pick:hover { background: rgba(255,255,255,0.07) !important; }
+
+    /* V219 — mini toast: real feedback for Copy link (and future actions) */
+    .hx-mini-toast {
+      position: fixed; left: 50%; bottom: 96px; transform: translate(-50%, 10px);
+      z-index: 99999; padding: 9px 16px; border-radius: 12px;
+      font-family: 'Inter', system-ui, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: -0.01em;
+      opacity: 0; pointer-events: none;
+      transition: opacity .22s ease, transform .22s cubic-bezier(.2,.7,.2,1);
+      box-shadow: 0 10px 28px -10px rgba(20,18,15,0.4);
+    }
+    .hx-mini-toast.is-in { opacity: 1; transform: translate(-50%, 0); }
+    html[data-theme="light"] .hx-mini-toast { background: #1a1714; color: #f6f4ef; }
+    html[data-theme="dark"]  .hx-mini-toast { background: #f0eee8; color: #1a1714; }
   </style>
 </head>
 <body data-active="chat">
@@ -28240,9 +28253,21 @@
             var titleEl = $('hx-c-title'); if (titleEl) titleEl.textContent = newTitle;
           }
         }
+        function hxMiniToast(msg) {
+          var t = document.createElement('div');
+          t.className = 'hx-mini-toast';
+          t.textContent = msg;
+          document.body.appendChild(t);
+          requestAnimationFrame(function () { t.classList.add('is-in'); });
+          setTimeout(function () { t.classList.remove('is-in'); setTimeout(function () { t.remove(); }, 260); }, 1600);
+        }
         function copyConversationLink(id) {
-          var url = window.location.origin + '/chat.html?c=' + encodeURIComponent(id);
-          if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function(){});
+          var url = location.origin + location.pathname + '?c=' + encodeURIComponent(id);
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(url).then(function () { hxMiniToast('Link copied'); }).catch(function () { hxMiniToast('Could not copy link'); });
+          } else {
+            hxMiniToast('Could not copy link');
+          }
         }
         async function archiveConversation(id) {
           await sb.from('conversations').update({ archived_at: new Date().toISOString() }).eq('id', id);
@@ -31438,6 +31463,9 @@
           state.owner = u.id;
           await loadProjects();
           await Promise.all([refreshList(), refreshBalance()]);
+
+          // Deep-link: open a specific conversation from ?c=<id> (the "Copy link" action).
+          try { var __cid = new URLSearchParams(location.search).get('c'); if (__cid) openConversation(__cid); } catch (e) {}
 
           // If the user arrived here from /workbench via "Use in chat",
           // a seed payload is waiting in sessionStorage. Spin up a fresh
