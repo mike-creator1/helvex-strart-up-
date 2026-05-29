@@ -26302,6 +26302,23 @@
     html body[data-active="chat"] .hx-msg.is-user .hx-msg-content { transition: transform .2s cubic-bezier(.2,.7,.2,1), box-shadow .2s ease, border-color .2s ease !important; }
     html[data-theme="light"] body[data-active="chat"] .hx-msg.is-user .hx-msg-content:hover { transform: translateY(-1px) !important; box-shadow: 0 7px 18px -9px rgba(20,18,15,0.2), inset 0 1px 0 rgba(255,255,255,0.55) !important; border-color: rgba(201,162,39,0.3) !important; }
     html[data-theme="dark"]  body[data-active="chat"] .hx-msg.is-user .hx-msg-content:hover { transform: translateY(-1px) !important; box-shadow: 0 9px 22px -10px rgba(0,0,0,0.55) !important; border-color: rgba(227,185,71,0.3) !important; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       V214 — CINEMATIC WELCOME · staggered blur-in + bolder greeting
+       The first thing you see on a new chat — made to feel like an entrance.
+       ════════════════════════════════════════════════════════════════════ */
+    @keyframes hx-welcome-in { 0% { opacity: 0; transform: translateY(16px); filter: blur(7px); } 58% { filter: blur(0); } 100% { opacity: 1; transform: translateY(0); filter: blur(0); } }
+    html body[data-active="chat"] .hx-chat-blank-eyebrow { animation: hx-welcome-in 0.6s cubic-bezier(.2,.7,.2,1) both !important; }
+    html body[data-active="chat"] .hx-chat-blank-mark { animation: hx-welcome-in 0.7s cubic-bezier(.2,.7,.2,1) both !important; animation-delay: 0.04s !important; }
+    html body[data-active="chat"] .hx-chat-blank h2 {
+      font-size: clamp(27px, 4.2vw, 35px) !important; font-weight: 620 !important;
+      letter-spacing: -0.026em !important; line-height: 1.14 !important;
+      animation: hx-welcome-in 0.72s cubic-bezier(.2,.7,.2,1) both !important; animation-delay: 0.12s !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-chat-blank h2 { color: #1a1714 !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-chat-blank h2 { color: #f4f2ec !important; }
+    html body[data-active="chat"] .hx-chat-blank p { animation: hx-welcome-in 0.72s cubic-bezier(.2,.7,.2,1) both !important; animation-delay: 0.2s !important; }
+    html body[data-active="chat"] .hx-chat-suggest { animation: hx-welcome-in 0.74s cubic-bezier(.2,.7,.2,1) both !important; animation-delay: 0.28s !important; }
   </style>
 </head>
 <body data-active="chat">
