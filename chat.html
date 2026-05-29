@@ -26564,6 +26564,27 @@
     html body[data-active="chat"] #hx-c-send { transition: transform .16s cubic-bezier(.2,.7,.2,1), background .18s ease, box-shadow .18s ease !important; }
     html body[data-active="chat"] #hx-c-send:not([data-stop]):not(:disabled):hover { transform: scale(1.09) !important; }
     html body[data-active="chat"] #hx-c-send:not([data-stop]):active { transform: scale(.9) !important; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       V224 — STRONG composer animation. Bold, bright gold gradient border
+       races fast around the input on focus + an energy (brightness) pulse.
+       Crisp animated border (not the diffuse glow that was removed).
+       ════════════════════════════════════════════════════════════════════ */
+    html body[data-active="chat"] #hx-c-input-row::before { padding: 2.4px !important; }
+    html[data-theme="light"] body[data-active="chat"] #hx-c-input-row::before,
+    html[data-theme="dark"]  body[data-active="chat"] #hx-c-input-row::before {
+      background: conic-gradient(from var(--hx-cangle),
+        rgba(201,162,39,0) 0deg, #E3B947 40deg, #FFE7B0 74deg, #C9A227 110deg, rgba(201,162,39,0) 165deg,
+        rgba(201,162,39,0) 195deg, #E3B947 235deg, #FFE7B0 270deg, #C9A227 305deg, rgba(201,162,39,0) 360deg) !important;
+    }
+    html body[data-active="chat"] #hx-c-input-row:focus-within::before {
+      opacity: 1 !important;
+      animation: hx-input-spin 2s linear infinite, hx-input-energy 1.5s ease-in-out infinite !important;
+    }
+    @keyframes hx-input-energy { 0%, 100% { filter: brightness(1) saturate(1); } 50% { filter: brightness(1.32) saturate(1.18); } }
+    @media (prefers-reduced-motion: reduce) {
+      html body[data-active="chat"] #hx-c-input-row:focus-within::before { animation: none !important; }
+    }
   </style>
 </head>
 <body data-active="chat">
