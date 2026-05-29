@@ -25902,6 +25902,33 @@
       border: 1px solid rgba(255,255,255,0.11) !important;
       box-shadow: none !important;
     }
+
+    /* ════════════════════════════════════════════════════════════════════
+       V202 — COMPACT the selector. Tighter cards, grouped identity next to
+       the glyph, smaller name, less vertical footprint (~38% shorter).
+       ════════════════════════════════════════════════════════════════════ */
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu { max-width: min(340px, calc(100vw - 24px)) !important; padding: 7px !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-menu-section { padding: 11px 12px 6px !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-menu-section:first-child { padding-top: 7px !important; }
+
+    /* compact card */
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt { min-height: 0 !important; padding: 11px 13px 12px !important; margin: 0 1px 7px !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-glyph { top: 12px !important; left: 12px !important; width: 38px !important; height: 38px !important; border-radius: 11px !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-glyph svg { width: 19px !important; height: 19px !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-badge { top: 12px !important; right: 12px !important; padding: 3.5px 9px !important; }
+
+    /* grouped identity: eyebrow + name + path, tight, beside the glyph */
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-head { margin-left: 50px !important; min-height: 0 !important; gap: 2px !important; justify-content: center !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-eyebrow { font-size: 9.5px !important; letter-spacing: 0.13em !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-name,
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt.is-active .hx-cc-opt-name { margin-top: 0 !important; font-size: 19px !important; line-height: 1.05 !important; letter-spacing: -0.018em !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-opt-path { font-size: 10px !important; }
+
+    /* tighter effort + fast */
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-effort-seg { margin: 0 8px 7px !important; padding: 3px !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-effort-opt { height: 28px !important; font-size: 11.5px !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-effort-opt.is-active { background: rgba(255,255,255,0.18) !important; color: #ffffff !important; }
+    html body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-fast-row { padding: 7px 12px 10px !important; }
   </style>
 </head>
 <body data-active="chat">
@@ -29238,9 +29265,9 @@
               '<span class="hx-cc-opt-badge">' + (meta.badge || '') + '</span>' +
               '<span class="hx-cc-opt-head">' +
                 '<span class="hx-cc-opt-eyebrow">' + meta.tier + '</span>' +
+                '<span class="hx-cc-opt-name">' + nameTxt + '</span>' +
                 '<span class="hx-cc-opt-path">/ ' + key + ' · ' + (meta.speed || '') + '</span>' +
               '</span>' +
-              '<span class="hx-cc-opt-name">' + nameTxt + '</span>' +
               checkHTML +
               numHTML;
           });
