@@ -26540,6 +26540,30 @@
     /* clearer selected row */
     html[data-theme="light"] body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model].is-active { background: rgba(20,18,15,0.07) !important; }
     html[data-theme="dark"]  body[data-active="chat"] .hx-cc-model-menu.hx-cc-model-menu .hx-cc-model-opt[data-model].is-active { background: rgba(255,255,255,0.08) !important; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       V223 — composer focus animation, much more premium
+       Spring lift (soft overshoot) + a rich, soft layered shadow bloom;
+       the flowing accent slows to a classier pace; send button scales.
+       ════════════════════════════════════════════════════════════════════ */
+    html body[data-active="chat"] #hx-c-input-row {
+      transition: transform .34s cubic-bezier(.34,1.35,.5,1), box-shadow .34s ease, border-color .3s ease !important;
+    }
+    html body[data-active="chat"] #hx-c-input-row:focus-within { transform: translateY(-2.5px) scale(1.005) !important; }
+    html[data-theme="light"] body[data-active="chat"] #hx-c-input-row:focus-within {
+      box-shadow: 0 8px 22px -8px rgba(20,18,15,0.16), 0 20px 50px -18px rgba(20,18,15,0.2) !important;
+      border-color: rgba(20,18,15,0.14) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] #hx-c-input-row:focus-within {
+      box-shadow: 0 10px 26px -10px rgba(0,0,0,0.6), 0 22px 54px -20px rgba(0,0,0,0.66) !important;
+      border-color: rgba(255,255,255,0.16) !important;
+    }
+    /* classier, slower flowing accent */
+    html body[data-active="chat"] #hx-c-input-row:focus-within::before { animation-duration: 4.6s !important; }
+    /* premium send button micro-interactions */
+    html body[data-active="chat"] #hx-c-send { transition: transform .16s cubic-bezier(.2,.7,.2,1), background .18s ease, box-shadow .18s ease !important; }
+    html body[data-active="chat"] #hx-c-send:not([data-stop]):not(:disabled):hover { transform: scale(1.09) !important; }
+    html body[data-active="chat"] #hx-c-send:not([data-stop]):active { transform: scale(.9) !important; }
   </style>
 </head>
 <body data-active="chat">
