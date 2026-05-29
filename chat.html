@@ -25425,6 +25425,136 @@
       background: color-mix(in srgb, var(--hx-accent, #C9A227) 70%, transparent) !important;
       opacity: 1 !important;
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V121 — MODEL SELECTOR, REBUILT FROM SCRATCH
+       Borderless. Depth + whitespace + type, not boxes. Per-model identity
+       colour. Segmented effort control. Minimal flagship pill. The current
+       settings-panel direction is fully overridden below.
+       ═══════════════════════════════════════════════════════════════════ */
+
+    /* ── Panel: deep, borderless, generous ─────────────────────────── */
+    body[data-active="chat"] .hx-cc-model-menu {
+      min-width: 328px !important;
+      padding: 8px !important;
+      border: none !important;
+      border-radius: 20px !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-model-menu {
+      background: #ffffff !important;
+      box-shadow: 0 0 0 1px rgba(15,14,12,0.05), 0 24px 60px -16px rgba(15,14,12,0.30), 0 6px 18px -8px rgba(15,14,12,0.14) !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-menu {
+      background: #17110d !important;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 26px 64px -16px rgba(0,0,0,0.78), 0 8px 22px -10px rgba(0,0,0,0.6) !important;
+    }
+
+    /* ── Section labels: quiet, spaced ─────────────────────────────── */
+    body[data-active="chat"] .hx-cc-menu-section {
+      border: none !important; background: none !important;
+      padding: 15px 10px 7px !important;
+      font-size: 10.5px !important; font-weight: 600 !important;
+      letter-spacing: 0.09em !important; text-transform: uppercase !important;
+    }
+    body[data-active="chat"] .hx-cc-menu-section:first-child { padding-top: 7px !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-menu-section { color: rgba(15,14,12,0.40) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-menu-section { color: rgba(255,255,255,0.40) !important; }
+    body[data-active="chat"] .hx-cc-menu-kbd { opacity: 0.55 !important; }
+
+    /* ── Model option → elegant borderless card ────────────────────── */
+    body[data-active="chat"] .hx-cc-model-opt {
+      display: flex !important; align-items: center !important; gap: 13px !important;
+      width: 100% !important; padding: 11px 12px !important;
+      border: none !important; background: transparent !important;
+      border-radius: 14px !important; text-align: left !important;
+      transition: background .18s ease, transform .12s cubic-bezier(.2,.8,.2,1) !important;
+    }
+    body[data-active="chat"] .hx-cc-opt-glyph {
+      width: 38px !important; height: 38px !important; flex-shrink: 0 !important;
+      display: grid !important; place-items: center !important; border-radius: 11px !important;
+      transition: background .18s ease, color .18s ease !important;
+    }
+    body[data-active="chat"] .hx-cc-opt-glyph svg { width: 20px !important; height: 20px !important; }
+    body[data-active="chat"] .hx-cc-opt-body { flex: 1 1 auto !important; min-width: 0 !important; display: block !important; }
+    body[data-active="chat"] .hx-cc-opt-name { font-size: 14.5px !important; font-weight: 640 !important; letter-spacing: -0.008em !important; display: block !important; }
+    body[data-active="chat"] .hx-cc-opt-sub { font-size: 12.25px !important; line-height: 1.35 !important; margin-top: 2px !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-opt-sub { color: rgba(15,14,12,0.48) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-opt-sub { color: rgba(255,255,255,0.48) !important; }
+    body[data-active="chat"] .hx-cc-model-opt .hx-cc-check { display: none !important; }
+    body[data-active="chat"] .hx-cc-num {
+      flex-shrink: 0 !important; font-size: 11px !important; font-weight: 600 !important;
+      width: 20px !important; height: 20px !important; display: grid !important; place-items: center !important;
+      border-radius: 6px !important; border: none !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-num { background: rgba(15,14,12,0.05) !important; color: rgba(15,14,12,0.38) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-num { background: rgba(255,255,255,0.06) !important; color: rgba(255,255,255,0.38) !important; }
+    /* neutral glyph by default, per-model identity colour */
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-opt-glyph { background: rgba(15,14,12,0.05) !important; color: rgba(15,14,12,0.66) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-opt-glyph { background: rgba(255,255,255,0.07) !important; color: rgba(255,255,255,0.66) !important; }
+    body[data-active="chat"] .hx-cc-model-opt[data-model="ether"].is-active .hx-cc-opt-glyph { color: #C9A227 !important; background: color-mix(in srgb, #C9A227 18%, transparent) !important; }
+    body[data-active="chat"] .hx-cc-model-opt[data-model="nexus"].is-active .hx-cc-opt-glyph { color: #d04a14 !important; background: color-mix(in srgb, #d04a14 16%, transparent) !important; }
+    body[data-active="chat"] .hx-cc-model-opt[data-model="prometheus"].is-active .hx-cc-opt-glyph { color: #c2410c !important; background: color-mix(in srgb, #c2410c 16%, transparent) !important; }
+    /* hover + tap */
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-model-opt:hover { background: rgba(15,14,12,0.04) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-opt:hover { background: rgba(255,255,255,0.05) !important; }
+    body[data-active="chat"] .hx-cc-model-opt:active { transform: scale(.99) !important; }
+    /* ACTIVE — special via depth (neutral elevated fill + soft ring), not a colour flood */
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-model-opt.is-active { background: rgba(15,14,12,0.055) !important; box-shadow: inset 0 0 0 1px rgba(15,14,12,0.08) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-opt.is-active { background: rgba(255,255,255,0.07) !important; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.09) !important; }
+    body[data-active="chat"] .hx-cc-model-opt.is-active .hx-cc-num { background: transparent !important; }
+
+    /* ── EFFORT → segmented control ────────────────────────────────── */
+    body[data-active="chat"] .hx-cc-effort-seg {
+      display: flex !important; gap: 3px !important; margin: 0 8px 4px !important;
+      padding: 4px !important; border-radius: 13px !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-effort-seg { background: rgba(15,14,12,0.055) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-effort-seg { background: rgba(255,255,255,0.06) !important; }
+    body[data-active="chat"] .hx-cc-effort-opt {
+      flex: 1 1 0 !important; min-width: 0 !important;
+      display: flex !important; flex-direction: column !important; align-items: center !important; gap: 5px !important;
+      padding: 7px 2px !important; border: none !important; background: transparent !important;
+      border-radius: 9px !important;
+      transition: background .18s ease, box-shadow .18s ease, transform .12s ease !important;
+    }
+    body[data-active="chat"] .hx-cc-effort-opt > span:first-child { font-size: 11px !important; font-weight: 600 !important; letter-spacing: -0.01em !important; }
+    body[data-active="chat"] .hx-cc-effort-opt .hx-cc-check { display: none !important; }
+    body[data-active="chat"] .hx-cc-effort-opt:active { transform: scale(.95) !important; }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-effort-opt.is-active { background: #ffffff !important; box-shadow: 0 1px 3px rgba(15,14,12,0.13), 0 1px 1px rgba(15,14,12,0.06) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-effort-opt.is-active { background: #2c2823 !important; box-shadow: 0 1px 3px rgba(0,0,0,0.55) !important; }
+
+    /* ── Fast-mode row: borderless ─────────────────────────────────── */
+    body[data-active="chat"] .hx-cc-fast-row { border: none !important; padding: 4px 12px 8px !important; }
+
+    /* ── BOTTOM PILL — rebuilt minimal/integrated (chosen concept) ──── */
+    body[data-active="chat"] .hx-cc-model-pick {
+      border: none !important; background: transparent !important; box-shadow: none !important;
+      height: 34px !important; padding: 0 9px !important; border-radius: 10px !important; gap: 8px !important;
+      transition: background .16s ease, transform .12s ease !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-model-pick:hover { background: rgba(15,14,12,0.05) !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-cc-model-pick:hover { background: rgba(255,255,255,0.06) !important; }
+    body[data-active="chat"] .hx-cc-model-pick:active { transform: scale(.97) !important; }
+
+    /* V121b — win the specificity wars (theme-scoped to beat existing rules) */
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-model-menu,
+    html[data-theme="dark"]  body[data-active="chat"] .hx-cc-model-menu {
+      border: none !important; border-radius: 20px !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-model-opt,
+    html[data-theme="dark"]  body[data-active="chat"] .hx-cc-model-opt {
+      display: flex !important; align-items: center !important; gap: 13px !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-opt-glyph,
+    html[data-theme="dark"]  body[data-active="chat"] .hx-cc-opt-glyph {
+      width: 38px !important; height: 38px !important; border-radius: 11px !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-model-pick,
+    html[data-theme="dark"]  body[data-active="chat"] .hx-cc-model-pick {
+      border: none !important; background: transparent !important; box-shadow: none !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-cc-model-pick:hover { background: rgba(15,14,12,0.05) !important; }
+    html[data-theme="dark"]  body[data-active="chat"] .hx-cc-model-pick:hover { background: rgba(255,255,255,0.06) !important; }
   </style>
 </head>
 <body data-active="chat">
@@ -25855,13 +25985,14 @@
                       <span>Effort</span>
                       <span class="hx-cc-menu-kbd"><span>⇧</span><span>Ctrl</span><span>E</span></span>
                     </div>
+                    <div class="hx-cc-effort-seg">
                     <button class="hx-cc-effort-opt" data-effort="low" role="menuitemradio">
                       <span>Low</span>
                       <span class="hx-cc-effort-bars" aria-hidden="true" data-level="1"><i></i><i></i><i></i><i></i><i></i></span>
                       <svg class="hx-cc-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     </button>
                     <button class="hx-cc-effort-opt" data-effort="medium" role="menuitemradio">
-                      <span>Medium</span>
+                      <span>Med</span>
                       <span class="hx-cc-effort-bars" aria-hidden="true" data-level="2"><i></i><i></i><i></i><i></i><i></i></span>
                       <svg class="hx-cc-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     </button>
@@ -25871,7 +26002,7 @@
                       <svg class="hx-cc-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     </button>
                     <button class="hx-cc-effort-opt" data-effort="extra" role="menuitemradio">
-                      <span>Extra high</span>
+                      <span>Extra</span>
                       <span class="hx-cc-effort-bars" aria-hidden="true" data-level="4"><i></i><i></i><i></i><i></i><i></i></span>
                       <svg class="hx-cc-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     </button>
@@ -25880,6 +26011,7 @@
                       <span class="hx-cc-effort-bars" aria-hidden="true" data-level="5"><i></i><i></i><i></i><i></i><i></i></span>
                       <svg class="hx-cc-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     </button>
+                    </div>
                     <!-- Fast mode -->
                     <div class="hx-cc-menu-section hx-cc-menu-section-top">
                       <span>Fast mode</span>
