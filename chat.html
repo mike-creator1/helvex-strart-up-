@@ -27667,7 +27667,7 @@
           var ins = await sb.from('conversations').insert({
             owner_id: u.id, project_id: proj, model: model, title: 'New chat'
           }).select().maybeSingle();
-          if (ins.error) { if (window.cxToast) window.cxToast(ins.error.message, 'error'); return; }
+          if (ins.error) { if (window.cxToast) window.cxToast('Couldn’t start a new chat — please try again.', 'error'); return; }
           await sb.rpc('log_event', { p_kind: 'chat.conversation_created', p_payload: { id: ins.data.id, model: model } });
           await refreshList();
           await openConversation(ins.data.id);
@@ -30022,7 +30022,7 @@
                 var up = results[0];
                 if (up && up.error) {
                   it.status = 'error';
-                  it.error  = up.error.message || 'upload failed';
+                  it.error  = 'Couldn’t upload this file — please try again.';
                 } else {
                   it.storage_path = path;
                   it.status = 'ready';
