@@ -26119,6 +26119,36 @@
       color: #F0833A !important;
       filter: drop-shadow(0 -3px 12px color-mix(in srgb, #F0833A 55%, transparent)) drop-shadow(0 -6px 26px color-mix(in srgb, #DC2626 38%, transparent)) drop-shadow(0 0 36px color-mix(in srgb, #FFD27A 26%, transparent)) !important;
     }
+
+    /* ════════════════════════════════════════════════════════════════════
+       V207 — COMPOSER · Stop-generation button (functional)
+       While a response streams the send arrow morphs into a Stop control:
+       a solid rounded button with a square + a soft pulsing ring.
+       ════════════════════════════════════════════════════════════════════ */
+    html body[data-active="chat"] #hx-c-send[data-stop="1"] {
+      position: relative !important;
+      display: inline-flex !important; align-items: center !important; justify-content: center !important;
+      opacity: 1 !important; cursor: pointer !important; transform: none !important;
+    }
+    html[data-theme="light"] body[data-active="chat"] #hx-c-send[data-stop="1"] {
+      background: #1a1714 !important; color: #ffffff !important; border: 1px solid #1a1714 !important;
+    }
+    html[data-theme="dark"] body[data-active="chat"] #hx-c-send[data-stop="1"] {
+      background: #f0eee8 !important; color: #1a1714 !important; border: 1px solid #f0eee8 !important;
+    }
+    body[data-active="chat"] #hx-c-send[data-stop="1"] svg { display: none !important; }
+    body[data-active="chat"] #hx-c-send[data-stop="1"]::before {
+      content: '' !important; display: block !important;
+      width: 10px !important; height: 10px !important; border-radius: 2.5px !important;
+      background: currentColor !important;
+    }
+    body[data-active="chat"] #hx-c-send[data-stop="1"]::after {
+      content: '' !important; position: absolute !important; inset: -3px !important;
+      border-radius: 13px !important; border: 1.5px solid currentColor !important;
+      opacity: 0 !important; pointer-events: none !important;
+      animation: hx-stop-pulse 1.5s ease-out infinite !important;
+    }
+    @keyframes hx-stop-pulse { 0% { opacity: 0.45; transform: scale(0.8); } 100% { opacity: 0; transform: scale(1.35); } }
   </style>
 </head>
 <body data-active="chat">
@@ -28856,6 +28886,8 @@
           //   - 30s "idle" watchdog: if no SSE delta arrives, abort
           //   - finally{} block guarantees state.sending/streaming reset
           var ac          = new AbortController();
+          state.activeAbort = ac;        // expose so the Stop button can abort
+          state.userStopped = false;
           var headTimer   = null;
           var idleTimer   = null;
           var aborted     = false;
@@ -29012,6 +29044,12 @@
             // render once afterwards so the action buttons attach.
             setTimeout(function () { renderThread(); refreshBalance(); refreshList(); }, 350);
           } catch (err) {
+            if (state.userStopped) {
+              // User pressed Stop — keep whatever streamed so far, no error.
+              if (streamId) { var __su = state.messages.find(function (m) { return m.id === streamId; }); if (__su) { __su.content = assistantText || __su.content || '_Stopped._'; __su.__streaming = false; } }
+              try { flushStreamReveal(); } catch (e) {}
+              state.streaming = false; state.sending = false;
+            } else {
             // Friendly error per failure class — never leave the user staring
             // at an indefinite "thinking" indicator.
             var msg;
@@ -29025,16 +29063,19 @@
               msg = (err && err.message) || 'Send failed.';
             }
             finalizeError(msg);
+            }
           } finally {
             // Guarantee: spinner can never outlive this turn, no matter
             // what threw above (auth, fetch, stream, json parse).
             clearHeadTimeout();
             clearIdleWatchdog();
+            state.activeAbort = null;
             if (state.sending || state.streaming) {
               state.sending  = false;
               state.streaming = false;
               renderThread();
             }
+            state.userStopped = false;
             refreshSendDisabled();
           }
         }
@@ -29292,7 +29333,27 @@
           var voiceBusy =
             (typeof voiceState !== 'undefined') &&
             (voiceState === 'recording' || voiceState === 'starting' || voiceState === 'transcribing');
-          sendBtn.disabled = (!hasText && !hasReady) || hasUploading || state.sending || state.streaming || voiceBusy;
+          var hxBusy = state.sending || state.streaming;
+          if (hxBusy) {
+            // Morph send → Stop while a response is in flight. Colours set
+            // inline-!important so they beat the high-specificity send rules.
+            sendBtn.disabled = false;
+            sendBtn.setAttribute('data-stop', '1');
+            sendBtn.setAttribute('aria-label', 'Stop generating');
+            var hxDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            sendBtn.style.setProperty('background', hxDark ? '#f0eee8' : '#1a1714', 'important');
+            sendBtn.style.setProperty('border-color', hxDark ? '#f0eee8' : '#1a1714', 'important');
+            sendBtn.style.setProperty('color', hxDark ? '#1a1714' : '#ffffff', 'important');
+            sendBtn.style.setProperty('opacity', '1', 'important');
+          } else {
+            sendBtn.removeAttribute('data-stop');
+            sendBtn.setAttribute('aria-label', 'Send message');
+            sendBtn.style.removeProperty('background');
+            sendBtn.style.removeProperty('border-color');
+            sendBtn.style.removeProperty('color');
+            sendBtn.style.removeProperty('opacity');
+            sendBtn.disabled = (!hasText && !hasReady) || hasUploading || voiceBusy;
+          }
           // V70 — keep presence + conductor in sync with every state change
           try { updatePresence(); } catch (e) {}
           try { updateConductor(); } catch (e) {}
@@ -31028,13 +31089,22 @@
           refreshSendDisabled();
           autoSize(inputEl);
         });
+        function stopGeneration() {
+          state.userStopped = true;
+          try { if (state.activeAbort) state.activeAbort.abort(); } catch (e) {}
+          try { refreshSendDisabled(); } catch (e) {}
+        }
         inputEl.addEventListener('keydown', function (e) {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
+            if (state.sending || state.streaming) return;  // don't double-send while busy
             send();
           }
         });
-        sendBtn.addEventListener('click', function () { send(); });
+        sendBtn.addEventListener('click', function () {
+          if (sendBtn.getAttribute('data-stop') === '1') { stopGeneration(); return; }
+          send();
+        });
 
         // ─── Boot ────────────────────────────────────────────
         // Order matters: loadProjects() resolves which project is active
