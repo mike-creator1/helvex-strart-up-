@@ -25171,6 +25171,33 @@
         overflow-x: hidden !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V115 — PERFECT MOBILE SPACING (<=720px)
+       One consistent 16px page gutter across header / messages / composer /
+       empty state, plus real vertical breathing room in the thread (it was
+       0 — first message hugged the header, last hugged the composer).
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 720px) {
+      /* Thread: breathing room below the header and above the composer */
+      html body[data-active="chat"] .hx-chat-thread {
+        padding: 16px 0 20px !important;
+      }
+      /* Composer aligns to the same 16px gutter (keeps safe-area bottom) */
+      html body[data-active="chat"] .hx-chat-compose {
+        padding: 8px 16px calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      /* Header: right gutter 16 to match (left keeps room for the menu btn) */
+      body[data-active="chat"] #hx-c-toolbar {
+        padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px 58px !important;
+      }
+      /* Empty state: 16px gutter + refined vertical rhythm */
+      html body[data-active="chat"] .hx-chat-blank {
+        padding: 48px 16px 36px !important;
+      }
+      body[data-active="chat"] #hx-c-blank-sub { margin-top: 10px !important; }
+      body[data-active="chat"] .hx-chat-suggest { margin-top: 24px !important; }
+    }
   </style>
 </head>
 <body data-active="chat">
