@@ -29362,6 +29362,137 @@
         background: linear-gradient(90deg, color-mix(in srgb, currentColor 12%, transparent), transparent 70%) !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V257 — ELITE STRUCTURE PASS (mobile) — "ξετίναξε το τελείως"
+       Pushes the answer surface to a top-tier, designed-product standard:
+       • tables rebuilt as elite data cards that FIT the phone (calm header,
+         zebra rows, hairline rule, generous balanced cells, no truncation)
+       • bold turns into a refined accent highlight; inline code + links polished
+       • tighter, more confident micro-typography and spacing throughout
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      /* ─────────────── ELITE TABLES ─────────────── */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-md-table-wrap {
+        border-radius: 16px !important;
+        margin: 20px 0 !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table-wrap {
+        border: 1px solid rgba(15,14,12,0.07) !important;
+        background: #ffffff !important;
+        box-shadow: 0 18px 44px -24px rgba(15,14,12,0.34), 0 2px 5px -3px rgba(15,14,12,0.06) !important;
+      }
+      html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table-wrap {
+        border: 1px solid rgba(255,255,255,0.08) !important;
+        background: #161617 !important;
+        box-shadow: 0 20px 48px -24px rgba(0,0,0,0.78) !important;
+      }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-md-table {
+        width: 100% !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        font-size: 13.5px !important;
+        line-height: 1.45 !important;
+      }
+      /* Header — calm, refined, with a single accent hairline beneath */
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead {
+        background: #faf8f5 !important;
+      }
+      html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead {
+        background: #1e1e20 !important;
+      }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead th {
+        padding: 12px 14px !important;
+        font-size: 10.5px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.07em !important;
+        text-transform: uppercase !important;
+        white-space: nowrap !important;
+        border-bottom: 1.5px solid color-mix(in srgb, var(--cg-orange,#ff5a1f) 32%, transparent) !important;
+        vertical-align: middle !important;
+      }
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead th { color: #6a635c !important; }
+      html[data-theme="dark"]  body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead th { color: #a8a29a !important; }
+      /* First header cell carries the accent so the table feels branded */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-md-table thead th:first-child {
+        color: var(--cg-orange,#ff5a1f) !important;
+        font-weight: 750 !important;
+      }
+      /* Body cells — generous, balanced, wrap instead of truncating */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody td {
+        padding: 12px 14px !important;
+        font-size: 13.5px !important;
+        line-height: 1.45 !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        overflow-wrap: anywhere !important;
+        vertical-align: top !important;
+        border-top: none !important;
+      }
+      /* Hairline rule between rows */
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody tr:not(:first-child) td { box-shadow: inset 0 1px 0 rgba(15,14,12,0.05) !important; }
+      html[data-theme="dark"]  body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody tr:not(:first-child) td { box-shadow: inset 0 1px 0 rgba(255,255,255,0.05) !important; }
+      /* Zebra striping */
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody tr:nth-child(even) td { background: rgba(15,14,12,0.02) !important; }
+      html[data-theme="dark"]  body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.025) !important; }
+      /* First column — emphasised label, not loud */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody td:first-child {
+        font-weight: 650 !important;
+        white-space: nowrap !important;
+      }
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody td:first-child { color: #1a1510 !important; }
+      html[data-theme="dark"]  body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody td { color: #e4e1dc !important; }
+      html[data-theme="dark"]  body[data-active="chat"] .hx-msg.is-assistant .hx-md-table tbody td:first-child { color: #f4f2ef !important; }
+
+      /* ─────────────── REFINED BOLD HIGHLIGHT ─────────────── */
+      /* Bold inside prose gets a subtle accent ink — draws the eye without
+         shouting. (Not applied inside tables/headings/callouts.) */
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-p strong,
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-list strong {
+        color: #14100d !important;
+        font-weight: 700 !important;
+      }
+      html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-p strong,
+      html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-list strong {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+      }
+
+      /* ─────────────── INLINE CODE — refined chip ─────────────── */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content code.hx-md-inline {
+        font-size: 0.86em !important;
+        padding: 2px 6px !important;
+        border-radius: 6px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0 !important;
+      }
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content code.hx-md-inline {
+        background: rgba(255,90,31,0.07) !important;
+        color: #b23a08 !important;
+        border: 1px solid rgba(255,90,31,0.16) !important;
+      }
+      html[data-theme="dark"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content code.hx-md-inline {
+        background: rgba(255,255,255,0.06) !important;
+        color: #ffcaab !important;
+        border: 1px solid rgba(255,255,255,0.09) !important;
+      }
+
+      /* ─────────────── BULLETS — refined accent dot ─────────────── */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-list:not(.hx-md-list-num) > li {
+        padding-left: 21px !important;
+        line-height: 1.62 !important;
+      }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-list:not(.hx-md-list-num) > li::before {
+        width: 6px !important; height: 6px !important;
+        left: 4px !important; top: 0.62em !important;
+        background: var(--cg-orange,#ff5a1f) !important;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--cg-orange,#ff5a1f) 13%, transparent) !important;
+      }
+
+      /* ─────────────── A touch more air between major blocks ─────── */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h2 { margin-top: 32px !important; }
+    }
   </style>
 </head>
 <body data-active="chat">
