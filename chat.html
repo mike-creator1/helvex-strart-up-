@@ -28634,12 +28634,22 @@
        ═══════════════════════════════════════════════════════════════════ */
     @media (max-width: 768px) {
       html body[data-active="chat"] #hx-c-toolbar {
-        background: transparent !important;
         border-bottom: none !important;
         box-shadow: none !important;
         pointer-events: none !important;     /* let touches reach the chat to scroll */
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
       }
-      /* Lock the light canvas to exactly #FBFAF7 so the header fade matches */
+      /* The header background IS the fade — a solid gradient the exact colour
+         of the canvas, fading to transparent, painted directly on the bar
+         (no pseudo-element, no z-index, no blur → Safari-proof). */
+      html[data-theme="light"] body[data-active="chat"] #hx-c-toolbar {
+        background: linear-gradient(180deg, #FBFAF7 0%, #FBFAF7 62%, rgba(251,250,247,0) 100%) !important;
+      }
+      html[data-theme="dark"] body[data-active="chat"] #hx-c-toolbar {
+        background: linear-gradient(180deg, #0d0d0d 0%, #0d0d0d 62%, rgba(13,13,13,0) 100%) !important;
+      }
+      /* Lock the light canvas to exactly #FBFAF7 so the fade matches perfectly */
       html[data-theme="light"] body[data-active="chat"],
       html[data-theme="light"] body[data-active="chat"] .hx-app,
       html[data-theme="light"] body[data-active="chat"] .hx-main,
@@ -28653,29 +28663,12 @@
       html body[data-active="chat"] #hx-c-toolbar #hx-c-more-btn {
         pointer-events: auto !important;     /* …but keep the buttons tappable */
       }
-      /* Soft fade so scrolling content dissolves under the floating buttons */
+      /* Kill any leftover pseudo decorations on the bar */
+      html body[data-active="chat"] #hx-c-toolbar::before,
       html body[data-active="chat"] #hx-c-toolbar::after,
-      html body[data-active="chat"] .hx-chat-toolbar::after { content: none !important; display: none !important; }
-      html body[data-active="chat"] #hx-c-toolbar::before {
-        content: '' !important;
-        position: absolute !important;
-        left: 0 !important; right: 0 !important; top: 0 !important; bottom: auto !important;
-        height: calc(100% + 26px) !important;
-        z-index: -1 !important;
-        pointer-events: none !important;
-        display: block !important;
-        -webkit-backdrop-filter: none !important;
-        backdrop-filter: none !important;
-        -webkit-mask: none !important;
-        mask: none !important;
-      }
-      /* Solid fade that EXACTLY matches the canvas colour (Safari-safe, no
-         translucent band). Light canvas = #FBFAF7, dark = #0D0D0D. */
-      html[data-theme="light"] body[data-active="chat"] #hx-c-toolbar::before {
-        background: linear-gradient(180deg, #FBFAF7 0%, #FBFAF7 58%, rgba(251,250,247,0) 100%) !important;
-      }
-      html[data-theme="dark"] body[data-active="chat"] #hx-c-toolbar::before {
-        background: linear-gradient(180deg, #0d0d0d 0%, #0d0d0d 58%, rgba(13,13,13,0) 100%) !important;
+      html body[data-active="chat"] .hx-chat-toolbar::before,
+      html body[data-active="chat"] .hx-chat-toolbar::after {
+        content: none !important; display: none !important;
       }
     }
   </style>
