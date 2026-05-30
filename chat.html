@@ -29122,6 +29122,106 @@
           0 16px 36px -12px rgba(255,90,31,0.62) !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V255 — PREMIUM ANSWER RHYTHM (mobile) — real paragraphs, clean scale
+       The renderer now emits true <p class="hx-md-p"> paragraphs (instead of
+       raw newlines), so spacing is finally driven by CSS — a single, calm,
+       consistent vertical rhythm. This block sets that rhythm and a clear
+       hierarchy so every answer reads effortlessly and looks professional.
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      /* The content no longer relies on preserved newlines — let prose wrap
+         and flow naturally; code blocks keep their own pre formatting. */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content {
+        white-space: normal !important;
+      }
+
+      /* ---- Paragraphs — the backbone of the rhythm ---- */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-p {
+        margin: 0 0 14px !important;
+        font-size: 15.5px !important;
+        line-height: 1.68 !important;
+        letter-spacing: -0.002em !important;
+      }
+      html[data-theme="dark"]  body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-p { color: #e3e3e3 !important; }
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-p { color: #26211d !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-p:last-child { margin-bottom: 0 !important; }
+      /* A paragraph that sits right under a heading hugs it a little */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h + .hx-md-p { margin-top: 0 !important; }
+
+      /* ---- Consistent spacing between every block type ---- */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > :first-child { margin-top: 0 !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-list,
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-table-wrap,
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-callout,
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-quote,
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-chart,
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-art,
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-code-wrap,
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-diagram {
+        margin-top: 16px !important;
+        margin-bottom: 16px !important;
+      }
+
+      /* ---- Heading hierarchy — clear, calm, professional spacing ---- */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h1 { margin: 22px 0 10px !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h2 { margin: 26px 0 12px !important; line-height: 1.25 !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h3 { margin: 22px 0 8px !important; font-size: 16.5px !important; font-weight: 700 !important; letter-spacing: -0.01em !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h4 { margin: 20px 0 7px !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h:first-child,
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h1:first-child,
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h2:first-child { margin-top: 0 !important; }
+      /* H2 underline — make it a subtle, refined hairline (not heavy) */
+      html[data-theme="dark"]  body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h2 { border-bottom-color: rgba(255,255,255,0.10) !important; }
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h2 { border-bottom-color: rgba(0,0,0,0.09) !important; }
+
+      /* ---- Bullet list items — comfortable line-height, real air ---- */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-list:not(.hx-md-list-num) {
+        gap: 9px !important;
+        margin: 16px 0 !important;
+      }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-list:not(.hx-md-list-num) > li {
+        font-size: 15.5px !important;
+        line-height: 1.62 !important;
+        padding-left: 20px !important;
+      }
+      html[data-theme="dark"]  body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-list > li { color: #e3e3e3 !important; }
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-list > li { color: #26211d !important; }
+
+      /* ---- Numbered steps — keep the visible number on the badge ---- */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-list.hx-md-list-num > li {
+        font-size: 15.5px !important;
+        line-height: 1.5 !important;
+      }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-list.hx-md-list-num > li::before {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+      }
+
+      /* ---- Inline code — quiet, legible chip ---- */
+      html[data-theme="dark"]  body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content code.hx-md-inline {
+        background: rgba(255,255,255,0.08) !important;
+        color: #ffd9c4 !important;
+        padding: 1.5px 6px !important; border-radius: 6px !important;
+        font-size: 0.88em !important;
+      }
+      html[data-theme="light"] body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content code.hx-md-inline {
+        background: rgba(255,90,31,0.08) !important;
+        color: #b23a08 !important;
+        padding: 1.5px 6px !important; border-radius: 6px !important;
+        font-size: 0.88em !important;
+      }
+
+      /* ---- Links — refined underline that strengthens on press ---- */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-link {
+        color: var(--cg-orange,#ff5a1f) !important;
+        border-bottom: 1px solid color-mix(in srgb, var(--cg-orange,#ff5a1f) 35%, transparent) !important;
+        text-decoration: none !important;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -29745,7 +29845,7 @@
       // code body, and an optional sandboxed iframe preview for HTML/SVG.
       // Anything between fences is escaped + linkified + has **bold**/`code`
       // light Markdown handling so prose reads cleanly.
-      function renderInlineMarkdown(text) {
+      function renderInlineMarkdown(text, wrapParas) {
         // Tool execution cards first — <<HXTOOL:running:web_search>> markers
         // get pulled out before any other parsing so we render them as proper
         // animated cards (not as escaped text).
@@ -30037,7 +30137,39 @@
               : '<svg class="hx-tool-card-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>') +
           '</div>';
         });
+        // V255 — wrap loose prose into real <p> paragraphs so spacing is
+        // driven by CSS margins (consistent rhythm) instead of raw newlines.
+        // Gated to top-level assistant prose only; artifact tokens and the
+        // single-line block elements we injected above (lists, tables,
+        // headings, callouts, quotes, tool/reasoning cards) pass through
+        // untouched — none of them contain a newline, so splitting on "\n"
+        // is safe here.
+        if (wrapParas) s = wrapProseParagraphs(s);
         return s;
+      }
+
+      // V255 — group bare prose lines into <p class="hx-md-p"> blocks.
+      // A blank line ends a paragraph; single newlines inside a paragraph
+      // become <br>. Block elements and artifact tokens stay standalone.
+      function wrapProseParagraphs(html) {
+        var BLOCK = /^\s*(?:<(?:h[1-4]|ul|ol|table|div|blockquote|aside|figure|pre|hr|details|section)\b|__HX_ART_\d+__\s*$)/i;
+        var lines = html.split('\n');
+        var out = [];
+        var para = [];
+        function flush() {
+          if (!para.length) return;
+          var text = para.join('<br>').trim();
+          if (text) out.push('<p class="hx-md-p">' + text + '</p>');
+          para = [];
+        }
+        for (var i = 0; i < lines.length; i++) {
+          var ln = lines[i];
+          if (BLOCK.test(ln)) { flush(); out.push(ln); }
+          else if (ln.trim() === '') { flush(); }
+          else { para.push(ln); }
+        }
+        flush();
+        return out.join('');
       }
 
       // Inline-only formatter for content inside list items / blockquotes
@@ -30239,7 +30371,7 @@
         while ((m = fence.exec(src)) !== null) {
           // Prose between previous fence and this one
           if (m.index > idx) {
-            out += renderInlineMarkdown(src.slice(idx, m.index));
+            out += renderInlineMarkdown(src.slice(idx, m.index), isAssistant);
           }
           var lang = (m[1] || '').toLowerCase();
           var code = m[2] || '';
@@ -30255,7 +30387,7 @@
         }
         // Trailing prose
         if (idx < src.length) {
-          out += renderInlineMarkdown(src.slice(idx));
+          out += renderInlineMarkdown(src.slice(idx), isAssistant);
         }
         // V69: re-insert artifact HTML for every token we extracted
         // V89: each artifact gets an "Open in workspace" button injected
