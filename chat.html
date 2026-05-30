@@ -27689,8 +27689,10 @@
     .hx-intel-sheet, .hx-intel-sheet * { box-sizing: border-box; }
     .hx-intel-backdrop {
       position: fixed; inset: 0; z-index: 300;
-      background: rgba(0,0,0,0.5);
-      opacity: 0; transition: opacity 0.28s ease;
+      background: rgba(8,8,10,0.58);
+      -webkit-backdrop-filter: blur(10px) saturate(120%);
+      backdrop-filter: blur(10px) saturate(120%);
+      opacity: 0; transition: opacity 0.32s ease;
     }
     .hx-intel-backdrop.is-open { opacity: 1; }
     .hx-intel-backdrop[hidden] { display: none; }
@@ -27698,47 +27700,99 @@
       position: fixed; left: 0; right: 0; bottom: 0; z-index: 301;
       width: 100%; max-width: 600px; margin: 0 auto;
       max-height: 90vh; overflow-y: auto;
-      padding: 8px 16px calc(28px + env(safe-area-inset-bottom, 0px));
-      border-radius: 24px 24px 0 0;
+      padding: 10px 18px calc(30px + env(safe-area-inset-bottom, 0px));
+      border-radius: 30px 30px 0 0;
       transform: translateY(100%);
-      transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.42s cubic-bezier(0.22, 1, 0.30, 1);
       -webkit-overflow-scrolling: touch;
+      will-change: transform;
     }
     .hx-intel-sheet.is-open { transform: translateY(0); }
     .hx-intel-sheet[hidden] { display: none; }
-    html[data-theme="dark"]  .hx-intel-sheet { background: #1c1c1e; color: #ececec; box-shadow: 0 -10px 50px rgba(0,0,0,0.5); }
-    html[data-theme="light"] .hx-intel-sheet { background: #ffffff; color: #1a1a1a; box-shadow: 0 -10px 50px rgba(15,14,12,0.22); }
-    .hx-intel-grip { width: 38px; height: 5px; border-radius: 3px; margin: 4px auto 8px; background: rgba(140,140,140,0.45); }
-    .hx-intel-head { position: relative; display: flex; align-items: center; justify-content: center; padding: 6px 0 14px; }
-    .hx-intel-title { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+    /* Premium surface: soft top highlight + layered depth shadow */
+    html[data-theme="dark"]  .hx-intel-sheet {
+      background:
+        radial-gradient(120% 60% at 50% 0%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 60%),
+        #1b1b1d;
+      color: #f2f1ee;
+      border-top: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 -1px 0 rgba(255,255,255,0.05) inset, 0 -24px 70px -12px rgba(0,0,0,0.7);
+    }
+    html[data-theme="light"] .hx-intel-sheet {
+      background:
+        radial-gradient(120% 60% at 50% 0%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 55%),
+        #fbfaf8;
+      color: #1a1714;
+      border-top: 1px solid rgba(15,14,12,0.06);
+      box-shadow: 0 -1px 0 rgba(255,255,255,0.8) inset, 0 -24px 70px -14px rgba(15,14,12,0.28);
+    }
+    .hx-intel-grip {
+      width: 40px; height: 5px; border-radius: 3px; margin: 2px auto 12px;
+      background: linear-gradient(180deg, rgba(150,150,150,0.55), rgba(150,150,150,0.35));
+    }
+    .hx-intel-head { position: relative; display: flex; align-items: center; justify-content: center; padding: 6px 0 18px; }
+    .hx-intel-title { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
     .hx-intel-x {
       position: absolute; right: 0; top: 50%; transform: translateY(-50%);
       width: 34px; height: 34px; border-radius: 50%; border: none;
       display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: background 0.16s ease, transform 0.12s ease;
     }
-    html[data-theme="dark"]  .hx-intel-x { background: rgba(255,255,255,0.10); color: #ececec; }
-    html[data-theme="light"] .hx-intel-x { background: rgba(0,0,0,0.06); color: #1a1a1a; }
+    .hx-intel-x:active { transform: translateY(-50%) scale(0.92); }
+    html[data-theme="dark"]  .hx-intel-x { background: rgba(255,255,255,0.10); color: #f2f1ee; }
+    html[data-theme="light"] .hx-intel-x { background: rgba(15,14,12,0.06); color: #1a1714; }
     .hx-intel-x svg { width: 18px; height: 18px; }
-    .hx-intel-section-label { font-size: 13px; font-weight: 600; opacity: 0.5; padding: 16px 6px 8px; }
-    .hx-intel-card { border-radius: 16px; overflow: hidden; }
-    html[data-theme="dark"]  .hx-intel-card { background: rgba(255,255,255,0.06); }
-    html[data-theme="light"] .hx-intel-card { background: rgba(0,0,0,0.035); }
-    .hx-intel-row {
-      display: flex; align-items: center; gap: 13px; width: 100%;
-      padding: 15px 16px; border: none; background: transparent;
-      cursor: pointer; text-align: left; color: inherit;
+    .hx-intel-section-label {
+      font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; opacity: 0.45; padding: 18px 6px 9px;
     }
-    html[data-theme="dark"]  .hx-intel-row:active { background: rgba(255,255,255,0.06); }
-    html[data-theme="light"] .hx-intel-row:active { background: rgba(0,0,0,0.04); }
-    .hx-intel-glyph { font-size: 19px; width: 24px; text-align: center; flex-shrink: 0; }
+    .hx-intel-card {
+      border-radius: 20px; overflow: hidden;
+    }
+    html[data-theme="dark"]  .hx-intel-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.065), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.07);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 24px -16px rgba(0,0,0,0.7);
+    }
+    html[data-theme="light"] .hx-intel-card {
+      background: linear-gradient(180deg, #ffffff, #fcfbf9);
+      border: 1px solid rgba(15,14,12,0.07);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 8px 22px -16px rgba(15,14,12,0.22);
+    }
+    .hx-intel-row {
+      display: flex; align-items: center; gap: 14px; width: 100%;
+      padding: 14px 16px; border: none; background: transparent;
+      cursor: pointer; text-align: left; color: inherit;
+      transition: background 0.14s ease;
+    }
+    html[data-theme="dark"]  .hx-intel-row:active { background: rgba(255,255,255,0.05); }
+    html[data-theme="light"] .hx-intel-row:active { background: rgba(15,14,12,0.035); }
+    /* Active row gets a gentle accent wash */
+    .hx-intel-row.is-active {
+      background: linear-gradient(90deg, color-mix(in srgb, var(--cg-orange,#ff5a1f) 9%, transparent) 0%, transparent 70%) !important;
+    }
+    /* Icon / emoji tile — premium circular container */
+    .hx-intel-tile {
+      width: 38px; height: 38px; border-radius: 12px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    html[data-theme="dark"]  .hx-intel-tile { background: rgba(255,255,255,0.07); }
+    html[data-theme="light"] .hx-intel-tile { background: rgba(15,14,12,0.05); }
+    .hx-intel-tile svg { width: 21px; height: 21px; }
+    .hx-intel-tile-emoji { font-size: 19px; }
+    /* Active model tile picks up the brand accent */
+    .hx-intel-row.is-active .hx-intel-tile {
+      background: color-mix(in srgb, var(--cg-orange,#ff5a1f) 16%, transparent);
+      color: var(--cg-orange, #ff5a1f);
+    }
     .hx-intel-row-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-    .hx-intel-row-name { font-size: 16px; font-weight: 600; }
-    .hx-intel-row-desc { font-size: 13px; opacity: 0.55; }
-    .hx-intel-check { width: 21px; height: 21px; color: var(--cg-orange, #ff5a1f); opacity: 0; flex-shrink: 0; }
-    .hx-intel-row.is-active .hx-intel-check { opacity: 1; }
-    .hx-intel-divider { height: 1px; margin-left: 16px; }
-    html[data-theme="dark"]  .hx-intel-divider { background: rgba(255,255,255,0.07); }
-    html[data-theme="light"] .hx-intel-divider { background: rgba(0,0,0,0.06); }
+    .hx-intel-row-name { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+    .hx-intel-row-desc { font-size: 12.5px; opacity: 0.5; }
+    .hx-intel-check { width: 21px; height: 21px; color: var(--cg-orange, #ff5a1f); opacity: 0; flex-shrink: 0; transform: scale(0.7); transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.2,1.4,0.4,1); }
+    .hx-intel-row.is-active .hx-intel-check { opacity: 1; transform: scale(1); }
+    .hx-intel-divider { height: 1px; margin-left: 68px; }
+    html[data-theme="dark"]  .hx-intel-divider { background: rgba(255,255,255,0.06); }
+    html[data-theme="light"] .hx-intel-divider { background: rgba(15,14,12,0.05); }
   </style>
 </head>
 <body data-active="chat">
@@ -33536,9 +33590,12 @@
           // Effort (Fast/Balanced/Deep/Strategic/Elite). Reuses the real
           // model <select> and the existing effort buttons so choices stick.
           var MODELS = [
-            { v: 'ether',      name: 'Ether',      desc: 'Γρήγορες, καθημερινές απαντήσεις' },
-            { v: 'nexus',      name: 'Nexus',      desc: 'Ισορροπία ταχύτητας & βάθους' },
-            { v: 'prometheus', name: 'Prometheus', desc: 'Βαθιά ανάλυση & ακρίβεια' }
+            { v: 'ether',      name: 'Ether',      desc: 'Γρήγορες, καθημερινές απαντήσεις',
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="1.9" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/></svg>' },
+            { v: 'nexus',      name: 'Nexus',      desc: 'Ισορροπία ταχύτητας & βάθους',
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.7" fill="currentColor" stroke="none"/><circle cx="5" cy="17" r="1.7" fill="currentColor" stroke="none"/><circle cx="19" cy="17" r="1.7" fill="currentColor" stroke="none"/><path d="M12 6.2L6 15.3M12 6.2l6 9.1M6.6 17h10.8"/></svg>' },
+            { v: 'prometheus', name: 'Prometheus', desc: 'Βαθιά ανάλυση & ακρίβεια',
+              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c0 3-3 4-3 7a3 3 0 0 0 6 0c0-1-.5-2-1-2.5 2 1 4 3 4 6a6 6 0 0 1-12 0C6 9 10 8 12 3z"/></svg>' }
           ];
           var EFFORTS = [
             { d: 'low',    g: '⚡', name: 'Fast',      desc: 'Γρήγορες απαντήσεις, για ταχύτητα' },
@@ -33577,13 +33634,52 @@
               }
             });
             sheet = { back: back, panel: panel };
+
+            // Drag the sheet down to dismiss (when it's scrolled to the top).
+            (function () {
+              var startY = 0, dy = 0, dragging = false, atTop = false;
+              panel.addEventListener('touchstart', function (e) {
+                var t = e.touches[0];
+                startY = t.clientY; dy = 0;
+                atTop = panel.scrollTop <= 0;
+                dragging = true;
+                panel.style.transition = 'none';
+              }, { passive: true });
+              panel.addEventListener('touchmove', function (e) {
+                if (!dragging) return;
+                dy = e.touches[0].clientY - startY;
+                if (atTop && dy > 0) {
+                  // resistance feels nicer than 1:1
+                  var d = dy < 0 ? 0 : dy;
+                  panel.style.transform = 'translateY(' + d + 'px)';
+                  back.style.opacity = String(Math.max(0, 1 - d / 520));
+                }
+              }, { passive: true });
+              function endDrag() {
+                if (!dragging) return;
+                dragging = false;
+                panel.style.transition = '';
+                if (atTop && dy > 130) {
+                  panel.style.transform = 'translateY(100%)';
+                  back.style.opacity = '';
+                  setTimeout(function () { closeSheet(); panel.style.transform = ''; }, 300);
+                } else {
+                  panel.style.transform = '';
+                  back.style.opacity = '';
+                }
+              }
+              panel.addEventListener('touchend', endDrag, { passive: true });
+              panel.addEventListener('touchcancel', endDrag, { passive: true });
+            })();
           }
+          var CHECK = '<svg class="hx-intel-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
           function rowsModel() {
             var h = '';
             MODELS.forEach(function (m, i) {
-              h += '<button class="hx-intel-row' + (m.v === sel.value ? ' is-active' : '') + '" data-set-model="' + m.v + '">' +
+              h += '<button class="hx-intel-row hx-intel-row-model' + (m.v === sel.value ? ' is-active' : '') + '" data-set-model="' + m.v + '">' +
+                '<span class="hx-intel-tile" aria-hidden="true">' + m.icon + '</span>' +
                 '<span class="hx-intel-row-info"><span class="hx-intel-row-name">' + m.name + '</span><span class="hx-intel-row-desc">' + m.desc + '</span></span>' +
-                '<svg class="hx-intel-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>';
+                CHECK + '</button>';
               if (i < MODELS.length - 1) h += '<div class="hx-intel-divider"></div>';
             });
             return h;
@@ -33592,9 +33688,9 @@
             var ce = currentEffort(), h = '';
             EFFORTS.forEach(function (ef, i) {
               h += '<button class="hx-intel-row' + (ef.d === ce ? ' is-active' : '') + '" data-set-effort="' + ef.d + '">' +
-                '<span class="hx-intel-glyph" aria-hidden="true">' + ef.g + '</span>' +
+                '<span class="hx-intel-tile hx-intel-tile-emoji" aria-hidden="true">' + ef.g + '</span>' +
                 '<span class="hx-intel-row-info"><span class="hx-intel-row-name">' + ef.name + '</span><span class="hx-intel-row-desc">' + ef.desc + '</span></span>' +
-                '<svg class="hx-intel-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>';
+                CHECK + '</button>';
               if (i < EFFORTS.length - 1) h += '<div class="hx-intel-divider"></div>';
             });
             return h;
