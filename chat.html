@@ -27679,6 +27679,66 @@
         line-height: 1.5 !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V239 — "ΝΟΗΜΟΣΥΝΗ" SETTINGS SHEET (ChatGPT-style intelligence sheet)
+       Opened from the model dropdown's "Διαμόρφωση": a bottom sheet with the
+       Models (Ether / Nexus / Prometheus) and the Effort scale (Fast /
+       Balanced / Deep / Strategic / Elite). Theme-aware.
+       ═══════════════════════════════════════════════════════════════════ */
+    .hx-intel-sheet, .hx-intel-sheet * { box-sizing: border-box; }
+    .hx-intel-backdrop {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,0.5);
+      opacity: 0; transition: opacity 0.28s ease;
+    }
+    .hx-intel-backdrop.is-open { opacity: 1; }
+    .hx-intel-backdrop[hidden] { display: none; }
+    .hx-intel-sheet {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 301;
+      width: 100%; max-width: 600px; margin: 0 auto;
+      max-height: 90vh; overflow-y: auto;
+      padding: 8px 16px calc(28px + env(safe-area-inset-bottom, 0px));
+      border-radius: 24px 24px 0 0;
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      -webkit-overflow-scrolling: touch;
+    }
+    .hx-intel-sheet.is-open { transform: translateY(0); }
+    .hx-intel-sheet[hidden] { display: none; }
+    html[data-theme="dark"]  .hx-intel-sheet { background: #1c1c1e; color: #ececec; box-shadow: 0 -10px 50px rgba(0,0,0,0.5); }
+    html[data-theme="light"] .hx-intel-sheet { background: #ffffff; color: #1a1a1a; box-shadow: 0 -10px 50px rgba(15,14,12,0.22); }
+    .hx-intel-grip { width: 38px; height: 5px; border-radius: 3px; margin: 4px auto 8px; background: rgba(140,140,140,0.45); }
+    .hx-intel-head { position: relative; display: flex; align-items: center; justify-content: center; padding: 6px 0 14px; }
+    .hx-intel-title { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+    .hx-intel-x {
+      position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+      width: 34px; height: 34px; border-radius: 50%; border: none;
+      display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    html[data-theme="dark"]  .hx-intel-x { background: rgba(255,255,255,0.10); color: #ececec; }
+    html[data-theme="light"] .hx-intel-x { background: rgba(0,0,0,0.06); color: #1a1a1a; }
+    .hx-intel-x svg { width: 18px; height: 18px; }
+    .hx-intel-section-label { font-size: 13px; font-weight: 600; opacity: 0.5; padding: 16px 6px 8px; }
+    .hx-intel-card { border-radius: 16px; overflow: hidden; }
+    html[data-theme="dark"]  .hx-intel-card { background: rgba(255,255,255,0.06); }
+    html[data-theme="light"] .hx-intel-card { background: rgba(0,0,0,0.035); }
+    .hx-intel-row {
+      display: flex; align-items: center; gap: 13px; width: 100%;
+      padding: 15px 16px; border: none; background: transparent;
+      cursor: pointer; text-align: left; color: inherit;
+    }
+    html[data-theme="dark"]  .hx-intel-row:active { background: rgba(255,255,255,0.06); }
+    html[data-theme="light"] .hx-intel-row:active { background: rgba(0,0,0,0.04); }
+    .hx-intel-glyph { font-size: 19px; width: 24px; text-align: center; flex-shrink: 0; }
+    .hx-intel-row-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .hx-intel-row-name { font-size: 16px; font-weight: 600; }
+    .hx-intel-row-desc { font-size: 13px; opacity: 0.55; }
+    .hx-intel-check { width: 21px; height: 21px; color: var(--cg-orange, #ff5a1f); opacity: 0; flex-shrink: 0; }
+    .hx-intel-row.is-active .hx-intel-check { opacity: 1; }
+    .hx-intel-divider { height: 1px; margin-left: 16px; }
+    html[data-theme="dark"]  .hx-intel-divider { background: rgba(255,255,255,0.07); }
+    html[data-theme="light"] .hx-intel-divider { background: rgba(0,0,0,0.06); }
   </style>
 </head>
 <body data-active="chat">
@@ -33424,9 +33484,9 @@
                 '</button>';
             }
             html += '<div class="hx-c-brand-sep"></div>' +
-              '<a class="hx-c-brand-config" href="/model-picker">' +
+              '<button type="button" class="hx-c-brand-config" data-action="config">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>' +
-              '<span>Διαμόρφωση</span></a>';
+              '<span>Διαμόρφωση</span></button>';
             menu.innerHTML = html;
           }
           function position() {
@@ -33453,6 +33513,12 @@
             if (menu.hidden) openMenu(); else closeMenu();
           });
           menu.addEventListener('click', function (e) {
+            if (e.target.closest('.hx-c-brand-config')) {
+              e.preventDefault();
+              closeMenu();
+              openSheet();
+              return;
+            }
             var opt = e.target.closest('.hx-c-brand-opt');
             if (!opt) return;
             var v = opt.getAttribute('data-model');
@@ -33464,6 +33530,99 @@
           });
           window.addEventListener('resize', function () { if (!menu.hidden) position(); });
           sel.addEventListener('change', function () { if (!menu.hidden) render(); });
+
+          // ── "Νοημοσύνη" settings sheet (ChatGPT-style) ───────────────
+          // Opened from "Διαμόρφωση": Models (Ether/Nexus/Prometheus) +
+          // Effort (Fast/Balanced/Deep/Strategic/Elite). Reuses the real
+          // model <select> and the existing effort buttons so choices stick.
+          var MODELS = [
+            { v: 'ether',      name: 'Ether',      desc: 'Γρήγορες, καθημερινές απαντήσεις' },
+            { v: 'nexus',      name: 'Nexus',      desc: 'Ισορροπία ταχύτητας & βάθους' },
+            { v: 'prometheus', name: 'Prometheus', desc: 'Βαθιά ανάλυση & ακρίβεια' }
+          ];
+          var EFFORTS = [
+            { d: 'low',    g: '⚡', name: 'Fast',      desc: 'Γρήγορες απαντήσεις, για ταχύτητα' },
+            { d: 'medium', g: '⚖️', name: 'Balanced',  desc: 'Ισορροπία ταχύτητας & ποιότητας' },
+            { d: 'high',   g: '🧠', name: 'Deep',      desc: 'Βαθύτερη ανάλυση & ακρίβεια' },
+            { d: 'extra',  g: '🎯', name: 'Strategic', desc: 'Σχεδιασμός & πολυβηματική σκέψη' },
+            { d: 'max',    g: '👑', name: 'Elite',     desc: 'Μέγιστο βάθος, χωρίς συμβιβασμούς' }
+          ];
+          var sheet = null;
+          function currentEffort() {
+            var a = document.querySelector('.hx-cc-effort-opt.is-active');
+            return a ? a.getAttribute('data-effort') : 'max';
+          }
+          function buildSheet() {
+            if (sheet) return;
+            var back = document.createElement('div');
+            back.className = 'hx-intel-backdrop'; back.hidden = true;
+            var panel = document.createElement('div');
+            panel.className = 'hx-intel-sheet'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Νοημοσύνη'); panel.hidden = true;
+            document.body.appendChild(back);
+            document.body.appendChild(panel);
+            back.addEventListener('click', closeSheet);
+            panel.addEventListener('click', function (e) {
+              if (e.target.closest('[data-close]')) { closeSheet(); return; }
+              var m = e.target.closest('[data-set-model]');
+              if (m) {
+                var v = m.getAttribute('data-set-model');
+                if (v !== sel.value) { sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true })); }
+                renderSheet(); return;
+              }
+              var ef = e.target.closest('[data-set-effort]');
+              if (ef) {
+                var real = document.querySelector('.hx-cc-effort-opt[data-effort="' + ef.getAttribute('data-set-effort') + '"]');
+                if (real) real.click();
+                renderSheet(); return;
+              }
+            });
+            sheet = { back: back, panel: panel };
+          }
+          function rowsModel() {
+            var h = '';
+            MODELS.forEach(function (m, i) {
+              h += '<button class="hx-intel-row' + (m.v === sel.value ? ' is-active' : '') + '" data-set-model="' + m.v + '">' +
+                '<span class="hx-intel-row-info"><span class="hx-intel-row-name">' + m.name + '</span><span class="hx-intel-row-desc">' + m.desc + '</span></span>' +
+                '<svg class="hx-intel-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>';
+              if (i < MODELS.length - 1) h += '<div class="hx-intel-divider"></div>';
+            });
+            return h;
+          }
+          function rowsEffort() {
+            var ce = currentEffort(), h = '';
+            EFFORTS.forEach(function (ef, i) {
+              h += '<button class="hx-intel-row' + (ef.d === ce ? ' is-active' : '') + '" data-set-effort="' + ef.d + '">' +
+                '<span class="hx-intel-glyph" aria-hidden="true">' + ef.g + '</span>' +
+                '<span class="hx-intel-row-info"><span class="hx-intel-row-name">' + ef.name + '</span><span class="hx-intel-row-desc">' + ef.desc + '</span></span>' +
+                '<svg class="hx-intel-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>';
+              if (i < EFFORTS.length - 1) h += '<div class="hx-intel-divider"></div>';
+            });
+            return h;
+          }
+          function renderSheet() {
+            buildSheet();
+            sheet.panel.innerHTML =
+              '<div class="hx-intel-grip" aria-hidden="true"></div>' +
+              '<div class="hx-intel-head"><span class="hx-intel-title">Νοημοσύνη</span>' +
+              '<button class="hx-intel-x" type="button" data-close aria-label="Κλείσιμο"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>' +
+              '<div class="hx-intel-section-label">Μοντέλο</div>' +
+              '<div class="hx-intel-card">' + rowsModel() + '</div>' +
+              '<div class="hx-intel-section-label">Προσπάθεια</div>' +
+              '<div class="hx-intel-card">' + rowsEffort() + '</div>';
+          }
+          function openSheet() {
+            renderSheet();
+            sheet.back.hidden = false; sheet.panel.hidden = false;
+            requestAnimationFrame(function () { sheet.back.classList.add('is-open'); sheet.panel.classList.add('is-open'); });
+            document.addEventListener('keydown', onSheetKey);
+          }
+          function closeSheet() {
+            if (!sheet) return;
+            sheet.back.classList.remove('is-open'); sheet.panel.classList.remove('is-open');
+            document.removeEventListener('keydown', onSheetKey);
+            setTimeout(function () { if (sheet) { sheet.back.hidden = true; sheet.panel.hidden = true; } }, 280);
+          }
+          function onSheetKey(e) { if (e.key === 'Escape') closeSheet(); }
         })();
 
         // ─── Floating scroll-to-bottom button ─────────────────────────
