@@ -27608,7 +27608,7 @@
                 <span>Share</span>
               </button>
               <span class="hx-chat-head-divider" aria-hidden="true"></span>
-              <button class="hx-chat-head-btn hx-icon" type="button" id="hx-c-more-btn" aria-label="More options" title="More options">
+              <button class="hx-chat-head-btn hx-icon" type="button" id="hx-c-more-btn" aria-label="Platform sessions" title="Platform sessions">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="19" r="1.3"/></svg>
               </button>
             </div>
@@ -33174,6 +33174,57 @@
               closeDrawer();
             }
           });
+
+          // ─── Swipe-left to dismiss the drawer (drag it off-screen) ──────
+          // Follows the finger live, then flings closed past a threshold.
+          (function wireSwipeClose() {
+            var startX = 0, startY = 0, dx = 0;
+            var dragging = false, decided = false, horiz = false;
+            function railW() { return rail.offsetWidth || 320; }
+            rail.addEventListener('touchstart', function (e) {
+              if (!rail.classList.contains('is-open')) return;
+              var t = e.touches[0];
+              startX = t.clientX; startY = t.clientY; dx = 0;
+              dragging = true; decided = false; horiz = false;
+            }, { passive: true });
+            rail.addEventListener('touchmove', function (e) {
+              if (!dragging) return;
+              var t = e.touches[0];
+              dx = t.clientX - startX;
+              var dy = t.clientY - startY;
+              if (!decided && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+                decided = true;
+                horiz = Math.abs(dx) > Math.abs(dy);
+                if (horiz) rail.style.setProperty('transition', 'none', 'important');
+              }
+              if (decided && horiz && dx < 0) {
+                rail.style.setProperty('transform', 'translateX(' + dx + 'px)', 'important');
+                if (backdrop) backdrop.style.opacity = String(Math.max(0, 1 + dx / railW()));
+              }
+            }, { passive: true });
+            function settle() {
+              if (!dragging) return;
+              dragging = false;
+              rail.style.removeProperty('transition');
+              if (decided && horiz && dx < -railW() * 0.28) {
+                // Past the threshold — fling it the rest of the way out, then close.
+                rail.style.setProperty('transform', 'translateX(-100%)', 'important');
+                if (backdrop) backdrop.style.opacity = '';
+                setTimeout(function () {
+                  // Drop is-open FIRST (CSS closed state is also -100%), then
+                  // clear the inline transform so there is no jump-to-open flash.
+                  closeDrawer();
+                  rail.style.removeProperty('transform');
+                }, 220);
+              } else {
+                // Not far enough — snap back into place.
+                rail.style.removeProperty('transform');
+                if (backdrop) backdrop.style.opacity = '';
+              }
+            }
+            rail.addEventListener('touchend', settle, { passive: true });
+            rail.addEventListener('touchcancel', settle, { passive: true });
+          })();
         })();
 
         // ─── Floating scroll-to-bottom button ─────────────────────────
@@ -33248,9 +33299,10 @@
             });
           }
           if (moreBtn) {
+            // The ⋮ button navigates to the platform's Sessions page
+            // (the hamburger on the left handles conversations).
             moreBtn.addEventListener('click', function () {
-              var rail = document.getElementById('hx-c-rail');
-              if (rail) rail.classList.toggle('is-open');
+              window.location.href = '/sessions';
             });
           }
         })();
