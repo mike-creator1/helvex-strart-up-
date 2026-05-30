@@ -28639,6 +28639,14 @@
         box-shadow: none !important;
         pointer-events: none !important;     /* let touches reach the chat to scroll */
       }
+      /* Lock the light canvas to exactly #FBFAF7 so the header fade matches */
+      html[data-theme="light"] body[data-active="chat"],
+      html[data-theme="light"] body[data-active="chat"] .hx-app,
+      html[data-theme="light"] body[data-active="chat"] .hx-main,
+      html[data-theme="light"] body[data-active="chat"] .hx-chat-pane,
+      html[data-theme="light"] body[data-active="chat"] .hx-chat-thread {
+        background-color: #FBFAF7 !important;
+      }
       html body[data-active="chat"] #hx-c-toolbar .hx-chat-head,
       html body[data-active="chat"] #hx-c-toolbar .hx-chat-head-actions,
       html body[data-active="chat"] #hx-c-toolbar #hx-c-brand-pill,
@@ -28652,20 +28660,22 @@
         content: '' !important;
         position: absolute !important;
         left: 0 !important; right: 0 !important; top: 0 !important; bottom: auto !important;
-        height: calc(100% + 24px) !important;
+        height: calc(100% + 26px) !important;
         z-index: -1 !important;
         pointer-events: none !important;
         display: block !important;
-        -webkit-backdrop-filter: blur(13px) saturate(135%) !important;
-        backdrop-filter: blur(13px) saturate(135%) !important;
-        -webkit-mask: linear-gradient(180deg, #000 0%, #000 52%, transparent 100%) !important;
-        mask: linear-gradient(180deg, #000 0%, #000 52%, transparent 100%) !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        -webkit-mask: none !important;
+        mask: none !important;
       }
+      /* Solid fade that EXACTLY matches the canvas colour (Safari-safe, no
+         translucent band). Light canvas = #FBFAF7, dark = #0D0D0D. */
       html[data-theme="light"] body[data-active="chat"] #hx-c-toolbar::before {
-        background: rgba(250,249,245,0.55) !important;
+        background: linear-gradient(180deg, #FBFAF7 0%, #FBFAF7 58%, rgba(251,250,247,0) 100%) !important;
       }
       html[data-theme="dark"] body[data-active="chat"] #hx-c-toolbar::before {
-        background: rgba(13,13,13,0.5) !important;
+        background: linear-gradient(180deg, #0d0d0d 0%, #0d0d0d 58%, rgba(13,13,13,0) 100%) !important;
       }
     }
   </style>
