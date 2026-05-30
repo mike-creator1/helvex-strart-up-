@@ -28148,6 +28148,84 @@
       html[data-theme="light"] body[data-active="chat"] .hx-msg-author { color: #1a1714 !important; }
       html[data-theme="dark"]  body[data-active="chat"] .hx-msg-author { color: #f0ede6 !important; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V244 — CHARTS + DIAGRAMS (rendered inside answers)
+       ```chart {json}``` → bar / line / donut.  ```diagram A -> B``` → flow.
+       Premium cards, theme-aware, lightweight (no external library).
+       ═══════════════════════════════════════════════════════════════════ */
+    .hx-chart, .hx-chart *, .hx-diagram, .hx-diagram * { box-sizing: border-box; }
+    .hx-chart {
+      margin: 16px 0; padding: 16px 16px 14px; border-radius: 18px;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-chart {
+      background: linear-gradient(180deg, #ffffff, #fcfbf9);
+      border: 1px solid rgba(15,14,12,0.08);
+      box-shadow: 0 14px 36px -20px rgba(15,14,12,0.28), 0 2px 6px -3px rgba(15,14,12,0.07);
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chart {
+      background: #1d1d1f; color: #ececec;
+      border: 1px solid rgba(255,255,255,0.09);
+      box-shadow: 0 16px 40px -20px rgba(0,0,0,0.7);
+    }
+    .hx-chart-head { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
+    .hx-chart-ico { color: var(--cg-orange, #ff5a1f); display: inline-flex; }
+    .hx-chart-ico svg { width: 17px; height: 17px; }
+    .hx-chart-title { font-size: 14.5px; font-weight: 700; letter-spacing: -0.01em; }
+    /* Bar (horizontal) */
+    .hx-chart-bars { display: flex; flex-direction: column; gap: 12px; }
+    .hx-chart-bar-row { display: grid; grid-template-columns: minmax(56px, 30%) 1fr auto; align-items: center; gap: 10px; font-size: 13px; }
+    .hx-chart-bar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.85; }
+    .hx-chart-bar-track { height: 10px; border-radius: 6px; overflow: hidden; }
+    html[data-theme="light"] .hx-chart-bar-track { background: rgba(15,14,12,0.07); }
+    html[data-theme="dark"]  .hx-chart-bar-track { background: rgba(255,255,255,0.09); }
+    .hx-chart-bar-fill {
+      display: block; height: 100%; border-radius: 6px; min-width: 3px;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--cg-orange,#ff5a1f) 80%, #fff), var(--cg-orange,#ff5a1f) 60%, #d2410c);
+      box-shadow: 0 1px 6px -1px color-mix(in srgb, var(--cg-orange,#ff5a1f) 50%, transparent);
+    }
+    .hx-chart-bar-val { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 13px; }
+    /* Line */
+    .hx-chart-line { width: 100%; height: auto; display: block; }
+    .hx-chart-xlabels { position: relative; height: 16px; margin-top: 4px; }
+    .hx-chart-xl { position: absolute; top: 0; transform: translateX(-50%); font-size: 10.5px; opacity: 0.55; white-space: nowrap; }
+    /* Donut */
+    .hx-chart-donut-wrap { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+    .hx-chart-donut { width: 116px; height: 116px; flex-shrink: 0; }
+    .hx-chart-donut-total { font-size: 19px; font-weight: 800; fill: currentColor; font-family: var(--hx-mono, ui-monospace, monospace); }
+    .hx-chart-legend { display: flex; flex-direction: column; gap: 9px; flex: 1; min-width: 150px; }
+    .hx-chart-leg { display: flex; align-items: center; gap: 9px; font-size: 13px; }
+    .hx-chart-dot { width: 11px; height: 11px; border-radius: 3.5px; flex-shrink: 0; }
+    .hx-chart-leg-l { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hx-chart-leg-v { font-weight: 700; font-variant-numeric: tabular-nums; opacity: 0.8; }
+
+    /* Diagram (vertical flow) */
+    .hx-diagram { margin: 18px 0; display: flex; flex-direction: column; align-items: center; }
+    .hx-diagram-node {
+      width: 100%; max-width: 320px; padding: 13px 18px; border-radius: 14px;
+      text-align: center; font-weight: 600; font-size: 14px; line-height: 1.3;
+    }
+    html[data-theme="light"] body[data-active="chat"] .hx-diagram-node {
+      background: linear-gradient(180deg, #ffffff, #fbfaf8); color: #221d18;
+      border: 1px solid rgba(15,14,12,0.10);
+      box-shadow: 0 8px 22px -16px rgba(15,14,12,0.30);
+    }
+    html[data-theme="dark"] body[data-active="chat"] .hx-diagram-node {
+      background: #232325; color: #ececec; border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 10px 26px -18px rgba(0,0,0,0.7);
+    }
+    .hx-diagram-node.is-start {
+      border-color: color-mix(in srgb, var(--cg-orange,#ff5a1f) 45%, transparent) !important;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--cg-orange,#ff5a1f) 9%, transparent), 0 8px 22px -16px rgba(15,14,12,0.30) !important;
+    }
+    .hx-diagram-node.is-end {
+      color: #fff !important;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--cg-orange,#ff5a1f) 92%, #fff), var(--cg-orange,#ff5a1f) 55%, #d2410c) !important;
+      border: none !important;
+      box-shadow: 0 8px 22px -10px color-mix(in srgb, var(--cg-orange,#ff5a1f) 55%, transparent) !important;
+    }
+    .hx-diagram-arrow { color: var(--cg-orange, #ff5a1f); height: 26px; display: flex; align-items: center; justify-content: center; }
+    .hx-diagram-arrow svg { width: 20px; height: 20px; }
   </style>
 </head>
 <body data-active="chat">
@@ -29270,7 +29348,13 @@
           var lang = (m[1] || '').toLowerCase();
           var code = m[2] || '';
           var id   = 'hxcb-' + Date.now().toString(36) + '-' + (blockId++) + '-' + Math.random().toString(36).slice(2, 6);
-          out += renderCodeBlock(id, lang, code, isAssistant);
+          if (lang === 'chart') {
+            out += renderChart(code);
+          } else if (lang === 'diagram' || lang === 'flow' || lang === 'flowchart' || lang === 'mermaid') {
+            out += renderDiagram(code);
+          } else {
+            out += renderCodeBlock(id, lang, code, isAssistant);
+          }
           idx = m.index + m[0].length;
         }
         // Trailing prose
@@ -29311,6 +29395,72 @@
         }
         return out;
       }
+      // ── Charts ── ```chart {"type":"bar|line|donut","title":"…","unit":"…",
+      //    "data":[{"label":"…","value":N}, …]} ``` → lightweight SVG/CSS chart
+      function hxFmtNum(n) {
+        n = Number(n) || 0;
+        if (Math.abs(n) >= 1000000) return (n / 1000000).toFixed(n % 1000000 ? 1 : 0) + 'M';
+        if (Math.abs(n) >= 1000) return (n / 1000).toFixed(n % 1000 ? 1 : 0) + 'k';
+        return String(Math.round(n * 100) / 100);
+      }
+      var HX_CHART_PALETTE = ['#ff5a1f', '#f0b852', '#c2410c', '#e8845a', '#b3870f', '#6b7280', '#ffa06a', '#9a6b3f'];
+      function renderChart(raw) {
+        var data;
+        try { data = JSON.parse(String(raw).trim()); } catch (e) { return renderCodeBlock('hxcb-chart', 'json', raw, true); }
+        if (!data || !Array.isArray(data.data) || !data.data.length) return renderCodeBlock('hxcb-chart', 'json', raw, true);
+        var type = (data.type || 'bar').toLowerCase();
+        var unit = data.unit ? String(data.unit) : '';
+        var title = data.title ? '<div class="hx-chart-head"><span class="hx-chart-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="hx-chart-title">' + escape(data.title) + '</span></div>' : '';
+        var pts = data.data.map(function (d) { return { label: String(d.label != null ? d.label : ''), value: Number(d.value) || 0 }; });
+        var max = Math.max.apply(null, pts.map(function (p) { return p.value; }).concat([0]));
+        var body = '';
+        if (type === 'donut' || type === 'pie') {
+          var total = pts.reduce(function (a, p) { return a + p.value; }, 0) || 1;
+          var R = 42, C = 2 * Math.PI * R, off = 0, segs = '', legend = '';
+          pts.forEach(function (p, i) {
+            var len = (p.value / total) * C, col = HX_CHART_PALETTE[i % HX_CHART_PALETTE.length];
+            segs += '<circle cx="60" cy="60" r="' + R + '" fill="none" stroke="' + col + '" stroke-width="15" stroke-dasharray="' + len.toFixed(2) + ' ' + (C - len).toFixed(2) + '" stroke-dashoffset="' + (-off).toFixed(2) + '" transform="rotate(-90 60 60)" stroke-linecap="butt"/>';
+            off += len;
+            legend += '<div class="hx-chart-leg"><span class="hx-chart-dot" style="background:' + col + '"></span><span class="hx-chart-leg-l">' + escape(p.label) + '</span><span class="hx-chart-leg-v">' + hxFmtNum(p.value) + escape(unit) + '</span></div>';
+          });
+          body = '<div class="hx-chart-donut-wrap"><svg viewBox="0 0 120 120" class="hx-chart-donut" role="img">' + segs + '<text x="60" y="65" text-anchor="middle" class="hx-chart-donut-total">' + hxFmtNum(total) + '</text></svg><div class="hx-chart-legend">' + legend + '</div></div>';
+        } else if (type === 'line') {
+          var W = 300, H = 130, pad = 10, n = pts.length, stepX = (W - 2 * pad) / Math.max(1, n - 1);
+          var P = pts.map(function (p, i) { return [pad + i * stepX, H - pad - 14 - ((max ? p.value / max : 0) * (H - 2 * pad - 14))]; });
+          var line = 'M' + P.map(function (pt) { return pt[0].toFixed(1) + ',' + pt[1].toFixed(1); }).join(' L');
+          var area = 'M' + P[0][0].toFixed(1) + ',' + (H - pad - 14) + ' L' + P.map(function (pt) { return pt[0].toFixed(1) + ',' + pt[1].toFixed(1); }).join(' L') + ' L' + P[n - 1][0].toFixed(1) + ',' + (H - pad - 14) + ' Z';
+          var dots = P.map(function (pt) { return '<circle cx="' + pt[0].toFixed(1) + '" cy="' + pt[1].toFixed(1) + '" r="3.2" fill="#fff" stroke="#ff5a1f" stroke-width="2"/>'; }).join('');
+          var xl = pts.map(function (p, i) { return '<span class="hx-chart-xl" style="left:' + ((pad + i * stepX) / W * 100).toFixed(2) + '%">' + escape(p.label) + '</span>'; }).join('');
+          body = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="hx-chart-line" role="img"><defs><linearGradient id="hxcl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff5a1f" stop-opacity="0.30"/><stop offset="100%" stop-color="#ff5a1f" stop-opacity="0"/></linearGradient></defs><path d="' + area + '" fill="url(#hxcl)"/><path d="' + line + '" fill="none" stroke="#ff5a1f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' + dots + '</svg><div class="hx-chart-xlabels">' + xl + '</div>';
+        } else {
+          body = '<div class="hx-chart-bars">';
+          pts.forEach(function (p, i) {
+            var pct = max ? (p.value / max * 100) : 0;
+            body += '<div class="hx-chart-bar-row"><span class="hx-chart-bar-label">' + escape(p.label) + '</span><span class="hx-chart-bar-track"><span class="hx-chart-bar-fill" style="width:' + pct.toFixed(1) + '%"></span></span><span class="hx-chart-bar-val">' + hxFmtNum(p.value) + escape(unit) + '</span></div>';
+          });
+          body += '</div>';
+        }
+        return '<div class="hx-chart" data-type="' + escape(type) + '">' + title + body + '</div>';
+      }
+
+      // ── Diagrams ── ```diagram\nStart -> Process -> Done\n…``` → vertical
+      //    flow of connected node cards (lightweight, no external lib)
+      function renderDiagram(raw) {
+        var lines = String(raw).split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+        var order = [], seen = {};
+        lines.forEach(function (line) {
+          var parts = line.split(/\s*(?:->|→|=>|-->)\s*/).map(function (s) { return s.replace(/^\[|\]$/g, '').trim(); }).filter(Boolean);
+          parts.forEach(function (nm) { if (!seen[nm]) { seen[nm] = true; order.push(nm); } });
+        });
+        if (!order.length) return renderCodeBlock('hxcb-diagram', 'text', raw, true);
+        var arrow = '<div class="hx-diagram-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg></div>';
+        var nodes = order.map(function (nm, i) {
+          var cls = 'hx-diagram-node' + (i === 0 ? ' is-start' : (i === order.length - 1 ? ' is-end' : ''));
+          return '<div class="' + cls + '"><span class="hx-diagram-node-label">' + escape(nm) + '</span></div>';
+        }).join(arrow);
+        return '<div class="hx-diagram">' + nodes + '</div>';
+      }
+
       function renderCodeBlock(id, lang, code, isAssistant, isStreaming) {
         var langLabel = lang ? lang : 'plain';
         var canPreview = isAssistant && (lang === 'html' || lang === 'htm' || lang === 'svg');
@@ -29451,6 +29601,8 @@
         'Use SECTION HEADINGS ("## Section") when a response has 3+ distinct parts the reader will want to scan or come back to. Don\'t use headings for short answers.',
         'Use ORDERED LISTS (1. 2. 3.) for steps, processes, instructions, workflows, or anything sequenced. Use bullet lists for parallel non-sequenced items.',
         'Use FENCED CODE BLOCKS with a language tag (```python, ```bash, ```sql) for ANY code, command, or config. Never inline-code more than a few words.',
+        'Use a CHART when numbers are the point — comparisons, distributions, or trends. Emit a fenced ```chart block whose body is JSON: {"type":"bar|line|donut","title":"…","unit":"€","data":[{"label":"Jan","value":40},{"label":"Feb","value":65}]}. Pick "bar" for comparing categories, "line" for a trend over time, "donut" for parts of a whole. Use real numbers and 2–8 data points. Do NOT also repeat the same numbers as a table.',
+        'Use a DIAGRAM for a process, pipeline, decision flow, or how things connect. Emit a fenced ```diagram block with one relation per line using arrows, e.g. "Start -> Validate -> Deploy" (chain) on each line. Keep node labels short (1–4 words). Use it for runbooks, architectures, and flows where the connection matters.',
         'Use BLOCKQUOTES ("> ") for quoted text, key takeaways, or callouts ("> [!note]", "> [!warning]", "> [!tip]", "> [!important]") when something genuinely deserves attention.',
         'Use COLLAPSIBLE DETAILS ("<details><summary>Title</summary>…</details>") for long supporting material, derivations, or "show your work" content the user can expand if they want it.',
         'Use BOLD sparingly for the 1–3 most important phrases per response. Italics for definitions or terms of art. Never style everything.',
@@ -30296,6 +30448,7 @@
                 return;
               }
               if (act === 'speak') { speakMessage(b, msg); return; }
+              if (act === 'pdf') { pulseActBtn(b); exportMessagePdf(msg); return; }
               if (act === 'share') { shareMessage(msg, b); return; }
               if (act === 'regenerate') {
                 pulseActBtn(b);
@@ -30428,6 +30581,9 @@
               '</button>' +
               '<button class="hx-msg-act" type="button" data-act="regenerate" data-idx="' + i + '" aria-label="Regenerate" title="Regenerate">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>' +
+              '</button>' +
+              '<button class="hx-msg-act" type="button" data-act="pdf" data-idx="' + i + '" aria-label="Download PDF" title="Download as PDF">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>' +
               '</button>' +
               '<button class="hx-msg-act" type="button" data-act="more" data-idx="' + i + '" aria-label="More" title="More options">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>' +
@@ -32493,6 +32649,87 @@
           void btn.offsetWidth;
           btn.classList.add('is-pulse');
           setTimeout(function () { if (btn) btn.classList.remove('is-pulse'); }, 360);
+        }
+
+        // ─── Export the answer to a clean, printable PDF ─────────────
+        // Opens a self-contained printable document (premium styling for
+        // prose, lists, tables, callouts, charts and diagrams) and triggers
+        // the print dialog — the user picks "Save to PDF".
+        function exportMessagePdf(msg) {
+          if (!msg || !msg.content) return;
+          var content = renderRichContent(msg.content, true);
+          var model = (msg.model || (state.conversation && state.conversation.model) || 'ether');
+          var modelName = model.charAt(0).toUpperCase() + model.slice(1);
+          var title = (state.conversation && state.conversation.title) || 'Helix';
+          var css = '<style>' +
+            '*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;}' +
+            '@page{margin:16mm 14mm;}' +
+            'body{margin:0;font-family:"Inter",-apple-system,system-ui,Segoe UI,sans-serif;color:#1a1714;background:#fff;font-size:13.5px;line-height:1.62;}' +
+            '.hx-pdf{max-width:720px;margin:0 auto;padding:10px;}' +
+            '.hx-pdf-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:13px;border-bottom:1px solid #ececec;margin-bottom:20px;}' +
+            '.hx-pdf-brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px;letter-spacing:-.02em;}' +
+            '.hx-pdf-mark{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:rgba(255,90,31,.13);color:#c2410c;}' +
+            '.hx-pdf-mark svg{width:18px;height:18px;}' +
+            '.hx-pdf-meta{font-size:11px;color:#9b958c;}' +
+            '.hx-pdf-title{font-size:23px;font-weight:750;letter-spacing:-.025em;margin:0 0 18px;}' +
+            '.hx-pdf-foot{margin-top:26px;padding-top:13px;border-top:1px solid #ececec;font-size:11px;color:#b3ada3;text-align:center;}' +
+            '.hx-pdf-body p{margin:0 0 11px;}' +
+            '.hx-pdf-body h1,.hx-pdf-body h2,.hx-pdf-body h3{font-weight:700;letter-spacing:-.02em;margin:18px 0 8px;line-height:1.25;}' +
+            '.hx-pdf-body h1{font-size:20px;}.hx-pdf-body h2{font-size:16px;padding-left:13px;position:relative;}.hx-pdf-body h3{font-size:14px;}' +
+            '.hx-pdf-body h2::before{content:"";position:absolute;left:0;top:.2em;width:4px;height:.9em;border-radius:3px;background:#ff5a1f;}' +
+            '.hx-pdf-body strong{font-weight:680;}' +
+            '.hx-pdf-body a{color:#c2410c;text-decoration:none;border-bottom:1px solid rgba(255,90,31,.32);}' +
+            '.hx-pdf-body :not(pre)>code{background:rgba(255,90,31,.09);color:#b3400f;padding:1.5px 5px;border-radius:5px;font-family:ui-monospace,monospace;font-size:.86em;box-shadow:inset 0 0 0 1px rgba(255,90,31,.18);}' +
+            '.hx-md-list{list-style:none;padding:0;margin:13px 0;display:flex;flex-direction:column;gap:9px;}' +
+            '.hx-md-list>li{position:relative;padding-left:22px;}' +
+            '.hx-md-list:not(.hx-md-list-num)>li::before{content:"";position:absolute;left:4px;top:.55em;width:6px;height:6px;border-radius:50%;background:#ff5a1f;}' +
+            '.hx-md-list.hx-md-list-num{counter-reset:hxl;gap:13px;}' +
+            '.hx-md-list.hx-md-list-num>li{counter-increment:hxl;padding-left:40px;min-height:28px;}' +
+            '.hx-md-list.hx-md-list-num>li::before{content:counter(hxl);position:absolute;left:0;top:-1px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(145deg,#ff7a45,#d2410c);color:#fff;font-weight:700;font-size:13px;}' +
+            '.hx-md-table-wrap{margin:15px 0;border:1px solid #e8e4dc;border-radius:14px;overflow:hidden;}' +
+            '.hx-md-table{width:100%;border-collapse:collapse;font-size:13px;}' +
+            '.hx-md-table thead{background:rgba(255,90,31,.07);}' +
+            '.hx-md-table th{padding:11px 15px;text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#7c766c;font-weight:700;}' +
+            '.hx-md-table th:first-child{color:#c2410c;}' +
+            '.hx-md-table td{padding:11px 15px;border-top:1px solid #efece6;}' +
+            '.hx-md-table td:first-child{font-weight:600;}' +
+            '.hx-md-table tbody tr:nth-child(even) td{background:rgba(0,0,0,.022);}' +
+            '.hx-md-quote{margin:15px 0;padding:13px 17px 13px 19px;border-left:4px solid #ff5a1f;border-radius:4px 14px 14px 4px;background:rgba(255,90,31,.06);font-style:normal;}' +
+            '.hx-chart{margin:15px 0;padding:15px;border:1px solid #e8e4dc;border-radius:16px;}' +
+            '.hx-chart-head{display:flex;align-items:center;gap:8px;margin-bottom:13px;}.hx-chart-ico{color:#ff5a1f;}.hx-chart-ico svg{width:16px;height:16px;}.hx-chart-title{font-weight:700;font-size:14px;}' +
+            '.hx-chart-bars{display:flex;flex-direction:column;gap:11px;}.hx-chart-bar-row{display:grid;grid-template-columns:minmax(56px,30%) 1fr auto;align-items:center;gap:10px;font-size:13px;}' +
+            '.hx-chart-bar-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.85;}' +
+            '.hx-chart-bar-track{height:10px;border-radius:6px;background:rgba(0,0,0,.07);overflow:hidden;}.hx-chart-bar-fill{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#ff8a5a,#ff5a1f 60%,#d2410c);}' +
+            '.hx-chart-bar-val{font-weight:700;}' +
+            '.hx-chart-line{width:100%;height:auto;}.hx-chart-xlabels{position:relative;height:16px;margin-top:4px;}.hx-chart-xl{position:absolute;transform:translateX(-50%);font-size:10px;color:#9b958c;}' +
+            '.hx-chart-donut-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}.hx-chart-donut{width:112px;height:112px;}.hx-chart-donut-total{font-size:18px;font-weight:800;fill:#1a1714;font-family:ui-monospace,monospace;}' +
+            '.hx-chart-legend{display:flex;flex-direction:column;gap:9px;flex:1;min-width:150px;}.hx-chart-leg{display:flex;align-items:center;gap:9px;font-size:13px;}.hx-chart-dot{width:11px;height:11px;border-radius:3px;}.hx-chart-leg-l{flex:1;}.hx-chart-leg-v{font-weight:700;opacity:.8;}' +
+            '.hx-diagram{margin:16px 0;display:flex;flex-direction:column;align-items:center;}' +
+            '.hx-diagram-node{width:100%;max-width:300px;padding:13px 17px;border-radius:13px;text-align:center;font-weight:600;font-size:13.5px;border:1px solid #e2ddd4;background:#fff;}' +
+            '.hx-diagram-node.is-start{border-color:rgba(255,90,31,.45);box-shadow:0 0 0 3px rgba(255,90,31,.08);}' +
+            '.hx-diagram-node.is-end{background:linear-gradient(180deg,#ff8a5a,#ff5a1f 55%,#d2410c);color:#fff;border:none;}' +
+            '.hx-diagram-arrow{color:#ff5a1f;height:24px;display:flex;align-items:center;justify-content:center;}.hx-diagram-arrow svg{width:20px;height:20px;}' +
+            'pre,.hx-code-body{background:#f6f4f0;border:1px solid #e8e4dc;border-radius:11px;padding:13px 15px;overflow:auto;font-family:ui-monospace,monospace;font-size:12px;line-height:1.5;white-space:pre-wrap;}' +
+            '.hx-code-head,.hx-code-actions,.hx-code-preview,.hx-art-open,.hx-msg-followups{display:none!important;}' +
+            '.hx-code{margin:14px 0;}' +
+            '.hx-chart,.hx-diagram-node,.hx-md-table-wrap,.hx-md-quote,pre{break-inside:avoid;}' +
+            '</style>';
+          var w = window.open('', '_blank');
+          if (!w) { return; }
+          var doc = '<!doctype html><html lang="el"><head><meta charset="utf-8">' +
+            '<meta name="viewport" content="width=device-width, initial-scale=1">' +
+            '<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">' +
+            '<title>' + escape(title) + ' — Helix</title>' + css + '</head><body><div class="hx-pdf">' +
+            '<header class="hx-pdf-head"><div class="hx-pdf-brand"><span class="hx-pdf-mark">' + modelLogoSvg(model) + '</span><span>Helix</span></div>' +
+            '<div class="hx-pdf-meta">' + escape(modelName) + ' · ' + new Date().toLocaleDateString() + '</div></header>' +
+            '<h1 class="hx-pdf-title">' + escape(title) + '</h1>' +
+            '<div class="hx-pdf-body">' + content + '</div>' +
+            '<footer class="hx-pdf-foot">Generated by Helix · helvex</footer>' +
+            '</div><scr' + 'ipt>window.onload=function(){setTimeout(function(){try{window.focus();window.print();}catch(e){}},400);};</scr' + 'ipt>' +
+            '</body></html>';
+          w.document.open();
+          w.document.write(doc);
+          w.document.close();
         }
 
         // ─── Share: native share sheet → clipboard fallback ──────────
