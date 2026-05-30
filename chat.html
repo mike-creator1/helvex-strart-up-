@@ -28657,6 +28657,11 @@
       html[data-theme="light"] body[data-active="chat"] .hx-chat-thread {
         background-color: #FBFAF7 !important;
       }
+      /* Also pin the ROOT (<html>) — platform.css sets it to #000 in dark /
+         #FBFAF7 in light; the #000 was the source of the black bar. Force it
+         to match the chat canvas so nothing darker shows behind the header. */
+      html[data-theme="dark"]:has(body[data-active="chat"])  { background-color: #0d0d0d !important; }
+      html[data-theme="light"]:has(body[data-active="chat"]) { background-color: #FBFAF7 !important; }
       html body[data-active="chat"] #hx-c-toolbar .hx-chat-head,
       html body[data-active="chat"] #hx-c-toolbar .hx-chat-head-actions,
       html body[data-active="chat"] #hx-c-toolbar #hx-c-brand-pill,
