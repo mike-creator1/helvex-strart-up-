@@ -28652,16 +28652,20 @@
         content: '' !important;
         position: absolute !important;
         left: 0 !important; right: 0 !important; top: 0 !important; bottom: auto !important;
-        height: calc(100% + 22px) !important;
+        height: calc(100% + 24px) !important;
         z-index: -1 !important;
         pointer-events: none !important;
         display: block !important;
+        -webkit-backdrop-filter: blur(13px) saturate(135%) !important;
+        backdrop-filter: blur(13px) saturate(135%) !important;
+        -webkit-mask: linear-gradient(180deg, #000 0%, #000 52%, transparent 100%) !important;
+        mask: linear-gradient(180deg, #000 0%, #000 52%, transparent 100%) !important;
       }
       html[data-theme="light"] body[data-active="chat"] #hx-c-toolbar::before {
-        background: linear-gradient(180deg, var(--hx-bg, #faf9f5) 0%, var(--hx-bg, #faf9f5) 56%, color-mix(in srgb, var(--hx-bg, #faf9f5) 75%, transparent) 78%, transparent 100%) !important;
+        background: rgba(250,249,245,0.55) !important;
       }
       html[data-theme="dark"] body[data-active="chat"] #hx-c-toolbar::before {
-        background: linear-gradient(180deg, #0d0d0d 0%, #0d0d0d 56%, rgba(13,13,13,0.78) 78%, transparent 100%) !important;
+        background: rgba(13,13,13,0.5) !important;
       }
     }
   </style>
