@@ -1998,12 +1998,13 @@
       }
 
       // Denoise: drop stray dots. Every dot sits on a regular grid of
-      // spacing `baseDensity`; a dot that belongs to a letter has occupied
-      // neighbours around it, while a stray (picked up on a faint halo or a
-      // lone antialiased speck) sits alone. Keep a dot only if at least two
-      // of its eight grid neighbours are also occupied — this removes the
-      // dots that float outside the letterforms without eroding the dense
-      // letter bodies.
+      // spacing `baseDensity`; a dot inside a letter is densely surrounded,
+      // while a stray (a faint-halo speck, or a thin outline ring just
+      // outside the glyph) has few neighbours. Keep a dot only if at least
+      // THREE of its eight grid neighbours are occupied. Because the letters
+      // are now packed solid (every stroke is several dots wide), real letter
+      // dots always clear this easily, while isolated specks and 1-dot-thick
+      // halo rings are removed — so no dots float outside the letterforms.
       var occ = {};
       for (var pi = 0; pi < pts.length; pi++) {
         var gxi = Math.round(pts[pi].x / baseDensity);
@@ -2021,7 +2022,7 @@
             if (occ[(cx + ddx) + ',' + (cy + ddy)]) nb++;
           }
         }
-        if (nb >= 2) clean.push(pts[pj]);
+        if (nb >= 3) clean.push(pts[pj]);
       }
       pts = clean;
 
