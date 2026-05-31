@@ -1979,17 +1979,16 @@
       var stride = baseDensity * SCALE;
       var rowW = logicalW * SCALE;
       var pts = [];
-      // Alpha threshold 90 — fills the letterforms generously: solid cores
-      // plus most of the antialiased edge, so strokes and curves get covered
-      // fully and the type reads rich, full and clean. This is the only knob
-      // turned for "fuller" — the dot SIZE and grid spacing are untouched, so
-      // the dots stay exactly the same size, there are just more of them
-      // landing on real letter mass. (Now that long words wrap to a large
-      // two-line font, this lower threshold no longer frays small text.)
+      // Alpha threshold 160 — strict: a dot is placed only where the letter
+      // is actually solid, never on the soft antialiased halo around it. That
+      // halo is what produced the stray dots floating in the empty space; at
+      // 160 every dot sits on real letter mass, so the dots stay strictly
+      // inside the letterforms. Blackness comes from the tight dot packing
+      // above, not from this threshold, so the words stay solid and black.
       for (var y = 0; y < logicalH * SCALE; y += stride) {
         for (var x = 0; x < logicalW * SCALE; x += stride) {
           var i = (y * rowW + x) * 4;
-          if (data[i + 3] > 90) {
+          if (data[i + 3] > 160) {
             pts.push({
               x: (x / SCALE - logicalW / 2),
               y: (y / SCALE - logicalH / 2)
