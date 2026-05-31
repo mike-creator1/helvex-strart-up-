@@ -1997,32 +1997,54 @@
         }
       }
 
-      // Denoise: drop stray dots. Every dot sits on a regular grid of
-      // spacing `baseDensity`; a dot inside a letter is densely surrounded,
-      // while a stray (a faint-halo speck, or a thin outline ring just
-      // outside the glyph) has few neighbours. Keep a dot only if at least
-      // THREE of its eight grid neighbours are occupied. Because the letters
-      // are now packed solid (every stroke is several dots wide), real letter
-      // dots always clear this easily, while isolated specks and 1-dot-thick
-      // halo rings are removed — so no dots float outside the letterforms.
+      // Clean up the sampled grid so each word renders as a solid black
+      // shape: no stray dots floating outside the glyphs, and no pinholes
+      // missing inside them. Every dot sits on a regular grid of spacing
+      // `baseDensity`; we key cells by integer (col,row) so we can look at
+      // each cell's eight neighbours.
+      var halfW = logicalW / 2, halfH = logicalH / 2;
       var occ = {};
-      for (var pi = 0; pi < pts.length; pi++) {
-        var gxi = Math.round(pts[pi].x / baseDensity);
-        var gyi = Math.round(pts[pi].y / baseDensity);
-        occ[gxi + ',' + gyi] = true;
-      }
-      var clean = [];
-      for (var pj = 0; pj < pts.length; pj++) {
-        var cx = Math.round(pts[pj].x / baseDensity);
-        var cy = Math.round(pts[pj].y / baseDensity);
-        var nb = 0;
-        for (var ddx = -1; ddx <= 1; ddx++) {
-          for (var ddy = -1; ddy <= 1; ddy++) {
-            if (ddx === 0 && ddy === 0) continue;
-            if (occ[(cx + ddx) + ',' + (cy + ddy)]) nb++;
+      function cellKey(gx, gy) { return gx + ',' + gy; }
+      function colOf(px) { return Math.round((px + halfW) / baseDensity); }
+      function rowOf(py) { return Math.round((py + halfH) / baseDensity); }
+      function neighbourCount(cx, cy) {
+        var n = 0;
+        for (var dx = -1; dx <= 1; dx++) {
+          for (var dy = -1; dy <= 1; dy++) {
+            if (dx === 0 && dy === 0) continue;
+            if (occ[cellKey(cx + dx, cy + dy)]) n++;
           }
         }
-        if (nb >= 3) clean.push(pts[pj]);
+        return n;
+      }
+      var minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
+      for (var pi = 0; pi < pts.length; pi++) {
+        var gxi = colOf(pts[pi].x), gyi = rowOf(pts[pi].y);
+        occ[cellKey(gxi, gyi)] = true;
+        if (gxi < minX) minX = gxi; if (gxi > maxX) maxX = gxi;
+        if (gyi < minY) minY = gyi; if (gyi > maxY) maxY = gyi;
+      }
+
+      // 1) Fill interior pinholes: an empty cell ringed by >=5 occupied
+      //    neighbours sits inside a letter body, so add a dot there. This
+      //    can only fill holes surrounded by the glyph — it never adds dots
+      //    out in open space, so it won't create strays.
+      for (var gx2 = minX; gx2 <= maxX; gx2++) {
+        for (var gy2 = minY; gy2 <= maxY; gy2++) {
+          if (occ[cellKey(gx2, gy2)]) continue;
+          if (neighbourCount(gx2, gy2) >= 5) {
+            pts.push({ x: gx2 * baseDensity - halfW, y: gy2 * baseDensity - halfH });
+            occ[cellKey(gx2, gy2)] = true;
+          }
+        }
+      }
+
+      // 2) Remove strays: dots with fewer than three occupied neighbours
+      //    (isolated specks or thin 1-dot halo rings just outside a glyph).
+      //    The solid letters keep every dot; only the escapees are dropped.
+      var clean = [];
+      for (var pj = 0; pj < pts.length; pj++) {
+        if (neighbourCount(colOf(pts[pj].x), rowOf(pts[pj].y)) >= 3) clean.push(pts[pj]);
       }
       pts = clean;
 
