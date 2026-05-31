@@ -2043,14 +2043,27 @@
          across all states the visual weight per letter-stroke stays
          uniform because each state's font is auto-fit independently:
          short words just get fewer dots in total, not bigger ones. */
-      var DOT_R = 1.7;
-      var GRID  = 3;
-
+      // Per-state dot + grid, scaled to that state's auto-fit font size.
+      // The single fixed (1.7px dot / 3px grid) pair was the bug: a 3.4px
+      // dot diameter on a 3px grid always overlaps into a solid slab. On a
+      // big desktop canvas the auto-fit font is large enough that the
+      // letters still read, but on mobile the stage is only 200px tall so
+      // every word auto-fits much smaller — and fixed-size dots then dwarf
+      // the tiny letterforms and collapse them into muddy black blobs.
+      //
+      // Scaling both grid and dot to each state's font keeps the texture
+      // (dots-per-stroke) identical at every screen size, and capping the
+      // dot DIAMETER at ~0.84× the grid spacing guarantees a visible gap
+      // between neighbours — so the type always reads as clean halftone,
+      // never a solid fill, whether the canvas is 1120px or 320px wide.
       DOT_BY_STATE = [];
       statePts    = [];
       for (var sx = 0; sx < STATES.length; sx++) {
-        DOT_BY_STATE.push(DOT_R);
-        statePts.push(buildPointsFor(STATES[sx].text, STATES[sx].font, GRID, fsPerState[sx]).pts);
+        var gfs  = fsPerState[sx];
+        var grid = Math.max(2, Math.round(gfs * 0.058)); // integer stride
+        var dotR = grid * 0.42;                          // diameter ≈ 0.84·grid
+        DOT_BY_STATE.push(dotR);
+        statePts.push(buildPointsFor(STATES[sx].text, STATES[sx].font, grid, gfs).pts);
       }
 
       // Equalize lengths
@@ -2058,9 +2071,10 @@
       for (var i = 0; i < statePts.length; i++) {
         if (statePts[i].length > maxLen) maxLen = statePts[i].length;
       }
-      // CAP halved — at uniform GRID=3 the longest natural state samples
-      // around 5–6k points; capping at 5500 covers them in full while
-      // cutting per-frame Path2D work in half versus the previous 9k.
+      // Cap the particle count so per-frame Path2D work stays bounded.
+      // With the font-scaled grid the longest states now sample fewer
+      // points than the old fixed-grid build, so these caps comfortably
+      // cover every word in full on both desktop and mobile.
       var CAP = (W < 640) ? 3500 : 5500;
       if (maxLen > CAP) maxLen = CAP;
       if (maxLen < 50)  maxLen = 50;  // safety floor — never zero
@@ -2225,10 +2239,12 @@
       ctx.shadowColor = 'transparent';
       ctx.fillStyle   = 'rgba(0, 0, 0, 1)';
 
-      // Uniform dot radius across every state — no per-frame interpolation
-      // needed. The letter weight is governed by sampling density, not
-      // by dot scale, so the dot stays a constant 1.7 px throughout.
-      var DOT = DOT_BY_STATE[st.from] || 1.7;
+      // Per-state dot radius, interpolated across the morph so the dots
+      // grow/shrink smoothly between words of different auto-fit sizes
+      // instead of popping at the morph's end.
+      var dFrom = DOT_BY_STATE[st.from] || 1.7;
+      var dTo   = DOT_BY_STATE[st.to]   || dFrom;
+      var DOT   = isMorph ? (dFrom + (dTo - dFrom) * k) : dFrom;
 
       /* Hot-path constants — declared once per frame, not per particle.
          STAGGER_AMOUNT is how wide the per-particle delay window is,
