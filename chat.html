@@ -30088,37 +30088,28 @@
       /* (4) Live orange waveform — full-width, tall, gradient, glowing */
       html body[data-active="chat"] .hx-voice-wave {
         flex: 1 1 auto !important;
-        height: 36px !important;
+        height: 38px !important;
         display: flex !important; align-items: center !important; justify-content: space-between !important;
         gap: 0 !important;
         min-width: 0 !important;
         padding: 0 6px !important;
       }
+      /* REAL audio-reactive bars — height is driven by --amp (0..1) that the
+         AnalyserNode writes from the live microphone, via scaleY. NO fake
+         keyframes: every movement is your actual voice. */
       html body[data-active="chat"] .hx-voice-wave span {
+        --amp: 0.06;
         width: 3.5px !important;
+        height: 100% !important;
         border-radius: 3px !important;
         background: linear-gradient(180deg, #ff8a4d 0%, var(--cg-orange,#ff5a1f) 100%) !important;
         box-shadow: 0 0 8px color-mix(in srgb, var(--cg-orange,#ff5a1f) 50%, transparent) !important;
-        opacity: 1 !important;
-        animation: hx-vbar 1.1s ease-in-out infinite !important;
+        transform-origin: center center !important;
+        transform: scaleY(calc(0.12 + var(--amp) * 0.88)) !important;
+        opacity: calc(0.5 + var(--amp) * 0.5) !important;
+        animation: none !important;
+        transition: transform 90ms cubic-bezier(0.22,0.61,0.36,1), opacity 140ms ease !important;
       }
-      @keyframes hx-vbar { 0%,100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
-      /* a rich set of bar heights spread across the full width */
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(1)  { height: 34% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(2)  { height: 58% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(3)  { height: 82% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(4)  { height: 46% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(5)  { height: 96% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(6)  { height: 64% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(7)  { height: 88% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(8)  { height: 50% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(9)  { height: 76% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(10) { height: 40% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(11) { height: 70% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(12) { height: 54% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(13) { height: 90% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(14) { height: 44% !important; }
-      html body[data-active="chat"] .hx-voice-wave span:nth-child(15) { height: 66% !important; }
 
       /* (5) Actions — ghost cancel + prominent commit */
       html body[data-active="chat"] .hx-voice-panel-actions { display: inline-flex !important; align-items: center !important; gap: 8px !important; flex-shrink: 0 !important; }
