@@ -29862,6 +29862,66 @@
       /* the focus ring follows the taller card */
       html body[data-active="chat"] #hx-c-input-row { border-radius: 27px !important; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V263 — TRANSPARENT CHROME (mobile) — only the Conversations drawer
+       keeps a surface. The top controls (≡ menu, the Helix model pill, the
+       ⋮ more button) and the composer card drop their solid fills so they
+       sit cleanly on the canvas — nothing behind them but the page.
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      /* ── Top controls: no chip backgrounds, just the icons/text ── */
+      html[data-theme="light"] .hx-mobile-menu-btn,
+      html[data-theme="dark"]  .hx-mobile-menu-btn,
+      html[data-theme="light"] body[data-active="chat"] #hx-c-brand-pill,
+      html[data-theme="dark"]  body[data-active="chat"] #hx-c-brand-pill,
+      html[data-theme="light"] body[data-active="chat"] #hx-c-toolbar #hx-c-more-btn,
+      html[data-theme="dark"]  body[data-active="chat"] #hx-c-toolbar #hx-c-more-btn,
+      html[data-theme="light"] body[data-active="chat"] #hx-c-more-btn,
+      html[data-theme="dark"]  body[data-active="chat"] #hx-c-more-btn,
+      html[data-theme="light"] body[data-active="chat"] #hx-c-toolbar .hx-chat-head-actions,
+      html[data-theme="dark"]  body[data-active="chat"] #hx-c-toolbar .hx-chat-head-actions {
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+      }
+      html body[data-active="chat"] #hx-c-toolbar #hx-c-more-btn::before,
+      html body[data-active="chat"] #hx-c-toolbar #hx-c-more-btn::after {
+        background: transparent !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+      }
+      /* keep a faint tap feedback so they still feel pressable */
+      html[data-theme="light"] .hx-mobile-menu-btn:active,
+      html[data-theme="light"] body[data-active="chat"] #hx-c-brand-pill:active,
+      html[data-theme="light"] body[data-active="chat"] #hx-c-toolbar #hx-c-more-btn:active {
+        background: rgba(20,18,15,0.06) !important;
+      }
+      html[data-theme="dark"] .hx-mobile-menu-btn:active,
+      html[data-theme="dark"] body[data-active="chat"] #hx-c-brand-pill:active,
+      html[data-theme="dark"] body[data-active="chat"] #hx-c-toolbar #hx-c-more-btn:active {
+        background: rgba(255,255,255,0.08) !important;
+      }
+
+      /* ── Composer: transparent fill (the canvas shows through); a hairline
+         outline keeps it a clear, usable input. ── */
+      html[data-theme="light"] body[data-active="chat"] .hx-chat-input-bar,
+      html[data-theme="dark"]  body[data-active="chat"] .hx-chat-input-bar {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      html[data-theme="light"] body[data-active="chat"] #hx-c-input-row {
+        background: transparent !important;
+        border: 1px solid rgba(20,18,15,0.16) !important;
+      }
+      html[data-theme="dark"] body[data-active="chat"] #hx-c-input-row {
+        background: transparent !important;
+        border: 1px solid rgba(255,255,255,0.16) !important;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
