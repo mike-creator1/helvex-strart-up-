@@ -34362,6 +34362,19 @@
             var Ctx = window.AudioContext || window.webkitAudioContext;
             if (!Ctx) return;
             voiceAudioCtx = new Ctx();
+            // iOS Safari starts the AudioContext SUSPENDED — without resuming
+            // it the analyser only ever reads silence and the bars never move.
+            // We're still inside the mic-tap gesture chain, so resume works.
+            if (voiceAudioCtx.state === 'suspended') {
+              var _resume = function () { try { voiceAudioCtx && voiceAudioCtx.resume(); } catch (e) {} };
+              _resume();
+              // Belt-and-suspenders: retry on the next user touch too.
+              try {
+                var _once = function () { _resume(); document.removeEventListener('touchstart', _once, true); document.removeEventListener('pointerdown', _once, true); };
+                document.addEventListener('touchstart', _once, true);
+                document.addEventListener('pointerdown', _once, true);
+              } catch (e) {}
+            }
             voiceSource   = voiceAudioCtx.createMediaStreamSource(stream);
             voiceAnalyser = voiceAudioCtx.createAnalyser();
             voiceAnalyser.fftSize = 1024;            // 512 frequency bins
@@ -34373,9 +34386,9 @@
             return;
           }
 
-          if (!voiceBars || !voiceBars.length) {
-            voiceBars = voicePanel ? voicePanel.querySelectorAll('.hx-voice-wave > span') : null;
-          }
+          // Always re-query the bars — the panel/markup may have changed and a
+          // stale cached list would leave the waveform frozen.
+          voiceBars = voicePanel ? voicePanel.querySelectorAll('.hx-voice-wave > span') : null;
           var n = voiceBars ? voiceBars.length : 0;
           if (!n) return;
           voiceBarLevels = new Float32Array(n);
