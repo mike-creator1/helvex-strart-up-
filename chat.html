@@ -30152,6 +30152,65 @@
         html body[data-active="chat"] .hx-voice-wave span { animation: none !important; }
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V266 — FROSTED GLASS chrome (mobile) — composer + top controls
+       The user wants real glassmorphism: translucent + blurred so the chat
+       shows through behind them, blurred (iOS-style), not flat-transparent.
+       The compose wrapper goes transparent so the thread scrolls BEHIND the
+       glass card and the blur has real content to sample.
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      /* wrapper transparent → chat scrolls behind the glass */
+      html body[data-active="chat"] .hx-chat-compose { background: transparent !important; }
+      html body[data-active="chat"] .hx-chat-compose-inner { background: transparent !important; }
+
+      /* the row is just a holder now; the bar is the glass card */
+      html[data-theme="light"] body[data-active="chat"] #hx-c-input-row,
+      html[data-theme="dark"]  body[data-active="chat"] #hx-c-input-row {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      /* ── Composer = frosted glass ── */
+      html[data-theme="light"] body[data-active="chat"] .hx-chat-input-bar {
+        background: rgba(255,255,255,0.52) !important;
+        -webkit-backdrop-filter: blur(26px) saturate(1.8) !important;
+        backdrop-filter: blur(26px) saturate(1.8) !important;
+        border: 1px solid rgba(255,255,255,0.7) !important;
+        box-shadow: 0 12px 36px -16px rgba(20,18,15,0.22), inset 0 1px 0 rgba(255,255,255,0.65) !important;
+      }
+      html[data-theme="dark"] body[data-active="chat"] .hx-chat-input-bar {
+        background: rgba(30,30,36,0.5) !important;
+        -webkit-backdrop-filter: blur(26px) saturate(1.5) !important;
+        backdrop-filter: blur(26px) saturate(1.5) !important;
+        border: 1px solid rgba(255,255,255,0.13) !important;
+        box-shadow: 0 14px 40px -18px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.07) !important;
+      }
+
+      /* ── Top controls = frosted glass chips ── */
+      html[data-theme="light"] .hx-mobile-menu-btn,
+      html[data-theme="light"] body[data-active="chat"] #hx-c-brand-pill,
+      html[data-theme="light"] body[data-active="chat"] #hx-c-toolbar #hx-c-more-btn,
+      html[data-theme="light"] body[data-active="chat"] #hx-c-more-btn {
+        background: rgba(255,255,255,0.5) !important;
+        -webkit-backdrop-filter: blur(18px) saturate(1.6) !important;
+        backdrop-filter: blur(18px) saturate(1.6) !important;
+        border: 1px solid rgba(20,18,15,0.07) !important;
+        box-shadow: 0 4px 14px -8px rgba(20,18,15,0.18) !important;
+      }
+      html[data-theme="dark"] .hx-mobile-menu-btn,
+      html[data-theme="dark"] body[data-active="chat"] #hx-c-brand-pill,
+      html[data-theme="dark"] body[data-active="chat"] #hx-c-toolbar #hx-c-more-btn,
+      html[data-theme="dark"] body[data-active="chat"] #hx-c-more-btn {
+        background: rgba(255,255,255,0.08) !important;
+        -webkit-backdrop-filter: blur(18px) saturate(1.4) !important;
+        backdrop-filter: blur(18px) saturate(1.4) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        box-shadow: 0 4px 16px -10px rgba(0,0,0,0.5) !important;
+      }
+    }
   </style>
 </head>
 <body data-active="chat">
