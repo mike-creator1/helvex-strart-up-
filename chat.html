@@ -30248,6 +30248,44 @@
       html[data-theme="dark"] body[data-active="chat"] #hx-c-brand-pill:active,
       html[data-theme="dark"] body[data-active="chat"] #hx-c-toolbar #hx-c-more-btn:active { background: rgba(255,255,255,0.08) !important; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V268 — PREMIUM STRUCTURE POLISH (mobile) — Claude/ChatGPT-grade
+       A harmonised pass over the answer surface: refined type rendering,
+       one consistent vertical rhythm, and smarter coupling between blocks
+       (an intro line hugs the list it introduces; the block right after a
+       heading hugs the heading). Quiet, professional cleanliness.
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content {
+        -webkit-font-smoothing: antialiased !important;
+        -moz-osx-font-smoothing: grayscale !important;
+        text-rendering: optimizeLegibility !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
+        hyphens: none !important;
+      }
+      /* one consistent rhythm */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-p { margin: 0 0 16px !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-p:first-child { margin: 2px 0 20px !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-p:last-child { margin-bottom: 0 !important; }
+      /* an intro line that introduces a list/table hugs it */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-p:has(+ .hx-md-list) { margin-bottom: 8px !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-p:has(+ .hx-md-table-wrap) { margin-bottom: 10px !important; }
+      /* block right after a heading hugs the heading */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h2 + *,
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h3 + * { margin-top: 0 !important; }
+      /* lists — even, comfortable */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-list:not(.hx-md-list-num) { margin: 16px 0 !important; gap: 10px !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-list:not(.hx-md-list-num) > li { line-height: 1.6 !important; padding-left: 22px !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-list:not(.hx-md-list-num) > li::before { top: 0.66em !important; }
+      /* headings — refined metrics, first opens flush */
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h2 { margin: 36px 0 14px !important; line-height: 1.28 !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content .hx-md-h3 { margin: 26px 0 9px !important; line-height: 1.3 !important; }
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-h1:first-child,
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-h2:first-child,
+      html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content > .hx-md-h3:first-child { margin-top: 0 !important; }
+    }
   </style>
 </head>
 <body data-active="chat">
