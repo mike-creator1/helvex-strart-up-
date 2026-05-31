@@ -2170,19 +2170,22 @@
       statePts    = [];
       for (var sx = 0; sx < STATES.length; sx++) {
         var gfs  = fsPerState[sx];
-        var sizeGrid = Math.max(3, Math.round(gfs * 0.05)); // reference for dot SIZE (unchanged)
-        var dotR = sizeGrid * 0.40;                         // SAME thin dot size — do NOT enlarge
-        // Packing is screen-size aware so we never trade one view for the
-        // other:
-        //   • MOBILE (narrow canvas): pack the dots edge-to-edge so the small
-        //     auto-fit letters read solid and black — the approved look.
-        //   • DESKTOP (wide canvas): the letters are far larger, so the same
-        //     tight packing merged them into muddy black slabs. Use the looser
-        //     grid (~20% gap) here so the big letters stay crisp, separated
-        //     dots. This branch only affects desktop — mobile is untouched.
-        var grid = (W < 700)
-          ? Math.max(2, Math.round(dotR * 2))   // mobile: dense, solid black
-          : sizeGrid;                           // desktop: clean ~20% gap, crisp dots
+        var grid, dotR;
+        if (W < 700) {
+          // MOBILE — unchanged: fine dots packed edge-to-edge so the small
+          // auto-fit letters read solid, smooth and black (the approved look).
+          var sizeGrid = Math.max(3, Math.round(gfs * 0.05));
+          dotR = sizeGrid * 0.40;
+          grid = Math.max(2, Math.round(dotR * 2));
+        } else {
+          // DESKTOP — the letters are much larger, so a font-scaled dot grew
+          // big and the dots read as a coarse, blocky, muddy slab. Keep the
+          // dot SMALL even as the font grows (clamped 1.8–3px) and pack it
+          // edge-to-edge: many fine dots per letter → high-resolution, solid,
+          // smooth type — the same quality as mobile, just more dots.
+          dotR = Math.max(1.8, Math.min(3.0, gfs * 0.018));
+          grid = Math.max(2, Math.round(dotR * 2));
+        }
         DOT_BY_STATE.push(dotR);
         statePts.push(buildPointsFor(linesPerState[sx], STATES[sx].font, grid, gfs).pts);
       }
