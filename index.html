@@ -2119,8 +2119,12 @@
       statePts    = [];
       for (var sx = 0; sx < STATES.length; sx++) {
         var gfs  = fsPerState[sx];
-        var grid = Math.max(3, Math.round(gfs * 0.05)); // fine grid → thin, delicate dots
-        var dotR = grid * 0.40;                         // diameter 0.80·grid → 20% gap, no overlap
+        var sizeGrid = Math.max(3, Math.round(gfs * 0.05)); // reference for dot SIZE (unchanged)
+        var dotR = sizeGrid * 0.40;                         // SAME thin dot size — do NOT enlarge
+        // Pack the dots edge-to-edge (spacing ≈ one diameter) instead of
+        // leaving a 20% gap. Same dot size, but far less white shows between
+        // them, so the letters read solid and BLACK instead of grey halftone.
+        var grid = Math.max(2, Math.round(dotR * 2));
         DOT_BY_STATE.push(dotR);
         statePts.push(buildPointsFor(linesPerState[sx], STATES[sx].font, grid, gfs).pts);
       }
