@@ -421,33 +421,58 @@
 
       <!-- ════════ HelveX hero word cycle — uniform-size text, ultra-premium fade ════════ -->
       <style>
-        .hx-morph-stage{ display:flex; align-items:center; justify-content:center; }
-        .hx-wordcycle{ position:relative; width:100%; max-width:1180px; margin:0 auto; overflow:hidden;
+        .hx-morph-stage{ display:flex; align-items:center; justify-content:center;
+          width:100%; }
+        /* Self-contained CINEMATIC BLACK panel for the rotating words.
+           The page around it stays white; this band eases to deep black
+           when scrolled into view. */
+        .hx-wordstage{
+          position:relative; width:100vw; left:50%; transform:translateX(-50%);
+          margin:8px 0 28px; padding:clamp(56px,11vw,128px) 20px;
+          display:flex; align-items:center; justify-content:center;
+          border-radius:0; overflow:hidden;
+          background:#ffffff;
+          transition:background 1.1s cubic-bezier(.4,0,.2,1);
+        }
+        .hx-wordstage.is-dark{ background:radial-gradient(120% 140% at 50% 38%, #15171c 0%, #0a0b0d 55%, #050506 100%); }
+        /* soft vignette + faint floor reflection glow, only when dark */
+        .hx-wordstage::after{
+          content:''; position:absolute; left:50%; top:54%; transform:translate(-50%,-50%);
+          width:62%; height:60%;
+          background:radial-gradient(ellipse at center, rgba(180,205,255,.18) 0%, rgba(120,150,210,.06) 38%, transparent 70%);
+          opacity:0; transition:opacity 1.1s ease; pointer-events:none; filter:blur(6px);
+        }
+        .hx-wordstage.is-dark::after{ opacity:1; }
+
+        .hx-wordcycle{ position:relative; z-index:1; width:100%; max-width:1180px; margin:0 auto; overflow:hidden;
           height:clamp(78px,14vw,168px); display:flex; align-items:center; justify-content:center; }
         .hx-word{ position:absolute; left:50%; top:50%;
-          transform:translate(-50%,calc(-50% + 0.14em));
-          transform-origin:center;
+          transform:translate(-50%,calc(-50% + 0.16em)); transform-origin:center;
           font-family:'Inter',system-ui,-apple-system,sans-serif; font-weight:300;
-          letter-spacing:0.02em; line-height:1; white-space:nowrap;
-          /* polished chrome / metallic sheen */
-          color:#111;
-          background:linear-gradient(176deg,#dfe3e8 0%,#9aa1ab 14%,#3b3f46 34%,#0a0b0d 50%,#3b3f46 66%,#aab0ba 84%,#e9edf2 100%);
+          letter-spacing:0.045em; line-height:1; white-space:nowrap;
+          /* chrome-on-black: bright silver gradient + luminous glow */
+          background:linear-gradient(180deg,#ffffff 0%,#e8eef6 30%,#aab4c4 52%,#ffffff 74%,#cfd8e6 100%);
           -webkit-background-clip:text; background-clip:text;
           -webkit-text-fill-color:transparent; color:transparent;
-          filter:drop-shadow(0 1px 0 rgba(255,255,255,.55)) drop-shadow(0 6px 18px rgba(20,22,28,.18));
-          opacity:0; filter:blur(14px); will-change:opacity,transform,filter;
+          filter:
+            drop-shadow(0 0 1px rgba(255,255,255,.9))
+            drop-shadow(0 0 10px rgba(190,215,255,.55))
+            drop-shadow(0 0 28px rgba(150,185,255,.35));
+          opacity:0; will-change:opacity,transform,filter;
           transition: opacity 1.05s cubic-bezier(.16,1,.3,1),
-                      transform 1.15s cubic-bezier(.16,1,.3,1),
-                      filter 1.05s cubic-bezier(.16,1,.3,1); }
-        .hx-word.is-in{ opacity:1; transform:translate(-50%,-50%); filter:blur(0); }
-        .hx-word.is-out{ opacity:0; transform:translate(-50%,calc(-50% - 0.16em)); filter:blur(14px); }
+                      transform 1.15s cubic-bezier(.16,1,.3,1); }
+        .hx-word.is-in{ opacity:1; transform:translate(-50%,-50%); }
+        .hx-word.is-out{ opacity:0; transform:translate(-50%,calc(-50% - 0.16em)); }
         @media (prefers-reduced-motion: reduce){
-          .hx-word{ transition:opacity .4s ease; filter:none; transform:translate(-50%,-50%); }
-          .hx-word.is-out{ transform:translate(-50%,-50%); filter:none; }
+          .hx-wordstage{ transition:none; }
+          .hx-word{ transition:opacity .4s ease; transform:translate(-50%,-50%); }
+          .hx-word.is-out{ transform:translate(-50%,-50%); }
         }
-      </style>
+        </style>
       <div class="reveal relative mx-auto hx-morph-stage" aria-label="HelveX">
-        <div class="hx-wordcycle" id="hx-wordcycle" aria-hidden="true"></div>
+        <div class="hx-wordstage" id="hx-wordstage">
+          <div class="hx-wordcycle" id="hx-wordcycle" aria-hidden="true"></div>
+        </div>
       </div>
       <h1 class="hx-vh" style="position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;">HelveX</h1>
       <script>
@@ -461,7 +486,7 @@
         function uniformSize(){
           var avail=host.clientWidth*0.94;
           var probe=document.createElement('span');
-          probe.style.cssText='position:absolute;visibility:hidden;white-space:nowrap;font-family:Inter,system-ui,sans-serif;font-weight:300;letter-spacing:0.02em;font-size:100px;';
+          probe.style.cssText='position:absolute;visibility:hidden;white-space:nowrap;font-family:Inter,system-ui,sans-serif;font-weight:300;letter-spacing:0.045em;font-size:100px;';
           host.appendChild(probe);
           var maxRatio=Infinity;
           for(var k=0;k<WORDS.length;k++){ probe.textContent=WORDS[k];
@@ -482,6 +507,11 @@
         }
         show(0);
         if(!reduce) setInterval(function(){ i=(i+1)%WORDS.length; show(i); }, HOLD);
+        var stage=document.getElementById('hx-wordstage');
+        if(stage && 'IntersectionObserver' in window){
+          var io=new IntersectionObserver(function(es){es.forEach(function(e){ stage.classList.toggle('is-dark', e.isIntersecting && e.intersectionRatio>0.35); });},{threshold:[0,.35,.6]});
+          io.observe(stage);
+        } else if(stage){ stage.classList.add('is-dark'); }
         var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(function(){ FS=uniformSize(); if(cur) cur.style.fontSize=FS+'px'; }, 160); });
       })();
       </script>
