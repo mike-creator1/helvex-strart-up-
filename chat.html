@@ -32821,6 +32821,108 @@
           renderList();
         }
 
+        // ─────────────────────────────────────────────────────────────
+        // PREMIUM WELCOME — flagship empty state (hero + action cards +
+        // smart examples + model presence). Rebuilt from scratch.
+        // ─────────────────────────────────────────────────────────────
+        function greetUser() {
+          var name = '';
+          try {
+            name = localStorage.getItem('hx_first_name') ||
+                   localStorage.getItem('hx_user_name') || '';
+            if (!name) {
+              var em = localStorage.getItem('hx_user_email') || (window.sb && sb.userEmail) || '';
+              if (em && em.indexOf('@') > 0) name = em.split('@')[0];
+            }
+          } catch (e) {}
+          if (name) name = name.charAt(0).toUpperCase() + name.slice(1);
+          var h = new Date().getHours();
+          var part = h < 5 ? 'Καλό βράδυ' : h < 12 ? 'Καλημέρα' : h < 18 ? 'Καλησπέρα' : 'Καλησπέρα';
+          return part + (name ? ', ' + name : '');
+        }
+        var WELCOME_ACTIONS = [
+          { k:'research', t:'Research', d:'Ζωντανές πηγές & σύνθεση', accent:'#3b82f6',
+            ic:'<path d="M11 17.25a6.25 6.25 0 1 0 0-12.5 6.25 6.25 0 0 0 0 12.5z"/><path d="m20 20-3.8-3.8"/>',
+            prompt:'Ψάξε στο διαδίκτυο και σύνοψέ μου με πηγές: ' },
+          { k:'plan', t:'Plan', d:'Βήμα-βήμα πλάνο δράσης', accent:'#22c55e',
+            ic:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>',
+            prompt:'Φτιάξε μου ένα αναλυτικό βήμα-βήμα πλάνο για: ' },
+          { k:'analyze', t:'Analyze', d:'Βαθιά ανάλυση δεδομένων', accent:'#a855f7',
+            ic:'<path d="M3 3v18h18"/><path d="m7 14 3-3 3 3 4-5"/>',
+            prompt:'Ανάλυσέ μου σε βάθος το εξής: ' },
+          { k:'compare', t:'Compare', d:'Υπέρ, κατά & πρόταση', accent:'#f59e0b',
+            ic:'<path d="M12 3v18"/><path d="m6 8-4 4 4 4"/><path d="m18 8 4 4-4 4"/>',
+            prompt:'Σύγκρινε αναλυτικά (υπέρ/κατά/πρόταση): ' },
+          { k:'create', t:'Create', d:'Κείμενα, email, περιεχόμενο', accent:'#ec4899',
+            ic:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+            prompt:'Γράψε μου επαγγελματικά: ' },
+          { k:'learn', t:'Learn', d:'Εξήγηση απλά & καθαρά', accent:'#14b8a6',
+            ic:'<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/>',
+            prompt:'Εξήγησέ μου απλά και καθαρά: ' }
+        ];
+        var WELCOME_EXAMPLES = [
+          'Βρες εργασία στην Ελβετία για το προφίλ μου',
+          'Δημιούργησε ένα πλάνο μετανάστευσης βήμα-βήμα',
+          'Σύγκρινε δύο προσφορές εργασίας',
+          'Φτιάξε ένα επιχειρηματικό πλάνο',
+          'Σύνοψε ένα μεγάλο κείμενο σε bullets'
+        ];
+        var WELCOME_MODELS = [
+          { v:'ether', name:'Ether', d:'Γρήγορες απαντήσεις' },
+          { v:'nexus', name:'Nexus', d:'Έρευνα & ανάλυση' },
+          { v:'prometheus', name:'Prometheus', d:'Μέγιστη νοημοσύνη' }
+        ];
+        function buildWelcome(active) {
+          var cards = WELCOME_ACTIONS.map(function (a) {
+            return '<button class="hx-w-card" type="button" data-prompt="' + escape(a.prompt) + '" style="--wc:' + a.accent + '">' +
+              '<span class="hx-w-card-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + a.ic + '</svg></span>' +
+              '<span class="hx-w-card-t">' + a.t + '</span>' +
+              '<span class="hx-w-card-d">' + a.d + '</span>' +
+            '</button>';
+          }).join('');
+          var examples = WELCOME_EXAMPLES.map(function (e) {
+            return '<button class="hx-w-ex" type="button" data-prompt="' + escape(e) + '">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>' +
+              '<span>' + escape(e) + '</span></button>';
+          }).join('');
+          var curModel = ($('hx-c-model') && $('hx-c-model').value) || 'ether';
+          var models = WELCOME_MODELS.map(function (m) {
+            return '<button class="hx-w-model' + (m.v === curModel ? ' is-on' : '') + '" type="button" data-model="' + m.v + '">' +
+              '<span class="hx-w-model-name">' + m.name + '</span>' +
+              '<span class="hx-w-model-d">' + m.d + '</span></button>';
+          }).join('');
+          return '<div class="hx-welcome">' +
+            '<div class="hx-w-hero">' +
+              '<span class="hx-w-badge"><span class="hx-w-badge-dot"></span>HeliX</span>' +
+              '<h1 class="hx-w-greet">' + escape(greetUser()) + '.</h1>' +
+              '<p class="hx-w-sub">Τι θέλεις να πετύχεις σήμερα;</p>' +
+            '</div>' +
+            '<div class="hx-w-grid">' + cards + '</div>' +
+            '<div class="hx-w-sec-label">Δοκίμασε</div>' +
+            '<div class="hx-w-examples">' + examples + '</div>' +
+            '<div class="hx-w-sec-label">Μοντέλο</div>' +
+            '<div class="hx-w-models">' + models + '</div>' +
+          '</div>';
+        }
+        function wireWelcome(thread) {
+          function fill(p, send) {
+            if (!p) return;
+            inputEl.value = p + (p.endsWith(' ') || p.endsWith(':') || p.endsWith('\n') ? '' : ' ');
+            autoSize(inputEl); refreshSendDisabled(); inputEl.focus();
+            try { inputEl.selectionStart = inputEl.selectionEnd = inputEl.value.length; } catch (e) {}
+          }
+          thread.querySelectorAll('.hx-w-card, .hx-w-ex').forEach(function (b) {
+            b.addEventListener('click', function () { fill(b.getAttribute('data-prompt')); });
+          });
+          thread.querySelectorAll('.hx-w-model').forEach(function (b) {
+            b.addEventListener('click', function () {
+              var v = b.getAttribute('data-model'); var sel = $('hx-c-model');
+              if (sel && v && sel.value !== v) { sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true })); }
+              thread.querySelectorAll('.hx-w-model').forEach(function (x) { x.classList.toggle('is-on', x === b); });
+            });
+          });
+        }
+
         function renderThread() {
           var thread = $('hx-c-thread');
           if (!state.conversation) {
@@ -32848,53 +32950,13 @@
               }
               return;
             }
-            thread.innerHTML =
-              '<div class="hx-chat-blank">' +
-                '<span class="hx-chat-blank-mark" aria-hidden="true"></span>' +
-                '<span class="hx-chat-blank-eyebrow">' + escape(active.name || 'Workspace') + '</span>' +
-                '<h2>How can I help today?</h2>' +
-                '<p>Ask anything — or share a document, a file, a thought you want me to think through with you.</p>' +
-              '</div>';
+            thread.innerHTML = buildWelcome(active);
+            wireWelcome(thread);
             return;
           }
           if (!state.messages.length && !state.sending) {
-            thread.innerHTML =
-              '<div class="hx-chat-blank">' +
-                '<span class="hx-chat-blank-mark" aria-hidden="true"></span>' +
-                '<span class="hx-chat-blank-eyebrow">' + escape(state.conversation.title || 'New session') + '</span>' +
-                '<h2>What are we working on?</h2>' +
-                '<p>Start typing, paste a question, or drop a file. I will adapt to whatever you bring.</p>' +
-                '<div class="hx-chat-blank-chips">' +
-                  '<button type="button" class="hx-chat-blank-chip" data-prompt="Summarize the key points in plain language.">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>' +
-                    '<span>Summarize a document</span>' +
-                  '</button>' +
-                  '<button type="button" class="hx-chat-blank-chip" data-prompt="Help me draft a professional response to this.">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>' +
-                    '<span>Draft an email or message</span>' +
-                  '</button>' +
-                  '<button type="button" class="hx-chat-blank-chip" data-prompt="Walk me through this code or explain what it does.">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>' +
-                    '<span>Explain code</span>' +
-                  '</button>' +
-                  '<button type="button" class="hx-chat-blank-chip" data-prompt="Brainstorm 5 ideas for">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>' +
-                    '<span>Brainstorm ideas</span>' +
-                  '</button>' +
-                '</div>' +
-              '</div>';
-            // Wire chips to prefill the composer
-            thread.querySelectorAll('.hx-chat-blank-chip').forEach(function (chip) {
-              chip.addEventListener('click', function () {
-                var prompt = chip.getAttribute('data-prompt') || '';
-                if (!prompt) return;
-                inputEl.value = prompt + (prompt.endsWith(' ') ? '' : ' ');
-                autoSize(inputEl);
-                refreshSendDisabled();
-                inputEl.focus();
-                try { inputEl.selectionStart = inputEl.selectionEnd = inputEl.value.length; } catch (e) {}
-              });
-            });
+            thread.innerHTML = buildWelcome(getActiveProject());
+            wireWelcome(thread);
             return;
           }
           var html = '<div class="hx-chat-thread-inner">';
@@ -37542,6 +37604,86 @@
       --hxm-shadow:0 1px 2px rgba(20,18,12,.04), 0 12px 34px -14px rgba(20,18,12,.18);
       --hxm-shadow-lg:0 2px 8px rgba(20,18,12,.05), 0 30px 70px -28px rgba(20,18,12,.32);
     }
+
+    /* ═══════════════ PREMIUM WELCOME (empty chat) — flagship ═══════════════ */
+    body[data-active="chat"] .hx-welcome{
+      max-width:680px; margin:0 auto; padding:30px 20px 40px;
+      display:flex; flex-direction:column;
+      animation:hxwIn .6s cubic-bezier(.16,1,.3,1) both;
+    }
+    @keyframes hxwIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
+    body[data-active="chat"] .hx-w-hero{ padding:14px 4px 22px; }
+    body[data-active="chat"] .hx-w-badge{
+      display:inline-flex; align-items:center; gap:7px;
+      font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+      color:var(--hx-text-mid); padding:6px 11px; border-radius:999px;
+      background:var(--hx-bg-2); border:1px solid var(--hx-line); margin-bottom:18px;
+    }
+    body[data-active="chat"] .hx-w-badge-dot{ width:7px; height:7px; border-radius:50%; background:#28c76f; box-shadow:0 0 0 0 rgba(40,199,111,.6); animation:hxwDot 1.8s ease-out infinite; }
+    @keyframes hxwDot{ 0%{box-shadow:0 0 0 0 rgba(40,199,111,.55);} 70%{box-shadow:0 0 0 7px rgba(40,199,111,0);} 100%{box-shadow:0 0 0 0 rgba(40,199,111,0);} }
+    body[data-active="chat"] .hx-w-greet{
+      font-family:'Inter',system-ui,sans-serif; font-weight:800; letter-spacing:-.03em;
+      font-size:clamp(30px,8vw,42px); line-height:1.05; color:var(--hx-text); margin:0;
+    }
+    body[data-active="chat"] .hx-w-sub{
+      font-size:clamp(17px,4.6vw,21px); font-weight:450; color:var(--hx-text-mid);
+      margin:10px 0 0; letter-spacing:-.01em;
+    }
+    body[data-active="chat"] .hx-w-sec-label{
+      font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+      color:var(--hx-text-dim); margin:26px 4px 12px;
+    }
+    /* action cards */
+    body[data-active="chat"] .hx-w-grid{
+      display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px;
+    }
+    body[data-active="chat"] .hx-w-card{
+      position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:2px;
+      text-align:left; padding:16px 15px; border-radius:20px; overflow:hidden;
+      background:var(--hx-surface,#fff); border:1px solid var(--hx-line);
+      box-shadow:0 1px 2px rgba(20,18,12,.04), 0 14px 30px -18px rgba(20,18,12,.18);
+      transition:transform .18s cubic-bezier(.2,.8,.2,1), border-color .18s, box-shadow .18s;
+    }
+    body[data-active="chat"] .hx-w-card:active{ transform:scale(.96); }
+    body[data-active="chat"] .hx-w-card::after{
+      content:''; position:absolute; inset:0 0 auto 0; height:3px;
+      background:var(--wc); opacity:.0; transition:opacity .18s;
+    }
+    body[data-active="chat"] .hx-w-card:active::after{ opacity:1; }
+    body[data-active="chat"] .hx-w-card-ic{
+      width:42px; height:42px; border-radius:13px; display:flex; align-items:center; justify-content:center;
+      color:var(--wc); margin-bottom:10px;
+      background:color-mix(in srgb, var(--wc) 12%, #fff);
+      border:1px solid color-mix(in srgb, var(--wc) 22%, transparent);
+    }
+    body[data-active="chat"] .hx-w-card-ic svg{ width:21px; height:21px; }
+    body[data-active="chat"] .hx-w-card-t{ font-size:16px; font-weight:700; letter-spacing:-.01em; color:var(--hx-text); }
+    body[data-active="chat"] .hx-w-card-d{ font-size:12.5px; font-weight:450; color:var(--hx-text-mid); line-height:1.3; }
+    /* example prompts */
+    body[data-active="chat"] .hx-w-examples{ display:flex; flex-direction:column; gap:9px; }
+    body[data-active="chat"] .hx-w-ex{
+      display:flex; align-items:center; gap:11px; text-align:left; width:100%;
+      padding:13px 15px; border-radius:15px; background:var(--hx-bg-2);
+      border:1px solid transparent; color:var(--hx-text); transition:background .15s, border-color .15s, transform .15s;
+    }
+    body[data-active="chat"] .hx-w-ex:active{ transform:scale(.985); border-color:var(--hx-line); background:#fff; }
+    body[data-active="chat"] .hx-w-ex svg{ width:16px; height:16px; color:var(--hx-text-dim); flex-shrink:0; }
+    body[data-active="chat"] .hx-w-ex span{ font-size:14.5px; font-weight:500; letter-spacing:-.005em; }
+    /* model presence */
+    body[data-active="chat"] .hx-w-models{ display:flex; gap:10px; }
+    body[data-active="chat"] .hx-w-model{
+      flex:1; text-align:left; padding:13px 13px; border-radius:16px;
+      background:var(--hx-surface,#fff); border:1px solid var(--hx-line); box-shadow:0 1px 2px rgba(20,18,12,.04);
+      transition:border-color .15s, box-shadow .15s, transform .15s;
+    }
+    body[data-active="chat"] .hx-w-model:active{ transform:scale(.97); }
+    body[data-active="chat"] .hx-w-model.is-on{
+      border-color:color-mix(in srgb,var(--hx-accent,#ff5a1f) 50%, transparent);
+      box-shadow:0 0 0 1px color-mix(in srgb,var(--hx-accent,#ff5a1f) 28%, transparent) inset, 0 14px 28px -16px color-mix(in srgb,var(--hx-accent,#ff5a1f) 55%, transparent);
+    }
+    body[data-active="chat"] .hx-w-model-name{ display:block; font-size:14px; font-weight:700; letter-spacing:-.01em; color:var(--hx-text); }
+    body[data-active="chat"] .hx-w-model-d{ display:block; font-size:11px; font-weight:450; color:var(--hx-text-mid); margin-top:3px; line-height:1.25; }
+    @media (max-width:380px){ body[data-active="chat"] .hx-w-grid{ gap:9px; } body[data-active="chat"] .hx-w-models{ flex-direction:column; } }
 
     /* ═══════════════ INTELLIGENCE SHEET — fully custom dark-glass ═══════════════
        Designed from scratch: deep obsidian sheet, oversized editorial header,
