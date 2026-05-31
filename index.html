@@ -2012,9 +2012,14 @@
          are then scaled proportionally per state, so the ratio of
          dots-per-stroke stays identical and every word reads at the
          same visual weight. */
-      var maxW = Math.max(W * 0.70, 180);
-      var maxH = Math.max(H * 0.70, 120);
-      var maxFs = Math.floor(Math.min(maxH * 0.78, 195));
+      // Use almost the full stage so every word renders at the largest
+      // font that fits. Bigger letters mean bigger, bolder, crisper dots —
+      // long words like "Intelligent Workflows" were auto-fitting so small
+      // that their dots fell to sub-pixel size and rendered as faint grey
+      // specks. Filling ~90% of the width pushes those fonts back up.
+      var maxW = Math.max(W * 0.90, 200);
+      var maxH = Math.max(H * 0.82, 130);
+      var maxFs = Math.floor(Math.min(maxH * 0.80, 200));
 
       var measureCanvas = document.createElement('canvas');
       var measureCtx    = measureCanvas.getContext('2d');
@@ -2043,25 +2048,22 @@
          across all states the visual weight per letter-stroke stays
          uniform because each state's font is auto-fit independently:
          short words just get fewer dots in total, not bigger ones. */
-      // Per-state dot + grid, scaled to that state's auto-fit font size.
-      // The single fixed (1.7px dot / 3px grid) pair was the bug: a 3.4px
-      // dot diameter on a 3px grid always overlaps into a solid slab. On a
-      // big desktop canvas the auto-fit font is large enough that the
-      // letters still read, but on mobile the stage is only 200px tall so
-      // every word auto-fits much smaller — and fixed-size dots then dwarf
-      // the tiny letterforms and collapse them into muddy black blobs.
+      // Per-state dot + grid, scaled to that state's auto-fit font size so
+      // the texture (dots-per-stroke) stays identical at every screen size.
       //
-      // Scaling both grid and dot to each state's font keeps the texture
-      // (dots-per-stroke) identical at every screen size, and capping the
-      // dot DIAMETER at ~0.84× the grid spacing guarantees a visible gap
-      // between neighbours — so the type always reads as clean halftone,
-      // never a solid fill, whether the canvas is 1120px or 320px wide.
+      // The dot radius is HALF the grid spacing: neighbouring dots meet
+      // edge-to-edge, giving a bold, high-contrast dot-matrix that reads
+      // pure black and crisp instead of a field of faint, airy specks.
+      // Because diameter == spacing exactly (never more), the dots touch
+      // but never overlap — so the letters stay sharp and legible, with
+      // the small interstitial gaps that keep the "dotted" character,
+      // rather than smearing into a solid slab.
       DOT_BY_STATE = [];
       statePts    = [];
       for (var sx = 0; sx < STATES.length; sx++) {
         var gfs  = fsPerState[sx];
-        var grid = Math.max(2, Math.round(gfs * 0.058)); // integer stride
-        var dotR = grid * 0.42;                          // diameter ≈ 0.84·grid
+        var grid = Math.max(2, Math.round(gfs * 0.060)); // integer stride
+        var dotR = grid * 0.5;                           // diameter == spacing (bold)
         DOT_BY_STATE.push(dotR);
         statePts.push(buildPointsFor(STATES[sx].text, STATES[sx].font, grid, gfs).pts);
       }
@@ -2072,10 +2074,10 @@
         if (statePts[i].length > maxLen) maxLen = statePts[i].length;
       }
       // Cap the particle count so per-frame Path2D work stays bounded.
-      // With the font-scaled grid the longest states now sample fewer
-      // points than the old fixed-grid build, so these caps comfortably
-      // cover every word in full on both desktop and mobile.
-      var CAP = (W < 640) ? 3500 : 5500;
+      // Raised vs. the old build so the bolder, denser dot grid renders in
+      // full — downsampling below the natural sample count would thin the
+      // dots back out and reintroduce the faint look we just fixed.
+      var CAP = (W < 640) ? 5200 : 7200;
       if (maxLen > CAP) maxLen = CAP;
       if (maxLen < 50)  maxLen = 50;  // safety floor — never zero
       N = maxLen;
