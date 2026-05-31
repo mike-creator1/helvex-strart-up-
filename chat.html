@@ -29693,6 +29693,51 @@
         letter-spacing: 0.04em !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       V260 — CODE BLOCKS, MORE ADVANCED: line-number gutter
+       A sticky line-number column + horizontally-scrollable code, like a
+       real editor. Structural rules apply on every viewport (the markup is
+       shared); the dark palette suits the code card in both themes.
+       ═══════════════════════════════════════════════════════════════════ */
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-code-body {
+      display: flex !important;
+      align-items: stretch !important;
+      padding: 0 !important;
+      overflow: auto !important;
+    }
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-code-ln {
+      flex-shrink: 0 !important;
+      position: sticky !important;
+      left: 0 !important;
+      z-index: 1 !important;
+      text-align: right !important;
+      white-space: pre !important;
+      user-select: none !important; -webkit-user-select: none !important;
+      font-variant-numeric: tabular-nums !important;
+      font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace !important;
+      font-size: 12.75px !important;
+      line-height: 1.7 !important;
+      padding: 15px 12px 15px 15px !important;
+      color: #454b66 !important;
+      background: #12121a !important;
+      border-right: 1px solid rgba(255,255,255,0.07) !important;
+    }
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-code-pre {
+      margin: 0 !important;
+      padding: 15px 16px !important;
+      white-space: pre !important;
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      overflow: visible !important;
+      background: transparent !important;
+      border: none !important;
+    }
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-code-pre code {
+      background: none !important;
+      padding: 0 !important;
+      font: inherit !important;
+    }
   </style>
 </head>
 <body data-active="chat">
@@ -31073,7 +31118,20 @@
       }
 
       function renderCodeBlock(id, lang, code, isAssistant, isStreaming) {
-        var langLabel = lang ? lang : 'plain';
+        var HX_LANG_NAMES = {
+          js:'JavaScript', jsx:'JSX', mjs:'JavaScript', javascript:'JavaScript',
+          ts:'TypeScript', tsx:'TSX', typescript:'TypeScript',
+          py:'Python', python:'Python', rb:'Ruby', go:'Go', golang:'Go',
+          rs:'Rust', rust:'Rust', java:'Java', kt:'Kotlin', kotlin:'Kotlin',
+          swift:'Swift', c:'C', cpp:'C++', 'c++':'C++', cc:'C++', cs:'C#', csharp:'C#',
+          php:'PHP', sh:'Shell', bash:'Bash', zsh:'Zsh', shell:'Shell', console:'Shell',
+          sql:'SQL', json:'JSON', jsonc:'JSON', yaml:'YAML', yml:'YAML', toml:'TOML',
+          html:'HTML', htm:'HTML', xml:'XML', svg:'SVG', css:'CSS', scss:'SCSS', sass:'Sass',
+          less:'LESS', md:'Markdown', markdown:'Markdown', dockerfile:'Dockerfile',
+          diff:'Diff', graphql:'GraphQL', vue:'Vue', dart:'Dart', scala:'Scala', r:'R',
+          'plain':'Text', '':'Text'
+        };
+        var langLabel = HX_LANG_NAMES[(lang || '').toLowerCase()] || (lang ? lang : 'Text');
         var canPreview = isAssistant && (lang === 'html' || lang === 'htm' || lang === 'svg');
         var encoded = encodeURIComponent(code);
         var head = '<div class="hx-code-head">' +
@@ -31084,7 +31142,15 @@
               '<button type="button" class="hx-code-btn hx-code-copy-btn" data-code="' + encoded + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>' +
             '</div>' +
           '</div>';
-        var body = '<pre class="hx-code-body"><code class="hx-code-lang-' + escape(lang || 'plain') + '">' + hxHighlight(code, lang) + '</code></pre>';
+        // Line-numbered body — a sticky gutter + the highlighted code.
+        var codeForLines = String(code).replace(/\n+$/, '');
+        var nLines = codeForLines.length ? codeForLines.split('\n').length : 1;
+        var gutter = '';
+        for (var gi = 1; gi <= nLines; gi++) gutter += (gi > 1 ? '\n' : '') + gi;
+        var body = '<div class="hx-code-body">' +
+            '<span class="hx-code-ln" aria-hidden="true">' + gutter + '</span>' +
+            '<pre class="hx-code-pre"><code class="hx-code-lang-' + escape(lang || 'plain') + '">' + hxHighlight(codeForLines, lang) + '</code></pre>' +
+          '</div>';
         var preview = canPreview
           ? '<div class="hx-code-preview" id="' + id + '-preview" hidden><div class="hx-code-preview-head"><span>Live preview</span><span class="hx-code-preview-sandbox">sandboxed</span></div><iframe sandbox="allow-scripts" loading="lazy" referrerpolicy="no-referrer"></iframe></div>'
           : '';
