@@ -2393,7 +2393,11 @@
         ctx.moveTo(ax + DOT, ay);
         ctx.arc(ax, ay, DOT, 0, TAU);
       }
-      ctx.fill();
+      // Fill the dot path several times. Small anti-aliased circles render
+      // with a soft grey perimeter that makes them look faded; overdrawing
+      // the same path compounds the alpha on those edge pixels until each
+      // dot reads as solid, pure black — WITHOUT changing the dot radius.
+      ctx.fill(); ctx.fill(); ctx.fill(); ctx.fill();
 
       ctx.restore();
       requestAnimationFrame(render);
@@ -2413,7 +2417,8 @@
         ctx.moveTo(ax + DOT, ay);
         ctx.arc(ax, ay, DOT, 0, 6.2832);
       }
-      ctx.fill();
+      // Overdraw so the thin dots read as solid pure black (see render()).
+      ctx.fill(); ctx.fill(); ctx.fill(); ctx.fill();
       ctx.restore();
     }
 
