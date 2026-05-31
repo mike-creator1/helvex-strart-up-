@@ -1959,14 +1959,17 @@
       var stride = baseDensity * SCALE;
       var rowW = logicalW * SCALE;
       var pts = [];
-      // Alpha threshold 150 — strict. Only solid letter cores get a
-      // dot; the antialiased fringe is dropped. With the 3× super-
-      // sample this gives ultra-crisp letter edges and lets every dot
-      // sit on real letter mass instead of on a hazy outline halo.
+      // Alpha threshold 95 — captures the solid letter cores AND most of
+      // the antialiased edge, so dots fill the letterforms more fully:
+      // thin strokes and curves get covered edge-to-edge, the type reads
+      // richer and blacker and is easier to read — all WITHOUT changing
+      // the dot size or grid (same delicate dots, just more of them where
+      // the letter actually is). Dropping below ~80 would start catching
+      // the hazy outline halo, so 95 stays clean.
       for (var y = 0; y < logicalH * SCALE; y += stride) {
         for (var x = 0; x < logicalW * SCALE; x += stride) {
           var i = (y * rowW + x) * 4;
-          if (data[i + 3] > 150) {
+          if (data[i + 3] > 95) {
             pts.push({
               x: (x / SCALE - logicalW / 2),
               y: (y / SCALE - logicalH / 2)
