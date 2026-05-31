@@ -439,7 +439,7 @@
         /* soft vignette + faint floor reflection glow, only when dark */
 
 
-        .hx-wordcycle{ position:relative; z-index:1; width:100%; max-width:1180px; margin:0 auto; overflow:hidden;
+        .hx-wordcycle{ position:relative; z-index:1; width:100%; max-width:1180px; margin:0 auto; overflow:visible;
           height:clamp(54px,9vw,104px); display:flex; align-items:center; justify-content:center; }
         .hx-word{ position:absolute; left:50%; top:50%;
           transform:translate(-50%,calc(-50% + 0.16em)); transform-origin:center;
@@ -472,13 +472,13 @@
       <script>
       (function(){
         var WORDS=['HelveX','AI Agents','Smart Automation','AI Infrastructure','Enterprise AI','Intelligent Workflows','Advanced Reasoning','Autonomous Systems','AI Execution','AI Platform'];
-        var HOLD=3200, FADE=1200, MAXFS=78;
+        var HOLD=3200, FADE=1200, MAXFS=74;
         var host=document.getElementById('hx-wordcycle'); if(!host) return;
         var reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
         // ONE uniform font size for ALL words: the largest size at which the
         // LONGEST word still fits the line. Every word then renders identical.
         function uniformSize(){
-          var avail=host.clientWidth*0.94;
+          var avail=host.clientWidth*0.88;
           var probe=document.createElement('span');
           probe.style.cssText='position:absolute;visibility:hidden;white-space:nowrap;font-family:Inter,system-ui,sans-serif;font-weight:300;letter-spacing:0.045em;font-size:100px;';
           host.appendChild(probe);
@@ -490,6 +490,10 @@
         }
         var FS=uniformSize();
         var i=0,cur=null;
+        function refit(){ FS=uniformSize(); if(cur) cur.style.fontSize=FS+'px'; }
+        // The web font loads async; remeasure once it's ready so no word clips.
+        if(document.fonts && document.fonts.ready){ document.fonts.ready.then(refit); }
+        setTimeout(refit, 300); setTimeout(refit, 1200);
         function show(idx){
           var el=document.createElement('span'); el.className='hx-word';
           el.textContent=WORDS[idx]; el.style.fontSize=FS+'px';
@@ -506,7 +510,7 @@
           var io=new IntersectionObserver(function(es){es.forEach(function(e){ stage.classList.toggle('is-dark', e.isIntersecting && e.intersectionRatio>0.35); });},{threshold:[0,.35,.6]});
           io.observe(stage);
         } else if(stage){ stage.classList.add('is-dark'); }
-        var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(function(){ FS=uniformSize(); if(cur) cur.style.fontSize=FS+'px'; }, 160); });
+        var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(refit, 160); });
       })();
       </script>
 
