@@ -30708,10 +30708,39 @@
                   <button class="hx-w-ex" type="button" role="listitem" data-suggest="Φτιάξε ένα επιχειρηματικό πλάνο"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>Επιχειρηματικό πλάνο</span></button>
                 </div>
                 <div class="hx-w-sec-label">Μοντέλο</div>
-                <div class="hx-w-models">
-                  <button class="hx-w-model is-on" type="button" data-model="ether"><span class="hx-w-model-name">Ether</span><span class="hx-w-model-d">Γρήγορες απαντήσεις</span></button>
-                  <button class="hx-w-model" type="button" data-model="nexus"><span class="hx-w-model-name">Nexus</span><span class="hx-w-model-d">Έρευνα & ανάλυση</span></button>
-                  <button class="hx-w-model" type="button" data-model="prometheus"><span class="hx-w-model-name">Prometheus</span><span class="hx-w-model-d">Μέγιστη νοημοσύνη</span></button>
+                <div class="hx-w-models" role="listbox" aria-label="Ενεργό μοντέλο">
+                  <button class="hx-w-model is-on" type="button" data-model="ether" style="--mc:#ff5a1f" role="option" aria-selected="true">
+                    <span class="hx-w-model-glow" aria-hidden="true"></span>
+                    <span class="hx-w-model-top">
+                      <span class="hx-w-model-orb" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
+                      <span class="hx-w-model-pick">Ενεργό</span>
+                    </span>
+                    <span class="hx-w-model-name">Ether</span>
+                    <span class="hx-w-model-d">Γρήγορες απαντήσεις</span>
+                  </button>
+                  <button class="hx-w-model" type="button" data-model="nexus" style="--mc:#6366f1" role="option" aria-selected="false">
+                    <span class="hx-w-model-glow" aria-hidden="true"></span>
+                    <span class="hx-w-model-top">
+                      <span class="hx-w-model-orb" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg></span>
+                      <span class="hx-w-model-pick">Ενεργό</span>
+                    </span>
+                    <span class="hx-w-model-name">Nexus</span>
+                    <span class="hx-w-model-d">Έρευνα & ανάλυση</span>
+                  </button>
+                  <button class="hx-w-model" type="button" data-model="prometheus" style="--mc:#10b981" role="option" aria-selected="false">
+                    <span class="hx-w-model-glow" aria-hidden="true"></span>
+                    <span class="hx-w-model-top">
+                      <span class="hx-w-model-orb" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg></span>
+                      <span class="hx-w-model-pick">Ενεργό</span>
+                    </span>
+                    <span class="hx-w-model-name">Prometheus</span>
+                    <span class="hx-w-model-d">Μέγιστη νοημοσύνη</span>
+                  </button>
+                </div>
+                <div class="hx-w-model-dots" aria-hidden="true">
+                  <span class="hx-w-model-dot is-on" data-dot="ether"></span>
+                  <span class="hx-w-model-dot" data-dot="nexus"></span>
+                  <span class="hx-w-model-dot" data-dot="prometheus"></span>
                 </div>
               </div>
               <div class="hx-chat-blank-chips" role="list" hidden aria-hidden="true">
@@ -32901,9 +32930,9 @@
           'Σύνοψε ένα μεγάλο κείμενο σε bullets'
         ];
         var WELCOME_MODELS = [
-          { v:'ether', name:'Ether', d:'Γρήγορες απαντήσεις' },
-          { v:'nexus', name:'Nexus', d:'Έρευνα & ανάλυση' },
-          { v:'prometheus', name:'Prometheus', d:'Μέγιστη νοημοσύνη' }
+          { v:'ether', name:'Ether', d:'Γρήγορες απαντήσεις', mc:'#ff5a1f', ic:'<path d="M13 2 4 14h7l-1 8 10-12h-7l1-8z"/>' },
+          { v:'nexus', name:'Nexus', d:'Έρευνα & ανάλυση', mc:'#6366f1', ic:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>' },
+          { v:'prometheus', name:'Prometheus', d:'Μέγιστη νοημοσύνη', mc:'#10b981', ic:'<path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/>' }
         ];
         function buildWelcome(active) {
           var cards = WELCOME_ACTIONS.map(function (a) {
@@ -32920,9 +32949,18 @@
           }).join('');
           var curModel = ($('hx-c-model') && $('hx-c-model').value) || 'ether';
           var models = WELCOME_MODELS.map(function (m) {
-            return '<button class="hx-w-model' + (m.v === curModel ? ' is-on' : '') + '" type="button" data-model="' + m.v + '">' +
+            var on = m.v === curModel;
+            return '<button class="hx-w-model' + (on ? ' is-on' : '') + '" type="button" data-model="' + m.v + '" style="--mc:' + m.mc + '" role="option" aria-selected="' + (on ? 'true' : 'false') + '">' +
+              '<span class="hx-w-model-glow" aria-hidden="true"></span>' +
+              '<span class="hx-w-model-top">' +
+                '<span class="hx-w-model-orb" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + m.ic + '</svg></span>' +
+                '<span class="hx-w-model-pick">Ενεργό</span>' +
+              '</span>' +
               '<span class="hx-w-model-name">' + m.name + '</span>' +
               '<span class="hx-w-model-d">' + m.d + '</span></button>';
+          }).join('');
+          var dots = WELCOME_MODELS.map(function (m) {
+            return '<span class="hx-w-model-dot' + (m.v === curModel ? ' is-on' : '') + '" data-dot="' + m.v + '"></span>';
           }).join('');
           return '<div class="hx-welcome">' +
             '<div class="hx-w-hero">' +
@@ -32934,7 +32972,8 @@
             '<div class="hx-w-sec-label">Δοκίμασε</div>' +
             '<div class="hx-w-examples">' + examples + '</div>' +
             '<div class="hx-w-sec-label">Μοντέλο</div>' +
-            '<div class="hx-w-models">' + models + '</div>' +
+            '<div class="hx-w-models" role="listbox" aria-label="Ενεργό μοντέλο">' + models + '</div>' +
+            '<div class="hx-w-model-dots" aria-hidden="true">' + dots + '</div>' +
           '</div>';
         }
         function wireWelcome(thread) {
@@ -32947,13 +32986,7 @@
           thread.querySelectorAll('.hx-w-card, .hx-w-ex').forEach(function (b) {
             b.addEventListener('click', function () { fill(b.getAttribute('data-prompt')); });
           });
-          thread.querySelectorAll('.hx-w-model').forEach(function (b) {
-            b.addEventListener('click', function () {
-              var v = b.getAttribute('data-model'); var sel = $('hx-c-model');
-              if (sel && v && sel.value !== v) { sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true })); }
-              thread.querySelectorAll('.hx-w-model').forEach(function (x) { x.classList.toggle('is-on', x === b); });
-            });
-          });
+          if (typeof wireModelCarousel === 'function') wireModelCarousel(thread);
         }
 
         function renderThread() {
@@ -36618,6 +36651,69 @@
           if (subEl) subEl.textContent = lines[li];
         })();
 
+        // ─── Model preview carousel — swipe to choose the active model ──
+        // A native-feeling, snap-scrolling carousel: the active model sits
+        // centred, neighbours peek in on either side, and swiping (or tapping)
+        // commits the choice straight to the configuration's model <select>.
+        window.wireModelCarousel = function (scope) {
+          scope = scope || document;
+          var wrap = scope.querySelector('.hx-w-models');
+          if (!wrap || wrap.dataset.hxCarousel === '1') return;
+          wrap.dataset.hxCarousel = '1';
+          var cards = Array.prototype.slice.call(wrap.querySelectorAll('.hx-w-model'));
+          if (!cards.length) return;
+          var dotsWrap = wrap.parentNode ? wrap.parentNode.querySelector('.hx-w-model-dots') : null;
+          var dots = dotsWrap ? Array.prototype.slice.call(dotsWrap.querySelectorAll('.hx-w-model-dot')) : [];
+
+          function setActive(card, commit) {
+            cards.forEach(function (x) {
+              var on = x === card;
+              x.classList.toggle('is-on', on);
+              x.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            var v = card.getAttribute('data-model');
+            dots.forEach(function (d) { d.classList.toggle('is-on', d.getAttribute('data-dot') === v); });
+            if (commit) {
+              var sel = document.getElementById('hx-c-model');
+              if (sel && v && sel.value !== v) { sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true })); }
+            }
+          }
+          function centerOn(card, smooth) {
+            if (!card) return;
+            var wr = wrap.getBoundingClientRect(), cr = card.getBoundingClientRect();
+            var delta = (cr.left + cr.width / 2) - (wr.left + wr.width / 2);
+            var left = wrap.scrollLeft + delta;
+            try { wrap.scrollTo({ left: left, behavior: smooth ? 'smooth' : 'auto' }); }
+            catch (e) { wrap.scrollLeft = left; }
+          }
+          function nearestCard() {
+            var wr = wrap.getBoundingClientRect(), c = wr.left + wr.width / 2, best = cards[0], bd = Infinity;
+            cards.forEach(function (x) {
+              var cr = x.getBoundingClientRect(), mid = cr.left + cr.width / 2, d = Math.abs(mid - c);
+              if (d < bd) { bd = d; best = x; }
+            });
+            return best;
+          }
+
+          cards.forEach(function (b) {
+            b.addEventListener('click', function () { setActive(b, true); centerOn(b, true); });
+          });
+
+          var snapT;
+          wrap.addEventListener('scroll', function () {
+            clearTimeout(snapT);
+            snapT = setTimeout(function () {
+              var c = nearestCard();
+              if (c && !c.classList.contains('is-on')) setActive(c, true);
+            }, 90);
+          }, { passive: true });
+
+          // Centre the active model on first paint, without animation.
+          requestAnimationFrame(function () {
+            centerOn(wrap.querySelector('.hx-w-model.is-on') || cards[0], false);
+          });
+        };
+
         // ─── Wire empty-state suggestion chips ───────────────────────
         (function wireSuggest() {
           var chips = document.querySelectorAll('.hx-chat-suggest-chip, .hx-w-card[data-suggest], .hx-w-ex[data-suggest]');
@@ -36636,14 +36732,8 @@
               } catch (e) {}
             });
           });
-          // Welcome model cards → switch active model
-          document.querySelectorAll('.hx-w-model[data-model]').forEach(function (mb) {
-            mb.addEventListener('click', function () {
-              var v = mb.getAttribute('data-model'); var sel = document.getElementById('hx-c-model');
-              if (sel && v && sel.value !== v) { sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true })); }
-              document.querySelectorAll('.hx-w-model').forEach(function (x) { x.classList.toggle('is-on', x === mb); });
-            });
-          });
+          // Welcome model preview → premium swipe carousel
+          if (typeof wireModelCarousel === 'function') wireModelCarousel(document);
         })();
 
         (function wireRailCollapse() {
@@ -37728,21 +37818,96 @@
     body[data-active="chat"] .hx-w-ex:active{ transform:scale(.965); border-color:color-mix(in srgb,var(--hx-accent,#ff5a1f) 40%, transparent); }
     body[data-active="chat"] .hx-w-ex svg{ width:15px; height:15px; color:var(--hx-accent,#ff5a1f); flex-shrink:0; }
     body[data-active="chat"] .hx-w-ex span{ font-size:14px; font-weight:550; letter-spacing:-.005em; white-space:nowrap; }
-    /* model presence */
-    body[data-active="chat"] .hx-w-models{ display:flex; gap:10px; }
+    /* model preview — native-feeling, snap-scrolling swipe carousel.
+       The active model sits centred; neighbours peek in on either side. */
+    body[data-active="chat"] .hx-w-models{
+      --mw:clamp(228px, 76vw, 308px);
+      display:flex; gap:16px;
+      overflow-x:auto; scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch; scrollbar-width:none;
+      margin:2px -20px 0;
+      padding:18px calc((100% - var(--mw)) / 2) 22px;
+      overscroll-behavior-x:contain;
+    }
+    body[data-active="chat"] .hx-w-models::-webkit-scrollbar{ display:none; }
     body[data-active="chat"] .hx-w-model{
-      flex:1; text-align:left; padding:13px 13px; border-radius:16px;
-      background:var(--hx-surface,#fff); border:1px solid var(--hx-line); box-shadow:0 1px 2px rgba(20,18,12,.04);
-      transition:border-color .15s, box-shadow .15s, transform .15s;
+      flex:0 0 var(--mw); scroll-snap-align:center; scroll-snap-stop:always;
+      position:relative; isolation:isolate; overflow:hidden;
+      text-align:left; padding:20px 20px 22px; border-radius:24px;
+      background:linear-gradient(180deg,#fff, var(--hx-bg-2,#faf8f4));
+      border:1px solid var(--hx-line);
+      box-shadow:0 1px 2px rgba(20,18,12,.05), 0 8px 18px -16px rgba(20,18,12,.5);
+      transform:scale(.9); opacity:.55; filter:saturate(.85);
+      transition:transform .5s cubic-bezier(.22,1,.36,1), opacity .5s cubic-bezier(.22,1,.36,1),
+                 box-shadow .5s cubic-bezier(.22,1,.36,1), border-color .4s, filter .5s;
+      -webkit-tap-highlight-color:transparent;
     }
-    body[data-active="chat"] .hx-w-model:active{ transform:scale(.97); }
+    body[data-active="chat"] .hx-w-model:active{ transform:scale(.88); }
     body[data-active="chat"] .hx-w-model.is-on{
-      border-color:color-mix(in srgb,var(--hx-accent,#ff5a1f) 50%, transparent);
-      box-shadow:0 0 0 1px color-mix(in srgb,var(--hx-accent,#ff5a1f) 28%, transparent) inset, 0 14px 28px -16px color-mix(in srgb,var(--hx-accent,#ff5a1f) 55%, transparent);
+      transform:scale(1); opacity:1; filter:none;
+      border-color:color-mix(in srgb, var(--mc,var(--hx-accent,#ff5a1f)) 46%, transparent);
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--mc,#ff5a1f) 26%, transparent) inset,
+        0 28px 56px -26px color-mix(in srgb, var(--mc,#ff5a1f) 72%, transparent),
+        0 10px 22px -14px rgba(20,18,12,.22);
     }
-    body[data-active="chat"] .hx-w-model-name{ display:block; font-size:14px; font-weight:700; letter-spacing:-.01em; color:var(--hx-text); }
-    body[data-active="chat"] .hx-w-model-d{ display:block; font-size:11px; font-weight:450; color:var(--hx-text-mid); margin-top:3px; line-height:1.25; }
-    @media (max-width:380px){ body[data-active="chat"] .hx-w-grid{ gap:9px; } body[data-active="chat"] .hx-w-models{ flex-direction:column; } }
+    body[data-active="chat"] .hx-w-model.is-on:active{ transform:scale(.985); }
+    /* glow wash behind the active card */
+    body[data-active="chat"] .hx-w-model-glow{
+      position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none;
+      opacity:0; transition:opacity .5s cubic-bezier(.22,1,.36,1);
+      background:
+        radial-gradient(135% 90% at 50% -12%, color-mix(in srgb, var(--mc,#ff5a1f) 24%, transparent), transparent 68%),
+        radial-gradient(80% 60% at 88% 8%, color-mix(in srgb, var(--mc,#ff5a1f) 16%, transparent), transparent 60%);
+    }
+    body[data-active="chat"] .hx-w-model.is-on .hx-w-model-glow{ opacity:1; }
+    body[data-active="chat"] .hx-w-model-top{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:15px;
+    }
+    body[data-active="chat"] .hx-w-model-orb{
+      width:44px; height:44px; flex-shrink:0; border-radius:14px;
+      display:flex; align-items:center; justify-content:center; color:#fff;
+      background:linear-gradient(150deg, color-mix(in srgb, var(--mc,#ff5a1f) 82%, #fff), var(--mc,#ff5a1f));
+      box-shadow:0 8px 18px -8px color-mix(in srgb, var(--mc,#ff5a1f) 78%, transparent),
+                 0 0 0 1px rgba(255,255,255,.35) inset;
+      transition:transform .5s cubic-bezier(.22,1,.36,1);
+    }
+    body[data-active="chat"] .hx-w-model.is-on .hx-w-model-orb{ transform:scale(1.04); }
+    body[data-active="chat"] .hx-w-model-orb svg{ width:22px; height:22px; }
+    body[data-active="chat"] .hx-w-model-pick{
+      font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+      color:var(--mc,#ff5a1f); padding:5px 10px; border-radius:999px; white-space:nowrap;
+      background:color-mix(in srgb, var(--mc,#ff5a1f) 13%, transparent);
+      box-shadow:0 0 0 1px color-mix(in srgb, var(--mc,#ff5a1f) 22%, transparent) inset;
+      opacity:0; transform:translateY(-3px) scale(.92);
+      transition:opacity .35s ease, transform .45s cubic-bezier(.22,1,.36,1);
+    }
+    body[data-active="chat"] .hx-w-model.is-on .hx-w-model-pick{ opacity:1; transform:none; }
+    body[data-active="chat"] .hx-w-model-name{
+      display:block; font-size:20px; font-weight:780; letter-spacing:-.022em; line-height:1.1; color:var(--hx-text);
+    }
+    body[data-active="chat"] .hx-w-model-d{
+      display:block; font-size:13.5px; font-weight:480; color:var(--hx-text-mid); margin-top:6px; line-height:1.32;
+    }
+    /* page dots */
+    body[data-active="chat"] .hx-w-model-dots{
+      display:flex; justify-content:center; gap:7px; margin-top:-6px; padding-bottom:2px;
+    }
+    body[data-active="chat"] .hx-w-model-dot{
+      width:6px; height:6px; border-radius:999px; background:var(--hx-line);
+      transition:width .4s cubic-bezier(.22,1,.36,1), background .4s;
+    }
+    body[data-active="chat"] .hx-w-model-dot.is-on{
+      width:20px; background:color-mix(in srgb, var(--hx-accent,#ff5a1f) 70%, transparent);
+    }
+    @media (prefers-reduced-motion:reduce){
+      body[data-active="chat"] .hx-w-model,
+      body[data-active="chat"] .hx-w-model-glow,
+      body[data-active="chat"] .hx-w-model-orb,
+      body[data-active="chat"] .hx-w-model-pick,
+      body[data-active="chat"] .hx-w-model-dot{ transition:none; }
+    }
+    @media (max-width:380px){ body[data-active="chat"] .hx-w-grid{ gap:9px; } }
 
     /* ═══════════════ INTELLIGENCE SHEET — fully custom dark-glass ═══════════════
        Designed from scratch: deep obsidian sheet, oversized editorial header,
