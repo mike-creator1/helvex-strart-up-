@@ -30621,6 +30621,9 @@
       border-color:color-mix(in srgb,var(--hx-mc,var(--hx-text)) 45%, var(--hx-line));
       box-shadow:0 0 0 3px color-mix(in srgb,var(--hx-mc,var(--hx-text)) 8%, transparent);
     }
+    /* Assistant prose: a touch more reading rhythm — matches the flat-minimal
+       language (typography only, no decoration). */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content{ line-height:1.64; }
   </style>
 </head>
 <body data-active="chat">
