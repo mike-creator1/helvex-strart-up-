@@ -30668,33 +30668,47 @@
           </button>
           <div class="hx-chat-thread" id="hx-c-thread">
             <div class="hx-chat-blank" id="hx-c-blank">
-              <div class="hx-chat-blank-inner">
-                <h2 class="hx-chat-blank-greet" id="hx-c-blank-greet">Hi there — how can I help?</h2>
-                <p class="hx-chat-blank-sub" id="hx-c-blank-sub">Take your time. I'm here whenever you're ready.</p>
-                <div class="hx-chat-suggest" id="hx-c-blank-suggest" role="list" aria-label="Suggestions">
-                  <button class="hx-chat-suggest-chip" type="button" role="listitem"
-                    data-suggest="Help me draft a thoughtful reply to ">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
-                    <span>Draft a reply</span>
+              <div class="hx-welcome" id="hx-c-welcome">
+                <div class="hx-w-hero">
+                  <span class="hx-w-badge"><span class="hx-w-badge-dot"></span>HeliX</span>
+                  <h1 class="hx-w-greet" id="hx-c-blank-greet">Καλησπέρα.</h1>
+                  <p class="hx-w-sub" id="hx-c-blank-sub">Τι θέλεις να πετύχεις σήμερα;</p>
+                </div>
+                <div class="hx-w-grid">
+                  <button class="hx-w-card" type="button" data-suggest="Ψάξε στο διαδίκτυο και σύνοψέ μου με πηγές: " style="--wc:#3b82f6">
+                    <span class="hx-w-card-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17.25a6.25 6.25 0 1 0 0-12.5 6.25 6.25 0 0 0 0 12.5z"/><path d="m20 20-3.8-3.8"/></svg></span>
+                    <span class="hx-w-card-t">Research</span><span class="hx-w-card-d">Ζωντανές πηγές & σύνθεση</span>
                   </button>
-                  <button class="hx-chat-suggest-chip" type="button" role="listitem"
-                    data-suggest="Help me think through ">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.66 17h4.68"/><path d="M12 21v-1"/><path d="M12 3a7 7 0 0 0-4 12.7c.6.4 1 1.1 1 1.8V18h6v-.5c0-.7.4-1.4 1-1.8A7 7 0 0 0 12 3z"/></svg>
-                    <span>Think through a decision</span>
+                  <button class="hx-w-card" type="button" data-suggest="Φτιάξε μου ένα αναλυτικό βήμα-βήμα πλάνο για: " style="--wc:#22c55e">
+                    <span class="hx-w-card-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
+                    <span class="hx-w-card-t">Plan</span><span class="hx-w-card-d">Βήμα-βήμα πλάνο</span>
                   </button>
-                  <button class="hx-chat-suggest-chip" type="button" role="listitem"
-                    data-suggest="Summarise this for me:\n\n">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
-                    <span>Summarise something</span>
+                  <button class="hx-w-card" type="button" data-suggest="Ανάλυσέ μου σε βάθος το εξής: " style="--wc:#a855f7">
+                    <span class="hx-w-card-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 3 4-5"/></svg></span>
+                    <span class="hx-w-card-t">Analyze</span><span class="hx-w-card-d">Βαθιά ανάλυση</span>
                   </button>
-                  <button class="hx-chat-suggest-chip" type="button" role="listitem"
-                    data-suggest="Plan a small project for ">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
-                    <span>Plan something</span>
+                  <button class="hx-w-card" type="button" data-suggest="Σύγκρινε αναλυτικά (υπέρ/κατά/πρόταση): " style="--wc:#f59e0b">
+                    <span class="hx-w-card-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="m6 8-4 4 4 4"/><path d="m18 8 4 4-4 4"/></svg></span>
+                    <span class="hx-w-card-t">Compare</span><span class="hx-w-card-d">Υπέρ, κατά & πρόταση</span>
+                  </button>
+                  <button class="hx-w-card" type="button" data-suggest="Γράψε μου επαγγελματικά: " style="--wc:#ec4899">
+                    <span class="hx-w-card-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span>
+                    <span class="hx-w-card-t">Create</span><span class="hx-w-card-d">Κείμενα & email</span>
+                  </button>
+                  <button class="hx-w-card" type="button" data-suggest="Εξήγησέ μου απλά και καθαρά: " style="--wc:#14b8a6">
+                    <span class="hx-w-card-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg></span>
+                    <span class="hx-w-card-t">Learn</span><span class="hx-w-card-d">Εξήγηση απλά</span>
                   </button>
                 </div>
-                <span class="hx-chat-blank-ready" aria-hidden="true">Helix · ready</span>
-                <div class="hx-chat-blank-chips" role="list" hidden aria-hidden="true">
+                <div class="hx-w-sec-label">Δοκίμασε</div>
+                <div class="hx-w-examples" role="list">
+                  <button class="hx-w-ex" type="button" role="listitem" data-suggest="Βρες εργασία στην Ελβετία για το προφίλ μου"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>Βρες εργασία στην Ελβετία</span></button>
+                  <button class="hx-w-ex" type="button" role="listitem" data-suggest="Δημιούργησε ένα πλάνο μετανάστευσης βήμα-βήμα"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>Πλάνο μετανάστευσης</span></button>
+                  <button class="hx-w-ex" type="button" role="listitem" data-suggest="Σύγκρινε δύο προσφορές εργασίας"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>Σύγκρινε προσφορές εργασίας</span></button>
+                  <button class="hx-w-ex" type="button" role="listitem" data-suggest="Φτιάξε ένα επιχειρηματικό πλάνο"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>Επιχειρηματικό πλάνο</span></button>
+                </div>
+              </div>
+              <div class="hx-chat-blank-chips" role="list" hidden aria-hidden="true">
                   <button class="hx-chat-blank-chip" type="button" role="listitem" data-prompt="Draft a short, professional launch email announcing ">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
                     <span>Draft an email</span>
@@ -36576,45 +36590,32 @@
           });
         })();
 
-        // ─── Friendly, time-aware empty-state greeting ───────────────
+        // ─── Time-aware Greek greeting (premium welcome) ─────────────
         (function wireGreeting() {
           var greetEl = document.getElementById('hx-c-blank-greet');
           var subEl   = document.getElementById('hx-c-blank-sub');
           if (!greetEl) return;
-          var h = new Date().getHours();
-          var greet, subs;
-          if (h >= 5 && h < 12) {
-            greet = ["Good morning. What's on your mind?", "Morning — how can I help?", "Good morning. Where would you like to begin?"];
-            subs  = ["Take your time. I'm here whenever you're ready.", "No rush — let's start when you are.", "Whenever you're ready, just say the word."];
-          } else if (h >= 12 && h < 17) {
-            greet = ["Good afternoon. How can I help?", "Hi — what can I help with?", "Good afternoon. What are you working on?"];
-            subs  = ["I'm fully focused. Just let me know what you need.", "Tell me a bit more and I'll take it from there.", "Whatever you're working on — I'm in."];
-          } else if (h >= 17 && h < 22) {
-            greet = ["Good evening. What can I do for you?", "Evening — how can I help?", "Good evening. Where shall we start?"];
-            subs  = ["I've got time. Walk me through what you need.", "Whatever you're thinking, I'm listening.", "Take a breath — then tell me what's up."];
-          } else {
-            greet = ["Working late? I'm here.", "Hi — what's on your mind?", "Still here. How can I help?"];
-            subs  = ["Late nights are good thinking time. I'm with you.", "Quiet hours. Tell me what you're working on.", "I'm wide awake whenever you need me."];
-          }
-          var pick = greet[0], subPick = subs[0];
+          var name = '';
           try {
-            var stamp = sessionStorage.getItem('hx-greet-h-' + h);
-            var idx;
-            if (stamp != null) idx = parseInt(stamp, 10) % greet.length;
-            else {
-              idx = Math.floor(Math.random() * greet.length);
-              sessionStorage.setItem('hx-greet-h-' + h, String(idx));
-            }
-            pick = greet[idx];
-            subPick = subs[idx % subs.length];
+            name = localStorage.getItem('hx_first_name') || localStorage.getItem('hx_user_name') || '';
+            if (!name) { var em = localStorage.getItem('hx_user_email') || ''; if (em && em.indexOf('@')>0) name = em.split('@')[0]; }
           } catch (e) {}
-          greetEl.textContent = pick;
-          if (subEl) subEl.textContent = subPick;
+          if (name) name = name.charAt(0).toUpperCase() + name.slice(1);
+          var h = new Date().getHours();
+          var part = (h >= 5 && h < 12) ? 'Καλημέρα'
+                   : (h >= 12 && h < 17) ? 'Καλό μεσημέρι'
+                   : (h >= 17 && h < 20) ? 'Καλό απόγευμα'
+                   : 'Καλησπέρα';
+          greetEl.textContent = part + (name ? ', ' + name : '') + '.';
+          var lines = ['Τι θέλεις να πετύχεις σήμερα;','Έτοιμος για το επόμενο project;','Ας ξεκινήσουμε κάτι σπουδαίο.','Πες μου πού θες να φτάσεις.'];
+          var li = 0;
+          try { var st = sessionStorage.getItem('hx-wline'); if (st!=null) li = parseInt(st,10)%lines.length; else { li = Math.floor(Math.random()*lines.length); sessionStorage.setItem('hx-wline', String(li)); } } catch(e){}
+          if (subEl) subEl.textContent = lines[li];
         })();
 
         // ─── Wire empty-state suggestion chips ───────────────────────
         (function wireSuggest() {
-          var chips = document.querySelectorAll('.hx-chat-suggest-chip');
+          var chips = document.querySelectorAll('.hx-chat-suggest-chip, .hx-w-card[data-suggest], .hx-w-ex[data-suggest]');
           var input = document.getElementById('hx-c-input');
           if (!chips.length || !input) return;
           chips.forEach(function (chip) {
@@ -37621,10 +37622,18 @@
 
     /* ═══════════════ PREMIUM WELCOME (empty chat) — flagship ═══════════════ */
     body[data-active="chat"] .hx-welcome{
-      max-width:680px; margin:0 auto; padding:30px 20px 40px;
-      display:flex; flex-direction:column;
+      width:100%; max-width:680px; margin:0 auto; padding:30px 20px 40px;
+      box-sizing:border-box; display:flex; flex-direction:column; min-width:0;
       animation:hxwIn .6s cubic-bezier(.16,1,.3,1) both;
     }
+    body[data-active="chat"] .hx-welcome *{ box-sizing:border-box; }
+    /* the blank container must not force its own width/centering that pushes the grid out */
+    body[data-active="chat"] .hx-chat-blank:has(.hx-welcome){
+      display:block !important; width:100% !important; max-width:100% !important;
+      padding:0 !important; align-items:stretch !important;
+    }
+    body[data-active="chat"] .hx-w-grid{ min-width:0; }
+    body[data-active="chat"] .hx-w-card{ min-width:0; }
     @keyframes hxwIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
     body[data-active="chat"] .hx-w-hero{ padding:14px 4px 22px; }
     body[data-active="chat"] .hx-w-badge{
