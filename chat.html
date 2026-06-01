@@ -34973,7 +34973,9 @@
             mk.innerHTML = Object.keys(SCREENS).map(function (name) {
               var s = SCREENS[name];
               return '<div class="hx-mockup-screen" data-screen="' + name + '"' + (name === 'home' ? '' : ' hidden') + '>' +
-                '<img class="hx-mockup-img" src="' + s.img + '" alt="">' + hotHTML(s.hots) + '</div>';
+                '<img class="hx-mockup-img" src="' + s.img + '" alt="">' + hotHTML(s.hots) +
+                '<span class="hx-mk-glow" aria-hidden="true"></span><span class="hx-mk-sheen" aria-hidden="true"></span>' +
+                '</div>';
             }).join('');
             el.appendChild(mk);
 
@@ -38401,6 +38403,28 @@
     body[data-active="chat"] .hx-mockup-img{ display:block; width:100%; height:auto; }
     body[data-active="chat"] .hx-mockup-hot{ position:absolute; background:transparent; border:0; padding:0; margin:0; cursor:pointer; -webkit-tap-highlight-color:transparent; }
     body[data-active="chat"] .hx-mockup-hot:active{ background:rgba(255,255,255,.06); border-radius:16px; }
+    /* "Living" overlay so the screenshots don't read as flat/dead: the cosmic
+       glow gently breathes and a soft light sweeps across, both via screen
+       blend so they amplify the colours already in the image. */
+    body[data-active="chat"] .hx-mk-glow,
+    body[data-active="chat"] .hx-mk-sheen{ position:absolute; inset:0; pointer-events:none; z-index:2; }
+    body[data-active="chat"] .hx-mk-glow{
+      mix-blend-mode:screen;
+      background:radial-gradient(58% 22% at 82% 12%, rgba(255,255,255,.16), transparent 70%);
+      animation:hxMkBreathe 4.8s ease-in-out infinite;
+    }
+    body[data-active="chat"] .hx-mk-sheen{
+      mix-blend-mode:screen;
+      background:linear-gradient(115deg, transparent 38%, rgba(255,255,255,.045) 47%, rgba(255,255,255,.11) 50%, rgba(255,255,255,.045) 53%, transparent 62%);
+      background-size:280% 280%;
+      animation:hxMkSheen 7.5s ease-in-out infinite;
+    }
+    @keyframes hxMkBreathe{ 0%,100%{ opacity:.4 } 50%{ opacity:.95 } }
+    @keyframes hxMkSheen{ 0%{ background-position:135% 0 } 100%{ background-position:-35% 0 } }
+    @media (prefers-reduced-motion: reduce){
+      body[data-active="chat"] .hx-mk-glow,
+      body[data-active="chat"] .hx-mk-sheen{ animation:none; }
+    }
     /* Old chat hamburger (≡) belongs to the previous UI — hide it whenever the
        home / screenshot prototype is showing so it never sits over the photos. */
     body.hx-home-on .hx-chat-drawer-toggle{ display:none !important; }
