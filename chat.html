@@ -34883,18 +34883,15 @@
             '</nav>';
           pane.appendChild(el);
 
-          // ── Screenshot mockup layer ─────────────────────────────────
-          // Renders the real HELVEX screenshot (/IMG_7886.png) full-screen
-          // over the home with transparent clickable hotspots aligned to the
-          // image. If the file fails to load, this stays hidden and the CSS
-          // home shows (safe fallback).
+          // ── Screenshot mockup layer (scrollable page stack) ─────────
+          // Renders real screenshot pages full-width, stacked vertically and
+          // scrollable, each with transparent clickable hotspots aligned to
+          // that image (coords are % of THAT image). Add more screens later
+          // by pushing to PAGES. If the first image fails to load, the layer
+          // stays hidden and the CSS home shows (safe fallback).
           (function () {
-            var mk = document.createElement('div');
-            mk.className = 'hx-mockup'; mk.hidden = true;
-            // Coordinates measured directly off the HELVEX screenshot
-            // (1206×2622) as % of width/height. Phone viewport aspect ≈ the
-            // image aspect, so object-fit:cover maps these 1:1.
-            var HOT = [
+            // Hotspots measured off IMG_7886.png (1206×2622), as % of the image.
+            var P1 = [
               { act:'avatar',     l:83,  t:4,    w:14,   h:5    },
               { act:'composer',   l:4.5, t:23.5, w:91,   h:10.5 },
               { act:'research',   l:4.5, t:36,   w:27.5, h:12.5 },
@@ -34912,15 +34909,29 @@
               { act:'tabHistory', l:60,  t:92,   w:18,   h:7    },
               { act:'tabSettings',l:80,  t:92,   w:18,   h:7    }
             ];
-            var hots = HOT.map(function (h) {
-              return '<button class="hx-mockup-hot" type="button" data-act="' + h.act +
-                '" style="left:' + h.l + '%;top:' + h.t + '%;width:' + h.w + '%;height:' + h.h + '%"></button>';
+            // Each entry is one full-screen screenshot stacked below the prev.
+            var PAGES = [
+              { img:'/IMG_7886.png', hots:P1 }
+            ];
+            var mk = document.createElement('div');
+            mk.className = 'hx-mockup'; mk.hidden = true;
+            mk.innerHTML = PAGES.map(function (pg) {
+              var hots = (pg.hots || []).map(function (h) {
+                return '<button class="hx-mockup-hot" type="button" data-act="' + h.act +
+                  '" style="left:' + h.l + '%;top:' + h.t + '%;width:' + h.w + '%;height:' + h.h + '%"></button>';
+              }).join('');
+              return '<div class="hx-mockup-page"><img class="hx-mockup-img" src="' + pg.img + '" alt="">' + hots + '</div>';
             }).join('');
-            mk.innerHTML = '<img class="hx-mockup-img" src="/IMG_7886.png" alt="">' + hots;
             el.appendChild(mk);
-            var img = mk.querySelector('.hx-mockup-img');
-            img.addEventListener('load', function () { if (img.naturalWidth > 1) mk.hidden = false; });
-            img.addEventListener('error', function () { mk.hidden = true; });
+            // Reveal as soon as the first screenshot is ready; if it can't load,
+            // stay hidden so the functional CSS home shows instead.
+            var first = mk.querySelector('.hx-mockup-img');
+            if (first) {
+              var reveal = function () { if (first.naturalWidth > 1) mk.hidden = false; };
+              if (first.complete) reveal();
+              first.addEventListener('load', reveal);
+              first.addEventListener('error', function () { mk.hidden = true; });
+            }
             mk.querySelectorAll('.hx-mockup-hot').forEach(function (h) {
               h.addEventListener('click', function () {
                 var act = h.getAttribute('data-act');
@@ -38320,9 +38331,10 @@
     body[data-active="chat"] #hx-home[hidden]{ display:none !important; }
     @keyframes hxHomeIn{ from{opacity:0;} to{opacity:1;} }
     /* screenshot mockup layer + transparent hotspots */
-    body[data-active="chat"] .hx-mockup{ position:absolute; inset:0; z-index:70; background:var(--hx-bg); }
+    body[data-active="chat"] .hx-mockup{ position:absolute; inset:0; z-index:70; background:var(--hx-bg); overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
     body[data-active="chat"] .hx-mockup[hidden]{ display:none !important; }
-    body[data-active="chat"] .hx-mockup-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+    body[data-active="chat"] .hx-mockup-page{ position:relative; width:100%; }
+    body[data-active="chat"] .hx-mockup-img{ display:block; width:100%; height:auto; }
     body[data-active="chat"] .hx-mockup-hot{ position:absolute; background:transparent; border:0; padding:0; margin:0; cursor:pointer; -webkit-tap-highlight-color:transparent; }
     body[data-active="chat"] .hx-mockup-hot:active{ background:rgba(255,255,255,.06); border-radius:16px; }
     /* app bar */
