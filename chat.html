@@ -34811,13 +34811,14 @@
             compare:'<circle cx="12" cy="12" r="2.6"/><path d="M19.5 12a7.5 7.5 0 0 0-7.5-7.5 8 8 0 0 0-5.6 2.3L4.5 8.3"/><path d="M4.5 4.3v4h4"/><path d="M4.5 12a7.5 7.5 0 0 0 7.5 7.5 8 8 0 0 0 5.6-2.3L19.5 15.7"/><path d="M19.5 19.7v-4h-4"/>',
             create:'<path d="M21.174 6.812a1 1 0 0 0-3.986-3.986L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .622.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
             learn:'<path d="M22 10v6"/><path d="M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+            code:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
             restore:'<path d="M3 12a9 9 0 1 0 2.6-6.3L3 8"/><path d="M3 3v5h5"/>'
           };
           var CARDS = [
             { k:'research', t:'Research', d:'Find, verify, and explore anything',      c:'#7c5cff', ic:I.research },
             { k:'plan',     t:'Plan',     d:'Turn ideas into actionable plans',         c:'#22c55e', ic:I.plan },
             { k:'analyze',  t:'Analyze',  d:'Extract insights from your data',          c:'#3b82f6', ic:I.analyze },
-            { k:'compare',  t:'Compare',  d:'Make better decisions with comparisons',   c:'#f59e0b', ic:I.compare },
+            { k:'code',     t:'Code',     d:'Build, debug and ship faster',             c:'#f59e0b', ic:I.code },
             { k:'create',   t:'Create',   d:'Generate, write and build content',        c:'#ec4899', ic:I.create },
             { k:'learn',    t:'Learn',    d:'Master any topic with AI tutoring',        c:'#22d3ee', ic:I.learn }
           ];
@@ -34883,136 +34884,6 @@
             '</nav>';
           pane.appendChild(el);
 
-          // ── Screenshot prototype router ─────────────────────────────
-          // A clickable prototype built from the real HELVEX screenshots.
-          // Each screen is one full-width image with transparent hotspots
-          // (coords are % of THAT image). Tapping a card navigates to its
-          // screen; tapping the back arrow / Home tab returns to the home
-          // screen. Cards whose screen isn't uploaded yet simply do nothing
-          // until their image is added to SCREENS. If the home image can't
-          // load, the whole layer stays hidden and the CSS home shows.
-          (function () {
-            var SCREENS = {
-              // ── Home ──────────────────────────────────────────────────
-              home: { img:'/IMG_7886.png', hots:[
-                { act:'x',          l:83,  t:4,    w:14,   h:5    }, // avatar
-                { act:'x',          l:4.5, t:23.5, w:91,   h:10.5 }, // composer
-                { act:'go:research',l:4.5, t:36,   w:27.5, h:12.5 },
-                { act:'go:plan',    l:36,  t:36,   w:28,   h:12.5 },
-                { act:'go:analyze', l:67.5,t:36,   w:27.5, h:12.5 },
-                { act:'go:compare', l:4.5, t:48.7, w:27.5, h:13   },
-                { act:'go:create',  l:36,  t:48.7, w:28,   h:13   },
-                { act:'go:learn',   l:67.5,t:48.7, w:27.5, h:13   },
-                { act:'x',          l:4.5, t:75.5, w:91,   h:5.5  }, // session 1
-                { act:'x',          l:4.5, t:81.5, w:91,   h:5.5  }, // session 2
-                { act:'x',          l:4.5, t:87.5, w:91,   h:5.5  }, // session 3
-                { act:'go:home',    l:2,   t:92,   w:18,   h:7    }, // nav: home
-                { act:'x',          l:21,  t:92,   w:18,   h:7    }, // nav: projects
-                { act:'x',          l:40,  t:91,   w:20,   h:8    }, // nav: orb
-                { act:'x',          l:60,  t:92,   w:18,   h:7    }, // nav: history
-                { act:'x',          l:80,  t:92,   w:18,   h:7    }  // nav: settings
-              ]},
-              // ── Research (IMG_7894) ───────────────────────────────────
-              research: { img:'/IMG_7894.png', hots:[
-                { act:'go:home', l:2,  t:8,    w:14, h:6   }, // back arrow
-                { act:'x',       l:82, t:7.5,  w:15, h:6   }, // avatar
-                { act:'x',       l:4,  t:40,   w:92, h:8.5 }, // composer
-                { act:'x',       l:4,  t:53.5, w:92, h:9.5 }, // suggestion 1
-                { act:'x',       l:4,  t:63.5, w:92, h:9.5 }, // suggestion 2
-                { act:'x',       l:4,  t:73.5, w:92, h:9.5 }, // suggestion 3
-                { act:'go:home', l:2,  t:88,   w:18, h:8   }, // nav: home
-                { act:'x',       l:21, t:88,   w:18, h:8   }, // nav: projects
-                { act:'x',       l:40, t:87,   w:20, h:9   }, // nav: orb
-                { act:'x',       l:60, t:88,   w:18, h:8   }, // nav: history
-                { act:'x',       l:80, t:88,   w:18, h:8   }  // nav: settings
-              ]},
-              // ── Plan (IMG_7897) ───────────────────────────────────────
-              plan: { img:'/IMG_7897.png', hots:[
-                { act:'go:home', l:2,  t:8,    w:14, h:6   }, // back arrow
-                { act:'x',       l:82, t:7.5,  w:15, h:6   }, // avatar
-                { act:'x',       l:4,  t:38,   w:92, h:10  }, // composer
-                { act:'x',       l:4,  t:52,   w:92, h:7.5 }, // template 1
-                { act:'x',       l:4,  t:60,   w:92, h:7.5 }, // template 2
-                { act:'x',       l:4,  t:68,   w:92, h:7.5 }, // template 3
-                { act:'x',       l:4,  t:79,   w:92, h:4.5 }, // recent plan 1
-                { act:'x',       l:4,  t:84,   w:92, h:4.5 }, // recent plan 2
-                { act:'x',       l:4,  t:88.5, w:92, h:4.5 }, // recent plan 3
-                { act:'go:home', l:2,  t:90,   w:18, h:8   }, // nav: home
-                { act:'x',       l:21, t:90,   w:18, h:8   }, // nav: projects
-                { act:'x',       l:40, t:89,   w:20, h:9   }, // nav: orb
-                { act:'x',       l:60, t:90,   w:18, h:8   }, // nav: history
-                { act:'x',       l:80, t:90,   w:18, h:8   }  // nav: settings
-              ]},
-              // ── Analyze (IMG_7898) — same layout as Plan ──────────────
-              analyze: { img:'/IMG_7898.png', hots:[
-                { act:'go:home', l:2,  t:8,    w:14, h:6   }, // back arrow
-                { act:'x',       l:82, t:7.5,  w:15, h:6   }, // avatar
-                { act:'x',       l:4,  t:38,   w:92, h:10  }, // composer
-                { act:'x',       l:4,  t:52,   w:92, h:7.5 }, // tool 1
-                { act:'x',       l:4,  t:60,   w:92, h:7.5 }, // tool 2
-                { act:'x',       l:4,  t:68,   w:92, h:7.5 }, // tool 3
-                { act:'x',       l:4,  t:79,   w:92, h:4.5 }, // recent 1
-                { act:'x',       l:4,  t:84,   w:92, h:4.5 }, // recent 2
-                { act:'x',       l:4,  t:88.5, w:92, h:4.5 }, // recent 3
-                { act:'go:home', l:2,  t:90,   w:18, h:8   }, // nav: home
-                { act:'x',       l:21, t:90,   w:18, h:8   }, // nav: projects
-                { act:'x',       l:40, t:89,   w:20, h:9   }, // nav: orb
-                { act:'x',       l:60, t:90,   w:18, h:8   }, // nav: history
-                { act:'x',       l:80, t:90,   w:18, h:8   }  // nav: settings
-              ]}
-            };
-
-            var mk = document.createElement('div');
-            mk.className = 'hx-mockup'; mk.hidden = true;
-            function hotHTML(hots) {
-              return (hots || []).map(function (h) {
-                return '<button class="hx-mockup-hot" type="button" data-act="' + h.act +
-                  '" style="left:' + h.l + '%;top:' + h.t + '%;width:' + h.w + '%;height:' + h.h + '%"></button>';
-              }).join('');
-            }
-            mk.innerHTML = Object.keys(SCREENS).map(function (name) {
-              var s = SCREENS[name];
-              return '<div class="hx-mockup-screen" data-screen="' + name + '"' + (name === 'home' ? '' : ' hidden') + '>' +
-                '<img class="hx-mockup-img" src="' + s.img + '" alt="">' +
-                '<img class="hx-mk-pulse" src="' + s.img + '" aria-hidden="true" alt="">' + hotHTML(s.hots) +
-                '</div>';
-            }).join('');
-            el.appendChild(mk);
-
-            function showScreen(name) {
-              if (!SCREENS[name]) return false;
-              mk.querySelectorAll('.hx-mockup-screen').forEach(function (sc) {
-                sc.hidden = (sc.getAttribute('data-screen') !== name);
-              });
-              mk.scrollTop = 0;
-              return true;
-            }
-
-            // Reveal once the home image is ready; if it fails, fall back to
-            // the functional CSS home beneath.
-            var first = mk.querySelector('.hx-mockup-screen[data-screen="home"] .hx-mockup-img');
-            if (first) {
-              var hideBurger = function () {
-                // The legacy chat hamburger (≡) floats in its own layer above
-                // the prototype — kill it imperatively too, in case CSS/class
-                // timing leaves it visible.
-                var dt = document.getElementById('hx-c-drawer-toggle');
-                if (dt) dt.style.setProperty('display', 'none', 'important');
-              };
-              var reveal = function () { if (first.naturalWidth > 1) { mk.hidden = false; hideBurger(); } };
-              if (first.complete) reveal();
-              first.addEventListener('load', reveal);
-              first.addEventListener('error', function () { mk.hidden = true; });
-            }
-
-            mk.addEventListener('click', function (e) {
-              var h = e.target && e.target.closest && e.target.closest('.hx-mockup-hot');
-              if (!h) return;
-              var act = h.getAttribute('data-act') || '';
-              if (act.indexOf('go:') === 0) { showScreen(act.slice(3)); return; }
-              // 'x' and anything else: not wired yet — intentionally no-op.
-            });
-          })();
 
           var input = document.getElementById('hx-home-input');
           var realInput = document.getElementById('hx-c-input');
@@ -35038,13 +34909,12 @@
           document.getElementById('hx-home-mic').addEventListener('click', function () { var m = document.getElementById('hx-c-mic'); if (m) m.click(); });
           document.getElementById('hx-home-menu').addEventListener('click', function () { var d = document.getElementById('hx-c-drawer-toggle'); if (d) d.click(); });
 
-          // Feature cards → Research opens its dedicated screen; the rest
-          // engage their mode + focus the composer.
+          // Feature cards → each opens its dedicated, functional workspace.
           el.querySelectorAll('.hx-home-cards .hx-home-card[data-mode]').forEach(function (p) {
             p.addEventListener('click', function () {
               var k = p.getAttribute('data-mode');
+              if (typeof window.hxShowWorkspace === 'function') { window.hxShowWorkspace(k); return; }
               if (typeof setMode === 'function') setMode(k);
-              if (k === 'research' && typeof window.hxShowResearch === 'function') { window.hxShowResearch(); return; }
               sync();
               if (input) { input.focus(); }
             });
@@ -35121,102 +34991,213 @@
           try { new MutationObserver(evaluate).observe(thread, { childList: true }); } catch (e) {}
 
           // ═══════════════════════════════════════════════════════════
-          // RESEARCH SCREEN — same design system, dedicated workspace.
-          // Reuses the home shell's bar / composer / row / tab components
-          // so it reads as the same product. Opened from the Research card.
+          // CATEGORY WORKSPACES — every card opens a real, functional
+          // workspace built from the Home design system (same bar, glow,
+          // composer, typography, bottom nav). One overlay, content swapped
+          // per category. No images, no mockups, no concept art.
           // ═══════════════════════════════════════════════════════════
           var back = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>';
-          var magnifier = '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>';
-          var RFOCUS = ['All','Web','Academic','News','Finance','Code'];
-          var rfocus = RFOCUS.map(function (f, i) {
-            return '<button class="hx-rs-chip' + (i === 0 ? ' is-on' : '') + '" type="button" data-focus="' + f + '">' + f + '</button>';
-          }).join('');
-          var RTREND = [
-            { t:'AI trends to watch in 2026',        meta:'8 sources' },
-            { t:'Quantum computing breakthroughs',   meta:'12 sources' },
-            { t:'Global economy outlook for 2026',   meta:'6 sources' },
-            { t:'Longevity & healthspan research',   meta:'9 sources' }
-          ];
-          var rtrend = RTREND.map(function (r) {
-            return '<button class="hx-home-rec" type="button" data-ws-suggest="' + r.t + '" style="--wc:#7c5cff">' +
-              '<span class="hx-home-rec-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + magnifier + '</svg></span>' +
-              '<span class="hx-home-rec-body"><span class="hx-home-rec-t">' + r.t + '</span><span class="hx-home-rec-m">Research &middot; ' + r.meta + '</span></span>' +
-              '<span class="hx-home-rec-act" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button>';
-          }).join('');
+          var avatarSVG = '<svg viewBox="0 0 44 44" aria-hidden="true"><defs><linearGradient id="hxavw" x1="0" y1="0" x2="0" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e1e8f2"/><stop offset="1" stop-color="#b6c4d8"/></linearGradient></defs><rect width="44" height="44" fill="url(#hxavw)"/><path d="M7.5 44c.8-7.2 6.4-11.2 14.5-11.2S35.7 36.8 36.5 44z" fill="#36456a"/><path d="M18.7 27.5h6.6v5l-3.3 1.9-3.3-1.9z" fill="#e6b187"/><path d="M14 19.3c0-5.1 3.5-8.7 8-8.7s8 3.6 8 8.7v2.7c0 5-3.6 8.6-8 8.6s-8-3.6-8-8.6z" fill="#ecba91"/><path d="M13.5 19c-.3-5.9 3.8-9.6 8.5-9.6s8.8 3.7 8.5 9.6c-1-2.3-2.1-4.1-3.9-4.8-1.6 1.2-7.6 1.3-9.2 0-1.8.7-2.9 2.5-3.9 4.8z" fill="#5a3a25"/><circle cx="19.3" cy="20.9" r="1.05" fill="#3a2a20"/><circle cx="24.7" cy="20.9" r="1.05" fill="#3a2a20"/></svg>';
+          function sg(inner, sw){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (sw || 1.9) + '" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>'; }
+          var WIC = {
+            globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18"/>',
+            doc:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/>',
+            repo:'<path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v15H6.5A2.5 2.5 0 0 0 4 19.5z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 22H20"/>',
+            file:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/>',
+            target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>',
+            flag:'<path d="M5 22V4"/><path d="M5 4h12l-2 4 2 4H5"/>',
+            play:'<circle cx="12" cy="12" r="9"/><polygon points="10 8 16 12 10 16"/>',
+            book:'<path d="M5 4a2 2 0 0 1 2-2h11v18H7a2 2 0 0 0-2 2z"/><path d="M18 16H7"/>',
+            image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/>',
+            mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+            mega:'<path d="M4 11v2l12 5V6L4 11z"/><path d="M16 9a3 3 0 0 1 0 6"/>',
+            chart:'<path d="M3 3v18h18"/><path d="m7 14 3-3 3 3 4-6"/>',
+            bug:'<rect x="8" y="6" width="8" height="12" rx="4"/><path d="M12 6V3"/><path d="M5 9l3 1"/><path d="M19 9l-3 1"/><path d="M5 15l3-1"/><path d="M19 15l-3-1"/>'
+          };
+          var WS = {
+            research: { accent:'#7c5cff', icon:I.research, title:'Research', sub:'Find, verify and explore anything — with cited sources.', ph:'Research any topic…',
+              chips:['All','Web','Academic','News','Code','Docs'],
+              blocks:[
+                {type:'list', label:'Sources', seeall:true, items:[
+                  {t:'OpenAI — model roadmap 2026', m:'openai.com · verified', ic:'globe'},
+                  {t:'Nature — quantum error correction', m:'nature.com · peer-reviewed', ic:'doc'},
+                  {t:'IMF — global economic outlook', m:'imf.org · report', ic:'doc'} ]},
+                {type:'list', label:'Knowledge base', items:[
+                  {t:'Market landscape brief', m:'12 sources · 8 citations', ic:'doc'},
+                  {t:'Competitor teardown', m:'9 sources · 5 citations', ic:'doc'} ]},
+                {type:'list', label:'Research sessions', items:[
+                  {t:'AI trends to watch in 2026', m:'8 sources · 2h ago', ic:'globe'},
+                  {t:'Longevity & healthspan', m:'9 sources · yesterday', ic:'globe'} ]}
+              ]},
+            plan: { accent:'#22c55e', icon:I.plan, title:'Plan', sub:'Turn ideas into roadmaps, milestones and tasks.', ph:'What do you want to plan?',
+              chips:['All','Roadmaps','Goals','Tasks','Projects'],
+              blocks:[
+                {type:'stats', items:[ {v:'4', k:'Active goals'}, {v:'12', k:'Milestones'}, {v:'68%', k:'Tasks done'} ]},
+                {type:'board', label:'Roadmap', cols:[
+                  {name:'To do', items:['Define Q1 OKRs','Hire 2 engineers','Pricing research']},
+                  {name:'In progress', items:['MVP onboarding','Design system v2']},
+                  {name:'Done', items:['Brand refresh','Landing page']} ]},
+                {type:'list', label:'Projects', seeall:true, items:[
+                  {t:'Product roadmap Q1', m:'18 tasks · 4 milestones', ic:'flag'},
+                  {t:'Go-to-market plan', m:'9 tasks · due Mar 30', ic:'target'} ]}
+              ]},
+            analyze: { accent:'#3b82f6', icon:WIC.chart, title:'Analyze', sub:'Dashboards, metrics and insights from your data.', ph:'What data would you like to analyze?',
+              chips:['Overview','Revenue','Growth','Retention','Funnel'],
+              blocks:[
+                {type:'stats', items:[ {v:'€48.2k', k:'MRR', d:'+12%'}, {v:'3,920', k:'Active users', d:'+8%'}, {v:'2.4%', k:'Churn', d:'-0.3%'} ]},
+                {type:'chart', label:'Revenue · last 7 months', bars:[ {l:'Sep',v:42},{l:'Oct',v:55},{l:'Nov',v:48},{l:'Dec',v:70},{l:'Jan',v:65},{l:'Feb',v:82},{l:'Mar',v:96} ]},
+                {type:'list', label:'Reports', seeall:true, items:[
+                  {t:'Q4 sales analysis', m:'updated 3h ago', ic:'chart'},
+                  {t:'Cohort retention', m:'updated yesterday', ic:'chart'} ]}
+              ]},
+            code: { accent:'#f59e0b', icon:WIC.repo, title:'Code', sub:'A real coding workspace — repos, files, debugging.', ph:'Describe what to build, fix or refactor…',
+              chips:['All','Repositories','Files','Issues','PRs'],
+              blocks:[
+                {type:'stats', items:[ {v:'7', k:'Repos'}, {v:'3', k:'Open PRs'}, {v:'11', k:'Issues'} ]},
+                {type:'list', label:'Repositories', seeall:true, items:[
+                  {t:'helix-web', m:'TypeScript · main · 2h ago', ic:'repo'},
+                  {t:'helix-api', m:'Python · main · yesterday', ic:'repo'},
+                  {t:'helix-infra', m:'Terraform · 3d ago', ic:'repo'} ]},
+                {type:'list', label:'Recent files', items:[
+                  {t:'src/app/home.tsx', m:'edited 12 min ago', ic:'file'},
+                  {t:'api/routes/auth.py', m:'edited 1h ago', ic:'file'} ]},
+                {type:'list', label:'Sessions', items:[
+                  {t:'Refactor auth flow', m:'debugging · 30 min ago', ic:'bug'} ]}
+              ]},
+            create: { accent:'#ec4899', icon:I.create, title:'Create', sub:'Generate content, assets and campaigns.', ph:'What do you want to create?',
+              chips:['All','Documents','Images','Campaigns','Social'],
+              blocks:[
+                {type:'tiles', label:'New', items:[
+                  {t:'Document', d:'Article, post, doc', ic:'doc'},
+                  {t:'Image', d:'Visuals & assets', ic:'image'},
+                  {t:'Email', d:'Outreach', ic:'mail'},
+                  {t:'Campaign', d:'Multi-channel', ic:'mega'} ]},
+                {type:'list', label:'Recent assets', seeall:true, items:[
+                  {t:'Launch announcement', m:'document · 1h ago', ic:'doc'},
+                  {t:'Q1 ad creatives', m:'6 images · yesterday', ic:'image'} ]},
+                {type:'list', label:'Campaigns', items:[
+                  {t:'Spring product launch', m:'4 assets · scheduled', ic:'mega'} ]}
+              ]},
+            learn: { accent:'#22d3ee', icon:I.learn, title:'Learn', sub:'Courses, learning paths and AI tutoring.', ph:'What do you want to learn?',
+              chips:['All','Courses','Paths','Saved','Tutor'],
+              blocks:[
+                {type:'stats', items:[ {v:'6', k:'Day streak'}, {v:'3', k:'Courses'}, {v:'24h', k:'Learned'} ]},
+                {type:'list', label:'Continue learning', seeall:true, items:[
+                  {t:'Machine learning foundations', m:'62% · lesson 8 of 14', ic:'play'},
+                  {t:'Financial literacy', m:'30% · lesson 3 of 10', ic:'play'} ]},
+                {type:'list', label:'Learning paths', items:[
+                  {t:'Become an AI engineer', m:'5 courses · 40h', ic:'book'},
+                  {t:'Startup founder track', m:'4 courses · 28h', ic:'book'} ]}
+              ]}
+          };
 
-          var rs = document.createElement('div');
-          rs.id = 'hx-research'; rs.hidden = true;
-          rs.innerHTML =
-            '<div class="hx-home-bar">' +
-              '<button class="hx-home-menu" type="button" id="hx-rs-back" aria-label="Back">' + back + '</button>' +
-              '<div class="hx-home-brand">' + glyph + '<span class="hx-home-brand-name">Helix</span><span class="hx-home-brand-pro">PRO</span></div>' +
-              '<button class="hx-home-avatar" type="button" aria-label="Account"><svg viewBox="0 0 44 44" aria-hidden="true"><defs><linearGradient id="hxav2" x1="0" y1="0" x2="0" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e1e8f2"/><stop offset="1" stop-color="#b6c4d8"/></linearGradient></defs><rect width="44" height="44" fill="url(#hxav2)"/><path d="M7.5 44c.8-7.2 6.4-11.2 14.5-11.2S35.7 36.8 36.5 44z" fill="#36456a"/><path d="M18.7 27.5h6.6v5l-3.3 1.9-3.3-1.9z" fill="#e6b187"/><path d="M14 19.3c0-5.1 3.5-8.7 8-8.7s8 3.6 8 8.7v2.7c0 5-3.6 8.6-8 8.6s-8-3.6-8-8.6z" fill="#ecba91"/><path d="M13.5 19c-.3-5.9 3.8-9.6 8.5-9.6s8.8 3.7 8.5 9.6c-1-2.3-2.1-4.1-3.9-4.8-1.6 1.2-7.6 1.3-9.2 0-1.8.7-2.9 2.5-3.9 4.8z" fill="#5a3a25"/><path d="M17.6 18.7c1.2-.7 2.6-.7 3.8 0" stroke="#46301e" stroke-width="0.85" fill="none" stroke-linecap="round"/><path d="M22.6 18.7c1.2-.7 2.6-.7 3.8 0" stroke="#46301e" stroke-width="0.85" fill="none" stroke-linecap="round"/><circle cx="19.3" cy="20.9" r="1.05" fill="#3a2a20"/><circle cx="24.7" cy="20.9" r="1.05" fill="#3a2a20"/></svg></button>' +
-            '</div>' +
-            '<div class="hx-home-scroll">' +
-              '<h1 class="hx-home-greet hx-rs-h"><span class="hx-rs-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">' + magnifier + '</svg></span>Research<span style="color:var(--hx-violet)">.</span></h1>' +
-              '<p class="hx-home-sub">Find, verify, and explore anything — with cited sources.</p>' +
-              '<div class="hx-home-composer">' +
-                '<div class="hx-home-inrow">' +
-                  '<textarea class="hx-home-input" id="hx-rs-input" rows="1" placeholder="Research any topic…" autocomplete="off" spellcheck="true"></textarea>' +
-                  '<div class="hx-home-inbtns">' +
-                    '<button class="hx-home-mic" type="button" id="hx-rs-mic" aria-label="Voice input">' + S.mic + '</button>' +
-                    '<button class="hx-home-send" type="button" id="hx-rs-send" aria-label="Search">' + magnifierBtn() + '</button>' +
+          function renderBlocks(c){
+            return c.blocks.map(function(b){
+              if(b.type==='stats'){
+                return '<div class="hx-ws-stats">' + b.items.map(function(s){
+                  return '<div class="hx-ws-stat"><span class="hx-ws-stat-v">' + s.v + '</span><span class="hx-ws-stat-k">' + s.k + '</span>' + (s.d ? '<span class="hx-ws-stat-d ' + (s.d.charAt(0) === '-' ? 'is-dn' : 'is-up') + '">' + s.d + '</span>' : '') + '</div>';
+                }).join('') + '</div>';
+              }
+              if(b.type==='chart'){
+                var mx = Math.max.apply(null, b.bars.map(function(x){ return x.v; }));
+                return '<div class="hx-w-sughead"><span class="hx-w-sec-label">' + b.label + '</span></div>' +
+                  '<div class="hx-ws-chart">' + b.bars.map(function(x){
+                    return '<div class="hx-ws-bar"><span class="hx-ws-bar-fill" style="height:' + Math.round(x.v / mx * 100) + '%"></span><span class="hx-ws-bar-l">' + x.l + '</span></div>';
+                  }).join('') + '</div>';
+              }
+              if(b.type==='board'){
+                return '<div class="hx-w-sughead"><span class="hx-w-sec-label">' + b.label + '</span></div>' +
+                  '<div class="hx-ws-board">' + b.cols.map(function(col){
+                    return '<div class="hx-ws-col"><div class="hx-ws-col-h">' + col.name + '<span>' + col.items.length + '</span></div>' +
+                      col.items.map(function(t){ return '<div class="hx-ws-card">' + t + '</div>'; }).join('') + '</div>';
+                  }).join('') + '</div>';
+              }
+              if(b.type==='tiles'){
+                return '<div class="hx-w-sughead"><span class="hx-w-sec-label">' + b.label + '</span></div>' +
+                  '<div class="hx-ws-tiles">' + b.items.map(function(t){
+                    return '<button class="hx-ws-tile" type="button" data-seed="Create a ' + t.t.toLowerCase() + '"><span class="hx-ws-tile-ic">' + sg(WIC[t.ic] || c.icon) + '</span><span class="hx-ws-tile-t">' + t.t + '</span><span class="hx-ws-tile-d">' + t.d + '</span></button>';
+                  }).join('') + '</div>';
+              }
+              return '<div class="hx-w-sughead"><span class="hx-w-sec-label">' + b.label + '</span>' + (b.seeall ? '<button class="hx-w-seeall" type="button">View all' + S.chevR + '</button>' : '') + '</div>' +
+                '<div class="hx-home-recent">' + b.items.map(function(it){
+                  return '<button class="hx-home-rec" type="button" data-seed="' + it.t + '" style="--wc:' + c.accent + '"><span class="hx-home-rec-ic">' + sg(WIC[it.ic] || c.icon) + '</span><span class="hx-home-rec-body"><span class="hx-home-rec-t">' + it.t + '</span><span class="hx-home-rec-m">' + it.m + '</span></span><span class="hx-home-rec-act">' + sg('<path d="M9 18l6-6-6-6"/>', 2) + '</span></button>';
+                }).join('') + '</div>';
+            }).join('');
+          }
+
+          var ws = document.createElement('div');
+          ws.id = 'hx-ws'; ws.hidden = true;
+          pane.appendChild(ws);
+          var wsKey = null;
+
+          function renderWS(key){
+            var c = WS[key]; if(!c) return;
+            wsKey = key;
+            ws.style.setProperty('--hx-violet', c.accent);
+            var chips = c.chips.map(function(f,i){ return '<button class="hx-rs-chip' + (i === 0 ? ' is-on' : '') + '" type="button">' + f + '</button>'; }).join('');
+            ws.innerHTML =
+              '<div class="hx-home-bar">' +
+                '<button class="hx-home-menu" type="button" id="hx-ws-back" aria-label="Back">' + back + '</button>' +
+                '<div class="hx-home-brand">' + glyph + '<span class="hx-home-brand-name">Helix</span><span class="hx-home-brand-pro">PRO</span></div>' +
+                '<button class="hx-home-avatar" type="button" aria-label="Account">' + avatarSVG + '</button>' +
+              '</div>' +
+              '<div class="hx-home-scroll">' +
+                '<h1 class="hx-home-greet hx-rs-h"><span class="hx-rs-ic" aria-hidden="true">' + sg(c.icon, 2.1) + '</span>' + c.title + '<span style="color:var(--hx-violet)">.</span></h1>' +
+                '<p class="hx-home-sub">' + c.sub + '</p>' +
+                '<div class="hx-home-composer">' +
+                  '<div class="hx-home-inrow">' +
+                    '<textarea class="hx-home-input" id="hx-ws-input" rows="1" placeholder="' + c.ph + '" autocomplete="off" spellcheck="true"></textarea>' +
+                    '<div class="hx-home-inbtns">' +
+                      '<button class="hx-home-mic" type="button" id="hx-ws-mic" aria-label="Voice">' + S.mic + '</button>' +
+                      '<button class="hx-home-send" type="button" id="hx-ws-send" aria-label="Send">' + sg('<line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/>', 2.2) + '</button>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="hx-home-pills">' +
+                    '<button class="hx-home-pill is-on" type="button">' + S.web + '<span>Web search</span></button>' +
+                    '<button class="hx-home-pill" type="button">' + S.doc + '<span>Sources</span></button>' +
+                    '<button class="hx-home-pill" type="button">' + S.focus + '<span>Focus</span></button>' +
                   '</div>' +
                 '</div>' +
-                '<div class="hx-home-pills">' +
-                  '<button class="hx-home-pill is-on" type="button">' + S.web + '<span>Web search</span></button>' +
-                  '<button class="hx-home-pill" type="button">' + S.doc + '<span>Sources</span></button>' +
-                  '<button class="hx-home-pill" type="button">' + S.focus + '<span>Focus</span></button>' +
-                  '<button class="hx-home-pill hx-home-pill-more" type="button" aria-label="More">' + S.chevD + '</button>' +
-                '</div>' +
+                '<div class="hx-rs-chips">' + chips + '</div>' +
+                renderBlocks(c) +
               '</div>' +
-              '<div class="hx-w-sec-label hx-rs-seclabel">Focus areas</div>' +
-              '<div class="hx-rs-chips">' + rfocus + '</div>' +
-              '<div class="hx-w-sughead">' +
-                '<span class="hx-w-sec-label">Trending research</span>' +
-                '<button class="hx-w-seeall" type="button">View all' + S.chevR + '</button>' +
-              '</div>' +
-              '<div class="hx-home-recent">' + rtrend + '</div>' +
-            '</div>' +
-            '<nav class="hx-home-tabs" aria-label="Sections">' +
-              '<button class="hx-home-tab" type="button" data-tab="home" aria-label="Home">' + S.home + '</button>' +
-              '<button class="hx-home-tab" type="button" data-tab="history" aria-label="History">' + S.clock + '</button>' +
-              '<button class="hx-home-tab" type="button" data-tab="fav" aria-label="Favorites">' + S.star + '</button>' +
-              '<button class="hx-home-tab" type="button" data-tab="apps" aria-label="Apps">' + S.grid + '</button>' +
-            '</nav>';
-          pane.appendChild(rs);
-
-          function magnifierBtn() { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>'; }
-
-          var rsInput = rs.querySelector('#hx-rs-input');
-          function rsAutosize() { rsInput.style.height = 'auto'; rsInput.style.height = Math.min(rsInput.scrollHeight, 140) + 'px'; }
-          function rsSend() {
-            if (!rsInput.value.trim()) return;
-            if (typeof setMode === 'function' && hxMode !== 'research') setMode('research');
-            if (realInput) { realInput.value = rsInput.value; try { realInput.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {} }
-            rsInput.value = ''; rsAutosize();
-            window.hxHideResearch();
-            if (realSend) { realSend.removeAttribute('disabled'); realSend.click(); }
+              '<nav class="hx-home-tabs" aria-label="Sections">' +
+                '<button class="hx-home-tab" type="button" data-tab="home" aria-label="Home">' + S.home + '</button>' +
+                '<button class="hx-home-tab" type="button" data-tab="history" aria-label="History">' + S.clock + '</button>' +
+                '<button class="hx-home-tab" type="button" data-tab="fav" aria-label="Favorites">' + S.star + '</button>' +
+                '<button class="hx-home-tab" type="button" data-tab="apps" aria-label="Apps">' + S.grid + '</button>' +
+              '</nav>';
           }
-          rsInput.addEventListener('input', rsAutosize);
-          rsInput.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); rsSend(); } });
-          rs.querySelector('#hx-rs-send').addEventListener('click', rsSend);
-          rs.querySelector('#hx-rs-mic').addEventListener('click', function () { var m = document.getElementById('hx-c-mic'); if (m) m.click(); });
-          rs.querySelector('#hx-rs-back').addEventListener('click', function () { window.hxHideResearch(); });
-          rs.querySelectorAll('.hx-rs-chip').forEach(function (c) {
-            c.addEventListener('click', function () { rs.querySelectorAll('.hx-rs-chip').forEach(function (x) { x.classList.toggle('is-on', x === c); }); });
+
+          function wsAutosize(t){ t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 140) + 'px'; }
+          function wsSend(){
+            var ti = ws.querySelector('#hx-ws-input'); if(!ti || !ti.value.trim()) return;
+            try { if(typeof setMode === 'function' && wsKey && hxMode !== wsKey && (typeof HX_MODES === 'undefined' || HX_MODES[wsKey])) setMode(wsKey); } catch(e){}
+            if(realInput){ realInput.value = ti.value; try { realInput.dispatchEvent(new Event('input', { bubbles:true })); } catch(e){} }
+            ti.value = ''; window.hxHideWorkspace();
+            if(realSend){ realSend.removeAttribute('disabled'); realSend.click(); }
+          }
+          // One delegated set of handlers for the (re-rendered) workspace.
+          ws.addEventListener('click', function(e){
+            var t = e.target; if(!t || !t.closest) return;
+            if(t.closest('#hx-ws-back')){ window.hxHideWorkspace(); return; }
+            if(t.closest('#hx-ws-send')){ wsSend(); return; }
+            if(t.closest('#hx-ws-mic')){ var m = document.getElementById('hx-c-mic'); if(m) m.click(); return; }
+            var chip = t.closest('.hx-rs-chip'); if(chip){ ws.querySelectorAll('.hx-rs-chip').forEach(function(x){ x.classList.toggle('is-on', x === chip); }); return; }
+            var tab = t.closest('.hx-home-tab'); if(tab){ if(tab.getAttribute('data-tab') === 'home') window.hxHideWorkspace(); return; }
+            var seed = t.closest('[data-seed]'); if(seed){ var ti = ws.querySelector('#hx-ws-input'); if(ti){ ti.value = seed.getAttribute('data-seed'); wsAutosize(ti); ti.focus(); try { ti.selectionStart = ti.selectionEnd = ti.value.length; } catch(_){} } return; }
           });
-          rs.querySelector('.hx-home-recent').addEventListener('click', function (e) {
-            var b = e.target.closest && e.target.closest('[data-ws-suggest]'); if (!b) return;
-            e.preventDefault();
-            rsInput.value = b.getAttribute('data-ws-suggest') || ''; rsAutosize(); rsInput.focus();
-            try { rsInput.selectionStart = rsInput.selectionEnd = rsInput.value.length; } catch (_) {}
-          });
-          rs.querySelectorAll('.hx-home-tab').forEach(function (t) {
-            t.addEventListener('click', function () { if (t.getAttribute('data-tab') === 'home') window.hxHideResearch(); });
-          });
-          window.hxShowResearch = function () { rs.hidden = false; var s = rs.querySelector('.hx-home-scroll'); if (s) s.scrollTop = 0; };
-          window.hxHideResearch = function () { rs.hidden = true; };
+          ws.addEventListener('input', function(e){ if(e.target && e.target.id === 'hx-ws-input') wsAutosize(e.target); });
+          ws.addEventListener('keydown', function(e){ if(e.target && e.target.id === 'hx-ws-input' && e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); wsSend(); } });
+
+          window.hxShowWorkspace = function(key){
+            if(!WS[key]){ try { if(typeof setMode === 'function') setMode(key); } catch(e){} return; }
+            renderWS(key); ws.hidden = false;
+            var s = ws.querySelector('.hx-home-scroll'); if(s) s.scrollTop = 0;
+          };
+          window.hxHideWorkspace = function(){ ws.hidden = true; };
+          window.hxShowResearch = function(){ window.hxShowWorkspace('research'); };
+          window.hxHideResearch = function(){ window.hxHideWorkspace(); };
         })();
 
 
@@ -38396,31 +38377,6 @@
     body[data-active="chat"] #hx-home[hidden]{ display:none !important; }
     @keyframes hxHomeIn{ from{opacity:0;} to{opacity:1;} }
     /* screenshot mockup layer + transparent hotspots */
-    body[data-active="chat"] .hx-mockup{ position:absolute; inset:0; z-index:70; background:var(--hx-bg); overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
-    body[data-active="chat"] .hx-mockup[hidden]{ display:none !important; }
-    body[data-active="chat"] .hx-mockup-screen{ position:relative; width:100%; }
-    body[data-active="chat"] .hx-mockup-screen[hidden]{ display:none !important; }
-    body[data-active="chat"] .hx-mockup-img{ display:block; width:100%; height:auto; }
-    body[data-active="chat"] .hx-mockup-hot{ position:absolute; background:transparent; border:0; padding:0; margin:0; cursor:pointer; -webkit-tap-highlight-color:transparent; }
-    body[data-active="chat"] .hx-mockup-hot:active{ background:rgba(255,255,255,.06); border-radius:16px; }
-    /* "Living" glow ONLY where there's colour: a copy of the same screenshot
-       sits on top in screen-blend mode and gently pulses. Screen-blending an
-       image over itself brightens only the lit/coloured pixels (the orb, the
-       icon medallions, the planet glow) — pure-black areas stay black. So the
-       colours breathe and nothing washes out the dark background. */
-    body[data-active="chat"] .hx-mk-pulse{
-      position:absolute; inset:0; width:100%; height:auto; display:block;
-      pointer-events:none; z-index:2;
-      mix-blend-mode:screen;
-      filter:saturate(1.5) brightness(1.12);
-      opacity:0;
-      animation:hxMkPulse 3.8s ease-in-out infinite;
-      will-change:opacity;
-    }
-    @keyframes hxMkPulse{ 0%,100%{ opacity:.12 } 50%{ opacity:.6 } }
-    @media (prefers-reduced-motion: reduce){
-      body[data-active="chat"] .hx-mk-pulse{ animation:none; opacity:0; }
-    }
     /* Old chat hamburger (≡) belongs to the previous UI — remove it entirely.
        Unconditional ID rule (highest specificity + !important) so it can never
        show, in any state. It stays clickable programmatically for the drawer. */
@@ -38637,6 +38593,38 @@
       background:linear-gradient(150deg,#8b7bff,var(--hx-violet));
       box-shadow:0 8px 18px -10px color-mix(in srgb,var(--hx-violet) 70%, transparent);
     }
+
+    /* ── Category workspaces (Research/Plan/Analyze/Code/Create/Learn) ── */
+    body[data-active="chat"] #hx-ws{
+      position:fixed; inset:0; z-index:61; display:flex; flex-direction:column;
+      background:var(--hx-bg); animation:hxHomeIn .35s cubic-bezier(.16,1,.3,1) both;
+    }
+    @media (min-width:900px){ body[data-active="chat"] #hx-ws{ position:absolute; } }
+    body[data-active="chat"] #hx-ws[hidden]{ display:none !important; }
+    body[data-active="chat"] .hx-ws-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:22px; }
+    body[data-active="chat"] .hx-ws-stat{ display:flex; flex-direction:column; gap:3px; padding:15px 13px; border-radius:18px; background:var(--hx-surface); border:1px solid var(--hx-line); }
+    body[data-active="chat"] .hx-ws-stat-v{ font-size:22px; font-weight:760; letter-spacing:-.02em; color:var(--hx-text); }
+    body[data-active="chat"] .hx-ws-stat-k{ font-size:11px; font-weight:500; color:var(--hx-text-mid); }
+    body[data-active="chat"] .hx-ws-stat-d{ font-size:11px; font-weight:650; margin-top:2px; }
+    body[data-active="chat"] .hx-ws-stat-d.is-up{ color:#22c55e; }
+    body[data-active="chat"] .hx-ws-stat-d.is-dn{ color:#ef4444; }
+    body[data-active="chat"] .hx-ws-chart{ display:flex; align-items:flex-end; gap:9px; height:148px; padding:14px 8px 0; margin-top:6px; border-radius:18px; background:var(--hx-surface); border:1px solid var(--hx-line); }
+    body[data-active="chat"] .hx-ws-bar{ flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; height:100%; justify-content:flex-end; }
+    body[data-active="chat"] .hx-ws-bar-fill{ width:100%; max-width:26px; border-radius:7px 7px 3px 3px; background:linear-gradient(180deg,color-mix(in srgb,var(--hx-violet) 75%,#fff),var(--hx-violet)); box-shadow:0 6px 16px -8px color-mix(in srgb,var(--hx-violet) 70%,transparent); }
+    body[data-active="chat"] .hx-ws-bar-l{ font-size:10px; color:var(--hx-text-mid); }
+    body[data-active="chat"] .hx-ws-board{ display:flex; gap:10px; overflow-x:auto; scrollbar-width:none; margin:6px -20px 0; padding:2px 20px 4px; -webkit-overflow-scrolling:touch; }
+    body[data-active="chat"] .hx-ws-board::-webkit-scrollbar{ display:none; }
+    body[data-active="chat"] .hx-ws-col{ flex:0 0 196px; display:flex; flex-direction:column; gap:8px; }
+    body[data-active="chat"] .hx-ws-col-h{ display:flex; justify-content:space-between; font-size:12.5px; font-weight:650; color:var(--hx-text-mid); padding:0 2px 2px; }
+    body[data-active="chat"] .hx-ws-col-h span{ opacity:.55; }
+    body[data-active="chat"] .hx-ws-card{ padding:13px 14px; border-radius:14px; background:var(--hx-surface); border:1px solid var(--hx-line); font-size:13.5px; font-weight:500; color:var(--hx-text); }
+    body[data-active="chat"] .hx-ws-tiles{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:6px; }
+    body[data-active="chat"] .hx-ws-tile{ display:flex; flex-direction:column; align-items:flex-start; gap:6px; padding:16px; border-radius:18px; background:var(--hx-surface); border:1px solid var(--hx-line); text-align:left; transition:transform .15s,border-color .15s; }
+    body[data-active="chat"] .hx-ws-tile:active{ transform:scale(.97); }
+    body[data-active="chat"] .hx-ws-tile-ic{ color:var(--hx-violet); display:inline-flex; filter:drop-shadow(0 0 10px color-mix(in srgb,var(--hx-violet) 45%,transparent)); }
+    body[data-active="chat"] .hx-ws-tile-ic svg{ width:24px; height:24px; }
+    body[data-active="chat"] .hx-ws-tile-t{ font-size:15px; font-weight:680; color:var(--hx-text); }
+    body[data-active="chat"] .hx-ws-tile-d{ font-size:11.5px; color:var(--hx-text-mid); }
 
     /* model presence */
     body[data-active="chat"] .hx-w-models{ display:flex; gap:10px; }
