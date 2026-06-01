@@ -34883,36 +34883,40 @@
             '</nav>';
           pane.appendChild(el);
 
-          // ── Screenshot mockup layer (optional) ──────────────────────
-          // If /home-mockup.png exists, render the real screenshot full-screen
-          // over the home with transparent clickable hotspots. If the file is
-          // missing, this stays hidden and the CSS home shows (fallback).
+          // ── Screenshot mockup layer ─────────────────────────────────
+          // Renders the real HELVEX screenshot (/IMG_7886.png) full-screen
+          // over the home with transparent clickable hotspots aligned to the
+          // image. If the file fails to load, this stays hidden and the CSS
+          // home shows (safe fallback).
           (function () {
             var mk = document.createElement('div');
             mk.className = 'hx-mockup'; mk.hidden = true;
+            // Coordinates measured directly off the HELVEX screenshot
+            // (1206×2622) as % of width/height. Phone viewport aspect ≈ the
+            // image aspect, so object-fit:cover maps these 1:1.
             var HOT = [
-              { act:'composer', l:5,  t:25, w:90, h:9 },
-              { act:'research', l:5,  t:35, w:29, h:15 },
-              { act:'plan',     l:36, t:35, w:28, h:15 },
-              { act:'analyze',  l:67, t:35, w:28, h:15 },
-              { act:'compare',  l:5,  t:51, w:29, h:15 },
-              { act:'create',   l:36, t:51, w:28, h:15 },
-              { act:'learn',    l:67, t:51, w:28, h:15 },
-              { act:'avatar',   l:84, t:5,  w:14, h:6 },
-              { act:'session',  l:5,  t:70, w:90, h:6 },
-              { act:'session',  l:5,  t:76, w:90, h:6 },
-              { act:'session',  l:5,  t:82, w:90, h:6 },
-              { act:'tabHome',    l:2,  t:88, w:18, h:10 },
-              { act:'tabProjects',l:21, t:88, w:18, h:10 },
-              { act:'composer',   l:40, t:86, w:20, h:12 },
-              { act:'tabHistory', l:60, t:88, w:18, h:10 },
-              { act:'tabSettings',l:80, t:88, w:18, h:10 }
+              { act:'avatar',     l:83,  t:4,    w:14,   h:5    },
+              { act:'composer',   l:4.5, t:23.5, w:91,   h:10.5 },
+              { act:'research',   l:4.5, t:36,   w:27.5, h:12.5 },
+              { act:'plan',       l:36,  t:36,   w:28,   h:12.5 },
+              { act:'analyze',    l:67.5,t:36,   w:27.5, h:12.5 },
+              { act:'compare',    l:4.5, t:48.7, w:27.5, h:13   },
+              { act:'create',     l:36,  t:48.7, w:28,   h:13   },
+              { act:'learn',      l:67.5,t:48.7, w:27.5, h:13   },
+              { act:'session',    l:4.5, t:75.5, w:91,   h:5.5  },
+              { act:'session',    l:4.5, t:81.5, w:91,   h:5.5  },
+              { act:'session',    l:4.5, t:87.5, w:91,   h:5.5  },
+              { act:'tabHome',    l:2,   t:92,   w:18,   h:7    },
+              { act:'tabProjects',l:21,  t:92,   w:18,   h:7    },
+              { act:'composer',   l:40,  t:91,   w:20,   h:8    },
+              { act:'tabHistory', l:60,  t:92,   w:18,   h:7    },
+              { act:'tabSettings',l:80,  t:92,   w:18,   h:7    }
             ];
             var hots = HOT.map(function (h) {
               return '<button class="hx-mockup-hot" type="button" data-act="' + h.act +
                 '" style="left:' + h.l + '%;top:' + h.t + '%;width:' + h.w + '%;height:' + h.h + '%"></button>';
             }).join('');
-            mk.innerHTML = '<img class="hx-mockup-img" src="/home-mockup.png" alt="">' + hots;
+            mk.innerHTML = '<img class="hx-mockup-img" src="/IMG_7886.png" alt="">' + hots;
             el.appendChild(mk);
             var img = mk.querySelector('.hx-mockup-img');
             img.addEventListener('load', function () { if (img.naturalWidth > 1) mk.hidden = false; });
