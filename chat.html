@@ -34883,6 +34883,52 @@
             '</nav>';
           pane.appendChild(el);
 
+          // ── Screenshot mockup layer (optional) ──────────────────────
+          // If /home-mockup.png exists, render the real screenshot full-screen
+          // over the home with transparent clickable hotspots. If the file is
+          // missing, this stays hidden and the CSS home shows (fallback).
+          (function () {
+            var mk = document.createElement('div');
+            mk.className = 'hx-mockup'; mk.hidden = true;
+            var HOT = [
+              { act:'composer', l:4,  t:27, w:92, h:13 },
+              { act:'research', l:4,  t:46, w:30, h:13 },
+              { act:'plan',     l:35, t:46, w:30, h:13 },
+              { act:'analyze',  l:66, t:46, w:30, h:13 },
+              { act:'compare',  l:4,  t:60, w:30, h:13 },
+              { act:'create',   l:35, t:60, w:30, h:13 },
+              { act:'learn',    l:66, t:60, w:30, h:13 },
+              { act:'menu',     l:4,  t:13, w:13, h:5 },
+              { act:'avatar',   l:83, t:13, w:13, h:5 },
+              { act:'tabHome',  l:2,  t:92, w:24, h:7 },
+              { act:'tabHistory', l:26, t:92, w:24, h:7 }
+            ];
+            var hots = HOT.map(function (h) {
+              return '<button class="hx-mockup-hot" type="button" data-act="' + h.act +
+                '" style="left:' + h.l + '%;top:' + h.t + '%;width:' + h.w + '%;height:' + h.h + '%"></button>';
+            }).join('');
+            mk.innerHTML = '<img class="hx-mockup-img" src="/home-mockup.png" alt="">' + hots;
+            el.appendChild(mk);
+            var img = mk.querySelector('.hx-mockup-img');
+            img.addEventListener('load', function () { if (img.naturalWidth > 1) mk.hidden = false; });
+            img.addEventListener('error', function () { mk.hidden = true; });
+            mk.querySelectorAll('.hx-mockup-hot').forEach(function (h) {
+              h.addEventListener('click', function () {
+                var act = h.getAttribute('data-act');
+                mk.hidden = true; // reveal the real, functional home beneath
+                if (act === 'research' && typeof window.hxShowResearch === 'function') { window.hxShowResearch(); return; }
+                if (/^(research|plan|analyze|compare|create|learn)$/.test(act)) {
+                  if (typeof setMode === 'function') setMode(act);
+                  var i = document.getElementById('hx-home-input'); if (i) i.focus();
+                  return;
+                }
+                if (act === 'composer') { var i2 = document.getElementById('hx-home-input'); if (i2) i2.focus(); return; }
+                if (act === 'menu') { var d = document.getElementById('hx-c-drawer-toggle'); if (d) d.click(); return; }
+                if (act === 'tabHistory') { var d2 = document.getElementById('hx-c-drawer-toggle'); if (d2) d2.click(); return; }
+              });
+            });
+          })();
+
           var input = document.getElementById('hx-home-input');
           var realInput = document.getElementById('hx-c-input');
           var realSend = document.getElementById('hx-c-send');
@@ -38264,6 +38310,12 @@
     @media (min-width:900px){ body[data-active="chat"] #hx-home{ position:absolute; } }
     body[data-active="chat"] #hx-home[hidden]{ display:none !important; }
     @keyframes hxHomeIn{ from{opacity:0;} to{opacity:1;} }
+    /* screenshot mockup layer + transparent hotspots */
+    body[data-active="chat"] .hx-mockup{ position:absolute; inset:0; z-index:70; background:var(--hx-bg); }
+    body[data-active="chat"] .hx-mockup[hidden]{ display:none !important; }
+    body[data-active="chat"] .hx-mockup-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+    body[data-active="chat"] .hx-mockup-hot{ position:absolute; background:transparent; border:0; padding:0; margin:0; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+    body[data-active="chat"] .hx-mockup-hot:active{ background:rgba(255,255,255,.06); border-radius:16px; }
     /* app bar */
     body[data-active="chat"] .hx-home-bar{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
