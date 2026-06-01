@@ -38255,7 +38255,11 @@
     body[data-active="chat"] #hx-home{
       --hx-violet:#6d5efc;
       position:fixed; inset:0; z-index:60; display:flex; flex-direction:column;
-      background:var(--hx-bg); animation:hxHomeIn .4s cubic-bezier(.16,1,.3,1) both;
+      background:
+        radial-gradient(95% 32% at 50% -6%, color-mix(in srgb,var(--hx-violet) 13%, transparent), transparent 70%),
+        radial-gradient(70% 50% at 50% 116%, color-mix(in srgb,var(--hx-violet) 7%, transparent), transparent 72%),
+        var(--hx-bg);
+      animation:hxHomeIn .4s cubic-bezier(.16,1,.3,1) both;
     }
     /* desktop: stay within the chat pane so the sidebar remains usable */
     @media (min-width:900px){ body[data-active="chat"] #hx-home{ position:absolute; } }
