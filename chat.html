@@ -38394,6 +38394,9 @@
     body[data-active="chat"] .hx-mockup-img{ display:block; width:100%; height:auto; }
     body[data-active="chat"] .hx-mockup-hot{ position:absolute; background:transparent; border:0; padding:0; margin:0; cursor:pointer; -webkit-tap-highlight-color:transparent; }
     body[data-active="chat"] .hx-mockup-hot:active{ background:rgba(255,255,255,.06); border-radius:16px; }
+    /* Old chat hamburger (≡) belongs to the previous UI — hide it whenever the
+       home / screenshot prototype is showing so it never sits over the photos. */
+    body.hx-home-on .hx-chat-drawer-toggle{ display:none !important; }
     /* app bar */
     body[data-active="chat"] .hx-home-bar{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
