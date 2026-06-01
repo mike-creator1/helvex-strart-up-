@@ -38316,10 +38316,14 @@
       border-color:color-mix(in srgb,var(--hx-violet) 50%, var(--hx-line));
       box-shadow:0 0 0 3px color-mix(in srgb,var(--hx-violet) 14%, transparent);
     }
-    body[data-active="chat"] .hx-home-inrow{ display:flex; align-items:flex-end; gap:10px; }
+    body[data-active="chat"] .hx-home-inrow{ display:flex; align-items:center; gap:10px; }
     body[data-active="chat"] .hx-home-input{
       flex:1; min-width:0; border:0; background:transparent; resize:none; outline:none; color:var(--hx-text);
       font-family:inherit; font-size:16px; line-height:1.4; padding:6px 2px; max-height:140px;
+    }
+    /* kill the platform.css dark-mode textarea black box on this input */
+    html[data-theme="dark"] body[data-active="chat"] .hx-home-input{
+      background-color:transparent !important; border-color:transparent !important; box-shadow:none !important;
     }
     body[data-active="chat"] .hx-home-input::placeholder{ color:var(--hx-text-dim); }
     body[data-active="chat"] .hx-home-inbtns{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
@@ -38331,7 +38335,7 @@
     body[data-active="chat"] .hx-home-send{
       width:54px; height:54px; border-radius:50%; display:grid; place-items:center; border:0; color:#fff; flex-shrink:0;
       background:radial-gradient(120% 120% at 30% 25%, #8b7bff, var(--hx-violet) 70%);
-      box-shadow:0 0 28px color-mix(in srgb,var(--hx-violet) 72%, transparent), 0 0 12px color-mix(in srgb,var(--hx-violet) 90%, transparent), 0 10px 26px -8px color-mix(in srgb,var(--hx-violet) 85%, transparent), 0 0 0 1px rgba(255,255,255,.16) inset;
+      box-shadow:0 0 16px color-mix(in srgb,var(--hx-violet) 55%, transparent), 0 8px 20px -8px color-mix(in srgb,var(--hx-violet) 70%, transparent), 0 0 0 1px rgba(255,255,255,.14) inset;
       transition:transform .14s;
     }
     body[data-active="chat"] .hx-home-send:active{ transform:scale(.93); }
