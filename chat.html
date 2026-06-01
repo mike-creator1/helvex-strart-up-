@@ -30728,7 +30728,6 @@
                 </div>
               </div>
             </div>
-          </div>
 
           <div class="hx-chat-compose">
             <div class="hx-chat-compose-inner">
@@ -37637,6 +37636,12 @@
     }
     body[data-active="chat"] .hx-w-grid{ min-width:0; }
     body[data-active="chat"] .hx-w-card{ min-width:0; }
+    /* GUARANTEE the compose bar always reserves its space and never gets
+       pushed below the viewport (regression fix). The pane is a flex column;
+       thread flexes, compose must not shrink. */
+    body[data-active="chat"] .hx-chat-pane{ display:flex !important; flex-direction:column !important; height:100% !important; min-height:0 !important; }
+    body[data-active="chat"] .hx-chat-thread{ flex:1 1 auto !important; min-height:0 !important; overflow-y:auto !important; }
+    body[data-active="chat"] .hx-chat-compose{ flex:0 0 auto !important; position:relative !important; z-index:5 !important; }
     @keyframes hxwIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
     body[data-active="chat"] .hx-w-hero{ padding:14px 4px 22px; }
     body[data-active="chat"] .hx-w-badge{
