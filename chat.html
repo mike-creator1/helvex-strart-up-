@@ -30581,7 +30581,10 @@
           <!-- Ambient gold glow behind the head -->
           <div class="hx-rail-aura" aria-hidden="true"></div>
           <div class="hx-chat-rail-head">
-            <p class="hx-chat-rail-title">Conversations</p>
+            <div class="hx-rail-headline">
+              <p class="hx-chat-rail-title">Conversations</p>
+              <span class="hx-rail-status" aria-hidden="true"><span class="hx-rail-status-dot"></span>HeliX · Online</span>
+            </div>
             <button class="hx-chat-rail-collapse" type="button" id="hx-c-rail-collapse" aria-label="Collapse sidebar" title="Hide conversations">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
             </button>
@@ -37912,31 +37915,98 @@
     body[data-active="chat"] .hx-chat-send:not(:disabled):active{ transform:scale(.92); }
     body[data-active="chat"] .hx-chat-send:disabled{ opacity:.4 !important; box-shadow:none !important; background:var(--hxm-bg-2,#e7e4dc) !important; color:var(--hxm-ink2) !important; }
 
-    /* ── SIDEBAR / CONVERSATIONS — premium drawer ──────────────────── */
+    /* ── SIDEBAR / CONVERSATIONS — world-class glass drawer ────────── */
+    body[data-active="chat"] .hx-chat-rail{
+      background:linear-gradient(180deg, color-mix(in srgb,var(--hxm-bg,#fbfaf7) 96%, #fff), var(--hxm-bg,#fbfaf7)) !important;
+      backdrop-filter:saturate(180%) blur(20px) !important; -webkit-backdrop-filter:saturate(180%) blur(20px) !important;
+      box-shadow:24px 0 60px -30px rgba(20,18,12,.35) !important;
+    }
+    body[data-active="chat"] .hx-rail-headline{ display:flex; flex-direction:column; gap:3px; }
     body[data-active="chat"] .hx-chat-rail-title{
-      font-size:22px !important; font-weight:800 !important; letter-spacing:-.02em !important; color:var(--hxm-ink) !important;
+      font-size:23px !important; font-weight:800 !important; letter-spacing:-.025em !important; color:var(--hxm-ink) !important; margin:0 !important;
     }
+    /* AI status indicator */
+    body[data-active="chat"] .hx-rail-status{
+      display:inline-flex; align-items:center; gap:6px;
+      font-size:11px; font-weight:650; letter-spacing:.01em; color:var(--hxm-ink2);
+    }
+    body[data-active="chat"] .hx-rail-status-dot{
+      width:7px; height:7px; border-radius:50%; background:#28c76f;
+      box-shadow:0 0 0 0 rgba(40,199,111,.55); animation:hxRailDot 2s ease-out infinite;
+    }
+    @keyframes hxRailDot{ 0%{box-shadow:0 0 0 0 rgba(40,199,111,.5);} 70%{box-shadow:0 0 0 6px rgba(40,199,111,0);} 100%{box-shadow:0 0 0 0 rgba(40,199,111,0);} }
+    /* search — native, refined */
     body[data-active="chat"] .hx-rail-search-row{
-      border-radius:14px !important; background:#f1efe9 !important; border:1px solid transparent !important;
-      box-shadow:none !important; padding:11px 14px !important;
+      border-radius:14px !important; background:color-mix(in srgb,var(--hxm-ink) 5%, transparent) !important;
+      border:1px solid transparent !important; box-shadow:none !important; padding:12px 14px !important;
+      transition:background .15s, border-color .15s, box-shadow .15s !important;
     }
-    body[data-active="chat"] .hx-rail-search-row:focus-within{ background:#fff !important; border-color:var(--hxm-line) !important; }
+    body[data-active="chat"] .hx-rail-search-row:focus-within{
+      background:#fff !important; border-color:var(--hxm-line) !important;
+      box-shadow:0 0 0 4px color-mix(in srgb,var(--hxm-accent) 10%, transparent) !important;
+    }
     body[data-active="chat"] .hx-rail-search{ font-size:15px !important; }
+    /* group headers — quiet, premium */
+    body[data-active="chat"] .hx-rail-group-head{
+      display:flex !important; align-items:center !important; gap:8px !important;
+      padding:0 6px !important; margin:18px 0 9px !important;
+      font-size:11px !important; font-weight:700 !important; letter-spacing:.14em !important;
+      text-transform:uppercase !important; color:var(--hxm-ink2) !important; opacity:.7 !important;
+    }
+    body[data-active="chat"] .hx-rail-group-count{
+      font-size:10px !important; font-weight:700 !important; color:var(--hxm-ink2) !important;
+      background:color-mix(in srgb,var(--hxm-ink) 8%, transparent) !important;
+      border-radius:999px !important; padding:1px 7px !important; min-width:18px !important; text-align:center !important;
+    }
+    /* session cards — preview, hierarchy, tactile */
     body[data-active="chat"] .hx-chat-item{
-      border-radius:16px !important; padding:12px 13px !important; margin:0 0 8px !important;
-      border:1px solid transparent !important; transition:background .15s, border-color .15s !important;
+      display:flex !important; align-items:center !important; gap:12px !important;
+      border-radius:16px !important; padding:12px 12px !important; margin:0 0 8px !important;
+      background:linear-gradient(180deg,#fff, color-mix(in srgb,var(--hxm-bg-2,#f1efe9) 30%, #fff)) !important;
+      border:1px solid var(--hxm-line2,rgba(20,18,12,.05)) !important;
+      box-shadow:0 1px 2px rgba(20,18,12,.03) !important;
+      transition:transform .15s cubic-bezier(.2,.8,.2,1), border-color .15s, box-shadow .15s, background .15s !important;
     }
-    body[data-active="chat"] .hx-chat-item:active{ background:#f1efe9 !important; }
+    body[data-active="chat"] .hx-chat-item:active{ transform:scale(.98) !important; }
     body[data-active="chat"] .hx-chat-item.is-active{
-      background:#fff !important; border-color:var(--hxm-line) !important; box-shadow:var(--hxm-shadow) !important;
+      border-color:color-mix(in srgb,var(--hxm-accent) 40%, transparent) !important;
+      box-shadow:0 0 0 1px color-mix(in srgb,var(--hxm-accent) 24%, transparent) inset, 0 14px 28px -16px color-mix(in srgb,var(--hxm-accent) 50%, transparent) !important;
     }
-    body[data-active="chat"] .hx-chat-item-title{ font-size:15px !important; font-weight:650 !important; letter-spacing:-.01em !important; }
-    body[data-active="chat"] .hx-chat-item-meta{ font-size:12px !important; color:var(--hxm-ink2) !important; }
+    body[data-active="chat"] .hx-chat-item-glyph{
+      width:38px !important; height:38px !important; border-radius:12px !important; flex-shrink:0 !important;
+      display:flex !important; align-items:center !important; justify-content:center !important;
+      box-shadow:0 1px 2px rgba(20,18,12,.05) !important;
+    }
+    body[data-active="chat"] .hx-chat-item-glyph svg{ width:18px !important; height:18px !important; }
+    body[data-active="chat"] .hx-chat-item-title{ font-size:14.5px !important; font-weight:650 !important; letter-spacing:-.01em !important; color:var(--hxm-ink) !important; line-height:1.25 !important; }
+    body[data-active="chat"] .hx-chat-item-meta{ font-size:11.5px !important; color:var(--hxm-ink2) !important; margin-top:2px !important; }
+    body[data-active="chat"] .hx-chat-item-chip{ font-size:10px !important; font-weight:700 !important; letter-spacing:.03em !important; padding:1px 7px !important; border-radius:999px !important; }
+    /* pinned card accent */
+    body[data-active="chat"] .hx-chat-item.is-pinned{
+      background:linear-gradient(180deg, color-mix(in srgb,var(--hxm-accent) 5%, #fff), #fff) !important;
+      border-color:color-mix(in srgb,var(--hxm-accent) 18%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-chat-item-pinmark{ color:var(--hxm-accent) !important; }
+    /* new chat — bold gradient */
     body[data-active="chat"] .hx-chat-new{
-      border-radius:16px !important; height:52px !important; font-size:16px !important; font-weight:700 !important;
-      box-shadow:0 10px 26px -10px color-mix(in srgb,var(--hxm-accent) 75%, transparent) !important;
+      border-radius:16px !important; height:54px !important; font-size:16px !important; font-weight:750 !important;
+      background:linear-gradient(160deg,#ff7a3c,var(--hxm-accent,#ff5a1f)) !important;
+      box-shadow:0 12px 30px -10px color-mix(in srgb,var(--hxm-accent) 80%, transparent), 0 0 0 1px rgba(255,255,255,.18) inset !important;
+      transition:transform .15s !important;
     }
-    body[data-active="chat"] .hx-chat-empty-list{ font-size:14px !important; color:var(--hxm-ink2) !important; }
+    body[data-active="chat"] .hx-chat-new:active{ transform:scale(.97) !important; }
+    /* premium empty state */
+    body[data-active="chat"] .hx-rail-empty{ padding-top:40px !important; }
+    body[data-active="chat"] .hx-rail-empty-orb{
+      width:60px !important; height:60px !important; border-radius:18px !important;
+      background:linear-gradient(160deg, color-mix(in srgb,var(--hxm-accent) 14%, #fff), #fff) !important;
+      border:1px solid color-mix(in srgb,var(--hxm-accent) 20%, transparent) !important;
+      color:var(--hxm-accent) !important;
+      box-shadow:0 12px 30px -14px color-mix(in srgb,var(--hxm-accent) 55%, transparent) !important;
+    }
+    body[data-active="chat"] .hx-rail-empty-title{ font-size:14.5px !important; font-weight:600 !important; color:var(--hxm-ink) !important; }
+    body[data-active="chat"] .hx-rail-empty-meta,
+    body[data-active="chat"] .hx-chat-empty-list{ font-size:13px !important; color:var(--hxm-ink2) !important; }
 
     /* ── COMPOSE-BAR DROPDOWN (model menu) — not default HTML ──────── */
     /* ── COMPOSE-BAR MODEL/EFFORT MENU — dark-glass (matches sheets) ── */
