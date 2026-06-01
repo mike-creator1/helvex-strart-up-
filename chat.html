@@ -34907,11 +34907,13 @@
           document.getElementById('hx-home-mic').addEventListener('click', function () { var m = document.getElementById('hx-c-mic'); if (m) m.click(); });
           document.getElementById('hx-home-menu').addEventListener('click', function () { var d = document.getElementById('hx-c-drawer-toggle'); if (d) d.click(); });
 
-          // Feature cards → engage the matching mode + focus the composer.
+          // Feature cards → Research opens its dedicated screen; the rest
+          // engage their mode + focus the composer.
           el.querySelectorAll('.hx-home-cards .hx-home-card[data-mode]').forEach(function (p) {
             p.addEventListener('click', function () {
               var k = p.getAttribute('data-mode');
               if (typeof setMode === 'function') setMode(k);
+              if (k === 'research' && typeof window.hxShowResearch === 'function') { window.hxShowResearch(); return; }
               sync();
               if (input) { input.focus(); }
             });
@@ -34978,6 +34980,104 @@
           evaluate();
           setTimeout(function () { if (!el.hidden) sync(); }, 0);
           try { new MutationObserver(evaluate).observe(thread, { childList: true }); } catch (e) {}
+
+          // ═══════════════════════════════════════════════════════════
+          // RESEARCH SCREEN — same design system, dedicated workspace.
+          // Reuses the home shell's bar / composer / row / tab components
+          // so it reads as the same product. Opened from the Research card.
+          // ═══════════════════════════════════════════════════════════
+          var back = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>';
+          var magnifier = '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>';
+          var RFOCUS = ['All','Web','Academic','News','Finance','Code'];
+          var rfocus = RFOCUS.map(function (f, i) {
+            return '<button class="hx-rs-chip' + (i === 0 ? ' is-on' : '') + '" type="button" data-focus="' + f + '">' + f + '</button>';
+          }).join('');
+          var RTREND = [
+            { t:'AI trends to watch in 2026',        meta:'8 sources' },
+            { t:'Quantum computing breakthroughs',   meta:'12 sources' },
+            { t:'Global economy outlook for 2026',   meta:'6 sources' },
+            { t:'Longevity & healthspan research',   meta:'9 sources' }
+          ];
+          var rtrend = RTREND.map(function (r) {
+            return '<button class="hx-home-rec" type="button" data-ws-suggest="' + r.t + '" style="--wc:#7c5cff">' +
+              '<span class="hx-home-rec-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + magnifier + '</svg></span>' +
+              '<span class="hx-home-rec-body"><span class="hx-home-rec-t">' + r.t + '</span><span class="hx-home-rec-m">Research &middot; ' + r.meta + '</span></span>' +
+              '<span class="hx-home-rec-act" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button>';
+          }).join('');
+
+          var rs = document.createElement('div');
+          rs.id = 'hx-research'; rs.hidden = true;
+          rs.innerHTML =
+            '<div class="hx-home-bar">' +
+              '<button class="hx-home-menu" type="button" id="hx-rs-back" aria-label="Back">' + back + '</button>' +
+              '<div class="hx-home-brand">' + glyph + '<span class="hx-home-brand-name">Helix</span><span class="hx-home-brand-pro">PRO</span></div>' +
+              '<button class="hx-home-avatar" type="button" aria-label="Account"><svg viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" fill="#b7c4da"/><path d="M8 44c0-7.5 6-12 14-12s14 4.5 14 12z" fill="#3d4f70"/><path d="M14 19c0-5 3.4-8.5 8-8.5s8 3.5 8 8.5v3.5c0 5-3.6 8.5-8 8.5s-8-3.5-8-8.5z" fill="#e7b389"/><path d="M13.4 18.2c-.2-5.6 3.8-9.4 8.6-9.4 4.9 0 8.7 3.6 8.6 9-1.8-1.4-3.2-3.1-5.6-3.1-3.2 0-4.4 2.2-8 2.2-1.4 0-2.6.4-3.6 1.3z" fill="#5b3a26"/></svg></button>' +
+            '</div>' +
+            '<div class="hx-home-scroll">' +
+              '<h1 class="hx-home-greet hx-rs-h"><span class="hx-rs-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">' + magnifier + '</svg></span>Research<span style="color:var(--hx-violet)">.</span></h1>' +
+              '<p class="hx-home-sub">Find, verify, and explore anything — with cited sources.</p>' +
+              '<div class="hx-home-composer">' +
+                '<div class="hx-home-inrow">' +
+                  '<textarea class="hx-home-input" id="hx-rs-input" rows="1" placeholder="Research any topic…" autocomplete="off" spellcheck="true"></textarea>' +
+                  '<div class="hx-home-inbtns">' +
+                    '<button class="hx-home-mic" type="button" id="hx-rs-mic" aria-label="Voice input">' + S.mic + '</button>' +
+                    '<button class="hx-home-send" type="button" id="hx-rs-send" aria-label="Search">' + magnifierBtn() + '</button>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="hx-home-pills">' +
+                  '<button class="hx-home-pill is-on" type="button">' + S.web + '<span>Web search</span></button>' +
+                  '<button class="hx-home-pill" type="button">' + S.doc + '<span>Sources</span></button>' +
+                  '<button class="hx-home-pill" type="button">' + S.focus + '<span>Focus</span></button>' +
+                  '<button class="hx-home-pill hx-home-pill-more" type="button" aria-label="More">' + S.chevD + '</button>' +
+                '</div>' +
+              '</div>' +
+              '<div class="hx-w-sec-label hx-rs-seclabel">Focus areas</div>' +
+              '<div class="hx-rs-chips">' + rfocus + '</div>' +
+              '<div class="hx-w-sughead">' +
+                '<span class="hx-w-sec-label">Trending research</span>' +
+                '<button class="hx-w-seeall" type="button">View all' + S.chevR + '</button>' +
+              '</div>' +
+              '<div class="hx-home-recent">' + rtrend + '</div>' +
+            '</div>' +
+            '<nav class="hx-home-tabs" aria-label="Sections">' +
+              '<button class="hx-home-tab" type="button" data-tab="home" aria-label="Home">' + S.home + '</button>' +
+              '<button class="hx-home-tab" type="button" data-tab="history" aria-label="History">' + S.clock + '</button>' +
+              '<button class="hx-home-tab" type="button" data-tab="fav" aria-label="Favorites">' + S.star + '</button>' +
+              '<button class="hx-home-tab" type="button" data-tab="apps" aria-label="Apps">' + S.grid + '</button>' +
+            '</nav>';
+          pane.appendChild(rs);
+
+          function magnifierBtn() { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>'; }
+
+          var rsInput = rs.querySelector('#hx-rs-input');
+          function rsAutosize() { rsInput.style.height = 'auto'; rsInput.style.height = Math.min(rsInput.scrollHeight, 140) + 'px'; }
+          function rsSend() {
+            if (!rsInput.value.trim()) return;
+            if (typeof setMode === 'function' && hxMode !== 'research') setMode('research');
+            if (realInput) { realInput.value = rsInput.value; try { realInput.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {} }
+            rsInput.value = ''; rsAutosize();
+            window.hxHideResearch();
+            if (realSend) { realSend.removeAttribute('disabled'); realSend.click(); }
+          }
+          rsInput.addEventListener('input', rsAutosize);
+          rsInput.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); rsSend(); } });
+          rs.querySelector('#hx-rs-send').addEventListener('click', rsSend);
+          rs.querySelector('#hx-rs-mic').addEventListener('click', function () { var m = document.getElementById('hx-c-mic'); if (m) m.click(); });
+          rs.querySelector('#hx-rs-back').addEventListener('click', function () { window.hxHideResearch(); });
+          rs.querySelectorAll('.hx-rs-chip').forEach(function (c) {
+            c.addEventListener('click', function () { rs.querySelectorAll('.hx-rs-chip').forEach(function (x) { x.classList.toggle('is-on', x === c); }); });
+          });
+          rs.querySelector('.hx-home-recent').addEventListener('click', function (e) {
+            var b = e.target.closest && e.target.closest('[data-ws-suggest]'); if (!b) return;
+            e.preventDefault();
+            rsInput.value = b.getAttribute('data-ws-suggest') || ''; rsAutosize(); rsInput.focus();
+            try { rsInput.selectionStart = rsInput.selectionEnd = rsInput.value.length; } catch (_) {}
+          });
+          rs.querySelectorAll('.hx-home-tab').forEach(function (t) {
+            t.addEventListener('click', function () { if (t.getAttribute('data-tab') === 'home') window.hxHideResearch(); });
+          });
+          window.hxShowResearch = function () { rs.hidden = false; var s = rs.querySelector('.hx-home-scroll'); if (s) s.scrollTop = 0; };
+          window.hxHideResearch = function () { rs.hidden = true; };
         })();
 
 
@@ -38304,6 +38404,38 @@
       body[data-active="chat"] .hx-home-card-t{ font-size:14px; }
       body[data-active="chat"] .hx-home-card-d{ font-size:10.5px; }
       body[data-active="chat"] .hx-home-card-ic svg{ width:25px; height:25px; }
+    }
+
+    /* RESEARCH SCREEN — same shell, research-themed */
+    body[data-active="chat"] #hx-research{
+      --hx-violet:#6d5efc; position:fixed; inset:0; z-index:61; display:flex; flex-direction:column;
+      background:var(--hx-bg); animation:hxHomeIn .35s cubic-bezier(.16,1,.3,1) both;
+    }
+    @media (min-width:900px){ body[data-active="chat"] #hx-research{ position:absolute; } }
+    body[data-active="chat"] #hx-research[hidden]{ display:none !important; }
+    body[data-active="chat"] .hx-rs-h{
+      display:flex; align-items:center; gap:13px;
+      font-size:clamp(32px,9vw,44px) !important; line-height:1.05;
+    }
+    body[data-active="chat"] .hx-rs-ic{ color:var(--hx-violet); display:inline-flex; filter:drop-shadow(0 0 12px color-mix(in srgb,var(--hx-violet) 55%, transparent)); }
+    body[data-active="chat"] .hx-rs-ic svg{ width:.82em; height:.82em; }
+    body[data-active="chat"] .hx-rs-seclabel{
+      margin:24px 4px 12px !important; font-size:13px !important; font-weight:600 !important;
+      color:var(--hx-text-mid) !important; text-transform:none !important; letter-spacing:-.01em !important;
+    }
+    body[data-active="chat"] .hx-rs-chips{
+      display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; margin:0 -20px; padding:0 20px 4px; -webkit-overflow-scrolling:touch;
+    }
+    body[data-active="chat"] .hx-rs-chips::-webkit-scrollbar{ display:none; }
+    body[data-active="chat"] .hx-rs-chip{
+      flex:0 0 auto; padding:9px 16px; border-radius:999px; background:transparent; border:1px solid var(--hx-line);
+      color:var(--hx-text-mid); font-size:13.5px; font-weight:550; letter-spacing:-.01em; white-space:nowrap;
+      transition:color .15s, background .18s, border-color .15s;
+    }
+    body[data-active="chat"] .hx-rs-chip.is-on{
+      color:#fff; border-color:transparent;
+      background:linear-gradient(150deg,#8b7bff,var(--hx-violet));
+      box-shadow:0 8px 18px -10px color-mix(in srgb,var(--hx-violet) 70%, transparent);
     }
 
     /* model presence */
