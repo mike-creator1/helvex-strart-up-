@@ -30585,6 +30585,42 @@
     /* calm the ambient presence glow so nothing "moves" in the center */
     html body[data-active="chat"] .hx-chat-pane:has(.hx-msg-thinking)::after,
     html body[data-active="chat"] .hx-chat-pane:has(.hx-msg.is-streaming)::after { animation: none !important; }
+
+    /* ═══ PREMIUM PASS — composer + sessions rail (theme-safe overrides) ═══
+       Appended last so it wins the cascade cleanly without touching the
+       layered base rules. Uses existing tokens, so it adapts to light/dark
+       and to each model accent (--hx-mc). */
+    body[data-active="chat"] .hx-chat-input-row{
+      border-radius:20px;
+      padding:8px 10px 8px 15px;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb,#fff 6%, transparent),
+        0 1px 2px rgba(0,0,0,.05),
+        0 20px 50px -24px rgba(0,0,0,.24);
+    }
+    body[data-active="chat"] .hx-chat-input-row:focus-within{
+      border-color:color-mix(in srgb,var(--hx-mc,var(--hx-text)) 50%, var(--hx-line));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb,#fff 6%, transparent),
+        0 0 0 4px color-mix(in srgb,var(--hx-mc,var(--hx-text)) 9%, transparent),
+        0 22px 56px -22px rgba(0,0,0,.30);
+    }
+    body[data-active="chat"] .hx-chat-textarea{ font-size:15px; line-height:1.5; }
+    /* tool buttons (+, mic): quieter at rest, clearer on hover */
+    body[data-active="chat"] .hx-chat-tool-btn{ border-radius:11px; transition:background .14s, color .14s, transform .12s; }
+    body[data-active="chat"] .hx-chat-tool-btn:hover{ background:color-mix(in srgb,var(--hx-text) 7%, transparent); }
+    body[data-active="chat"] .hx-chat-tool-btn:active{ transform:scale(.92); }
+    /* primary send — confident filled accent + lift on hover */
+    body[data-active="chat"] .hx-chat-send:not(:disabled):hover{ transform:translateY(-1px); filter:brightness(1.05); }
+    body[data-active="chat"] .hx-chat-send:not(:disabled):active{ transform:translateY(0) scale(.96); }
+    /* sessions rail — premium density, rounded rows, soft hover/active */
+    body[data-active="chat"] .hx-chat-item{ border-radius:12px; transition:background .14s ease, border-color .14s ease; }
+    body[data-active="chat"] .hx-chat-item:hover{ background:color-mix(in srgb,var(--hx-text) 6%, transparent); }
+    body[data-active="chat"] .hx-rail-search{ border-radius:12px; transition:border-color .14s, box-shadow .16s; }
+    body[data-active="chat"] .hx-rail-search:focus{
+      border-color:color-mix(in srgb,var(--hx-mc,var(--hx-text)) 45%, var(--hx-line));
+      box-shadow:0 0 0 3px color-mix(in srgb,var(--hx-mc,var(--hx-text)) 8%, transparent);
+    }
   </style>
 </head>
 <body data-active="chat">
