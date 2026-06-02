@@ -30624,6 +30624,14 @@
     /* Assistant prose: a touch more reading rhythm — matches the flat-minimal
        language (typography only, no decoration). */
     body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content{ line-height:1.64; }
+    /* Per-category chat identity: when a workspace mode is active, the chat
+       takes that category's accent (composer focus, send, mode badge, etc.). */
+    body[data-active="chat"][data-wsmode="research"]{ --hx-mc:#7c5cff; --hx-mc-soft:rgba(124,92,255,.14); --hx-mc-glow:rgba(124,92,255,.45); }
+    body[data-active="chat"][data-wsmode="plan"]    { --hx-mc:#22c55e; --hx-mc-soft:rgba(34,197,94,.14);  --hx-mc-glow:rgba(34,197,94,.45); }
+    body[data-active="chat"][data-wsmode="analyze"] { --hx-mc:#3b82f6; --hx-mc-soft:rgba(59,130,246,.14); --hx-mc-glow:rgba(59,130,246,.45); }
+    body[data-active="chat"][data-wsmode="code"]    { --hx-mc:#f59e0b; --hx-mc-soft:rgba(245,158,11,.14); --hx-mc-glow:rgba(245,158,11,.45); }
+    body[data-active="chat"][data-wsmode="create"]  { --hx-mc:#ec4899; --hx-mc-soft:rgba(236,72,153,.14); --hx-mc-glow:rgba(236,72,153,.45); }
+    body[data-active="chat"][data-wsmode="learn"]   { --hx-mc:#22d3ee; --hx-mc-soft:rgba(34,211,238,.14); --hx-mc-glow:rgba(34,211,238,.45); }
   </style>
 </head>
 <body data-active="chat">
@@ -32376,6 +32384,18 @@
           '  3) "## Going deeper" — the underlying mechanism, edge cases, or expert nuance for the reader who wants more.',
           '  4) If the concept has steps, use an ordered list. If it has parallel parts, use a table. If it has cause/effect, say so explicitly.',
           'No definitions without examples. No abstract prose for its own sake.'
+        ].join(' '),
+
+        code: [
+          '',
+          'MODE: CODE. You are a senior engineer pair-programming. Every response MUST be implementation-grade, not a discussion about code.',
+          'Required shape:',
+          '  1) ONE short line stating what you are building/fixing and the approach.',
+          '  2) The actual code in fenced blocks with the correct language tag. Write complete, runnable code — no "// ..." placeholders unless the user must fill a secret. Prefer modern, idiomatic style (React + TypeScript by default for UI unless told otherwise).',
+          '  3) If debugging: name the root cause in one line, then the corrected code, then what changed.',
+          '  4) A short "**How to use:**" or "**Run:**" line with the exact command(s) or integration steps.',
+          '  5) Only call out genuine caveats (edge cases, perf, security) — briefly, as a short list.',
+          'No long essays. Ship working code. Keep prose minimal and around the code.'
         ].join(' '),
 
         summarize: [
@@ -34692,7 +34712,7 @@
         // stays visually constant; only Helix's behaviour adapts.
         // ═══════════════════════════════════════════════════════════════
         // preset key → existing workflowMode engine
-        var HX_WS_MAP = { research:'research', plan:'plan', analyze:'analyze', compare:'compare', create:'draft', learn:'explain' };
+        var HX_WS_MAP = { research:'research', plan:'plan', analyze:'analyze', code:'code', compare:'compare', create:'draft', learn:'explain' };
         var HX_DEFAULT_PH = (inputEl && inputEl.getAttribute('placeholder')) || 'Ask Helix anything…';
         // Default "Smart suggestions" — a curated, multi-category set shown
         // when no preset is engaged (each row colour-coded to its mode).
@@ -34710,8 +34730,8 @@
             suggest:[ 'Πλάνο μετανάστευσης στην Ελβετία', 'Launch plan για νέο προϊόν', 'Πλάνο 90 ημερών για νέα δουλειά' ] },
           analyze:  { label:'Ανάλυση',    ph:'Δώσε δεδομένα ή θέμα για ανάλυση…',
             suggest:[ 'Ανάλυσε έσοδα ανά τρίμηνο', 'SWOT για την ιδέα μου', 'Ανάλυση ανταγωνισμού σε πίνακα' ] },
-          compare:  { label:'Σύγκριση',   ph:'Τι να συγκρίνω; (π.χ. Α vs Β)…',
-            suggest:[ 'Σύγκρινε δύο προσφορές εργασίας', 'iOS vs Android για app', 'Ενοικίαση vs αγορά σπιτιού' ] },
+          code:     { label:'Κώδικας',    ph:'Τι να φτιάξω, να διορθώσω ή να κάνω refactor;…',
+            suggest:[ 'Φτιάξε ένα React component για upload αρχείων', 'Βρες το bug σε αυτή τη συνάρτηση', 'Κάνε refactor αυτόν τον κώδικα να είναι πιο καθαρός' ] },
           create:   { label:'Δημιουργία', ph:'Τι να γράψω για σένα;…',
             suggest:[ 'Email follow-up μετά από συνέντευξη', 'LinkedIn post για νέα δουλειά', 'Περιγραφή προϊόντος για e-shop' ] },
           learn:    { label:'Μάθηση',     ph:'Τι θες να μάθεις;…',
