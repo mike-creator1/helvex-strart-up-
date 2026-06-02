@@ -30867,13 +30867,23 @@
     body[data-active="chat"] .hx-w-sug-go{ flex:0 0 auto; }
     body[data-active="chat"] .hx-w-sug-go svg{ width:18px !important; height:18px !important; }
     body[data-active="chat"] .hx-rs-ic svg, body[data-active="chat"] .hx-home-card-ic svg, body[data-active="chat"] .hx-home-rec-ic svg, body[data-active="chat"] .hx-ws-empty-ic svg{ max-width:28px; max-height:28px; }
-    /* The mobile home / workspace overlays have NO desktop styling, so on wide
-       screens they render unstyled and break the layout. They are phone-only
-       surfaces — on desktop the sidebar rail + chat pane are the experience. */
+    /* The mobile home / workspace overlays now apply at all widths; on desktop
+       keep them inside the chat pane and centre the content like the phone
+       layout (a calm max-width column), so it reads beautifully on wide screens. */
     @media (min-width:761px){
+      body[data-active="chat"] .hx-chat-pane{ position:relative; }
       body[data-active="chat"] #hx-home,
-      body[data-active="chat"] #hx-ws,
-      body[data-active="chat"] #hx-wsc{ display:none !important; }
+      body[data-active="chat"] #hx-ws{ position:absolute !important; inset:0 !important; z-index:40 !important; }
+      body[data-active="chat"] #hx-home .hx-home-bar,
+      body[data-active="chat"] #hx-home .hx-home-scroll,
+      body[data-active="chat"] #hx-ws .hx-home-bar,
+      body[data-active="chat"] #hx-ws .hx-home-scroll{ max-width:600px; margin-left:auto; margin-right:auto; width:100%; box-sizing:border-box; }
+      body[data-active="chat"] #hx-home .hx-home-tabs,
+      body[data-active="chat"] #hx-ws .hx-home-tabs{ display:none !important; }
+      body[data-active="chat"] #hx-wsc .hx-wsc-head,
+      body[data-active="chat"] #hx-wsc .hx-wsc-searchrow,
+      body[data-active="chat"] #hx-wsc .hx-wsc-scroll,
+      body[data-active="chat"] #hx-wsc .hx-wsc-new{ max-width:680px; margin-left:auto; margin-right:auto; width:100%; box-sizing:border-box; }
     }
 
     /* category landing → 'Your conversations' entry */
@@ -38942,7 +38952,10 @@
        existing class names; no JS/markup changes.
        ════════════════════════════════════════════════════════════════════ -->
   <style>
-  @media (max-width: 760px){
+  /* V-desktop: this block was phone-only (max-width:760px), which left the
+     home / workspace surfaces completely unstyled on desktop. It now applies
+     at every width; desktop-specific centering + positioning is added after. */
+  @media (min-width: 0px){
     body[data-active="chat"]{
       --hxm-bg:#fbfaf7; --hxm-card:#ffffff; --hxm-ink:#16140f; --hxm-ink2:#6b6557;
       --hxm-line:rgba(20,18,12,.08); --hxm-line2:rgba(20,18,12,.06);
