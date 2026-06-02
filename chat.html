@@ -32705,8 +32705,11 @@
         attachments: [],       // composer's pending attachments
         webEnabled: true,      // web_search on by default — answers stay current
         codeEnabled: false,    // when true, model gets Anthropic code_execution tool
+        focusMode: false,      // Focus pill — deep, distraction-free, no-fluff answers
         workflowMode: null,    // V86 — null | 'plan' | 'research' | 'compare' | 'draft' | 'explain' | 'summarize'
       };
+      // Appended to the system prompt while Focus is engaged.
+      var HX_FOCUS_SYSTEM = ' FOCUS MODE: The user wants a focused, high-signal answer. Go straight to the point — no preamble, no filler, no restating the question. Give the single best answer with only the essential reasoning, tightly structured. Cut anything that is not necessary.';
 
       // Agent capability is derived from the model — not a separate toggle.
       // Ether: real-time, no agent. Nexus: reasoning agent. Prometheus:
@@ -34249,7 +34252,7 @@
               body: JSON.stringify({
                 model:           $('hx-c-model').value || 'ether',
                 conversation_id: state.conversation.id,
-                system:          HELIX_SYSTEM + (currentlyAgentic() ? HELIX_AGENT_SYSTEM : '') + (HELIX_MODE_SYSTEM[state.workflowMode] || ''),
+                system:          HELIX_SYSTEM + (currentlyAgentic() ? HELIX_AGENT_SYSTEM : '') + (HELIX_MODE_SYSTEM[state.workflowMode] || '') + (state.focusMode ? HX_FOCUS_SYSTEM : ''),
                 messages:        send_msgs,
                 user_attachments: persistAttachs,
                 max_tokens:      currentlyAgentic() ? 8192 : 4096,
@@ -35666,15 +35669,24 @@
               if (input) { input.focus(); }
             });
           });
-          // Tool pills.
+          // Tool pills — real, functional toggles/actions.
           var webPill = el.querySelector('[data-pill="web"]');
+          try { webPill.classList.toggle('is-on', !!state.webEnabled); } catch (e) {}   // reflect default (web on)
           webPill.addEventListener('click', function () {
             this.classList.toggle('is-on');
             try { state.webEnabled = this.classList.contains('is-on'); } catch (e) {}
           });
-          el.querySelector('[data-pill="sources"]').addEventListener('click', function () { var a = document.getElementById('hx-c-attach'); if (a) a.click(); });
-          el.querySelector('[data-pill="focus"]').addEventListener('click', function () {
-            var row = el.querySelector('.hx-home-cards'); if (row) row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          // Sources → open the attach / file picker to add documents as sources.
+          el.querySelector('[data-pill="sources"]').addEventListener('click', function () {
+            var f = document.getElementById('hx-c-file'); var a = document.getElementById('hx-c-attach');
+            if (f) f.click(); else if (a) a.click();
+          });
+          // Focus → engage deep, no-fluff answers (real behaviour via HX_FOCUS_SYSTEM).
+          var focusPill = el.querySelector('[data-pill="focus"]');
+          try { focusPill.classList.toggle('is-on', !!state.focusMode); } catch (e) {}
+          focusPill.addEventListener('click', function () {
+            this.classList.toggle('is-on');
+            try { state.focusMode = this.classList.contains('is-on'); } catch (e) {}
           });
           var morePill = el.querySelector('[data-pill="more"]');
           if (morePill) morePill.addEventListener('click', function () { var d = document.getElementById('hx-c-attach'); if (d) d.click(); });
@@ -35866,9 +35878,9 @@
                     '</div>' +
                   '</div>' +
                   '<div class="hx-home-pills">' +
-                    '<button class="hx-home-pill is-on" type="button">' + S.web + '<span>Web search</span></button>' +
-                    '<button class="hx-home-pill" type="button">' + S.doc + '<span>Sources</span></button>' +
-                    '<button class="hx-home-pill" type="button">' + S.focus + '<span>Focus</span></button>' +
+                    '<button class="hx-home-pill' + (state.webEnabled ? ' is-on' : '') + '" type="button" data-pill="web">' + S.web + '<span>Web search</span></button>' +
+                    '<button class="hx-home-pill" type="button" data-pill="sources">' + S.doc + '<span>Sources</span></button>' +
+                    '<button class="hx-home-pill' + (state.focusMode ? ' is-on' : '') + '" type="button" data-pill="focus">' + S.focus + '<span>Focus</span></button>' +
                   '</div>' +
                 '</div>' +
                 renderBody(c) +
@@ -35900,6 +35912,12 @@
             if(t.closest('#hx-ws-back')){ window.hxHideWorkspace(); return; }
             if(t.closest('#hx-ws-send')){ wsSend(); return; }
             if(t.closest('#hx-ws-mic')){ var m = document.getElementById('hx-c-mic'); if(m) m.click(); return; }
+            var pill = t.closest('.hx-home-pill[data-pill]');
+            if(pill){ var pk = pill.getAttribute('data-pill');
+              if(pk === 'web'){ pill.classList.toggle('is-on'); try { state.webEnabled = pill.classList.contains('is-on'); } catch(e){} }
+              else if(pk === 'focus'){ pill.classList.toggle('is-on'); try { state.focusMode = pill.classList.contains('is-on'); } catch(e){} }
+              else if(pk === 'sources'){ var f = document.getElementById('hx-c-file') || document.getElementById('hx-c-attach'); if(f) f.click(); }
+              return; }
             var chip = t.closest('.hx-rs-chip'); if(chip){ ws.querySelectorAll('.hx-rs-chip').forEach(function(x){ x.classList.toggle('is-on', x === chip); }); return; }
             var tab = t.closest('.hx-home-tab'); if(tab){ var tb = tab.getAttribute('data-tab'); if(tb === 'home') window.hxHideWorkspace(); else if((tb === 'history' || tb === 'fav') && wsKey){ try { if(window.hxOpenCategoryConvos) window.hxOpenCategoryConvos(wsKey); } catch(e){} } return; }
             if(t.closest('[data-wsc]')){ try { if(window.hxOpenCategoryConvos && wsKey) window.hxOpenCategoryConvos(wsKey); } catch(e){} return; }
