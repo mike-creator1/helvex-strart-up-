@@ -30867,23 +30867,36 @@
     body[data-active="chat"] .hx-w-sug-go{ flex:0 0 auto; }
     body[data-active="chat"] .hx-w-sug-go svg{ width:18px !important; height:18px !important; }
     body[data-active="chat"] .hx-rs-ic svg, body[data-active="chat"] .hx-home-card-ic svg, body[data-active="chat"] .hx-home-rec-ic svg, body[data-active="chat"] .hx-ws-empty-ic svg{ max-width:28px; max-height:28px; }
-    /* The mobile home / workspace overlays now apply at all widths; on desktop
-       keep them inside the chat pane and centre the content like the phone
-       layout (a calm max-width column), so it reads beautifully on wide screens. */
+    /* The mobile home / workspace overlays now apply at all widths. On desktop
+       they stay full-screen (the base position:fixed rule) and the content is
+       centred in a calm, comfortable column so it reads beautifully on wide
+       screens — never a stretched, lost layout. */
     @media (min-width:761px){
-      body[data-active="chat"] .hx-chat-pane{ position:relative; }
+      /* full-screen, calm centred home on desktop (override the legacy
+         min-width:900 'position:absolute' rule that squeezed it into the pane) */
       body[data-active="chat"] #hx-home,
-      body[data-active="chat"] #hx-ws{ position:absolute !important; inset:0 !important; z-index:40 !important; }
+      body[data-active="chat"] #hx-ws{ position:fixed !important; inset:0 !important; z-index:120 !important; }
       body[data-active="chat"] #hx-home .hx-home-bar,
       body[data-active="chat"] #hx-home .hx-home-scroll,
       body[data-active="chat"] #hx-ws .hx-home-bar,
-      body[data-active="chat"] #hx-ws .hx-home-scroll{ max-width:600px; margin-left:auto; margin-right:auto; width:100%; box-sizing:border-box; }
+      body[data-active="chat"] #hx-ws .hx-home-scroll{ max-width:760px; margin-left:auto; margin-right:auto; width:100%; box-sizing:border-box; padding-left:28px; padding-right:28px; }
+      body[data-active="chat"] #hx-home .hx-home-scroll{ padding-top:14px; }
       body[data-active="chat"] #hx-home .hx-home-tabs,
       body[data-active="chat"] #hx-ws .hx-home-tabs{ display:none !important; }
+      /* greeting + composer sized intentionally for desktop */
+      body[data-active="chat"] #hx-home .hx-home-greet,
+      body[data-active="chat"] #hx-ws .hx-home-greet{ font-size:46px !important; }
+      body[data-active="chat"] #hx-home .hx-home-composer,
+      body[data-active="chat"] #hx-ws .hx-home-composer{ max-width:760px; }
+      /* category conversations: centred column too */
       body[data-active="chat"] #hx-wsc .hx-wsc-head,
       body[data-active="chat"] #hx-wsc .hx-wsc-searchrow,
       body[data-active="chat"] #hx-wsc .hx-wsc-scroll,
-      body[data-active="chat"] #hx-wsc .hx-wsc-new{ max-width:680px; margin-left:auto; margin-right:auto; width:100%; box-sizing:border-box; }
+      body[data-active="chat"] #hx-wsc .hx-wsc-new{ max-width:760px; margin-left:auto; margin-right:auto; width:100%; box-sizing:border-box; }
+      /* When the ☰ opens conversations over the full-screen home, the rail must
+         sit ABOVE it (it is a static column in chat — only .is-open is overlaid). */
+      body[data-active="chat"] #hx-c-rail.is-open{ position:fixed !important; left:0 !important; top:0 !important; bottom:0 !important; height:100% !important; z-index:140 !important; transform:none !important; box-shadow:6px 0 44px rgba(0,0,0,.22) !important; }
+      body[data-active="chat"] #hx-c-backdrop.is-visible{ z-index:135 !important; display:block !important; }
     }
 
     /* category landing → 'Your conversations' entry */
@@ -35914,6 +35927,7 @@
             if(t.closest('#hx-ws-back')){ window.hxHideWorkspace(); return; }
             if(t.closest('#hx-ws-send')){ wsSend(); return; }
             if(t.closest('#hx-ws-mic')){ var m = document.getElementById('hx-c-mic'); if(m) m.click(); return; }
+            if(t.closest('.hx-home-avatar')){ try { window.location.href = 'profile.html'; } catch(e){} return; }
             var pill = t.closest('.hx-home-pill[data-pill]');
             if(pill){ var pk = pill.getAttribute('data-pill');
               if(pk === 'web'){ pill.classList.toggle('is-on'); try { state.webEnabled = pill.classList.contains('is-on'); } catch(e){} }
