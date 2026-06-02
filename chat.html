@@ -32542,6 +32542,7 @@
           var r = await q;
           state.conversations = r.data || [];
           renderList();
+          try { if (window.hxRenderHomeRecent) window.hxRenderHomeRecent(); } catch (e) {}
         }
 
         // ─── Pinned conversations (local, per-device) ─────────
@@ -34846,7 +34847,7 @@
           if (!pane || !thread) return;
 
           var S = {
-            menu:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg>',
+            menu:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="7" x2="19" y2="7"/><line x1="5" y1="12" x2="19" y2="12"/><line x1="5" y1="17" x2="19" y2="17"/></svg>',
             mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>',
             send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg>',
             chevD:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
@@ -34907,7 +34908,7 @@
             '<div class="hx-home-bar">' +
               '<button class="hx-home-menu" type="button" id="hx-home-menu" aria-label="Menu">' + S.menu + '</button>' +
               '<div class="hx-home-brand">' + glyph + '<span class="hx-home-brand-name">Helix</span><span class="hx-home-brand-pro">PRO</span></div>' +
-              '<button class="hx-home-avatar" type="button" id="hx-home-avatar" aria-label="Account"><svg viewBox="0 0 44 44" aria-hidden="true"><defs><linearGradient id="hxav" x1="0" y1="0" x2="0" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e1e8f2"/><stop offset="1" stop-color="#b6c4d8"/></linearGradient></defs><rect width="44" height="44" fill="url(#hxav)"/><path d="M7.5 44c.8-7.2 6.4-11.2 14.5-11.2S35.7 36.8 36.5 44z" fill="#36456a"/><path d="M18.7 27.5h6.6v5l-3.3 1.9-3.3-1.9z" fill="#e6b187"/><path d="M14 19.3c0-5.1 3.5-8.7 8-8.7s8 3.6 8 8.7v2.7c0 5-3.6 8.6-8 8.6s-8-3.6-8-8.6z" fill="#ecba91"/><path d="M13.5 19c-.3-5.9 3.8-9.6 8.5-9.6s8.8 3.7 8.5 9.6c-1-2.3-2.1-4.1-3.9-4.8-1.6 1.2-7.6 1.3-9.2 0-1.8.7-2.9 2.5-3.9 4.8z" fill="#5a3a25"/><path d="M17.6 18.7c1.2-.7 2.6-.7 3.8 0" stroke="#46301e" stroke-width="0.85" fill="none" stroke-linecap="round"/><path d="M22.6 18.7c1.2-.7 2.6-.7 3.8 0" stroke="#46301e" stroke-width="0.85" fill="none" stroke-linecap="round"/><circle cx="19.3" cy="20.9" r="1.05" fill="#3a2a20"/><circle cx="24.7" cy="20.9" r="1.05" fill="#3a2a20"/></svg></button>' +
+              '<span class="hx-home-bar-spacer" aria-hidden="true"></span>' +
             '</div>' +
             '<div class="hx-home-scroll">' +
               '<h1 class="hx-home-greet" id="hx-home-greet"><span class="hx-home-greet-1">Good morning,</span><span class="hx-home-greet-2"></span></h1>' +
@@ -34917,7 +34918,7 @@
                   '<textarea class="hx-home-input" id="hx-home-input" rows="1" placeholder="Ask Helix anything…" autocomplete="off" spellcheck="true"></textarea>' +
                   '<div class="hx-home-inbtns">' +
                     '<button class="hx-home-mic" type="button" id="hx-home-mic" aria-label="Voice input">' + S.mic + '</button>' +
-                    '<button class="hx-home-send" type="button" id="hx-home-send" aria-label="Send">' + wave + '</button>' +
+                    '<button class="hx-home-send" type="button" id="hx-home-send" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5"/><path d="m6 11 6-6 6 6"/></svg></button>' +
                   '</div>' +
                 '</div>' +
                 '<div class="hx-home-pills">' +
@@ -34932,7 +34933,7 @@
                 '<span class="hx-w-sec-label">Recent sessions</span>' +
                 '<button class="hx-w-seeall" type="button">View all' + S.chevR + '</button>' +
               '</div>' +
-              '<div class="hx-home-recent" id="hx-home-recent">' + recent + '</div>' +
+              '<div class="hx-home-recent" id="hx-home-recent"></div>' +
             '</div>' +
             '<nav class="hx-home-tabs" aria-label="Sections">' +
               '<button class="hx-home-tab is-on" type="button" data-tab="home" aria-label="Home">' + S.home + '</button>' +
@@ -34990,13 +34991,12 @@
           var morePill = el.querySelector('[data-pill="more"]');
           if (morePill) morePill.addEventListener('click', function () { var d = document.getElementById('hx-c-attach'); if (d) d.click(); });
 
-          // Recent-session rows → load the title into the composer.
+          // Recent-session rows → open the real conversation.
           document.getElementById('hx-home-recent').addEventListener('click', function (e) {
-            var b = e.target.closest && e.target.closest('[data-ws-suggest]'); if (!b) return;
+            var b = e.target.closest && e.target.closest('[data-conv-id]'); if (!b) return;
             e.preventDefault(); e.stopPropagation();
-            input.value = b.getAttribute('data-ws-suggest') || '';
-            autosize(); mirror(); input.focus();
-            try { input.selectionStart = input.selectionEnd = input.value.length; } catch (_) {}
+            var id = b.getAttribute('data-conv-id'); if (!id) return;
+            try { if (typeof openConversation === 'function') openConversation(id); } catch (_) {}
           });
           // Bottom tabs.
           el.querySelectorAll('.hx-home-tab').forEach(function (t) {
@@ -35026,7 +35026,28 @@
               if (name) { g1.style.whiteSpace = 'nowrap'; g1.textContent = part + ','; g2.textContent = name + '.'; g2.style.display = ''; }
               else { g1.style.whiteSpace = 'normal'; g1.innerHTML = part + '<span style="color:var(--hx-violet)">.</span>'; g2.textContent = ''; g2.style.display = 'none'; }
             }
+            try { hxRenderHomeRecent(); } catch (e) {}
           }
+          // Recent sessions = the user's REAL conversations (newest first).
+          // Empty until the user has actually started sessions.
+          var hxRecIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
+          function hxCap(s){ s = String(s || ''); return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+          function hxRenderHomeRecent(){
+            var box = document.getElementById('hx-home-recent'); if (!box) return;
+            var convs = (typeof state !== 'undefined' && state && state.conversations) ? state.conversations : [];
+            if (!convs.length){
+              box.innerHTML = '<div class="hx-home-rec-empty">No sessions yet — start a conversation and it will appear here.</div>';
+              return;
+            }
+            box.innerHTML = convs.slice(0, 4).map(function (c){
+              var meta = (c.model ? hxCap(c.model) + ' · ' : '') + (typeof relTime === 'function' ? relTime(c.updated_at) : '');
+              return '<button class="hx-home-rec" type="button" data-conv-id="' + escape(c.id || '') + '" style="--wc:#7c5cff">' +
+                '<span class="hx-home-rec-ic" aria-hidden="true">' + hxRecIcon + '</span>' +
+                '<span class="hx-home-rec-body"><span class="hx-home-rec-t">' + escape(c.title || 'Untitled') + '</span><span class="hx-home-rec-m">' + escape(meta) + '</span></span>' +
+                '<span class="hx-home-rec-act" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button>';
+            }).join('');
+          }
+          window.hxRenderHomeRecent = hxRenderHomeRecent;
           var scrollEl = el.querySelector('.hx-home-scroll');
           function pinTop() {
             if (!scrollEl) return;
@@ -38510,17 +38531,19 @@
     }
     body[data-active="chat"] .hx-home-mic svg{ width:18px; height:18px; }
     body[data-active="chat"] .hx-home-send{
-      width:54px; height:54px; border-radius:50%; display:grid; place-items:center; border:0; color:#fff; flex-shrink:0;
-      background:radial-gradient(120% 120% at 30% 25%, #8b7bff, var(--hx-violet) 70%);
-      box-shadow:0 0 16px color-mix(in srgb,var(--hx-violet) 55%, transparent), 0 8px 20px -8px color-mix(in srgb,var(--hx-violet) 70%, transparent), 0 0 0 1px rgba(255,255,255,.14) inset;
-      transition:transform .14s;
+      width:40px; height:40px; border-radius:50%; display:grid; place-items:center; border:0; color:#fff; flex-shrink:0;
+      background:linear-gradient(160deg, #8b7bff, var(--hx-violet) 78%);
+      box-shadow:0 6px 16px -8px color-mix(in srgb,var(--hx-violet) 70%, transparent), 0 0 0 1px rgba(255,255,255,.12) inset;
+      transition:transform .14s, filter .14s, opacity .14s;
     }
-    body[data-active="chat"] .hx-home-send:active{ transform:scale(.93); }
-    body[data-active="chat"] .hx-home-send svg{ width:23px; height:23px; }
-    body[data-active="chat"] .hx-home-pills{ display:flex; gap:8px; margin-top:14px; }
+    body[data-active="chat"] .hx-home-send:hover{ filter:brightness(1.06); }
+    body[data-active="chat"] .hx-home-send:active{ transform:scale(.92); }
+    body[data-active="chat"] .hx-home-send svg{ width:19px; height:19px; }
+    body[data-active="chat"] .hx-home-bar-spacer{ width:42px; height:42px; flex-shrink:0; }
+    body[data-active="chat"] .hx-home-pills{ display:flex; gap:8px; margin-top:14px; align-items:stretch; }
     body[data-active="chat"] .hx-home-pill{
-      flex:1 1 auto; display:inline-flex; align-items:center; justify-content:center; gap:7px;
-      padding:10px 10px; border-radius:13px; background:transparent; border:1px solid var(--hx-line);
+      flex:1 1 0; min-width:0; display:inline-flex; align-items:center; justify-content:center; gap:7px;
+      padding:10px 8px; border-radius:13px; background:transparent; border:1px solid var(--hx-line);
       color:var(--hx-text-mid); font-size:13px; font-weight:550; letter-spacing:-.012em;
       transition:color .16s, border-color .16s, background .18s; white-space:nowrap;
     }
@@ -38572,6 +38595,10 @@
     body[data-active="chat"] .hx-home-card-d{ font-size:10px; font-weight:450; color:var(--hx-text-mid); line-height:1.36; margin-top:7px; }
     /* recent sessions */
     body[data-active="chat"] .hx-home-recent{ display:flex; flex-direction:column; gap:10px; }
+    body[data-active="chat"] .hx-home-rec-empty{
+      padding:18px 16px; border:1px dashed var(--hx-line); border-radius:16px;
+      color:var(--hx-text-dim); font-size:13.5px; line-height:1.45; text-align:center; background:transparent;
+    }
     body[data-active="chat"] .hx-home-rec{
       display:flex; align-items:center; gap:13px; text-align:left; min-width:0;
       padding:11px 14px; border-radius:16px; color:var(--hx-text);
