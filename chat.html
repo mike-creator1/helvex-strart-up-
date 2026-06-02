@@ -34937,6 +34937,32 @@
               '<span class="hx-home-card-t">' + a.t + '</span>' +
               '<span class="hx-home-card-d">' + a.d + '</span></button>';
           }).join('');
+          // Home 'Quick start' — everyday, cross-cutting intents that DON'T
+          // duplicate the six domain workspaces. Category chips + starters both
+          // seed the Home composer (data-home-seed) so a tap → a real session.
+          var HOME_CATS = [
+            { l:'Quick answer', s:'Quick question: ' },
+            { l:'Summarize',    s:'Summarize this for me: ' },
+            { l:'Draft',        s:'Draft this for me: ' },
+            { l:'Decide',       s:'Help me decide between: ' },
+            { l:'Brainstorm',   s:'Brainstorm ideas for ' }
+          ];
+          var HOME_STARTERS = [
+            'Summarize this into 3 key points',
+            'Draft a reply to this message',
+            'Help me decide between two options',
+            'Brainstorm 10 ideas for…'
+          ];
+          var homeSpark = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/></svg>';
+          var homeCats = HOME_CATS.map(function (ct) {
+            return '<button class="hx-ws-cat" type="button" data-home-seed="' + ct.s + '" style="--wc:#7c5cff">' + ct.l + '</button>';
+          }).join('');
+          var homeStarters = HOME_STARTERS.map(function (s) {
+            return '<button class="hx-home-rec" type="button" data-home-seed="' + s + '" style="--wc:#7c5cff">' +
+              '<span class="hx-home-rec-ic" aria-hidden="true">' + homeSpark + '</span>' +
+              '<span class="hx-home-rec-body"><span class="hx-home-rec-t">' + s + '</span></span>' +
+              '<span class="hx-home-rec-act" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button>';
+          }).join('');
           // Real sessions only — no fabricated history. Until the user has
           // actual conversations, show a clean empty state. (Wired to live
           // conversations in hxSyncRecent below.)
@@ -34975,6 +35001,9 @@
                 '</div>' +
               '</div>' +
               '<div class="hx-home-cards" role="group" aria-label="Λειτουργία Helix">' + cards + '</div>' +
+              '<div class="hx-w-sughead"><span class="hx-w-sec-label">Quick start</span></div>' +
+              '<div class="hx-ws-cats">' + homeCats + '</div>' +
+              '<div class="hx-home-recent hx-home-suggest">' + homeStarters + '</div>' +
               '<div class="hx-w-sughead">' +
                 '<span class="hx-w-sec-label">Recent sessions</span>' +
                 '<button class="hx-w-seeall" type="button">View all' + S.chevR + '</button>' +
@@ -35010,6 +35039,15 @@
             if (realSend) { realSend.removeAttribute('disabled'); realSend.click(); }
           }
           input.addEventListener('input', function () { autosize(); mirror(); });
+          // Home category chips + starters → seed the composer (no auto-send,
+          // so the user can tweak before sending).
+          el.addEventListener('click', function (e) {
+            var s = e.target.closest && e.target.closest('[data-home-seed]'); if (!s) return;
+            e.preventDefault();
+            input.value = s.getAttribute('data-home-seed');
+            autosize(); mirror(); input.focus();
+            try { input.selectionStart = input.selectionEnd = input.value.length; } catch (_) {}
+          });
           input.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doSend(); }
           });
@@ -35148,26 +35186,35 @@
           // them.
           var WS = {
             research: { accent:'#7c5cff', icon:I.research, title:'Research', sub:'Find, verify and explore anything — with cited sources.', ph:'Research any topic…',
-              starters:['What are the latest developments in AI?','Research this topic and cite your sources','Compare two options with evidence'],
+              cats:[{l:'Market scan',s:'Scan the market for '},{l:'Deep dive',s:'Do a deep dive on '},{l:'Fact-check',s:'Fact-check this claim: '},{l:'Compare',s:'Compare these options: '},{l:'Sources',s:'Find credible sources on '}],
+              starters:['Map the competitive landscape for…','Fact-check this claim with sources','What changed in this space this year?','Compare two options with evidence'],
               empty:{ ic:'globe', title:'Nothing here yet', text:'Your sources, citations and saved research will appear here as you work.' } },
             plan: { accent:'#22c55e', icon:I.plan, title:'Plan', sub:'Turn ideas into roadmaps, milestones and tasks.', ph:'What do you want to plan?',
-              starters:['Create a 30-day launch plan','Break this goal into milestones','Plan my week around 3 priorities'],
+              cats:[{l:'Roadmap',s:'Build a roadmap for '},{l:'Milestones',s:'Break this into milestones: '},{l:'Weekly focus',s:'Plan my week around: '},{l:'Launch',s:'Plan a launch for '},{l:'OKRs',s:'Draft OKRs for '}],
+              starters:['Build a 30-day go-to-market plan','Break this goal into milestones','Plan my week around 3 priorities','Draft OKRs for this quarter'],
               empty:{ ic:'flag', title:'No plans yet', text:'Your goals, roadmaps and tasks will appear here once you create them.' } },
             analyze: { accent:'#3b82f6', icon:WIC.chart, title:'Analyze', sub:'Dashboards, metrics and insights from your data.', ph:'What data would you like to analyze?',
-              starters:['Analyze this data and find the trend','Turn these numbers into insights','Summarize a report into key metrics'],
+              cats:[{l:'Trends',s:'Find the trend in this data: '},{l:'KPIs',s:'Which KPIs should I track for '},{l:'Reports',s:'Summarize this report: '},{l:'Forecast',s:'Forecast from this data: '},{l:'Anomalies',s:'Spot anomalies in this data: '}],
+              starters:['Find the trend in this data','Turn these numbers into 3 insights','Summarize this report into key metrics','Forecast next quarter from this data'],
               empty:{ ic:'chart', title:'No analysis yet', text:'Share data or ask a question — your dashboards and reports will appear here.' } },
             code: { accent:'#f59e0b', icon:WIC.repo, title:'Code', sub:'Build, debug and ship — your coding workspace.', ph:'Describe what to build, fix or refactor…',
-              starters:['Build a React component for…','Find and fix the bug in this code','Refactor this function to be cleaner'],
+              cats:[{l:'Build',s:'Build '},{l:'Debug',s:'Debug this error: '},{l:'Refactor',s:'Refactor this code: '},{l:'Tests',s:'Write tests for this: '},{l:'Explain',s:'Explain this code: '}],
+              starters:['Build a React component for…','Find and fix the bug in this code','Refactor this function to be cleaner','Write tests for this code'],
               empty:{ ic:'code', title:'No projects yet', text:'Your repositories, files and coding sessions will appear here.' } },
             create: { accent:'#ec4899', icon:I.create, title:'Create', sub:'Generate content, assets and campaigns.', ph:'What do you want to create?',
-              starters:['Write a launch announcement','Draft a cold outreach email','Generate social posts for a campaign'],
+              cats:[{l:'Copy',s:'Write copy for '},{l:'Social',s:'Write social posts about '},{l:'Email',s:'Draft an email to '},{l:'Naming',s:'Give me name ideas for '},{l:'Long-form',s:'Write a long-form piece about '}],
+              starters:['Write a launch announcement','Generate a week of social posts','Draft a cold outreach email','Give me 10 product name ideas'],
               empty:{ ic:'doc', title:'Nothing created yet', text:'Your documents, assets and campaigns will appear here.' } },
             learn: { accent:'#22d3ee', icon:I.learn, title:'Learn', sub:'Courses, learning paths and AI tutoring.', ph:'What do you want to learn?',
-              starters:['Explain a concept simply, with an example','Create a learning path for me','Quiz me on what I just learned'],
+              cats:[{l:'Simplify',s:'Explain simply: '},{l:'Learning path',s:'Create a learning path for '},{l:'Practice',s:'Quiz me on '},{l:'Recaps',s:'Summarize what I learned about '},{l:'Skills',s:'Help me build the skill of '}],
+              starters:['Explain a concept simply, with an example','Build me a learning path for…','Quiz me on what I just learned','Teach me a topic in 10 minutes'],
               empty:{ ic:'book', title:'Nothing here yet', text:'Your courses, saved lessons and progress will appear here.' } }
           };
 
           function renderBody(c){
+            var cats = (c.cats || []).map(function(ct){
+              return '<button class="hx-ws-cat" type="button" data-seed="' + ct.s + '" style="--wc:' + c.accent + '">' + ct.l + '</button>';
+            }).join('');
             var starters = (c.starters || []).map(function(s){
               return '<button class="hx-home-rec" type="button" data-seed="' + s + '" style="--wc:' + c.accent + '">' +
                 '<span class="hx-home-rec-ic">' + sg(c.icon) + '</span>' +
@@ -35175,7 +35222,9 @@
                 '<span class="hx-home-rec-act">' + sg('<path d="M9 18l6-6-6-6"/>', 2) + '</span></button>';
             }).join('');
             var e = c.empty || {};
-            return '<div class="hx-w-sughead"><span class="hx-w-sec-label">Start with</span></div>' +
+            return (cats ? '<div class="hx-w-sughead"><span class="hx-w-sec-label">Browse</span></div>' +
+                '<div class="hx-ws-cats">' + cats + '</div>' : '') +
+              '<div class="hx-w-sughead"><span class="hx-w-sec-label">Start with</span></div>' +
               '<div class="hx-home-recent">' + starters + '</div>' +
               '<div class="hx-ws-empty">' +
                 '<span class="hx-ws-empty-ic" aria-hidden="true">' + sg(WIC[e.ic] || c.icon, 1.8) + '</span>' +
@@ -38593,6 +38642,15 @@
     body[data-active="chat"] .hx-home-card-d{ font-size:10px; font-weight:450; color:var(--hx-text-mid); line-height:1.36; margin-top:7px; }
     /* recent sessions */
     body[data-active="chat"] .hx-home-recent{ display:flex; flex-direction:column; gap:10px; }
+    body[data-active="chat"] .hx-ws-cats{ display:flex; flex-wrap:wrap; gap:8px; margin:2px 0 20px; }
+    body[data-active="chat"] .hx-ws-cat{
+      appearance:none; -webkit-appearance:none; border:1px solid var(--hx-line);
+      background:var(--hx-bg-2); color:var(--hx-text); font:inherit; font-size:13.5px;
+      font-weight:600; letter-spacing:-.01em; padding:8px 13px; border-radius:999px;
+      cursor:pointer; line-height:1; transition:border-color .15s, background .15s, transform .12s;
+    }
+    body[data-active="chat"] .hx-ws-cat:hover{ border-color:color-mix(in srgb,var(--wc) 48%, var(--hx-line)); background:color-mix(in srgb,var(--wc) 8%, var(--hx-bg-2)); }
+    body[data-active="chat"] .hx-ws-cat:active{ transform:scale(.96); }
     body[data-active="chat"] .hx-home-rec-empty{
       padding:18px 16px; border:1px dashed var(--hx-line); border-radius:16px;
       color:var(--hx-text-dim); font-size:13.5px; line-height:1.45; text-align:center; background:transparent;
