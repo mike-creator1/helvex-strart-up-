@@ -30621,9 +30621,19 @@
       border-color:color-mix(in srgb,var(--hx-mc,var(--hx-text)) 45%, var(--hx-line));
       box-shadow:0 0 0 3px color-mix(in srgb,var(--hx-mc,var(--hx-text)) 8%, transparent);
     }
-    /* Assistant prose: a touch more reading rhythm — matches the flat-minimal
-       language (typography only, no decoration). */
-    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content{ line-height:1.64; }
+    /* ═══ Chat breathing pass — smaller type, more air, calmer rhythm ═══
+       Smaller body text so the conversation breathes (Linear/Notion feel),
+       generous line-height, and more space between turns. */
+    body[data-active="chat"] .hx-msg-content{ font-size:14.5px !important; line-height:1.68 !important; letter-spacing:-.006em !important; }
+    body[data-active="chat"] .hx-msg.is-user .hx-msg-content{ font-size:14.5px !important; line-height:1.55 !important; }
+    /* more breathing room between turns */
+    html body[data-active="chat"] .hx-chat-thread-inner .hx-msg.is-user{ margin-top:40px !important; }
+    html body[data-active="chat"] .hx-chat-thread-inner .hx-msg.is-assistant{ margin-top:20px !important; }
+    /* paragraph & list rhythm inside answers */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content p{ margin:0 0 .85em !important; }
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content li{ margin:.3em 0 !important; }
+    /* drop the editorial drop-cap — reads cleaner / more professional */
+    body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content::first-letter{ font-family:inherit !important; font-style:normal !important; font-size:inherit !important; letter-spacing:inherit !important; }
     /* Per-category chat identity: when a workspace mode is active, the chat
        takes that category's accent (composer focus, send, mode badge, etc.). */
     body[data-active="chat"][data-wsmode="research"]{ --hx-mc:#7c5cff; --hx-mc-soft:rgba(124,92,255,.14); --hx-mc-glow:rgba(124,92,255,.45); }
@@ -30632,6 +30642,14 @@
     body[data-active="chat"][data-wsmode="code"]    { --hx-mc:#f59e0b; --hx-mc-soft:rgba(245,158,11,.14); --hx-mc-glow:rgba(245,158,11,.45); }
     body[data-active="chat"][data-wsmode="create"]  { --hx-mc:#ec4899; --hx-mc-soft:rgba(236,72,153,.14); --hx-mc-glow:rgba(236,72,153,.45); }
     body[data-active="chat"][data-wsmode="learn"]   { --hx-mc:#22d3ee; --hx-mc-soft:rgba(34,211,238,.14); --hx-mc-glow:rgba(34,211,238,.45); }
+    /* Conversation header — premium + per-category identity. When a category
+       mode is active, an accent dot precedes the title so the chat clearly
+       reads as that category's dedicated chat. */
+    body[data-active="chat"][data-wsmode] .hx-chat-toolbar .hx-chat-title::before{
+      content:'' !important; display:inline-block; width:7px; height:7px; border-radius:50%;
+      background:var(--hx-mc); margin-right:8px; vertical-align:middle;
+      box-shadow:0 0 0 3px var(--hx-mc-soft), 0 0 8px var(--hx-mc-glow);
+    }
   </style>
 </head>
 <body data-active="chat">
