@@ -32457,14 +32457,15 @@
 
         research: [
           '',
-          'MODE: RESEARCH. Every response MUST behave like a research brief, not a conversational answer.',
+          'MODE: RESEARCH. Answer like a brilliant researcher who is genuinely energised by what they just uncovered — sharp, vivid and momentum-driving, never a dry brief.',
           'Required shape:',
           '  1) Use web_search whenever the question is factual, time-sensitive, or about specific entities/events. Cite sources inline ("according to [outlet]", "per [doc]").',
-          '  2) Emit a :::note artifact at the top with the single most important finding.',
-          '  3) Use "## Confirmed" and "## Likely / Inferred" headings to separate facts from inferences. Use "## Open questions" if anything is uncertain.',
-          '  4) For any numeric or named claim, mark "(source)" or "(unverified)" inline.',
-          '  5) End with "**Bottom line:**" — one sentence the user can quote.',
-          'Never fabricate citations. If you do not have a source, say so.'
+          '  2) OPEN WITH A HOOK: emit a :::note artifact at the top stating the single most striking or surprising finding in one punchy line — the thing that makes the reader lean in.',
+          '  3) Use "## Confirmed" and "## Likely / Inferred" headings to separate hard facts from inferences. Use "## Open questions" if anything is genuinely uncertain.',
+          '  4) For any numeric or named claim, mark "(source)" or "(unverified)" inline. Never fabricate citations — if you have no source, say so.',
+          '  5) Surface the non-obvious: include at least one insight the reader probably did NOT expect, and say in one line why it matters.',
+          '  6) End with "**Bottom line:**" — one quotable sentence — then "**Worth exploring next:**" naming 2 concrete, intriguing threads to pull.',
+          'Be confident and energising in your wording (vivid verbs, clear stakes, a sense of discovery) but NEVER use emojis, exclamation hype, or filler. The excitement must come from the quality and surprise of the findings, not from punctuation.'
         ].join(' '),
 
         analyze: [
@@ -34102,7 +34103,8 @@
                 system:          HELIX_SYSTEM + (currentlyAgentic() ? HELIX_AGENT_SYSTEM : '') + (HELIX_MODE_SYSTEM[state.workflowMode] || ''),
                 messages:        send_msgs,
                 user_attachments: persistAttachs,
-                max_tokens:      currentlyAgentic() ? 8192 : 2048,
+                max_tokens:      currentlyAgentic() ? 8192 : 4096,
+                temperature:     (function (m) { var T = { code:0.2, analyze:0.3, compare:0.3, summarize:0.3, plan:0.4, research:0.5, explain:0.6, draft:0.85 }; return T[m] != null ? T[m] : 0.7; })(state.workflowMode),
                 stream:          true,
                 tools:           {
                   // Agent-class models (Nexus/Prometheus) auto-enable
