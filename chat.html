@@ -34867,7 +34867,7 @@
           if (!pane || !thread) return;
 
           var S = {
-            menu:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="7" x2="19" y2="7"/><line x1="5" y1="12" x2="19" y2="12"/><line x1="5" y1="17" x2="19" y2="17"/></svg>',
+            menu:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>',
             mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>',
             send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg>',
             chevD:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
@@ -37381,9 +37381,9 @@
           menuBtn.className = 'hx-mobile-menu-btn';
           menuBtn.setAttribute('aria-label', 'Open conversations');
           menuBtn.innerHTML = '<svg class="hx-menu-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">' +
-            '<line x1="7" y1="7" x2="17" y2="7"/>' +
+            '<line x1="4" y1="6" x2="20" y2="6"/>' +
             '<line x1="4" y1="12" x2="20" y2="12"/>' +
-            '<line x1="7" y1="17" x2="17" y2="17"/>' +
+            '<line x1="4" y1="18" x2="20" y2="18"/>' +
             '</svg>';
           document.body.appendChild(menuBtn);
 
@@ -38482,6 +38482,12 @@
     #hx-c-drawer-toggle,
     .hx-chat-drawer-toggle{ display:none !important; }
     body.hx-home-on .hx-chat-drawer-toggle{ display:none !important; }
+    /* The legacy floating mobile menu (#hx-c-mobile-menu) overlaps the Home's
+       own clean menu button — hide it whenever the Home / workspaces show. */
+    body.hx-home-on #hx-c-mobile-menu{ display:none !important; }
+    /* Home composer pills: drop the redundant "more" chevron so Web search /
+       Sources / Focus sit evenly and fully on one row. */
+    body[data-active="chat"] .hx-home-pill-more{ display:none !important; }
     /* app bar */
     body[data-active="chat"] .hx-home-bar{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -38560,10 +38566,11 @@
     body[data-active="chat"] .hx-home-send:active{ transform:scale(.92); }
     body[data-active="chat"] .hx-home-send svg{ width:19px; height:19px; }
     body[data-active="chat"] .hx-home-bar-spacer{ width:42px; height:42px; flex-shrink:0; }
-    body[data-active="chat"] .hx-home-pills{ display:flex; gap:8px; margin-top:14px; align-items:stretch; }
+    body[data-active="chat"] .hx-home-pills{ display:flex; gap:8px; margin-top:14px; align-items:stretch; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+    body[data-active="chat"] .hx-home-pills::-webkit-scrollbar{ display:none; }
     body[data-active="chat"] .hx-home-pill{
-      flex:1 1 0; min-width:0; display:inline-flex; align-items:center; justify-content:center; gap:7px;
-      padding:10px 8px; border-radius:13px; background:transparent; border:1px solid var(--hx-line);
+      flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; gap:7px;
+      padding:10px 14px; border-radius:13px; background:transparent; border:1px solid var(--hx-line);
       color:var(--hx-text-mid); font-size:13px; font-weight:550; letter-spacing:-.012em;
       transition:color .16s, border-color .16s, background .18s; white-space:nowrap;
     }
@@ -38657,7 +38664,7 @@
     html[data-theme="dark"] body[data-active="chat"] .hx-home-rec{ background:var(--hx-bg-2); }
     @media (max-width:380px){
       body[data-active="chat"] .hx-home-pills{ gap:6px; }
-      body[data-active="chat"] .hx-home-pill{ font-size:11.5px; gap:5px; padding:10px 6px; letter-spacing:-.02em; }
+      body[data-active="chat"] .hx-home-pill{ font-size:12px; gap:6px; padding:9px 13px; letter-spacing:-.015em; }
       body[data-active="chat"] .hx-home-pill svg{ width:14px; height:14px; }
       body[data-active="chat"] .hx-home-pill-more{ width:40px; }
       body[data-active="chat"] .hx-home-cards{ gap:8px; }
