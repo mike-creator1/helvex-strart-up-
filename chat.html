@@ -32433,6 +32433,7 @@
 
       var state = {
         owner: null,
+        workspace: 'home',     // active workspace: home|research|plan|analyze|code|create|learn
         conversation: null,    // current conversation row
         conversations: [],     // sidebar list
         messages: [],          // current thread
@@ -32570,13 +32571,16 @@
         // ─── Conversation list (scoped to the active project) ─
         async function refreshList() {
           var active = getActiveProject();
-          var q = sb.from('conversations').select('id,title,model,updated_at,project_id')
+          var q = sb.from('conversations').select('id,title,model,updated_at,project_id,workspace')
             .is('archived_at', null).order('updated_at', { ascending: false }).limit(100);
           // Chat is project-scoped. When an active project is selected the
           // sidebar only shows that project's conversations. With no active
           // project we fall back to ALL conversations so users don't lose
           // access to legacy chats that pre-date the project system.
           if (active && active.id) q = q.eq('project_id', active.id);
+          // Workspace-scoped: each of the 7 workspaces keeps its own session
+          // list. A conversation created in one workspace never shows in another.
+          q = q.eq('workspace', state.workspace || 'home');
           var r = await q;
           state.conversations = r.data || [];
           renderList();
@@ -32907,6 +32911,13 @@
           try { refreshModeUI(); } catch (e) {}
           // V97 — also clear the themed workspace skin on conversation switch
           try { if (typeof exitWorkspace === 'function') exitWorkspace(true); } catch (e) {}
+          // Workspace scoping: a conversation belongs to exactly one workspace.
+          // Restore the active workspace and its accent/behaviour on open.
+          try { state.workspace = conv.workspace || 'home'; } catch (e) {}
+          try {
+            var _wk = conv.workspace;
+            if (_wk && _wk !== 'home' && typeof setMode === 'function' && typeof HX_MODES !== 'undefined' && HX_MODES[_wk]) setMode(_wk);
+          } catch (e) {}
 
           // Sync toolbar
           $('hx-c-title').textContent = conv.title || 'New chat';
@@ -33580,7 +33591,8 @@
           var model = $('hx-c-model').value || 'ether';
           var proj  = active.id;
           var ins = await sb.from('conversations').insert({
-            owner_id: u.id, project_id: proj, model: model, title: 'New chat'
+            owner_id: u.id, project_id: proj, model: model, title: 'New chat',
+            workspace: state.workspace || 'home'
           }).select().maybeSingle();
           if (ins.error) { if (window.cxToast) window.cxToast('Couldn’t start a new chat — please try again.', 'error'); return; }
           await sb.rpc('log_event', { p_kind: 'chat.conversation_created', p_payload: { id: ins.data.id, model: model } });
@@ -34990,6 +35002,9 @@
           }
           function doSend() {
             if (!input.value.trim()) return;
+            // The Home composer is the general 'home' workspace.
+            try { state.workspace = 'home'; } catch (e) {}
+            try { if (state.conversation && (state.conversation.workspace || 'home') !== 'home') state.conversation = null; } catch (e) {}
             mirror();
             input.value = ''; autosize();
             if (realSend) { realSend.removeAttribute('disabled'); realSend.click(); }
@@ -35214,9 +35229,14 @@
           function wsAutosize(t){ t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 140) + 'px'; }
           function wsSend(){
             var ti = ws.querySelector('#hx-ws-input'); if(!ti || !ti.value.trim()) return;
-            try { if(typeof setMode === 'function' && wsKey && hxMode !== wsKey && (typeof HX_MODES === 'undefined' || HX_MODES[wsKey])) setMode(wsKey); } catch(e){}
+            var key = wsKey || 'home';
+            try { state.workspace = key; } catch(e){}
+            // Never append into a conversation that belongs to another workspace.
+            try { if (state.conversation && (state.conversation.workspace || 'home') !== key) state.conversation = null; } catch(e){}
+            try { if(typeof setMode === 'function' && hxMode !== key && (typeof HX_MODES === 'undefined' || HX_MODES[key])) setMode(key); } catch(e){}
             if(realInput){ realInput.value = ti.value; try { realInput.dispatchEvent(new Event('input', { bubbles:true })); } catch(e){} }
-            ti.value = ''; window.hxHideWorkspace();
+            ti.value = '';
+            ws.hidden = true; // hide the workspace WITHOUT resetting state.workspace
             if(realSend){ realSend.removeAttribute('disabled'); realSend.click(); }
           }
           // One delegated set of handlers for the (re-rendered) workspace.
@@ -35234,10 +35254,18 @@
 
           window.hxShowWorkspace = function(key){
             if(!WS[key]){ try { if(typeof setMode === 'function') setMode(key); } catch(e){} return; }
+            // Enter this workspace: scope conversations/sessions to it.
+            try { state.workspace = key; } catch(e){}
+            try { if (typeof refreshList === 'function') refreshList(); } catch(e){}
             renderWS(key); ws.hidden = false;
             var s = ws.querySelector('.hx-home-scroll'); if(s) s.scrollTop = 0;
           };
-          window.hxHideWorkspace = function(){ ws.hidden = true; };
+          window.hxHideWorkspace = function(){
+            ws.hidden = true;
+            // Back to the general Home workspace.
+            try { state.workspace = 'home'; } catch(e){}
+            try { if (typeof refreshList === 'function') refreshList(); } catch(e){}
+          };
           window.hxShowResearch = function(){ window.hxShowWorkspace('research'); };
           window.hxHideResearch = function(){ window.hxHideWorkspace(); };
         })();
