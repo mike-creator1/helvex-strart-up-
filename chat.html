@@ -30867,6 +30867,14 @@
     body[data-active="chat"] .hx-w-sug-go{ flex:0 0 auto; }
     body[data-active="chat"] .hx-w-sug-go svg{ width:18px !important; height:18px !important; }
     body[data-active="chat"] .hx-rs-ic svg, body[data-active="chat"] .hx-home-card-ic svg, body[data-active="chat"] .hx-home-rec-ic svg, body[data-active="chat"] .hx-ws-empty-ic svg{ max-width:28px; max-height:28px; }
+    /* The mobile home / workspace overlays have NO desktop styling, so on wide
+       screens they render unstyled and break the layout. They are phone-only
+       surfaces — on desktop the sidebar rail + chat pane are the experience. */
+    @media (min-width:761px){
+      body[data-active="chat"] #hx-home,
+      body[data-active="chat"] #hx-ws,
+      body[data-active="chat"] #hx-wsc{ display:none !important; }
+    }
 
     /* category landing → 'Your conversations' entry */
     body[data-active="chat"] .hx-ws-convos-link{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; cursor:pointer; border:1px solid var(--hx-line); background:var(--hx-bg-2); border-radius:15px; padding:13px 14px; margin:2px 0 20px; transition:border-color .15s, transform .12s, box-shadow .15s; }
