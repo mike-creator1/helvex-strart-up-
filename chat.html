@@ -30828,15 +30828,18 @@
     #hx-wsc .hx-wsc-name{ font-size:19px; font-weight:800; letter-spacing:-.03em; line-height:1.05; }
     #hx-wsc .hx-wsc-sub{ font-size:12.5px; font-weight:500; color:var(--hx-text-mid); }
     #hx-wsc .hx-wsc-scroll{ flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:18px; }
-    #hx-wsc .hx-wsc-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-    #hx-wsc .hx-wsc-card{ display:flex; flex-direction:column; text-align:left; cursor:pointer; border:1px solid var(--hx-line); background:var(--hx-bg-2); border-radius:16px; padding:14px 14px 13px; min-height:120px; position:relative; overflow:hidden; transition:border-color .15s, transform .12s, box-shadow .15s; }
+    #hx-wsc .hx-wsc-grid{ display:flex; flex-direction:column; gap:10px; }
+    #hx-wsc .hx-wsc-card{ display:flex; flex-direction:row; align-items:center; gap:13px; text-align:left; cursor:pointer; border:1px solid var(--hx-line); background:var(--hx-bg-2); border-radius:15px; padding:13px 14px; position:relative; overflow:hidden; transition:border-color .15s, transform .12s, box-shadow .15s; }
     #hx-wsc .hx-wsc-card::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--mc); opacity:.85; }
-    #hx-wsc .hx-wsc-card:hover{ border-color:color-mix(in srgb,var(--mc) 45%, var(--hx-line)); box-shadow:0 8px 22px var(--mc-glow); transform:translateY(-2px); }
-    #hx-wsc .hx-wsc-card:active{ transform:translateY(0) scale(.985); }
-    #hx-wsc .hx-wsc-card-ic{ width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:var(--mc); background:var(--mc-soft); margin-bottom:10px; }
-    #hx-wsc .hx-wsc-card-ic svg{ width:16px; height:16px; }
-    #hx-wsc .hx-wsc-card-t{ font-size:14.5px; font-weight:680; letter-spacing:-.015em; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; flex:1; }
-    #hx-wsc .hx-wsc-card-m{ font-size:11.5px; font-weight:500; color:var(--hx-text-dim); margin-top:8px; }
+    #hx-wsc .hx-wsc-card:hover{ border-color:color-mix(in srgb,var(--mc) 45%, var(--hx-line)); box-shadow:0 6px 18px var(--mc-glow); }
+    #hx-wsc .hx-wsc-card:active{ transform:scale(.99); }
+    #hx-wsc .hx-wsc-card-ic{ width:38px; height:38px; flex:0 0 auto; border-radius:11px; display:flex; align-items:center; justify-content:center; color:var(--mc); background:var(--mc-soft); }
+    #hx-wsc .hx-wsc-card-ic svg{ width:18px; height:18px; }
+    #hx-wsc .hx-wsc-card-body{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; }
+    #hx-wsc .hx-wsc-card-t{ font-size:14.5px; font-weight:680; letter-spacing:-.015em; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    #hx-wsc .hx-wsc-card-m{ font-size:11.5px; font-weight:500; color:var(--hx-text-dim); }
+    #hx-wsc .hx-wsc-card-go{ flex:0 0 auto; color:var(--hx-text-dim); display:flex; }
+    #hx-wsc .hx-wsc-card-go svg{ width:18px; height:18px; }
     #hx-wsc .hx-wsc-load{ grid-column:1/-1; text-align:center; color:var(--hx-text-mid); padding:40px 0; font-size:14px; }
     #hx-wsc .hx-wsc-empty{ grid-column:1/-1; display:flex; flex-direction:column; align-items:center; gap:8px; padding:56px 20px; text-align:center; }
     #hx-wsc .hx-wsc-empty-ic{ width:54px; height:54px; border-radius:16px; display:flex; align-items:center; justify-content:center; color:var(--mc); background:var(--mc-soft); margin-bottom:4px; }
@@ -35258,8 +35261,9 @@
           grid.innerHTML = rows.map(function (c) {
             return '<button class="hx-wsc-card" type="button" data-cid="' + escape(c.id) + '">' +
               '<span class="hx-wsc-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + id.ic + '</svg></span>' +
-              '<span class="hx-wsc-card-t">' + escape(c.title || 'Νέα συζήτηση') + '</span>' +
-              '<span class="hx-wsc-card-m">' + escape(relTime(c.updated_at)) + '</span>' +
+              '<span class="hx-wsc-card-body"><span class="hx-wsc-card-t">' + escape(c.title || 'Νέα συζήτηση') + '</span>' +
+              '<span class="hx-wsc-card-m">' + escape(relTime(c.updated_at)) + '</span></span>' +
+              '<span class="hx-wsc-card-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>' +
             '</button>';
           }).join('');
         }
