@@ -30802,6 +30802,62 @@
     html body[data-active="chat"] .hx-chat-thread-inner .hx-msg.is-assistant .hx-msg-content h1.hx-md-h{ font-size:19px !important; }
     html body[data-active="chat"] .hx-chat-thread-inner .hx-msg.is-assistant .hx-msg-content h2.hx-md-h{ font-size:16px !important; }
     html body[data-active="chat"] .hx-chat-thread-inner .hx-msg.is-assistant .hx-msg-content h3.hx-md-h{ font-size:14.5px !important; }
+
+    /* ===================================================================
+       PER-CATEGORY FULL-SCREEN CONVERSATIONS VIEW (#hx-wsc)
+       Its own card-grid design, opened from within a category. Not the drawer.
+       =================================================================== */
+    #hx-wsc{
+      position:fixed; inset:0; z-index:2000; display:flex; flex-direction:column;
+      background:var(--hx-bg); color:var(--hx-text);
+      animation:hxWscIn .28s cubic-bezier(.22,.7,.25,1) both;
+    }
+    #hx-wsc[hidden]{ display:none !important; }
+    @keyframes hxWscIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+    #hx-wsc .hx-wsc-head{
+      display:flex; align-items:center; gap:12px; padding:16px 18px 14px; position:relative;
+      background:linear-gradient(180deg, var(--mc-soft), transparent);
+      border-bottom:1px solid color-mix(in srgb, var(--mc) 16%, var(--hx-line));
+    }
+    #hx-wsc .hx-wsc-head::before{ content:''; position:absolute; left:0; right:0; top:0; height:2px; background:linear-gradient(90deg, transparent, var(--mc) 25%, var(--mc) 75%, transparent); }
+    #hx-wsc .hx-wsc-back{ width:38px; height:38px; flex:0 0 auto; border-radius:11px; border:1px solid var(--hx-line); background:var(--hx-bg-2); color:var(--hx-text); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+    #hx-wsc .hx-wsc-back svg{ width:19px; height:19px; }
+    #hx-wsc .hx-wsc-ic{ width:42px; height:42px; flex:0 0 auto; border-radius:13px; color:#fff; display:flex; align-items:center; justify-content:center; background:linear-gradient(150deg, color-mix(in srgb,var(--mc) 86%,#fff), var(--mc) 54%, color-mix(in srgb,var(--mc) 74%,#000)); box-shadow:0 8px 22px var(--mc-glow), inset 0 1.5px 0 rgba(255,255,255,.4); }
+    #hx-wsc .hx-wsc-ic svg{ width:21px; height:21px; }
+    #hx-wsc .hx-wsc-id{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+    #hx-wsc .hx-wsc-name{ font-size:19px; font-weight:800; letter-spacing:-.03em; line-height:1.05; }
+    #hx-wsc .hx-wsc-sub{ font-size:12.5px; font-weight:500; color:var(--hx-text-mid); }
+    #hx-wsc .hx-wsc-scroll{ flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:18px; }
+    #hx-wsc .hx-wsc-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+    #hx-wsc .hx-wsc-card{ display:flex; flex-direction:column; text-align:left; cursor:pointer; border:1px solid var(--hx-line); background:var(--hx-bg-2); border-radius:16px; padding:14px 14px 13px; min-height:120px; position:relative; overflow:hidden; transition:border-color .15s, transform .12s, box-shadow .15s; }
+    #hx-wsc .hx-wsc-card::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--mc); opacity:.85; }
+    #hx-wsc .hx-wsc-card:hover{ border-color:color-mix(in srgb,var(--mc) 45%, var(--hx-line)); box-shadow:0 8px 22px var(--mc-glow); transform:translateY(-2px); }
+    #hx-wsc .hx-wsc-card:active{ transform:translateY(0) scale(.985); }
+    #hx-wsc .hx-wsc-card-ic{ width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:var(--mc); background:var(--mc-soft); margin-bottom:10px; }
+    #hx-wsc .hx-wsc-card-ic svg{ width:16px; height:16px; }
+    #hx-wsc .hx-wsc-card-t{ font-size:14.5px; font-weight:680; letter-spacing:-.015em; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; flex:1; }
+    #hx-wsc .hx-wsc-card-m{ font-size:11.5px; font-weight:500; color:var(--hx-text-dim); margin-top:8px; }
+    #hx-wsc .hx-wsc-load{ grid-column:1/-1; text-align:center; color:var(--hx-text-mid); padding:40px 0; font-size:14px; }
+    #hx-wsc .hx-wsc-empty{ grid-column:1/-1; display:flex; flex-direction:column; align-items:center; gap:8px; padding:56px 20px; text-align:center; }
+    #hx-wsc .hx-wsc-empty-ic{ width:54px; height:54px; border-radius:16px; display:flex; align-items:center; justify-content:center; color:var(--mc); background:var(--mc-soft); margin-bottom:4px; }
+    #hx-wsc .hx-wsc-empty-ic svg{ width:26px; height:26px; }
+    #hx-wsc .hx-wsc-empty-t{ font-size:16px; font-weight:700; }
+    #hx-wsc .hx-wsc-empty-d{ font-size:13px; color:var(--hx-text-mid); max-width:270px; line-height:1.5; }
+    #hx-wsc .hx-wsc-new{ margin:0 18px calc(16px + env(safe-area-inset-bottom)); padding:15px; border:none; border-radius:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px; background:linear-gradient(180deg, var(--mc), color-mix(in srgb,var(--mc) 82%,#000)); color:#fff; font-size:15.5px; font-weight:750; letter-spacing:-.01em; box-shadow:0 8px 22px var(--mc-glow); }
+    #hx-wsc .hx-wsc-new svg{ width:19px; height:19px; }
+    #hx-wsc .hx-wsc-new:active{ transform:scale(.985); }
+
+    /* category landing → 'Your conversations' entry */
+    body[data-active="chat"] .hx-ws-convos-link{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; cursor:pointer; border:1px solid var(--hx-line); background:var(--hx-bg-2); border-radius:15px; padding:13px 14px; margin:2px 0 20px; transition:border-color .15s, transform .12s, box-shadow .15s; }
+    body[data-active="chat"] .hx-ws-convos-link:hover{ border-color:color-mix(in srgb,var(--hx-violet) 40%, var(--hx-line)); box-shadow:0 6px 18px color-mix(in srgb,var(--hx-violet) 20%, transparent); }
+    body[data-active="chat"] .hx-ws-convos-link:active{ transform:scale(.99); }
+    body[data-active="chat"] .hx-ws-convos-ic{ width:38px;height:38px;flex:0 0 auto;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(150deg, color-mix(in srgb,var(--hx-violet) 86%,#fff), var(--hx-violet) 55%, color-mix(in srgb,var(--hx-violet) 74%,#000));box-shadow:0 4px 12px color-mix(in srgb,var(--hx-violet) 40%, transparent);}
+    body[data-active="chat"] .hx-ws-convos-ic svg{ width:19px;height:19px; }
+    body[data-active="chat"] .hx-ws-convos-tx{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+    body[data-active="chat"] .hx-ws-convos-t{ font-size:15px; font-weight:700; letter-spacing:-.02em; color:var(--hx-text); }
+    body[data-active="chat"] .hx-ws-convos-d{ font-size:12px; color:var(--hx-text-mid); line-height:1.3; }
+    body[data-active="chat"] .hx-ws-convos-go{ flex:0 0 auto; color:var(--hx-text-dim); display:flex; }
+    body[data-active="chat"] .hx-ws-convos-go svg{ width:18px;height:18px; }
   </style>
 </head>
 <body data-active="chat">
@@ -35144,6 +35200,70 @@
           }
         }
         try { window.hxBrandRail = hxBrandRail; } catch (e) {}
+
+        // ── Per-category Conversations: a dedicated FULL-SCREEN view with its
+        // own card-grid design, opened from within a category. Distinct from
+        // the global drawer; shows ONLY that category's saved sessions.
+        var hxWscEl = null;
+        function hxBuildWsc() {
+          if (hxWscEl) return hxWscEl;
+          hxWscEl = document.createElement('div');
+          hxWscEl.id = 'hx-wsc'; hxWscEl.hidden = true;
+          hxWscEl.innerHTML =
+            '<header class="hx-wsc-head">' +
+              '<button class="hx-wsc-back" type="button" aria-label="Πίσω"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>' +
+              '<span class="hx-wsc-ic" id="hx-wsc-ic" aria-hidden="true"></span>' +
+              '<span class="hx-wsc-id"><span class="hx-wsc-name" id="hx-wsc-name"></span><span class="hx-wsc-sub" id="hx-wsc-sub">Οι συζητήσεις σου</span></span>' +
+            '</header>' +
+            '<div class="hx-wsc-scroll"><div class="hx-wsc-grid" id="hx-wsc-grid"></div></div>' +
+            '<button class="hx-wsc-new" id="hx-wsc-new" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Νέα συζήτηση</span></button>';
+          document.body.appendChild(hxWscEl);
+          hxWscEl.addEventListener('click', function (e) {
+            if (e.target.closest('.hx-wsc-back')) { hxWscEl.hidden = true; return; }
+            if (e.target.closest('#hx-wsc-new')) {
+              hxWscEl.hidden = true;
+              try { if (typeof newConversation === 'function') newConversation(); } catch (_) {}
+              return;
+            }
+            var card = e.target.closest('.hx-wsc-card[data-cid]');
+            if (card) { var id = card.getAttribute('data-cid'); hxWscEl.hidden = true; try { openConversation(id); } catch (_) {} }
+          });
+          return hxWscEl;
+        }
+        async function hxOpenCategoryConvos(key) {
+          var id = HX_WS_IDENTITY[key]; if (!id) return;
+          hxBuildWsc();
+          try { state.workspace = key; } catch (e) {}
+          var rgb = HX_WS_RGB[key] || '109,94,252';
+          hxWscEl.style.setProperty('--mc', 'rgb(' + rgb + ')');
+          hxWscEl.style.setProperty('--mc-soft', 'rgba(' + rgb + ',.12)');
+          hxWscEl.style.setProperty('--mc-glow', 'rgba(' + rgb + ',.4)');
+          document.getElementById('hx-wsc-ic').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + id.ic + '</svg>';
+          document.getElementById('hx-wsc-name').textContent = id.name;
+          var grid = document.getElementById('hx-wsc-grid');
+          grid.innerHTML = '<div class="hx-wsc-load">Φόρτωση…</div>';
+          hxWscEl.hidden = false;
+          var rows = [];
+          try {
+            var r = await sb.from('conversations').select('id,title,model,updated_at,workspace')
+              .is('archived_at', null).eq('workspace', key).order('updated_at', { ascending: false }).limit(60);
+            rows = r.data || [];
+          } catch (e) { rows = (state.conversations || []); }
+          if (!rows.length) {
+            grid.innerHTML = '<div class="hx-wsc-empty"><span class="hx-wsc-empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + id.ic + '</svg></span>' +
+              '<span class="hx-wsc-empty-t">Καμία συζήτηση ακόμη</span>' +
+              '<span class="hx-wsc-empty-d">Ξεκίνα μια συζήτηση στο ' + id.name + ' και θα εμφανιστεί εδώ.</span></div>';
+            return;
+          }
+          grid.innerHTML = rows.map(function (c) {
+            return '<button class="hx-wsc-card" type="button" data-cid="' + escape(c.id) + '">' +
+              '<span class="hx-wsc-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + id.ic + '</svg></span>' +
+              '<span class="hx-wsc-card-t">' + escape(c.title || 'Νέα συζήτηση') + '</span>' +
+              '<span class="hx-wsc-card-m">' + escape(relTime(c.updated_at)) + '</span>' +
+            '</button>';
+          }).join('');
+        }
+        try { window.hxOpenCategoryConvos = hxOpenCategoryConvos; } catch (e) {}
         // Run a workspace quick-tool as a REAL action: engage its engine mode
         // (+ web search), build a task prompt from the composer text / context,
         // and fire send(). Empty composer → prefill a focused template.
@@ -35634,7 +35754,12 @@
                 '<span class="hx-home-rec-act">' + sg('<path d="M9 18l6-6-6-6"/>', 2) + '</span></button>';
             }).join('');
             var e = c.empty || {};
-            return (cats ? '<div class="hx-w-sughead"><span class="hx-w-sec-label">Browse</span></div>' +
+            return '<button class="hx-ws-convos-link" type="button" data-wsc="1">' +
+                '<span class="hx-ws-convos-ic" aria-hidden="true">' + sg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', 1.9) + '</span>' +
+                '<span class="hx-ws-convos-tx"><span class="hx-ws-convos-t">Οι συζητήσεις σου</span><span class="hx-ws-convos-d">Δες τις αποθηκευμένες συζητήσεις αυτής της κατηγορίας</span></span>' +
+                '<span class="hx-ws-convos-go" aria-hidden="true">' + sg('<path d="M9 18l6-6-6-6"/>', 2) + '</span>' +
+              '</button>' +
+              (cats ? '<div class="hx-w-sughead"><span class="hx-w-sec-label">Browse</span></div>' +
                 '<div class="hx-ws-cats">' + cats + '</div>' : '') +
               '<div class="hx-w-sughead"><span class="hx-w-sec-label">Start with</span></div>' +
               '<div class="hx-home-recent">' + starters + '</div>' +
@@ -35707,7 +35832,8 @@
             if(t.closest('#hx-ws-send')){ wsSend(); return; }
             if(t.closest('#hx-ws-mic')){ var m = document.getElementById('hx-c-mic'); if(m) m.click(); return; }
             var chip = t.closest('.hx-rs-chip'); if(chip){ ws.querySelectorAll('.hx-rs-chip').forEach(function(x){ x.classList.toggle('is-on', x === chip); }); return; }
-            var tab = t.closest('.hx-home-tab'); if(tab){ if(tab.getAttribute('data-tab') === 'home') window.hxHideWorkspace(); return; }
+            var tab = t.closest('.hx-home-tab'); if(tab){ var tb = tab.getAttribute('data-tab'); if(tb === 'home') window.hxHideWorkspace(); else if((tb === 'history' || tb === 'fav') && wsKey){ try { if(window.hxOpenCategoryConvos) window.hxOpenCategoryConvos(wsKey); } catch(e){} } return; }
+            if(t.closest('[data-wsc]')){ try { if(window.hxOpenCategoryConvos && wsKey) window.hxOpenCategoryConvos(wsKey); } catch(e){} return; }
             var seed = t.closest('[data-seed]'); if(seed){ var ti = ws.querySelector('#hx-ws-input'); if(ti){ ti.value = seed.getAttribute('data-seed'); wsAutosize(ti); ti.focus(); try { ti.selectionStart = ti.selectionEnd = ti.value.length; } catch(_){} } return; }
           });
           ws.addEventListener('input', function(e){ if(e.target && e.target.id === 'hx-ws-input') wsAutosize(e.target); });
