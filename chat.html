@@ -34428,6 +34428,10 @@
         var drawerBackdrop= $('hx-c-backdrop');
         var drawerToggle  = $('hx-c-drawer-toggle');
         function openDrawer() {
+          // In a category, the ☰ opens that category's OWN full-screen
+          // conversations view — never the generic shared drawer.
+          var wk = (typeof state !== 'undefined' && state.workspace) || 'home';
+          if (wk !== 'home' && typeof hxOpenCategoryConvos === 'function') { hxOpenCategoryConvos(wk); return; }
           if (drawerRail) drawerRail.classList.add('is-open');
           if (drawerBackdrop) drawerBackdrop.classList.add('is-visible');
         }
@@ -37970,6 +37974,8 @@
           }
 
           function openDrawer() {
+            var wk = (typeof state !== 'undefined' && state.workspace) || 'home';
+            if (wk !== 'home' && window.hxOpenCategoryConvos) { window.hxOpenCategoryConvos(wk); return; }
             rail.classList.add('is-open');
             rail.classList.remove('is-collapsed'); // ensure not in collapsed-desktop state
             if (backdrop) {
