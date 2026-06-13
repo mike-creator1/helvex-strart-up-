@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;}
+body{display:flex;justify-content:center;background:#1a1a1c;font-family:'Inter',system-ui,sans-serif;}
+#s{width:390px;height:844px;position:relative;display:flex;flex-direction:column;color:#EDEDF0;background:#0C0C0F;overflow:hidden;}
+.top{padding:22px 20px 8px;}
+.row1{display:flex;align-items:center;gap:10px;}
+.dot{width:7px;height:7px;border-radius:50%;background:#C8A24A;box-shadow:0 0 8px rgba(200,162,74,.5);}
+.bm{font-size:15px;font-weight:700;letter-spacing:-.01em;color:#EDEDF0;}
+.av{margin-left:auto;width:32px;height:32px;border-radius:50%;background:#1C1C22;border:1px solid #2A2A33;display:grid;place-items:center;font-size:12px;font-weight:700;color:#B9B9C2;}
+.h1{font-size:34px;font-weight:800;letter-spacing:-.03em;margin:18px 0 4px;}
+.hsub{font-size:13.5px;color:#7E7E88;}
+.search{margin:16px 20px 6px;display:flex;align-items:center;gap:10px;height:44px;padding:0 14px;background:#141418;border:1px solid #23232B;border-radius:14px;}
+.search svg{width:17px;height:17px;color:#6A6A74;}
+.search span{color:#6A6A74;font-size:14px;}
+.seg{display:flex;gap:8px;padding:8px 20px 10px;}
+.chip{font-size:12.5px;font-weight:600;color:#8A8A94;background:#141418;border:1px solid #23232B;border-radius:999px;padding:7px 13px;}
+.chip.on{color:#EDEDF0;background:#23232B;border-color:#33333d;}
+.list{flex:1;overflow:hidden;padding:4px 12px;}
+.glabel{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#56565F;padding:10px 8px 8px;}
+.sess{display:flex;gap:13px;align-items:flex-start;padding:13px 10px;border-radius:16px;}
+.sess+.sess{border-top:1px solid #16161B;}
+.sIc{width:42px;height:42px;border-radius:13px;flex-shrink:0;display:grid;place-items:center;font-size:17px;}
+.sBody{flex:1;min-width:0;}
+.sT{font-size:15px;font-weight:650;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:7px;}
+.unread{width:7px;height:7px;border-radius:50%;background:#E5484D;flex-shrink:0;}
+.sP{font-size:13px;color:#8A8A94;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}
+.sTime{font-size:11.5px;color:#56565F;font-family:'JetBrains Mono',monospace;flex-shrink:0;margin-top:2px;}
+.fab{position:absolute;right:18px;bottom:26px;height:54px;padding:0 22px;border-radius:18px;background:#E5484D;color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;gap:9px;box-shadow:0 16px 34px -12px rgba(229,72,77,.65);}
+.fab svg{width:20px;height:20px;}
+</style></head><body>
+<div id="s">
+  <div class="top">
+    <div class="row1"><span class="dot"></span><span class="bm">HeliX</span><span class="av">A</span></div>
+    <div class="h1">Chats</div>
+    <div class="hsub">42 conversations · 3 active today</div>
+  </div>
+  <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7.5"/><line x1="21" y1="21" x2="16.8" y2="16.8"/></svg><span>Search conversations</span></div>
+  <div class="seg"><span class="chip on">All</span><span class="chip">Pinned</span><span class="chip">Code</span><span class="chip">Writing</span></div>
+  <div class="list">
+    <div class="glabel">Today</div>
+    <div class="sess"><div class="sIc" style="background:#E5484D22;color:#E5484D">⚡</div><div class="sBody"><div class="sT"><span class="unread"></span>Q3 launch plan</div><div class="sP">Here's a 30-day timeline broken into…</div></div><div class="sTime">2m</div></div>
+    <div class="sess"><div class="sIc" style="background:#5B9CFF22;color:#7FB2FF">💻</div><div class="sBody"><div class="sT">Refactor auth module</div><div class="sP">The cleanest fix is to extract the…</div></div><div class="sTime">1h</div></div>
+    <div class="sess"><div class="sIc" style="background:#C8A24A22;color:#D8B86A">✍️</div><div class="sBody"><div class="sT">Investor update email</div><div class="sP">Subject: March recap — strong month…</div></div><div class="sTime">3h</div></div>
+    <div class="glabel">Yesterday</div>
+    <div class="sess"><div class="sIc" style="background:#3FB66B22;color:#5FCB85">📊</div><div class="sBody"><div class="sT">Churn analysis</div><div class="sP">Top driver is onboarding drop-off at…</div></div><div class="sTime">1d</div></div>
+    <div class="sess"><div class="sIc" style="background:#A78BFA22;color:#B9A4FB">🎨</div><div class="sBody"><div class="sT">Landing page copy</div><div class="sP">Three headline options, boldest first…</div></div><div class="sTime">1d</div></div>
+    <div class="sess"><div class="sIc" style="background:#1C1C22;color:#9A9AA4">🗂️</div><div class="sBody"><div class="sT">SQL: monthly cohorts</div><div class="sP">WITH cohorts AS ( SELECT date_trunc…</div></div><div class="sTime">1d</div></div>
+  </div>
+  <div class="fab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New chat</div>
+</div></body></html>

@@ -178,11 +178,13 @@ svg{display:block;}
 .backdrop{display:none;}
 @media (max-width:860px){
   .app{grid-template-columns:1fr;}
-  .rail{position:fixed;inset:0 auto 0 0;width:min(86vw,320px);z-index:80;transform:translateX(-100%);transition:transform .26s var(--ease);box-shadow:0 0 60px rgba(0,0,0,.5);}
-  .app.rail-open .rail{transform:translateX(0);}
-  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:70;opacity:0;pointer-events:none;transition:opacity .2s;}
-  .app.rail-open .backdrop{display:block;opacity:1;pointer-events:auto;}
-  .menu-btn{display:grid;place-items:center;width:36px;height:36px;border-radius:9px;color:var(--mid);}
+  /* Sessions list IS the home screen on mobile; the thread takes over when a chat opens */
+  .rail{display:flex;width:100%;border-right:none;}
+  .app.show-thread .rail{display:none;}
+  .main{display:none;}
+  .app.show-thread .main{display:flex;}
+  .backdrop{display:none!important;}
+  .menu-btn{display:grid;place-items:center;width:36px;height:36px;border-radius:9px;color:var(--mid);border:1px solid var(--line);}
   .menu-btn svg{width:20px;height:20px;}
   .thread-inner,.composer{padding-left:16px;padding-right:16px;}
   .empty .sugs{grid-template-columns:1fr;}
@@ -211,7 +213,7 @@ svg{display:block;}
   <!-- Main -->
   <main class="main">
     <header class="topbar">
-      <button class="menu-btn" id="menu-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
+      <button class="menu-btn" id="menu-btn" aria-label="Back to chats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
       <span class="conv-title" id="conv-title">New chat</span>
       <span class="spacer"></span>
       <div class="model">
@@ -417,6 +419,7 @@ svg{display:block;}
   }
   function openConversation(id){
     ST.convId=id; ST.error=null; ST.streamText=null;
+    try{ $('app').classList.add('show-thread'); }catch(e){}
     var c=ST.conversations.filter(function(x){return x.id===id;})[0];
     $('conv-title').textContent=c?(c.title||'New chat'):'Chat';
     if(c&&c.model){ ST.model=c.model; updateModelLabel(); }
@@ -431,7 +434,8 @@ svg{display:block;}
       renderSessions();
     });
   }
-  function newChat(){ ST.convId=null; ST.messages=[]; ST.error=null; ST.streamText=null; $('conv-title').textContent='New chat'; render(); renderSessions(); $('input').focus(); }
+  function newChat(){ ST.convId=null; ST.messages=[]; ST.error=null; ST.streamText=null; $('conv-title').textContent='New chat'; try{ $('app').classList.add('show-thread'); }catch(e){} render(); renderSessions(); $('input').focus(); }
+  function backToSessions(){ try{ $('app').classList.remove('show-thread'); }catch(e){} loadConversations(); }
 
   /* ───── send / stream ───── */
   function titleFrom(t){ t=String(t||'').replace(/\s+/g,' ').trim(); return (t.length>46?t.slice(0,46)+'…':t)||'New chat'; }
@@ -540,7 +544,7 @@ svg{display:block;}
 
   /* mobile rail */
   function closeRail(){ $('app').classList.remove('rail-open'); }
-  $('menu-btn').onclick=function(){ $('app').classList.toggle('rail-open'); };
+  $('menu-btn').onclick=backToSessions;   /* mobile: back to the sessions list */
   $('backdrop').onclick=closeRail;
 
   /* init */
