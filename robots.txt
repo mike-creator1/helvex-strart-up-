@@ -6,11 +6,7 @@ Disallow: /payment-success
 Disallow: /admin-billing
 Disallow: /dashboard
 Disallow: /chat
-Disallow: /workbench
 Disallow: /projects
-Disallow: /app-crm
-Disallow: /app-marketing
-Disallow: /app-automation
 Disallow: /app-assistant
 Disallow: /credits
 Disallow: /billing
@@ -19,9 +15,6 @@ Disallow: /subscriptions
 Disallow: /profile
 Disallow: /team
 Disallow: /settings
-Disallow: /api-keys
-Disallow: /integrations
-Disallow: /domains
 Disallow: /deployments
 Disallow: /activity
 Disallow: /usage

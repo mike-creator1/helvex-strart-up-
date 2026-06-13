@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>HelveX · Knowledge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="os.css">
+<style>
+  .drop { border: 1.5px dashed var(--line-strong); border-radius: var(--r-lg); padding: 34px; text-align: center; transition: border-color var(--fast), background var(--fast); cursor: pointer; }
+  .drop:hover { border-color: var(--accent-line); background: var(--accent-soft); }
+  .drop .di { width: 46px; height: 46px; border-radius: var(--r-md); background: var(--surface-2); display: grid; place-items: center; margin: 0 auto 12px; }
+  .drop .di svg { width: 22px; height: 22px; color: var(--text-mid); }
+  .src-types { display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+  .kfile { display: flex; align-items: center; gap: 12px; padding: 13px 15px; }
+  .kfile + .kfile { border-top: 1px solid var(--line-soft); }
+  .kfile .fi { width: 34px; height: 34px; border-radius: var(--r-sm); display: grid; place-items: center; font-size: 15px; flex-shrink: 0; background: var(--surface-2); }
+  .kfile .fn { font-size: 13.5px; font-weight: 500; }
+  .kfile .fm { font-size: 11.5px; color: var(--text-dim); }
+  .kfile .grow { flex: 1; min-width: 0; }
+  .bar { height: 4px; border-radius: 2px; background: var(--surface-3); overflow: hidden; width: 90px; }
+  .bar > div { height: 100%; background: var(--accent); }
+  .coll { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 12px; }
+  .coll .c { padding: 15px; }
+  .coll .c .ce { font-size: 20px; }
+  .coll .c h4 { font-size: 13.5px; font-weight: 600; margin: 8px 0 2px; }
+  .coll .c p { font-size: 11.5px; color: var(--text-dim); }
+</style>
+</head>
+<body data-section="knowledge">
+<div class="os-app">
+  <aside class="os-panel">
+    <div class="os-panel-head"><h2 class="grow">Knowledge</h2></div>
+    <div class="os-panel-body">
+      <div class="os-group-label">Collections</div>
+      <div class="os-list-link active"><div class="t">All sources</div><div class="s">163 items · 4.2k chunks</div></div>
+      <div class="os-list-link"><div class="t">📘 Product docs</div><div class="s">142 pages</div></div>
+      <div class="os-list-link"><div class="t">💬 Help center</div><div class="s">89 articles</div></div>
+      <div class="os-list-link"><div class="t">⚖️ Policy & legal</div><div class="s">12 files</div></div>
+      <div class="os-list-link"><div class="t">🌐 Websites</div><div class="s">5 crawled</div></div>
+    </div>
+  </aside>
+  <main class="os-main">
+    <header class="os-topbar">
+      <button class="btn-icon btn btn-sm mobile-only" data-panel-toggle>☰</button>
+      <h1>Knowledge base</h1>
+      <div class="os-topbar-spacer"></div>
+      <button class="btn btn-sm">Add website</button>
+      <button class="btn btn-sm btn-primary">Upload</button>
+    </header>
+    <div class="os-content">
+      <div class="os-content-pad">
+        <div class="drop" onclick="alert('File picker (prototype)')">
+          <div class="di" id="drop-ic"></div>
+          <div style="font-size:14px;font-weight:550">Drop files or connect a source</div>
+          <p class="dim" style="font-size:12.5px;margin-top:4px">HeliX indexes, chunks and auto-organises everything into collections for you.</p>
+          <div class="src-types">
+            <span class="chip">PDF</span><span class="chip">Docs</span><span class="chip">Notion</span><span class="chip">Websites</span><span class="chip">Databases</span><span class="chip">Notes</span>
+          </div>
+        </div>
+
+        <h3 class="eyebrow" style="margin:28px 0 10px">Recently added</h3>
+        <div class="card" id="files"></div>
+
+        <h3 class="eyebrow" style="margin:28px 0 10px">Auto-organised collections</h3>
+        <div class="coll" id="coll"></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="os.js"></script>
+<script>
+document.getElementById('drop-ic').innerHTML=OS.icon('knowledge');
+var FILES=[
+  {e:'📄',n:'Pricing_2026.pdf',m:'2.1 MB · PDF',p:100,s:'Indexed'},
+  {e:'📝',n:'Onboarding playbook.docx',m:'840 KB · Doc',p:100,s:'Indexed'},
+  {e:'🌐',n:'helvex.ch/docs (crawl)',m:'142 pages',p:72,s:'Indexing…'},
+  {e:'🗃️',n:'customers.csv',m:'12k rows',p:100,s:'Indexed'},
+  {e:'📓',n:'Q2 retro notes',m:'Note',p:100,s:'Indexed'}
+];
+document.getElementById('files').innerHTML=FILES.map(function(f){
+  var done=f.p>=100;
+  return '<div class="kfile"><div class="fi">'+f.e+'</div><div class="grow"><div class="fn">'+f.n+'</div><div class="fm">'+f.m+'</div></div>'+
+    (done?'<span class="chip chip-ok"><span class="dot"></span>'+f.s+'</span>':'<div style="text-align:right"><div class="bar"><div style="width:'+f.p+'%"></div></div><div class="fm" style="margin-top:4px">'+f.s+'</div></div>')+'</div>';
+}).join('');
+var COLL=[
+  {e:'📘',n:'Product',d:'Specs, guides, API'},
+  {e:'💬',n:'Support',d:'FAQs, macros'},
+  {e:'⚖️',n:'Legal',d:'Terms, DPA'},
+  {e:'📈',n:'Sales',d:'Decks, pricing'}
+];
+document.getElementById('coll').innerHTML=COLL.map(function(c){
+  return '<div class="card card-hover c"><div class="ce">'+c.e+'</div><h4>'+c.n+'</h4><p>'+c.d+'</p></div>';
+}).join('');
+</script>
+</body>
+</html>

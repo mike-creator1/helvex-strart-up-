@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>HelveX · Projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="os.css">
+<style>
+  .proj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-top: 18px; }
+  .proj { padding: 18px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; }
+  .proj-top { display: flex; align-items: center; gap: 11px; }
+  .proj-ic { width: 38px; height: 38px; border-radius: var(--r-md); display: grid; place-items: center; font-size: 17px; flex-shrink: 0; }
+  .proj h3 { font-size: 14.5px; font-weight: 600; }
+  .proj .desc { font-size: 12.5px; color: var(--text-mid); line-height: 1.5; }
+  .proj-meta { display: flex; gap: 14px; margin-top: auto; padding-top: 4px; }
+  .proj-meta span { font-size: 11.5px; color: var(--text-dim); display: inline-flex; align-items: center; gap: 5px; }
+  .proj-meta svg { width: 13px; height: 13px; }
+  .new-proj { border-style: dashed; align-items: center; justify-content: center; color: var(--text-dim); min-height: 150px; }
+  .new-proj:hover { color: var(--text); border-color: var(--accent-line); }
+</style>
+</head>
+<body data-section="projects" data-no-panel>
+<div class="os-app" data-no-panel>
+  <main class="os-main">
+    <header class="os-topbar">
+      <h1>Projects</h1>
+      <div class="os-topbar-spacer"></div>
+      <button class="btn btn-sm btn-ghost" onclick="OS.openPalette()">Search</button>
+      <button class="btn btn-sm btn-primary" id="new-proj-btn">New project</button>
+    </header>
+    <div class="os-content">
+      <div class="os-content-pad">
+        <p class="muted" style="max-width:560px">A project is your workspace: it holds chats, files, agents, a knowledge base, deployments and automations. Everything you create belongs to one — no disconnected tools.</p>
+        <div class="proj-grid" id="grid"></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="os.js"></script>
+<script>
+var COLORS=['#D4B445','#8B7FE8','#3FB950','#F85149','#5AA9E6','#E06CB0'];
+var PROJECTS=[
+  {n:'Acme GTM',d:'Go-to-market for the Q3 launch — copy, campaigns, analytics.',chats:14,files:23,agents:3,deploys:2,e:'🚀'},
+  {n:'Billing Revamp',d:'Stripe migration, invoices, dunning and usage metering.',chats:9,files:11,agents:1,deploys:4,e:'💳'},
+  {n:'Customer Insights',d:'Churn analysis, NPS, cohort reporting and dashboards.',chats:21,files:48,agents:2,deploys:1,e:'📊'},
+  {n:'Helvex Website',d:'Marketing site, blog and docs. Deployed on every push.',chats:6,files:34,agents:0,deploys:12,e:'🌐'},
+  {n:'Support Copilot',d:'An AI agent that drafts replies from the knowledge base.',chats:31,files:62,agents:4,deploys:3,e:'🎧'}
+];
+function ic(name){return OS.icon(name);}
+function card(p,i){
+  var c=COLORS[i%COLORS.length];
+  return '<div class="card card-hover proj" onclick="location.href=\'index.html\'">'+
+    '<div class="proj-top"><div class="proj-ic" style="background:'+c+'22;color:'+c+'">'+p.e+'</div>'+
+    '<div><h3>'+p.n+'</h3></div></div>'+
+    '<div class="desc">'+p.d+'</div>'+
+    '<div class="proj-meta"><span>'+ic('chat')+p.chats+'</span><span>'+ic('knowledge')+p.files+'</span><span>'+ic('agents')+p.agents+'</span><span>'+ic('deploy')+p.deploys+'</span></div>'+
+  '</div>';
+}
+document.getElementById('grid').innerHTML=
+  PROJECTS.map(card).join('')+
+  '<div class="card proj new-proj" id="new-card"><div style="text-align:center">'+ic('plus')+'<div style="margin-top:8px;font-size:13px">New project</div></div></div>';
+function newProj(){var n=prompt('Name your project'); if(n){PROJECTS.unshift({n:n,d:'Fresh workspace — start a chat to populate it.',chats:0,files:0,agents:0,deploys:0,e:'✨'}); document.getElementById('grid').innerHTML=PROJECTS.map(card).join('')+document.getElementById('new-card').outerHTML; document.getElementById('new-card').onclick=newProj;}}
+document.getElementById('new-proj-btn').onclick=newProj;
+document.getElementById('new-card').onclick=newProj;
+</script>
+</body>
+</html>

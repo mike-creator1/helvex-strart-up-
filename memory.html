@@ -4,56 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Memory — HelveX</title>
-  <meta name="description" content="HelveX Memory — short facts your assistant carries into every new conversation. Tag, weight, and curate what you want it to know." />
+  <meta name="description" content="HelveX Memory — see, organise and manage what your AI agent remembers across every conversation." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <link rel="stylesheet" href="/workbench.css" />
   <style>
-    /* HelveX Memory — paradigm: an explicit, curated layer of "things
-       the assistant knows about me". Not a black-box vector store, not
-       a chat history. Each memory is a short sentence the user wrote
-       (or accepted). Importance + tags decide what gets included in
-       the next conversation. The page lists them like notes in a
-       Field Notes notebook: chronological, sparse, calm. */
-    .hx-mem-grid { display: grid; gap: 10px; margin-top: 14px; }
-    .hx-mem-card { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 14px 18px; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start; }
-    .hx-mem-card.editing { border-color: var(--hx-text); }
-    .hx-mem-content { font-size: 14.5px; line-height: 1.55; color: var(--hx-text); white-space: pre-wrap; }
-    .hx-mem-content textarea { all: unset; display: block; width: 100%; font: inherit; font-size: 14.5px; line-height: 1.55; color: var(--hx-text); padding: 4px 0; border-bottom: 1px solid var(--hx-line); transition: border-color 0.12s; }
-    .hx-mem-content textarea:focus { border-color: var(--hx-text); }
-    .hx-mem-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; font-family: var(--hx-mono); font-size: 11px; color: var(--hx-text-mid); flex-shrink: 0; }
-    .hx-mem-imp { display: inline-flex; gap: 1px; }
-    .hx-mem-imp button { background: transparent; border: 0; padding: 0 1px; cursor: pointer; color: var(--hx-line); font-size: 11px; line-height: 1; }
-    .hx-mem-imp button.on { color: var(--hx-text); }
-    .hx-mem-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-    .hx-mem-tag { font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; padding: 2px 7px; background: var(--hx-cream); border-radius: 4px; color: var(--hx-text-mid); }
-    .hx-mem-actions { display: flex; gap: 4px; margin-top: 8px; opacity: 0; transition: opacity 0.12s; }
-    .hx-mem-card:hover .hx-mem-actions { opacity: 1; }
-    .hx-mem-act { background: transparent; border: 1px solid transparent; padding: 4px 8px; font-size: 11.5px; color: var(--hx-text-mid); cursor: pointer; border-radius: 5px; font-family: inherit; transition: background 0.12s, border-color 0.12s, color 0.12s; }
-    .hx-mem-act:hover { background: var(--hx-bg-2); border-color: var(--hx-line); color: var(--hx-text); }
-    .hx-mem-act.armed { background: #dc2626; border-color: #dc2626; color: #fff; }
-
-    .hx-mem-toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
-    .hx-mem-search { flex: 1; min-width: 220px; position: relative; }
-    .hx-mem-search input { width: 100%; padding: 10px 14px 10px 38px; border: 1px solid var(--hx-line); border-radius: 10px; font: inherit; font-size: 13.5px; background: #fff; outline: none; transition: border-color 0.12s; }
-    .hx-mem-search input:focus { border-color: var(--hx-text); }
-    .hx-mem-search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--hx-text-mid); }
-    .hx-mem-tag-filter { padding: 6px 12px; border: 1px solid var(--hx-line); border-radius: 999px; font-family: var(--hx-mono); font-size: 11px; font-weight: 600; color: var(--hx-text-mid); background: #fff; cursor: pointer; transition: border-color 0.12s, color 0.12s; }
-    .hx-mem-tag-filter:hover { color: var(--hx-text); border-color: var(--hx-text-mid); }
-    .hx-mem-tag-filter.active { background: var(--hx-text); color: #fff; border-color: var(--hx-text); }
-
-    .hx-mem-new { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px 18px; margin-bottom: 14px; display: none; }
-    .hx-mem-new.open { display: block; }
-    .hx-mem-new textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--hx-line); border-radius: 10px; font: inherit; font-size: 14px; min-height: 80px; background: #fff; outline: none; resize: vertical; line-height: 1.5; margin-bottom: 10px; }
-    .hx-mem-new textarea:focus { border-color: var(--hx-text); }
-    .hx-mem-new input { padding: 8px 10px; border: 1px solid var(--hx-line); border-radius: 8px; font: inherit; font-size: 13px; background: #fff; outline: none; margin-bottom: 10px; width: 100%; }
-
-    .hx-mem-empty { background: #fff; border: 1px dashed var(--hx-line); border-radius: var(--hx-r); padding: 60px 24px; text-align: center; }
-    .hx-mem-empty h3 { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
-    .hx-mem-empty p { font-size: 13.5px; color: var(--hx-text-mid); margin: 0 0 18px; max-width: 460px; margin-inline: auto; line-height: 1.55; }
+    .mem-card { display:flex; flex-direction:column; }
+    .mem-quote { font-size:14px; line-height:1.55; color:var(--hx-text); margin:2px 0 14px; }
+    .mem-meta-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    .mem-imp { display:inline-flex; gap:2px; } .mem-imp i { width:6px; height:6px; border-radius:50%; background:var(--hx-line-strong); } .mem-imp i.on { background:var(--hx-yellow); }
+    .mem-foot { display:flex; align-items:center; gap:10px; padding-top:12px; border-top:1px solid var(--hx-line-soft); margin-top:auto; }
+    .mem-foot .used { font-size:11.5px; color:var(--hx-text-dim); display:flex; align-items:center; gap:5px; } .mem-foot .used svg { width:12px; height:12px; }
+    .mem-acts { margin-left:auto; display:flex; gap:5px; }
+    .mem-ic { width:40px; height:40px; border-radius:11px; display:grid; place-items:center; flex-shrink:0; background:var(--hx-yellow-soft); color:var(--hx-yellow-deep); }
   </style>
 </head>
 <body data-active="memory">
@@ -66,304 +33,170 @@
 
         <div class="hx-aura" aria-hidden="true"></div>
         <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Memory · injected</p>
+          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Memory · agent context</p>
           <div class="hx-pg-hero-grid">
             <div>
-              <h1 class="hx-pg-title">Memory <em>·</em></h1>
-              <p class="hx-pg-sub">Short facts your assistant carries into every conversation. The top-10 most important memories get included in each new chat's system prompt — so the assistant feels like it actually knows you.</p>
+              <h1 class="hx-pg-title">Memory</h1>
+              <p class="hx-pg-sub">Everything your AI agent remembers about you and your work — curated, searchable and under your control. The 10 most important memories are injected into every new conversation so the assistant stays in context.</p>
               <div class="hx-pg-cta-row">
-                <button class="hx-cta-primary" id="hx-mem-new-btn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  New memory
-                </button>
+                <button class="hx-cta-primary" id="mem-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New memory</button>
                 <a href="/chat.html" class="hx-cta-secondary">Open chat</a>
-              </div>
-            </div>
-            <div class="hx-pg-meta-strip">
-              <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Injected</p>
-                <p class="hx-pg-meta-value">Top 10</p>
-              </div>
-              <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Region</p>
-                <p class="hx-pg-meta-value hx-mono">EU-CH-1</p>
               </div>
             </div>
           </div>
         </header>
 
-        <div class="hx-grid hx-grid-3">
-          <div class="hx-stat"><p class="hx-stat-label">Total</p><p class="hx-stat-value hx-mono" id="hx-mem-total">0</p><p class="hx-stat-meta">Memories in your workspace</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">High importance</p><p class="hx-stat-value hx-mono" id="hx-mem-high">0</p><p class="hx-stat-meta">Rated 4 or 5 — always injected</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Tags</p><p class="hx-stat-value hx-mono" id="hx-mem-tags-count">0</p><p class="hx-stat-meta">Unique tags across all memories</p></div>
-        </div>
+        <div class="wb-metrics" id="mem-metrics"></div>
 
-        <div id="hx-mem-new" class="hx-mem-new">
-          <textarea id="hx-mem-new-content" placeholder="e.g. 'I run a 12-person agency in Zurich focused on Swiss SaaS clients.' One short sentence the assistant should remember."></textarea>
-          <input type="text" id="hx-mem-new-tags" placeholder="Tags, comma-separated (optional). e.g. company, role, swiss" />
-          <div style="display:flex;align-items:center;gap:10px;">
-            <label style="font-size:12px;color:var(--hx-text-mid);">Importance:</label>
-            <div class="hx-mem-imp" id="hx-mem-new-imp" data-value="3">
-              <button data-v="1">●</button><button data-v="2">●</button><button class="on" data-v="3">●</button><button data-v="4">●</button><button data-v="5">●</button>
-            </div>
-            <button class="hx-btn hx-btn-primary" id="hx-mem-new-save" style="margin-left:auto;">Save</button>
-            <button class="hx-btn hx-btn-ghost" id="hx-mem-new-cancel">Cancel</button>
-            <span id="hx-mem-new-status" style="font-size:11.5px;color:var(--hx-text-mid);"></span>
-          </div>
-        </div>
-
-        <div class="hx-mem-toolbar">
-          <div class="hx-mem-search">
+        <div class="wb-toolbar">
+          <div class="wb-search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="search" id="hx-mem-search-input" placeholder="Search memories…" />
+            <input type="search" id="mem-q" placeholder="Search memories, tags, sources…" />
           </div>
+          <select class="wb-select" id="mem-sort">
+            <option value="importance">Sort: Importance</option>
+            <option value="recent">Sort: Recently updated</option>
+            <option value="created">Sort: Newest</option>
+          </select>
         </div>
 
-        <div id="hx-mem-tag-filters" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;"></div>
-
-        <div id="hx-mem-grid" class="hx-mem-grid"></div>
+        <div class="wb-seg" id="mem-tags" style="margin-bottom:16px"></div>
+        <div id="mem-host"></div>
 
       </main>
     </div>
   </div>
 
   <script src="/platform.js"></script>
+  <script src="/workbench.js"></script>
   <script>
-    (function () {
-      function whenAuthReady(fn) {
-        if (window.HX && window.HX.supabase) { fn(); return; }
-        document.addEventListener('hx:auth-ready', fn, { once: true });
-      }
-      function $(id) { return document.getElementById(id); }
-      function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-      function rel(iso) {
-        if (!iso) return '—';
-        var diff = (Date.now() - new Date(iso).getTime()) / 1000;
-        if (diff < 60) return 'just now';
-        if (diff < 3600) return Math.floor(diff/60) + 'm ago';
-        if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
-        return Math.floor(diff/86400) + 'd ago';
-      }
+  (function(){
+    var $=function(id){return document.getElementById(id);};
+    var ST={ q:'', tag:'all', sort:'importance', loading:true, error:null, items:[] };
+    var sb=null, owner=null, db=null;
 
-      var state = { items: [], filterTag: null, search: '', sb: null, owner: null };
+    function impDots(n){ var s=''; for(var i=1;i<=5;i++) s+='<i class="'+(i<=n?'on':'')+'"></i>'; return '<span class="mem-imp" title="Importance '+n+'/5">'+s+'</span>'; }
+    function injectedIds(){ return ST.items.slice().sort(function(a,b){return b.importance-a.importance || new Date(b.updated_at)-new Date(a.updated_at);}).slice(0,10).map(function(m){return m.id;}); }
 
-      function dots(n) {
-        var out = '';
-        for (var i = 1; i <= 5; i++) out += '<button class="' + (i <= n ? 'on' : '') + '" data-v="' + i + '">●</button>';
-        return out;
-      }
+    function metrics(){
+      var all=ST.items, inj=injectedIds().length;
+      var tags=new Set(); all.forEach(function(m){(m.tags||[]).forEach(function(t){tags.add(t);});});
+      var avg=all.length?(all.reduce(function(s,m){return s+m.importance;},0)/all.length).toFixed(1):'—';
+      $('mem-metrics').innerHTML=
+        mt('Total memories',all.length,'in your workspace','<path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0-3 3v1a3 3 0 0 0-1 5.83V18a3 3 0 0 0 3 3h1.5a2.5 2.5 0 0 0 5 0H16a3 3 0 0 0 3-3v-2.17A3 3 0 0 0 18 10V9a3 3 0 0 0-3-3V5a3 3 0 0 0-3-3z"/>')+
+        mt('Injected',inj,'attached to new chats','<polyline points="20 6 9 17 4 12"/>')+
+        mt('Tags',tags.size,'distinct contexts','<path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10z"/><circle cx="7" cy="7" r="1.4"/>')+
+        mt('Avg importance',avg,'across all memories','<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>');
+    }
+    function mt(l,v,m,icon){return '<div class="wb-metric"><div class="ml">'+WB.svg(icon)+l+'</div><div class="mv">'+v+'</div><div class="mm">'+m+'</div></div>';}
 
-      function renderStats() {
-        $('hx-mem-total').textContent = state.items.length;
-        $('hx-mem-high').textContent = state.items.filter(function (m) { return m.importance >= 4; }).length;
-        var allTags = new Set();
-        state.items.forEach(function (m) { (m.tags || []).forEach(function (t) { allTags.add(t); }); });
-        $('hx-mem-tags-count').textContent = allTags.size;
-      }
+    function tags(){
+      var counts={}; ST.items.forEach(function(m){(m.tags||[]).forEach(function(t){counts[t]=(counts[t]||0)+1;});});
+      var ks=Object.keys(counts).sort();
+      var html='<button data-k="all" class="'+(ST.tag==='all'?'on':'')+'">All <span class="ct">'+ST.items.length+'</span></button>';
+      ks.forEach(function(t){ html+='<button data-k="'+WB.esc(t)+'" class="'+(ST.tag===t?'on':'')+'">'+WB.esc(t)+' <span class="ct">'+counts[t]+'</span></button>'; });
+      $('mem-tags').innerHTML=ks.length?html:'';
+      $('mem-tags').querySelectorAll('button').forEach(function(b){ b.onclick=function(){ST.tag=b.dataset.k;tags();render();}; });
+    }
 
-      function renderTagFilters() {
-        var host = $('hx-mem-tag-filters');
-        var counts = {};
-        state.items.forEach(function (m) { (m.tags || []).forEach(function (t) { counts[t] = (counts[t] || 0) + 1; }); });
-        var tags = Object.keys(counts).sort();
-        host.innerHTML = '<button class="hx-mem-tag-filter ' + (!state.filterTag ? 'active' : '') + '" data-tag="">All</button>' +
-          tags.map(function (t) {
-            var on = state.filterTag === t;
-            return '<button class="hx-mem-tag-filter ' + (on ? 'active' : '') + '" data-tag="' + esc(t) + '">' + esc(t) + ' · ' + counts[t] + '</button>';
-          }).join('');
-        host.querySelectorAll('.hx-mem-tag-filter').forEach(function (b) {
-          b.addEventListener('click', function () {
-            state.filterTag = b.getAttribute('data-tag') || null;
-            renderGrid();
-            renderTagFilters();
-          });
-        });
-      }
-
-      function filtered() {
-        var q = state.search.trim().toLowerCase();
-        return state.items.filter(function (m) {
-          if (state.filterTag && !(m.tags || []).includes(state.filterTag)) return false;
-          if (q && !(m.content || '').toLowerCase().includes(q)) return false;
-          return true;
-        });
-      }
-
-      function renderGrid() {
-        var rows = filtered();
-        var host = $('hx-mem-grid');
-        if (!rows.length) {
-          host.innerHTML = '<div class="hx-mem-empty">' +
-            '<h3>' + (state.search || state.filterTag ? 'Nothing matches.' : 'Your memory is empty.') + '</h3>' +
-            '<p>' + (state.search || state.filterTag ? 'Clear the filter or search.' : 'Drop one sentence the assistant should know — your role, your company, your style, what you care about. The top-10 most important memories get attached to every new chat.') + '</p>' +
-            (!(state.search || state.filterTag) ? '<button class="hx-btn hx-btn-primary" id="hx-mem-empty-new">+ New memory</button>' : '') +
-            '</div>';
-          var b = $('hx-mem-empty-new'); if (b) b.addEventListener('click', openForm);
-          return;
-        }
-        host.innerHTML = rows.map(function (m) {
-          return ''
-            + '<div class="hx-mem-card" data-id="' + esc(m.id) + '">'
-            +   '<div>'
-            +     '<div class="hx-mem-content" data-role="content-view">' + esc(m.content) + '</div>'
-            +     ((m.tags || []).length ? '<div class="hx-mem-tags">' + (m.tags || []).map(function (t) { return '<span class="hx-mem-tag">' + esc(t) + '</span>'; }).join('') + '</div>' : '')
-            +     '<div class="hx-mem-actions">'
-            +       '<button class="hx-mem-act" data-role="edit">Edit</button>'
-            +       '<button class="hx-mem-act" data-role="delete">Delete</button>'
-            +     '</div>'
-            +   '</div>'
-            +   '<div class="hx-mem-meta">'
-            +     '<div class="hx-mem-imp" data-role="imp">' + dots(m.importance) + '</div>'
-            +     '<span>' + rel(m.updated_at) + '</span>'
-            +   '</div>'
-            + '</div>';
-        }).join('');
-
-        host.querySelectorAll('.hx-mem-card').forEach(function (card) {
-          var id = card.getAttribute('data-id');
-          // Importance dots — click any to set
-          card.querySelector('[data-role="imp"]').querySelectorAll('button').forEach(function (b) {
-            b.addEventListener('click', function () {
-              var v = parseInt(b.getAttribute('data-v'), 10);
-              setImportance(id, v);
-            });
-          });
-          card.querySelector('[data-role="edit"]').addEventListener('click', function () {
-            beginEdit(card, id);
-          });
-          var del = card.querySelector('[data-role="delete"]');
-          del.addEventListener('click', function () { deleteMemory(id, del); });
-        });
-      }
-
-      function beginEdit(card, id) {
-        var m = state.items.find(function (x) { return x.id === id; });
-        if (!m) return;
-        var view = card.querySelector('[data-role="content-view"]');
-        view.innerHTML = '<textarea rows="3">' + esc(m.content) + '</textarea>' +
-          '<div style="margin-top:8px;display:flex;gap:6px;align-items:center;">' +
-            '<input type="text" placeholder="Tags, comma-separated" value="' + esc((m.tags || []).join(', ')) + '" style="flex:1;padding:6px 8px;border:1px solid var(--hx-line);border-radius:6px;font:inherit;font-size:12.5px;" />' +
-            '<button class="hx-btn hx-btn-primary hx-btn-sm" data-role="save">Save</button>' +
-            '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-role="cancel">Cancel</button>' +
-          '</div>';
-        card.classList.add('editing');
-        var ta = view.querySelector('textarea');
-        var tagInp = view.querySelector('input');
-        ta.focus();
-        view.querySelector('[data-role="save"]').addEventListener('click', async function () {
-          var content = ta.value.trim();
-          var tags = tagInp.value.split(',').map(function (t) { return t.trim(); }).filter(Boolean);
-          if (!content) return;
-          await state.sb.from('memories').update({ content: content, tags: tags }).eq('id', id);
-          await refresh();
-        });
-        view.querySelector('[data-role="cancel"]').addEventListener('click', function () { renderGrid(); });
-      }
-
-      async function setImportance(id, v) {
-        await state.sb.from('memories').update({ importance: v }).eq('id', id);
-        var m = state.items.find(function (x) { return x.id === id; });
-        if (m) m.importance = v;
-        renderStats();
-        renderGrid();
-      }
-
-      async function deleteMemory(id, btn) {
-        if (btn.dataset.armed !== '1') {
-          btn.dataset.armed = '1';
-          btn.dataset.original = btn.textContent;
-          btn.textContent = 'Click to confirm';
-          btn.classList.add('armed');
-          setTimeout(function () {
-            if (btn.dataset.armed === '1') {
-              btn.dataset.armed = '';
-              btn.textContent = btn.dataset.original || 'Delete';
-              btn.classList.remove('armed');
-            }
-          }, 3000);
-          return;
-        }
-        await state.sb.from('memories').delete().eq('id', id);
-        await refresh();
-      }
-
-      function openForm() {
-        $('hx-mem-new-content').value = '';
-        $('hx-mem-new-tags').value = '';
-        $('hx-mem-new-status').textContent = '';
-        $('hx-mem-new-imp').dataset.value = '3';
-        $('hx-mem-new-imp').innerHTML = dots(3);
-        wireImpButtons('hx-mem-new-imp');
-        $('hx-mem-new').classList.add('open');
-        setTimeout(function () { $('hx-mem-new-content').focus(); }, 30);
-      }
-      function closeForm() { $('hx-mem-new').classList.remove('open'); }
-
-      function wireImpButtons(containerId) {
-        var c = $(containerId);
-        c.querySelectorAll('button').forEach(function (b) {
-          b.addEventListener('click', function () {
-            var v = parseInt(b.getAttribute('data-v'), 10);
-            c.dataset.value = v;
-            c.innerHTML = dots(v);
-            wireImpButtons(containerId);
-          });
-        });
-      }
-
-      async function createMemory() {
-        var content = ($('hx-mem-new-content').value || '').trim();
-        var tagsStr = ($('hx-mem-new-tags').value || '').trim();
-        var importance = parseInt($('hx-mem-new-imp').dataset.value, 10) || 3;
-        if (!content) { $('hx-mem-new-status').textContent = 'Content required.'; return; }
-        var tags = tagsStr ? tagsStr.split(',').map(function (t) { return t.trim(); }).filter(Boolean) : [];
-        var save = $('hx-mem-new-save'); save.disabled = true;
-        try {
-          var r = await state.sb.from('memories').insert({
-            owner_id: state.owner, content: content, tags: tags, importance: importance, source: 'manual'
-          });
-          if (r.error) throw r.error;
-          closeForm();
-          await refresh();
-        } catch (err) {
-          $('hx-mem-new-status').textContent = err.message || 'Save failed.';
-        } finally { save.disabled = false; }
-      }
-
-      async function refresh() {
-        var r = await state.sb.from('memories').select('*').order('importance', { ascending: false }).order('updated_at', { ascending: false });
-        state.items = (r.data || []);
-        renderStats();
-        renderTagFilters();
-        renderGrid();
-      }
-
-      // UI handlers wire IMMEDIATELY on DOMContentLoaded so the page
-      // is interactive even before Supabase resolves. The save action
-      // itself short-circuits with a status message if state.sb is
-      // still null when the user clicks.
-      function wireMemoryUI() {
-        var nb = $('hx-mem-new-btn');    if (nb) nb.addEventListener('click', openForm);
-        var nc = $('hx-mem-new-cancel'); if (nc) nc.addEventListener('click', closeForm);
-        var ns = $('hx-mem-new-save');   if (ns) ns.addEventListener('click', createMemory);
-        var si = $('hx-mem-search-input');
-        if (si) si.addEventListener('input', function (e) { state.search = e.target.value; renderGrid(); });
-        try { wireImpButtons('hx-mem-new-imp'); } catch (_) {}
-      }
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', wireMemoryUI, { once: true });
-      } else {
-        wireMemoryUI();
-      }
-
-      whenAuthReady(async function () {
-        state.sb = window.HX.supabase;
-        var u = (await state.sb.auth.getUser()).data.user;
-        if (!u) return;
-        state.owner = u.id;
-        await refresh();
+    function visible(){
+      var rows=ST.items.slice();
+      if(ST.tag!=='all') rows=rows.filter(function(m){return (m.tags||[]).indexOf(ST.tag)>=0;});
+      if(ST.q){var q=ST.q.toLowerCase();rows=rows.filter(function(m){return (m.content+' '+(m.tags||[]).join(' ')+' '+(m.source||'')).toLowerCase().indexOf(q)>=0;});}
+      rows.sort(function(a,b){
+        if(ST.sort==='recent') return new Date(b.updated_at)-new Date(a.updated_at);
+        if(ST.sort==='created') return new Date(b.created_at)-new Date(a.created_at);
+        return b.importance-a.importance || new Date(b.updated_at)-new Date(a.updated_at);
       });
-    })();
+      return rows;
+    }
+
+    function render(){
+      var host=$('mem-host');
+      if(ST.loading){ host.innerHTML=WB.skeletonCards(6); return; }
+      if(ST.error){ host.innerHTML='<div class="wb-empty"><div class="orb">'+WB.svg('<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>')+'</div><h3>Couldn’t load memories</h3><p>'+WB.esc(ST.error)+'</p><button class="wb-btn" id="mem-retry">Try again</button></div>'; $('mem-retry').onclick=load; return; }
+      var rows=visible(), inj=injectedIds();
+      if(!rows.length){
+        var empty=ST.items.length===0;
+        host.innerHTML='<div class="wb-empty"><div class="orb">'+WB.svg('<path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0-3 3v1a3 3 0 0 0-1 5.83V18a3 3 0 0 0 3 3h1.5a2.5 2.5 0 0 0 5 0H16a3 3 0 0 0 3-3v-2.17A3 3 0 0 0 18 10V9a3 3 0 0 0-3-3V5a3 3 0 0 0-3-3z"/>')+'</div>'+
+          '<h3>'+(empty?'Your agent has no memories yet':'Nothing matches')+'</h3><p>'+(empty?'Add a short fact the assistant should always know — your role, your stack, your style. Or load a starter set to see how it works.':'Try a different search or tag.')+'</p>'+
+          (empty?'<div style="display:flex;gap:8px;justify-content:center"><button class="hx-cta-primary" id="mem-empty-new">Add memory</button><button class="wb-btn" id="mem-seed">Load sample data</button></div>':'<button class="wb-btn" id="mem-clear">Clear filters</button>')+'</div>';
+        var b=$('mem-empty-new'); if(b)b.onclick=openNew;
+        var s=$('mem-seed'); if(s)s.onclick=seed;
+        var c=$('mem-clear'); if(c)c.onclick=function(){ST.q='';ST.tag='all';$('mem-q').value='';tags();render();};
+        return;
+      }
+      host.innerHTML='<div class="wb-grid">'+rows.map(function(m){return card(m,inj.indexOf(m.id)>=0);}).join('')+'</div>';
+      rows.forEach(function(m){
+        $('mem-edit-'+m.id).onclick=function(){openEdit(m);};
+        $('mem-del-'+m.id).onclick=function(e){ WB.arm(e.currentTarget,'Delete?',function(){ remove(m); }); };
+      });
+    }
+
+    function card(m,injected){
+      return '<div class="wb-card mem-card">'+
+        '<div class="wb-card-head"><div class="mem-ic">'+WB.svg('<path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0-3 3v1a3 3 0 0 0-1 5.83V18a3 3 0 0 0 3 3h1.5a2.5 2.5 0 0 0 5 0H16a3 3 0 0 0 3-3v-2.17A3 3 0 0 0 18 10V9a3 3 0 0 0-3-3V5a3 3 0 0 0-3-3z"/>')+'</div>'+
+          '<div style="flex:1;min-width:0"><div class="sub" style="font-size:11px;letter-spacing:.03em;text-transform:uppercase;color:var(--hx-text-dim)">'+WB.esc(m.source||'Manual')+'</div></div>'+
+          (injected?'<span class="wb-pill ok"><span class="d"></span>Injected</span>':'<span class="wb-pill idle"><span class="d"></span>Stored</span>')+'</div>'+
+        '<p class="mem-quote">'+WB.esc(m.content)+'</p>'+
+        '<div class="mem-meta-row">'+impDots(m.importance)+(m.tags||[]).map(function(t){return '<span class="wb-tag">'+WB.esc(t)+'</span>';}).join('')+'</div>'+
+        '<div class="mem-foot"><span class="used">'+WB.svg('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>')+(m.last_used_at?'last used '+WB.relTime(m.last_used_at):'never used')+'</span>'+
+          '<span class="mem-acts"><button class="wb-btn sm icon" id="mem-edit-'+m.id+'" title="Edit">'+WB.svg('<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/>')+'</button>'+
+          '<button class="wb-btn sm icon" id="mem-del-'+m.id+'" title="Delete">'+WB.svg('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>')+'</button></span></div>'+
+      '</div>';
+    }
+
+    function form(m){
+      m=m||{importance:3,tags:[]};
+      return '<div class="wb-field"><label>Memory</label><textarea id="f-content" placeholder="One short fact the assistant should remember…">'+WB.esc(m.content||'')+'</textarea></div>'+
+        '<div class="wb-field"><label>Tags (comma-separated)</label><input id="f-tags" value="'+WB.esc((m.tags||[]).join(', '))+'" placeholder="e.g. company, stack, style"></div>'+
+        '<div class="wb-field"><label>Importance · <span id="f-impv">'+m.importance+'</span>/5 — higher means more likely to be injected</label><input type="range" id="f-imp" min="1" max="5" value="'+m.importance+'" style="padding:0"></div>';
+    }
+    function openNew(){ WB.drawer.open({ title:'New memory', body:form(), foot:'<button class="wb-btn primary" id="f-save" style="flex:1">Save memory</button><button class="wb-btn" id="f-cancel">Cancel</button>', onMount:function(){wireForm(null);} }); }
+    function openEdit(m){ WB.drawer.open({ title:'Edit memory', body:form(m), foot:'<button class="wb-btn primary" id="f-save" style="flex:1">Save changes</button><button class="wb-btn" id="f-cancel">Cancel</button>', onMount:function(){wireForm(m);} }); }
+    function wireForm(m){
+      var imp=$('f-imp'); imp.oninput=function(){$('f-impv').textContent=imp.value;};
+      $('f-cancel').onclick=WB.drawer.close;
+      $('f-save').onclick=function(){
+        var content=$('f-content').value.trim(); if(!content){WB.toast('Memory text is required','err');return;}
+        var tags=$('f-tags').value.split(',').map(function(t){return t.trim();}).filter(Boolean);
+        var data={ content:content, tags:tags, importance:parseInt(imp.value,10), updated_at:new Date().toISOString() };
+        var btn=$('f-save'); btn.disabled=true; btn.textContent='Saving…';
+        var p = m ? db.update(m.id,data) : db.insert(Object.assign({source:'Manual'},data));
+        p.then(function(r){ if(r.error) throw r.error; WB.toast(m?'Memory updated':'Memory saved','ok'); WB.drawer.close(); load(); })
+         .catch(function(e){ btn.disabled=false; btn.textContent=m?'Save changes':'Save memory'; WB.toast(e.message||'Save failed','err'); });
+      };
+    }
+    function remove(m){ db.remove(m.id).then(function(r){ if(r.error) throw r.error; WB.toast('Memory deleted','ok'); load(); }).catch(function(e){WB.toast(e.message||'Delete failed','err');}); }
+
+    function seed(){
+      var rows=[
+        {content:'Runs a 12-person digital agency in Zürich focused on Swiss SaaS and fintech clients.',tags:['company','identity'],importance:5,source:'Manual'},
+        {content:'Prefers concise, direct answers with concrete examples — no filler.',tags:['style'],importance:5,source:'Manual'},
+        {content:'Primary stack: Next.js, Supabase, Stripe and Vercel.',tags:['stack','preference'],importance:4,source:'Manual'},
+        {content:'Currently shipping HelveX OS — an AI workspace rebuild. Launch target Q3.',tags:['project'],importance:4,source:'Manual'},
+        {content:'Works with Mike (infra) and Sara (design).',tags:['people'],importance:3,source:'Manual'}
+      ].map(function(r){ return Object.assign({owner_id:owner},r); });
+      WB.toast('Adding sample memories…','info');
+      sb.from('memories').insert(rows).then(function(r){ if(r.error) throw r.error; WB.toast('Sample data added','ok'); load(); }).catch(function(e){WB.toast(e.message||'Could not add sample data','err');});
+    }
+
+    function load(){
+      if(!db){ ST.loading=false; ST.error='You need to be signed in.'; render(); return; }
+      ST.loading=true; render();
+      db.list('*',{col:'importance',asc:false}).then(function(r){
+        if(r.error) throw r.error;
+        ST.items=r.data||[]; ST.loading=false; ST.error=null; metrics(); tags(); render();
+      }).catch(function(e){ ST.loading=false; ST.error=e.message||'Load failed'; render(); });
+    }
+
+    $('mem-new').onclick=function(){ if(!db){WB.toast('Sign in to add memories','err');return;} openNew(); };
+    var qt; $('mem-q').oninput=function(e){ST.q=e.target.value.trim();clearTimeout(qt);qt=setTimeout(render,140);};
+    $('mem-sort').onchange=function(e){ST.sort=e.target.value;render();};
+
+    render(); // skeleton
+    WB.ready(function(s,u){ sb=s; owner=u?u.id:null; db=(s&&u)?WB.tbl(s,'memories',owner):null; load(); });
+  })();
   </script>
 </body>
 </html>

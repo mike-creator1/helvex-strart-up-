@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>HelveX · Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="os.css">
+<style>
+  .set-row { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line-soft); }
+  .set-row .grow { flex: 1; }
+  .set-row .lbl { font-size: 13.5px; font-weight: 550; }
+  .set-row .sub { font-size: 12.5px; color: var(--text-dim); margin-top: 2px; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; }
+  .seg button { padding: 7px 13px; font-size: 12.5px; color: var(--text-mid); }
+  .seg button.on { background: var(--surface-3); color: var(--text); }
+  .pane { display: none; }
+  .pane.on { display: block; }
+  .kv { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line-soft); }
+  .kv .k { font-family: var(--mono); font-size: 12.5px; flex: 1; }
+  .plan-card { padding: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+</style>
+</head>
+<body data-section="settings">
+<div class="os-app">
+  <aside class="os-panel">
+    <div class="os-panel-head"><h2 class="grow">Settings</h2></div>
+    <div class="os-panel-body" id="cats"></div>
+  </aside>
+  <main class="os-main">
+    <header class="os-topbar">
+      <button class="btn-icon btn btn-sm mobile-only" data-panel-toggle>☰</button>
+      <h1 id="cat-title">General</h1>
+      <div class="os-topbar-spacer"></div>
+    </header>
+    <div class="os-content">
+      <div class="os-content-pad" style="max-width:760px">
+
+        <section class="pane on" data-pane="general">
+          <div class="set-row"><div class="grow"><div class="lbl">Appearance</div><div class="sub">Dark is the default. Choose your theme.</div></div>
+            <div class="seg" id="theme-seg"><button data-th="dark">Dark</button><button data-th="light">Light</button><button data-th="system">System</button></div>
+          </div>
+          <div class="set-row"><div class="grow"><div class="lbl">Display name</div><div class="sub">Shown across the workspace</div></div><input class="field" style="max-width:240px" value="Angela Moraiti"></div>
+          <div class="set-row"><div class="grow"><div class="lbl">Default model</div><div class="sub">Used for new chats</div></div>
+            <select class="field" style="max-width:200px"><option>HeliX Sonnet</option><option>HeliX Opus</option><option>HeliX Haiku</option></select></div>
+          <div class="set-row"><div class="grow"><div class="lbl">Language</div></div>
+            <select class="field" style="max-width:200px"><option>English</option><option>Ελληνικά</option><option>Deutsch</option><option>Français</option></select></div>
+        </section>
+
+        <section class="pane" data-pane="billing">
+          <div class="card plan-card">
+            <div class="grow" style="min-width:200px"><div class="row gap-2"><span class="chip chip-accent">Pro</span><span class="dim" style="font-size:12px">Renews 1 Jul 2026</span></div>
+              <div style="font-size:20px;font-weight:650;margin:8px 0 2px">$25<span class="dim" style="font-size:13px;font-weight:400">/mo</span></div>
+              <div class="dim" style="font-size:12.5px">Unlimited chats · 5 seats · 100k HeliX credits</div></div>
+            <button class="btn btn-sm btn-primary">Manage plan</button>
+          </div>
+          <h3 class="eyebrow" style="margin:22px 0 8px">Usage this cycle</h3>
+          <div class="set-row"><div class="grow"><div class="lbl">HeliX credits</div><div class="sub">62,400 / 100,000</div></div>
+            <div class="bar" style="width:140px;height:6px;border-radius:3px;background:var(--surface-3);overflow:hidden"><div style="width:62%;height:100%;background:var(--accent)"></div></div></div>
+          <div class="set-row"><div class="grow"><div class="lbl">Payment method</div><div class="sub">Visa •••• 4242</div></div><button class="btn btn-sm">Update</button></div>
+        </section>
+
+        <section class="pane" data-pane="apikeys">
+          <p class="muted" style="margin-bottom:14px">Programmatic access to your workspace and agents.</p>
+          <div id="keys"></div>
+          <button class="btn btn-sm btn-primary" style="margin-top:14px">Create key</button>
+        </section>
+
+        <section class="pane" data-pane="team">
+          <p class="muted" style="margin-bottom:14px">5 of 5 seats used.</p>
+          <div id="team"></div>
+          <button class="btn btn-sm btn-primary" style="margin-top:14px">Invite member</button>
+        </section>
+
+        <section class="pane" data-pane="integrations">
+          <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px" id="integ"></div>
+        </section>
+
+        <section class="pane" data-pane="security">
+          <div class="set-row"><div class="grow"><div class="lbl">Password</div><div class="sub">Last changed 40 days ago</div></div><button class="btn btn-sm">Change</button></div>
+          <div class="set-row"><div class="grow"><div class="lbl">Two-factor authentication</div><div class="sub">Authenticator app</div></div><span class="chip chip-ok"><span class="dot"></span>On</span></div>
+          <div class="set-row"><div class="grow"><div class="lbl">Active sessions</div><div class="sub">3 devices</div></div><button class="btn btn-sm">Manage</button></div>
+          <div class="set-row"><div class="grow"><div class="lbl">Audit log</div><div class="sub">Every action, exportable</div></div><button class="btn btn-sm">View log</button></div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="os.js"></script>
+<script>
+var CATS=[
+  {id:'general',l:'General'},{id:'billing',l:'Billing & plan'},{id:'apikeys',l:'API keys'},
+  {id:'team',l:'Team members'},{id:'integrations',l:'Integrations'},{id:'security',l:'Security & audit'}
+];
+document.getElementById('cats').innerHTML=CATS.map(function(c,i){
+  return '<div class="os-list-link '+(i===0?'active':'')+'" data-cat="'+c.id+'"><div class="t">'+c.l+'</div></div>';
+}).join('');
+document.querySelectorAll('[data-cat]').forEach(function(el){
+  el.onclick=function(){
+    document.querySelectorAll('[data-cat]').forEach(function(x){x.classList.remove('active');});
+    el.classList.add('active');
+    var id=el.getAttribute('data-cat');
+    document.getElementById('cat-title').textContent=CATS.filter(function(c){return c.id===id;})[0].l;
+    document.querySelectorAll('.pane').forEach(function(p){p.classList.toggle('on',p.getAttribute('data-pane')===id);});
+    document.querySelector('.os-app').classList.remove('panel-open');
+  };
+});
+
+/* functional theme toggle */
+function setTheme(t){ try{localStorage.setItem('hxos.theme',t);}catch(e){}
+  var r=t; if(t==='system') r=(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
+  document.documentElement.setAttribute('data-theme',r);
+  document.querySelectorAll('#theme-seg button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-th')===t);});
+}
+document.querySelectorAll('#theme-seg button').forEach(function(b){b.onclick=function(){setTheme(b.getAttribute('data-th'));};});
+setTheme(localStorage.getItem('hxos.theme')||'dark');
+
+/* mock content */
+var KEYS=[['hx_live_••••8a2f','Created 12 Mar · last used 2h ago'],['hx_live_••••1c93','Created 4 Jan · last used 6d ago']];
+document.getElementById('keys').innerHTML=KEYS.map(function(k){return '<div class="kv"><span class="k">'+k[0]+'</span><span class="dim" style="font-size:12px">'+k[1]+'</span><button class="btn btn-sm btn-ghost">Revoke</button></div>';}).join('');
+var TEAM=[['Angela Moraiti','Owner'],['Mike C.','Admin'],['Sara L.','Member'],['Dev Team','Member'],['Support','Member']];
+document.getElementById('team').innerHTML=TEAM.map(function(t){return '<div class="kv"><span class="k" style="color:var(--text)">'+t[0]+'</span><span class="chip" style="margin-left:auto">'+t[1]+'</span></div>';}).join('');
+var INTEG=[['Slack','💬',true],['GitHub','🐙',true],['Notion','📓',false],['Stripe','💳',true],['Linear','📐',false],['Google Drive','📁',false]];
+document.getElementById('integ').innerHTML=INTEG.map(function(i){
+  return '<div class="card" style="padding:14px;display:flex;align-items:center;gap:10px"><span style="font-size:18px">'+i[1]+'</span><span style="font-size:13px;font-weight:550">'+i[0]+'</span><span style="margin-left:auto" class="chip '+(i[2]?'chip-ok':'')+'">'+(i[2]?'Connected':'Connect')+'</span></div>';
+}).join('');
+</script>
+</body>
+</html>

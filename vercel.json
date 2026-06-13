@@ -51,9 +51,6 @@
     { "source": "/automation", "destination": "/automation.html" },
     { "source": "/business-assistant", "destination": "/business-assistant.html" },
 
-    { "source": "/app-crm", "destination": "/app-crm.html" },
-    { "source": "/app-marketing", "destination": "/app-marketing.html" },
-    { "source": "/app-automation", "destination": "/app-automation.html" },
     { "source": "/app-assistant", "destination": "/app-assistant.html" },
 
     { "source": "/signup", "destination": "/signup.html" },
@@ -64,7 +61,6 @@
     { "source": "/reset-password", "destination": "/reset-password.html" },
     { "source": "/dashboard", "destination": "/dashboard.html" },
     { "source": "/chat", "destination": "/chat.html" },
-    { "source": "/workbench", "destination": "/workbench.html" },
     { "source": "/memory", "destination": "/memory.html" },
     { "source": "/docs", "destination": "/docs.html" },
     { "source": "/services", "destination": "/services.html" },
@@ -86,15 +82,11 @@
     { "source": "/usage", "destination": "/usage.html" },
     { "source": "/logs", "destination": "/logs.html" },
     { "source": "/monitoring", "destination": "/monitoring.html" },
-    { "source": "/api-keys", "destination": "/api-keys.html" },
-    { "source": "/integrations", "destination": "/integrations.html" },
-    { "source": "/domains", "destination": "/domains.html" },
     { "source": "/team", "destination": "/team.html" },
     { "source": "/security", "destination": "/security.html" },
 
     { "source": "/notifications", "destination": "/notifications.html" },
     { "source": "/sessions", "destination": "/sessions.html" },
-    { "source": "/connected", "destination": "/connected.html" },
     { "source": "/audit-log", "destination": "/audit-log.html" },
     { "source": "/tickets", "destination": "/tickets.html" }
   ],

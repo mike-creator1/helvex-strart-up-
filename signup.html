@@ -202,6 +202,14 @@
         el.textContent = '';
         el.classList.remove('show');
       }
+      // A failed fetch surfaces as "Load failed" (Safari/WebKit) or
+      // "Failed to fetch" (Chrome) — raw, cryptic strings. Translate any
+      // network-level failure into one friendly message so a paused/
+      // unreachable backend never shows the user a confusing error.
+      function isNetworkError(msg) {
+        return /load failed|failed to fetch|networkerror|network request failed|fetch event|connection|err_network|timed?\s*out/i.test(String(msg || ''));
+      }
+      var NETWORK_ERROR_MSG = 'Can’t reach the server right now. Please check your connection and try again in a moment.';
       function setBusy(btn, busy, busyLabel) {
         if (!btn) return;
         btn.disabled = busy;
@@ -285,7 +293,8 @@
               window.location.href = '/verify?email=' + encodeURIComponent(email);
               return;
             }
-            if (/invalid\s*login\s*credentials/i.test(msg)) msg = 'Email or password is incorrect.';
+            if (isNetworkError(msg)) msg = NETWORK_ERROR_MSG;
+            else if (/invalid\s*login\s*credentials/i.test(msg)) msg = 'Email or password is incorrect.';
             showError('signin-error', msg);
             setBusy(btn, false);
           }
@@ -332,7 +341,9 @@
             }
             window.location.href = '/verify?email=' + encodeURIComponent(email);
           } catch (err) {
-            showError('signup-error', (err && err.message) || 'Could not create account.');
+            var smsg = (err && err.message) || 'Could not create account.';
+            if (isNetworkError(smsg)) smsg = NETWORK_ERROR_MSG;
+            showError('signup-error', smsg);
             setBusy(btn, false);
           }
         });

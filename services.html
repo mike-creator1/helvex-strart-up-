@@ -4,100 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Services — HelveX</title>
-  <meta name="description" content="Request specialised work from the HelveX delivery team. Submit a brief, get a quote, track status to delivery." />
+  <meta name="description" content="HelveX Services — connect, configure and monitor the integrations powering your AI workspace." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <link rel="stylesheet" href="/workbench.css" />
   <style>
-    /* Services workspace — a real engagement tracker, not a brochure.
-       Card layout mirrors /workbench so the platform feels consistent:
-       a "+ New request" form expands inline above the list; each
-       request is a card you can open into a focused detail panel. */
-    .hx-svc-grid    { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
-    .hx-svc-card    { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px 18px; cursor: pointer; transition: border-color 0.12s; }
-    .hx-svc-card:hover { border-color: var(--hx-text-mid); }
-    .hx-svc-card.open { border-color: var(--hx-text); }
-    .hx-svc-head    { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-    .hx-svc-title   { font-size: 14.5px; font-weight: 600; color: var(--hx-text); margin: 0; letter-spacing: -0.005em; flex: 1; min-width: 0; }
-    .hx-svc-meta    { display: flex; align-items: center; gap: 8px; flex-shrink: 0; font-family: var(--hx-mono); font-size: 11px; color: var(--hx-text-mid); }
-    .hx-svc-preview { font-size: 12.5px; color: var(--hx-text-mid); margin-top: 8px; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-    .hx-svc-body    { margin-top: 14px; display: none; }
-    .hx-svc-card.open .hx-svc-body    { display: block; }
-    .hx-svc-card.open .hx-svc-preview { display: none; }
-
-    /* Status pill — colour-codes the lifecycle stage at a glance. */
-    .hx-svc-status {
-      padding: 2px 8px; border-radius: 5px;
-      font-family: var(--hx-mono); font-size: 10px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.06em;
-      background: var(--hx-cream); color: var(--hx-text-mid);
-    }
-    .hx-svc-status.submitted    { background: rgba(15,15,16,0.08);    color: var(--hx-text); }
-    .hx-svc-status.scoping      { background: rgba(59,130,246,0.12);  color: #1d4ed8; }
-    .hx-svc-status.quoted       { background: rgba(245,158,11,0.14);  color: #92400e; }
-    .hx-svc-status.approved     { background: rgba(124,58,237,0.12);  color: #6d28d9; }
-    .hx-svc-status.in_progress  { background: rgba(34,197,94,0.14);   color: #15803d; }
-    .hx-svc-status.delivered    { background: rgba(15,15,16,0.06);    color: var(--hx-text-mid); }
-    .hx-svc-status.cancelled    { background: rgba(220,38,38,0.10);   color: #991b1b; }
-
-    /* Type chip — which practice the request lives under. */
-    .hx-svc-type {
-      padding: 2px 8px; border-radius: 5px;
-      font-family: var(--hx-mono); font-size: 10px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.06em;
-      background: rgba(15,15,16,0.06); color: var(--hx-text-mid);
-    }
-
-    /* Open-card detail layout — split into Brief / Quote / Timeline. */
-    .hx-svc-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 6px; }
-    @media (max-width: 720px) { .hx-svc-detail-grid { grid-template-columns: 1fr; } }
-    .hx-svc-block      { background: var(--hx-bg-2); border: 1px solid var(--hx-line); border-radius: 10px; padding: 14px 16px; }
-    .hx-svc-block h4   { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--hx-text-mid); margin: 0 0 8px; font-family: var(--hx-mono); }
-    .hx-svc-block p    { font-size: 13px; line-height: 1.55; margin: 0; color: var(--hx-text); white-space: pre-wrap; }
-    .hx-svc-block .kv  { display: flex; gap: 8px; margin-bottom: 4px; font-size: 12.5px; }
-    .hx-svc-block .kv span:first-child { color: var(--hx-text-mid); min-width: 80px; }
-    .hx-svc-block .kv span:last-child  { color: var(--hx-text); font-weight: 500; }
-
-    /* Timeline of events — dot-on-line vertical layout. */
-    .hx-svc-timeline { margin-top: 12px; position: relative; padding-left: 18px; }
-    .hx-svc-timeline::before { content: ""; position: absolute; left: 5px; top: 4px; bottom: 4px; width: 1px; background: var(--hx-line); }
-    .hx-svc-evt      { position: relative; margin-bottom: 12px; }
-    .hx-svc-evt::before { content: ""; position: absolute; left: -16px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--hx-text); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--hx-line); }
-    .hx-svc-evt.team::before     { background: #6d28d9; }
-    .hx-svc-evt.system::before   { background: var(--hx-text-mid); }
-    .hx-svc-evt .ts  { font-family: var(--hx-mono); font-size: 10.5px; color: var(--hx-text-mid); }
-    .hx-svc-evt .msg { font-size: 13px; color: var(--hx-text); margin-top: 2px; line-height: 1.45; }
-
-    /* New-request form (inline, same pattern as workbench). */
-    .hx-svc-new-form { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 18px 20px; margin-bottom: 14px; display: none; }
-    .hx-svc-new-form.open { display: block; }
-    .hx-svc-new-form label { display: block; font-size: 11.5px; font-weight: 600; color: var(--hx-text-mid); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; font-family: var(--hx-mono); }
-    .hx-svc-new-form input, .hx-svc-new-form textarea, .hx-svc-new-form select {
-      width: 100%; padding: 10px 12px; border: 1px solid var(--hx-line);
-      border-radius: 10px; font: inherit; font-size: 13.5px; background: #fff;
-      outline: none; margin-bottom: 12px;
-    }
-    .hx-svc-new-form textarea { min-height: 110px; font-family: var(--hx-sans); line-height: 1.5; resize: vertical; }
-    .hx-svc-new-form .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-    @media (max-width: 720px) { .hx-svc-new-form .row { grid-template-columns: 1fr; } }
-    .hx-svc-new-form .actions { display: flex; gap: 8px; align-items: center; }
-    .hx-svc-new-form .actions .status { margin-left: auto; font-size: 11.5px; color: var(--hx-text-mid); }
-
-    /* Empty-state onboarding card — same vibe as the workbench. */
-    .hx-svc-onboard { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 36px 28px; }
-    .hx-svc-onboard h3   { margin: 0 0 6px; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
-    .hx-svc-onboard .lede { font-size: 13.5px; color: var(--hx-text-mid); margin: 0 0 22px; line-height: 1.55; max-width: 560px; }
-    .hx-svc-onboard .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 22px; }
-    @media (max-width: 720px) { .hx-svc-onboard .pillars { grid-template-columns: 1fr; } }
-    .hx-svc-pillar { background: var(--hx-bg-2); border: 1px solid var(--hx-line); border-radius: 10px; padding: 14px 16px; }
-    .hx-svc-pillar .tag { font-family: var(--hx-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--hx-text-mid); text-transform: uppercase; margin-bottom: 6px; }
-    .hx-svc-pillar h4  { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
-    .hx-svc-pillar p   { font-size: 12.5px; color: var(--hx-text-mid); margin: 0; line-height: 1.5; }
-
-    .armed { background: #dc2626 !important; color: #fff !important; border-color: #dc2626 !important; }
+    .svc-card { display:flex; flex-direction:column; }
+    .svc-emoji { width:44px; height:44px; border-radius:12px; display:grid; place-items:center; font-size:22px; background:var(--hx-bg-2); border:1px solid var(--hx-line); flex-shrink:0; }
+    .svc-usage { display:flex; align-items:center; justify-content:space-between; font-size:11.5px; color:var(--hx-text-mid); margin:2px 0 8px; }
+    .perm-row { display:flex; align-items:center; gap:10px; padding:11px 0; border-bottom:1px solid var(--hx-line-soft); }
+    .perm-row:last-child { border-bottom:0; }
+    .perm-row .pt { font-size:13px; font-weight:500; }
+    .dr-section { margin:18px 0 8px; font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--hx-text-dim); }
   </style>
 </head>
 <body data-active="services">
@@ -110,431 +32,164 @@
 
         <div class="hx-aura" aria-hidden="true"></div>
         <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Services · accepting briefs</p>
+          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Services · integrations</p>
           <div class="hx-pg-hero-grid">
             <div>
-              <h1 class="hx-pg-title">Services <em>·</em></h1>
-              <p class="hx-pg-sub">Specialised work delivered by the HelveX engineering team — agents, automation, data tooling. Submit a brief, receive a fixed quote within 48 hours, track every status change until delivery.</p>
-              <div class="hx-pg-cta-row">
-                <button class="hx-cta-primary" id="hx-svc-new">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  Request a service
-                </button>
-              </div>
-            </div>
-            <div class="hx-pg-meta-strip">
-              <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Quote</p>
-                <p class="hx-pg-meta-value">48 hours</p>
-              </div>
-              <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Delivery</p>
-                <p class="hx-pg-meta-value">In-house</p>
-              </div>
+              <h1 class="hx-pg-title">Services</h1>
+              <p class="hx-pg-sub">The integrations that power your workspace — messaging, code, docs and webhooks. Connect a service, set its permissions and manage it from one place.</p>
             </div>
           </div>
         </header>
 
-        <div class="hx-grid hx-grid-4">
-          <div class="hx-stat"><p class="hx-stat-label">Active</p><p class="hx-stat-value hx-mono" id="hx-svc-active">0</p><p class="hx-stat-meta">In scoping or delivery</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Awaiting your approval</p><p class="hx-stat-value hx-mono" id="hx-svc-quoted">0</p><p class="hx-stat-meta">Quote received</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Delivered</p><p class="hx-stat-value hx-mono" id="hx-svc-delivered">0</p><p class="hx-stat-meta">All-time</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Avg. quote time</p><p class="hx-stat-value" id="hx-svc-avg" style="font-size:16px;">—</p><p class="hx-stat-meta">Submitted → quoted</p></div>
+        <div class="wb-metrics" id="svc-metrics"></div>
+
+        <div class="wb-toolbar">
+          <div class="wb-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="svc-q" placeholder="Search services…" />
+          </div>
+          <div class="wb-seg" id="svc-cats"></div>
         </div>
 
-        <!-- New-request form (collapsed by default; revealed by + button) -->
-        <div id="hx-svc-new-form" class="hx-svc-new-form">
-          <div class="row">
-            <div>
-              <label for="hx-svc-type">Service</label>
-              <select id="hx-svc-type">
-                <option value="agents">Custom AI agents</option>
-                <option value="automation">Workflow automation</option>
-                <option value="data">Data tooling / pipelines</option>
-                <option value="copilot">Internal copilot</option>
-                <option value="triage">Document / inbox triage</option>
-                <option value="other">Other (describe below)</option>
-              </select>
-            </div>
-            <div>
-              <label for="hx-svc-budget">Budget band</label>
-              <select id="hx-svc-budget">
-                <option value="open">Open / discuss with us</option>
-                <option value="<5k">Under €5,000</option>
-                <option value="5-15k">€5,000 – €15,000</option>
-                <option value="15-50k">€15,000 – €50,000</option>
-                <option value="50k+">€50,000+</option>
-              </select>
-            </div>
-            <div>
-              <label for="hx-svc-start">Preferred start</label>
-              <input type="date" id="hx-svc-start" />
-            </div>
-          </div>
-          <label for="hx-svc-brief">Brief</label>
-          <textarea id="hx-svc-brief" placeholder="What outcome are you after? Who's the user? What does success look like in 6 weeks? Any constraints (stack, compliance, integrations)?" maxlength="4000"></textarea>
-          <div class="actions">
-            <button class="hx-btn hx-btn-primary" id="hx-svc-submit">Submit request</button>
-            <button class="hx-btn hx-btn-ghost"   id="hx-svc-cancel">Cancel</button>
-            <span id="hx-svc-status-msg" class="status"></span>
-          </div>
-        </div>
-
-        <div id="hx-svc-grid" class="hx-svc-grid"></div>
+        <div id="svc-host"></div>
 
       </main>
     </div>
   </div>
 
   <script src="/platform.js"></script>
+  <script src="/workbench.js"></script>
   <script>
-    (function () {
-      'use strict';
+  (function(){
+    var $=function(id){return document.getElementById(id);};
+    // Catalog is fixed to the providers the backend accepts.
+    var CATALOG=[
+      { id:'slack',   name:'Slack',   cat:'Communication', emoji:'💬', desc:'Send alerts and let agents post to channels.', perms:['Read messages','Post as bot','Manage channels'] },
+      { id:'github',  name:'GitHub',  cat:'Developer',     emoji:'🐙', desc:'Trigger deployments and read repositories.', perms:['Read repos','Write commits','Manage webhooks'] },
+      { id:'linear',  name:'Linear',  cat:'Developer',     emoji:'📐', desc:'Create issues from chats and track work.', perms:['Read issues','Create issues'] },
+      { id:'notion',  name:'Notion',  cat:'Productivity',  emoji:'📓', desc:'Sync docs into the knowledge base.', perms:['Read pages','Write pages'] },
+      { id:'email',   name:'Email',   cat:'Communication', emoji:'✉️', desc:'Send transactional and campaign email.', perms:['Send email','Manage domains'] },
+      { id:'webhook', name:'Webhook', cat:'Developer',     emoji:'🔗', desc:'POST workspace events to any endpoint.', perms:['Send events','Sign payloads'] }
+    ];
+    var ST={ q:'', cat:'all', loading:true, error:null, rows:[] };
+    var sb=null, owner=null, db=null;
 
-      function whenAuthReady(fn) {
-        if (window.HX && window.HX.supabase) { fn(); return; }
-        document.addEventListener('hx:auth-ready', fn, { once: true });
-      }
-      function $(id) { return document.getElementById(id); }
-      function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    // latest integration row for a provider
+    function rowFor(id){ return ST.rows.filter(function(r){return r.provider===id;}).sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);})[0]||null; }
+    function isConnected(id){ var r=rowFor(id); return !!(r&&r.status==='connected'); }
 
-      var SERVICE_LABEL = {
-        agents:     'Custom AI agents',
-        automation: 'Workflow automation',
-        data:       'Data tooling',
-        copilot:    'Internal copilot',
-        triage:     'Document / inbox triage',
-        other:      'Custom request',
-      };
-      var STATUS_LABEL = {
-        submitted:   'Submitted',
-        scoping:     'Scoping',
-        quoted:      'Quote ready',
-        approved:    'Approved',
-        in_progress: 'In progress',
-        delivered:   'Delivered',
-        cancelled:   'Cancelled',
-      };
+    function metrics(){
+      var conn=CATALOG.filter(function(s){return isConnected(s.id);}).length;
+      $('svc-metrics').innerHTML=
+        mt('Connected',conn+' / '+CATALOG.length,'active integrations','<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>')+
+        mt('Available',CATALOG.length,'services to connect','<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>')+
+        mt('Categories',new Set(CATALOG.map(function(s){return s.cat;})).size,'integration types','<path d="M4 5h16M4 12h16M4 19h16"/>')+
+        mt('Health',conn?'Operational':'—',conn?'all systems normal':'nothing connected','<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>');
+    }
+    function mt(l,v,m,icon){return '<div class="wb-metric"><div class="ml">'+WB.svg(icon)+l+'</div><div class="mv" style="font-size:'+(String(v).length>6?'19px':'26px')+'">'+v+'</div><div class="mm">'+m+'</div></div>';}
 
-      function fmtDate(iso) {
-        if (!iso) return '—';
-        try { return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); }
-        catch (e) { return '—'; }
-      }
-      function fmtTime(iso) {
-        if (!iso) return '';
-        try { return new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); }
-        catch (e) { return ''; }
-      }
-      function relTime(iso) {
-        if (!iso) return '—';
-        var diff = (Date.now() - new Date(iso).getTime()) / 1000;
-        if (diff < 60) return 'just now';
-        if (diff < 3600) return Math.floor(diff/60) + 'm ago';
-        if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
-        return Math.floor(diff/86400) + 'd ago';
-      }
-      function fmtMoney(n, ccy) {
-        if (n == null) return '—';
-        try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: ccy || 'EUR', maximumFractionDigits: 0 }).format(n); }
-        catch (e) { return (ccy || 'EUR') + ' ' + n; }
-      }
+    function cats(){
+      var cs=Array.from(new Set(CATALOG.map(function(s){return s.cat;})));
+      var html='<button data-k="all" class="'+(ST.cat==='all'?'on':'')+'">All <span class="ct">'+CATALOG.length+'</span></button>';
+      html+='<button data-k="connected" class="'+(ST.cat==='connected'?'on':'')+'">Connected <span class="ct">'+CATALOG.filter(function(s){return isConnected(s.id);}).length+'</span></button>';
+      cs.forEach(function(c){ html+='<button data-k="'+c+'" class="'+(ST.cat===c?'on':'')+'">'+c+' <span class="ct">'+CATALOG.filter(function(s){return s.cat===c;}).length+'</span></button>'; });
+      $('svc-cats').innerHTML=html;
+      $('svc-cats').querySelectorAll('button').forEach(function(b){b.onclick=function(){ST.cat=b.dataset.k;cats();render();};});
+    }
 
-      var state = { requests: [], events: {}, openId: null, sb: null, owner: null };
+    function visible(){
+      var rows=CATALOG.slice();
+      if(ST.cat==='connected') rows=rows.filter(function(s){return isConnected(s.id);});
+      else if(ST.cat!=='all') rows=rows.filter(function(s){return s.cat===ST.cat;});
+      if(ST.q){var q=ST.q.toLowerCase();rows=rows.filter(function(s){return (s.name+' '+s.desc+' '+s.cat).toLowerCase().indexOf(q)>=0;});}
+      rows.sort(function(a,b){return (isConnected(b.id)-isConnected(a.id))||a.name.localeCompare(b.name);});
+      return rows;
+    }
 
-      function renderStats() {
-        var active    = state.requests.filter(function (r) { return ['submitted','scoping','approved','in_progress'].indexOf(r.status) > -1; }).length;
-        var quoted    = state.requests.filter(function (r) { return r.status === 'quoted'; }).length;
-        var delivered = state.requests.filter(function (r) { return r.status === 'delivered'; }).length;
-        $('hx-svc-active').textContent    = active;
-        $('hx-svc-quoted').textContent    = quoted;
-        $('hx-svc-delivered').textContent = delivered;
+    function render(){
+      var host=$('svc-host');
+      if(ST.loading){ host.innerHTML=WB.skeletonCards(6); return; }
+      if(ST.error){ host.innerHTML='<div class="wb-empty"><div class="orb">'+WB.svg('<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>')+'</div><h3>Couldn’t load services</h3><p>'+WB.esc(ST.error)+'</p><button class="wb-btn" id="svc-retry">Try again</button></div>'; $('svc-retry').onclick=load; return; }
+      var rows=visible();
+      if(!rows.length){ host.innerHTML='<div class="wb-empty"><div class="orb">'+WB.svg('<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>')+'</div><h3>No services found</h3><p>Try a different search or category.</p><button class="wb-btn" id="svc-clear">Clear filters</button></div>'; var c=$('svc-clear'); if(c)c.onclick=function(){ST.q='';ST.cat='all';$('svc-q').value='';cats();render();}; return; }
+      host.innerHTML='<div class="wb-grid">'+rows.map(card).join('')+'</div>';
+      rows.forEach(function(s){ $('svc-open-'+s.id).onclick=function(){openDetail(s);}; var a=$('svc-act-'+s.id); if(a)a.onclick=function(e){e.stopPropagation(); isConnected(s.id)?openDetail(s):connect(s);}; });
+    }
 
-        // Average submitted → quoted duration (in hours), across requests
-        // that have actually been quoted. Single-request average is fine.
-        var quoteHrs = state.requests
-          .filter(function (r) { return r.quote_at && r.created_at; })
-          .map(function (r) { return (new Date(r.quote_at) - new Date(r.created_at)) / 3600000; });
-        if (quoteHrs.length) {
-          var avg = quoteHrs.reduce(function (a, b) { return a + b; }, 0) / quoteHrs.length;
-          $('hx-svc-avg').textContent = avg < 24 ? Math.round(avg) + 'h' : (avg/24).toFixed(1) + 'd';
-        } else {
-          $('hx-svc-avg').textContent = '—';
-        }
-      }
+    function card(s){
+      var conn=isConnected(s.id), row=rowFor(s.id);
+      return '<div class="wb-card svc-card" id="svc-open-'+s.id+'">'+
+        '<div class="wb-card-head"><div class="svc-emoji">'+s.emoji+'</div>'+
+          '<div style="flex:1;min-width:0"><h3>'+WB.esc(s.name)+'</h3><div class="sub">'+WB.esc(s.cat)+'</div></div>'+
+          '<span class="wb-pill '+(conn?'connected':'disconnected')+'"><span class="d"></span>'+(conn?'Connected':'Not connected')+'</span></div>'+
+        '<p class="desc" style="min-height:34px">'+WB.esc(s.desc)+'</p>'+
+        (conn&&row?'<div class="svc-usage"><span>'+WB.esc((row.display_name||s.name))+'</span><span>connected '+WB.relTime(row.connected_at||row.created_at)+'</span></div>':'')+
+        '<div class="wb-card-foot" style="border-top:none;padding-top:4px"><button class="wb-btn '+(conn?'':'primary')+'" id="svc-act-'+s.id+'" style="flex:1">'+(conn?'Manage':'Connect')+'</button></div>'+
+      '</div>';
+    }
 
-      function renderOnboarding(host) {
-        host.innerHTML = ''
-          + '<div class="hx-svc-onboard">'
-          +   '<h3>No requests yet.</h3>'
-          +   '<p class="lede">Three practices, one delivery team. Describe what you want built, we scope and quote within 48 hours, and every status change shows up here until delivery.</p>'
-          +   '<div class="pillars">'
-          +     '<div class="hx-svc-pillar"><div class="tag">Practice 01</div><h4>AI & agents</h4><p>Custom agents, internal copilots, retrieval over your own data, voice / phone agents.</p></div>'
-          +     '<div class="hx-svc-pillar"><div class="tag">Practice 02</div><h4>Automation</h4><p>Workflow automation, document and inbox triage, daily digests, lead enrichment.</p></div>'
-          +     '<div class="hx-svc-pillar"><div class="tag">Practice 03</div><h4>Data tooling</h4><p>Pipelines, dashboards, ETL, AI-driven analysis, internal reporting surfaces.</p></div>'
-          +   '</div>'
-          +   '<button class="hx-btn hx-btn-primary" id="hx-svc-empty-new">+ Request your first service</button>'
-          + '</div>';
-        var b = $('hx-svc-empty-new'); if (b) b.addEventListener('click', openNewForm);
-      }
+    function permsState(s){ var r=rowFor(s.id); var saved=(r&&r.config&&r.config.permissions)||null; return s.perms.map(function(p,i){ return [p, saved?!!saved[i]:i<2]; }); }
 
-      function renderGrid() {
-        var host = $('hx-svc-grid');
-        if (!state.requests.length) { renderOnboarding(host); return; }
+    function connect(s){
+      if(!db){ WB.toast('Sign in to connect services','err'); return; }
+      var perms=permsState(s);
+      WB.drawer.open({ title:'Connect '+WB.esc(s.name), body:
+        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><div class="svc-emoji">'+s.emoji+'</div><div><div style="font-weight:600">'+WB.esc(s.name)+'</div><div class="sub" style="font-size:11.5px;color:var(--hx-text-dim)">'+WB.esc(s.cat)+'</div></div></div>'+
+        '<p class="desc" style="color:var(--hx-text-mid)">'+WB.esc(s.desc)+'</p>'+
+        '<div class="dr-section">Setup</div>'+
+        '<div class="wb-field"><label>Display name</label><input id="svc-name" value="'+WB.esc(s.name)+'"></div>'+
+        '<div class="wb-field"><label>'+(s.id==='webhook'?'Endpoint URL':'API key / token')+'</label><input id="svc-key" placeholder="'+(s.id==='webhook'?'https://…':'Paste your '+WB.esc(s.name)+' key')+'" '+(s.id==='webhook'?'':'type="password"')+'></div>'+
+        '<div class="dr-section">Permissions</div>'+
+        perms.map(function(p,i){return '<div class="perm-row"><div style="flex:1"><div class="pt">'+WB.esc(p[0])+'</div></div><button class="wb-switch '+(p[1]?'on':'')+'" data-i="'+i+'"></button></div>';}).join(''),
+        foot:'<button class="wb-btn primary" id="svc-connect" style="flex:1">Connect '+WB.esc(s.name)+'</button><button class="wb-btn" id="svc-cancel">Cancel</button>',
+        onMount:function(){
+          var p=perms.map(function(x){return x.slice();});
+          document.querySelectorAll('.perm-row .wb-switch').forEach(function(sw){sw.onclick=function(){var i=+sw.dataset.i;p[i][1]=!p[i][1];sw.classList.toggle('on',p[i][1]);};});
+          $('svc-cancel').onclick=WB.drawer.close;
+          $('svc-connect').onclick=function(){
+            var key=$('svc-key').value.trim(); if(!key){WB.toast((s.id==='webhook'?'An endpoint URL':'An API key')+' is required','err');return;}
+            var btn=$('svc-connect'); btn.disabled=true; btn.textContent='Connecting…';
+            db.insert({ provider:s.id, status:'connected', display_name:$('svc-name').value.trim()||s.name, config:{ permissions:p.map(function(x){return x[1];}), has_secret:true }, connected_at:new Date().toISOString() })
+              .then(function(r){ if(r.error)throw r.error; WB.toast(s.name+' connected','ok'); WB.drawer.close(); load(); })
+              .catch(function(e){ btn.disabled=false; btn.textContent='Connect '+s.name; WB.toast(e.message||'Connection failed','err'); });
+          };
+        } });
+    }
 
-        host.innerHTML = state.requests.map(function (r) {
-          var isOpen = r.id === state.openId;
-          var evts = state.events[r.id] || [];
-          return ''
-            + '<div class="hx-svc-card' + (isOpen ? ' open' : '') + '" data-id="' + esc(r.id) + '">'
-            +   '<div class="hx-svc-head">'
-            +     '<div>'
-            +       '<h3 class="hx-svc-title">' + esc(SERVICE_LABEL[r.service_type] || r.service_type) + '</h3>'
-            +       '<div class="hx-svc-meta" style="margin-top:6px;">'
-            +         '<span class="hx-svc-type">' + esc(r.service_type) + '</span>'
-            +         '<span class="hx-svc-status ' + esc(r.status) + '">' + esc(STATUS_LABEL[r.status] || r.status) + '</span>'
-            +         '<span>Submitted ' + relTime(r.created_at) + '</span>'
-            +         (r.quote_amount != null ? '<span>· Quote ' + esc(fmtMoney(r.quote_amount, r.quote_currency)) + '</span>' : '')
-            +       '</div>'
-            +     '</div>'
-            +   '</div>'
-            +   (isOpen ? '' : '<div class="hx-svc-preview">' + esc(r.scope_brief || '') + '</div>')
-            +   '<div class="hx-svc-body">'
-            +     '<div class="hx-svc-detail-grid">'
-            +       '<div class="hx-svc-block">'
-            +         '<h4>Brief</h4>'
-            +         '<p>' + esc(r.scope_brief || '—') + '</p>'
-            +       '</div>'
-            +       '<div class="hx-svc-block">'
-            +         '<h4>Scope & quote</h4>'
-            +         '<div class="kv"><span>Budget</span><span>' + esc(r.budget_band || 'open') + '</span></div>'
-            +         '<div class="kv"><span>Preferred start</span><span>' + esc(fmtDate(r.preferred_start)) + '</span></div>'
-            +         '<div class="kv"><span>Quote</span><span>' + esc(r.quote_amount != null ? fmtMoney(r.quote_amount, r.quote_currency) : 'Pending') + '</span></div>'
-            +         '<div class="kv"><span>Status</span><span>' + esc(STATUS_LABEL[r.status] || r.status) + '</span></div>'
-            +       '</div>'
-            +     '</div>'
-            +     '<div class="hx-svc-timeline">'
-            +       buildTimeline(r, evts)
-            +     '</div>'
-            +     '<div class="actions" style="display:flex;gap:8px;margin-top:14px;">'
-            +       (r.status === 'quoted'
-                      ? '<button class="hx-btn hx-btn-primary hx-btn-sm" data-role="approve">Approve quote</button>'
-                      : '')
-            +       (['delivered','cancelled'].indexOf(r.status) === -1
-                      ? '<button class="hx-btn hx-btn-danger hx-btn-sm" data-role="cancel">Cancel request</button>'
-                      : '')
-            +       '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-role="close" style="margin-left:auto;">Close</button>'
-            +       '<span class="status" data-role="status"></span>'
-            +     '</div>'
-            +   '</div>'
-            + '</div>';
-        }).join('');
+    function openDetail(s){
+      var conn=isConnected(s.id), row=rowFor(s.id);
+      if(!conn){ connect(s); return; }
+      var perms=permsState(s);
+      WB.drawer.open({ title:'<span style="display:inline-flex;align-items:center;gap:10px"><span class="svc-emoji" style="width:30px;height:30px;font-size:16px">'+s.emoji+'</span>'+WB.esc(s.name)+'</span>', body:
+        '<div class="wb-kv"><span class="k">Status</span><span class="v"><span class="wb-pill connected"><span class="d"></span>Connected</span></span></div>'+
+        '<div class="wb-kv"><span class="k">Display name</span><span class="v">'+WB.esc(row.display_name||s.name)+'</span></div>'+
+        '<div class="wb-kv"><span class="k">Category</span><span class="v">'+WB.esc(s.cat)+'</span></div>'+
+        '<div class="wb-kv"><span class="k">Connected</span><span class="v">'+WB.relTime(row.connected_at||row.created_at)+'</span></div>'+
+        '<p class="desc" style="color:var(--hx-text-mid);margin-top:14px">'+WB.esc(s.desc)+'</p>'+
+        '<div class="dr-section">Permissions</div>'+
+        perms.map(function(p,i){return '<div class="perm-row"><div style="flex:1"><div class="pt">'+WB.esc(p[0])+'</div></div><button class="wb-switch '+(p[1]?'on':'')+'" data-i="'+i+'"></button></div>';}).join(''),
+        foot:'<button class="wb-btn" id="svc-save" style="flex:1">Save permissions</button><button class="wb-btn danger" id="svc-disc">Disconnect</button>',
+        onMount:function(){
+          var p=perms.map(function(x){return x.slice();});
+          document.querySelectorAll('.perm-row .wb-switch').forEach(function(sw){sw.onclick=function(){var i=+sw.dataset.i;p[i][1]=!p[i][1];sw.classList.toggle('on',p[i][1]);};});
+          $('svc-save').onclick=function(){ db.update(row.id,{config:Object.assign({},row.config,{permissions:p.map(function(x){return x[1];})})}).then(function(r){if(r.error)throw r.error;WB.toast('Permissions saved','ok');WB.drawer.close();load();}).catch(function(e){WB.toast(e.message,'err');}); };
+          $('svc-disc').onclick=function(e){ WB.arm(e.currentTarget,'Confirm disconnect',function(){ db.update(row.id,{status:'revoked',revoked_at:new Date().toISOString()}).then(function(r){if(r.error)throw r.error;WB.toast(s.name+' disconnected','info');WB.drawer.close();load();}).catch(function(er){WB.toast(er.message,'err');}); }); };
+        } });
+    }
 
-        host.querySelectorAll('.hx-svc-card').forEach(function (card) {
-          var id = card.getAttribute('data-id');
-          card.addEventListener('click', function (e) {
-            if (e.target.closest('[data-role]')) return;
-            state.openId = state.openId === id ? null : id;
-            if (state.openId && !state.events[state.openId]) loadEvents(state.openId);
-            renderGrid();
-          });
-          var close = card.querySelector('[data-role="close"]');
-          if (close) close.addEventListener('click', function () { state.openId = null; renderGrid(); });
-          var approve = card.querySelector('[data-role="approve"]');
-          if (approve) approve.addEventListener('click', function () { approveQuote(card, id); });
-          var cancel = card.querySelector('[data-role="cancel"]');
-          if (cancel) cancel.addEventListener('click', function () { cancelRequest(card, id, cancel); });
-        });
-      }
+    function load(){
+      if(!db){ ST.loading=false; ST.error='You need to be signed in.'; render(); return; }
+      ST.loading=true; render();
+      db.list('id,provider,status,display_name,config,connected_at,revoked_at,created_at',{col:'created_at',asc:false}).then(function(r){
+        if(r.error) throw r.error;
+        ST.rows=r.data||[]; ST.loading=false; ST.error=null; metrics(); cats(); render();
+      }).catch(function(e){ ST.loading=false; ST.error=e.message||'Load failed'; render(); });
+    }
 
-      // Synthesise a baseline timeline from request lifecycle timestamps
-      // (created/quoted/approved/started/delivered/cancelled) and merge
-      // any additional event rows the team has posted.
-      function buildTimeline(r, evts) {
-        var line = [];
-        line.push({ ts: r.created_at, msg: 'Request submitted.', kind: 'system' });
-        if (r.quote_at)     line.push({ ts: r.quote_at,     msg: 'Quote sent: ' + fmtMoney(r.quote_amount, r.quote_currency) + '.', kind: 'team' });
-        if (r.approved_at)  line.push({ ts: r.approved_at,  msg: 'You approved the quote.', kind: 'customer' });
-        if (r.started_at)   line.push({ ts: r.started_at,   msg: 'Work started.', kind: 'team' });
-        if (r.delivered_at) line.push({ ts: r.delivered_at, msg: 'Delivered.', kind: 'team' });
-        if (r.cancelled_at) line.push({ ts: r.cancelled_at, msg: 'Request cancelled.', kind: 'system' });
-        (evts || []).forEach(function (e) {
-          var msg = (e.payload && e.payload.message)
-            ? e.payload.message
-            : (e.kind === 'status_change'
-                ? 'Status changed to ' + (STATUS_LABEL[(e.payload || {}).to] || (e.payload || {}).to)
-                : e.kind);
-          line.push({ ts: e.created_at, msg: msg, kind: e.actor_kind });
-        });
-        line.sort(function (a, b) { return new Date(a.ts) - new Date(b.ts); });
-        if (!line.length) return '<p style="font-size:12px;color:var(--hx-text-mid);">No events yet.</p>';
-        return line.map(function (e) {
-          return '<div class="hx-svc-evt ' + esc(e.kind) + '">'
-            +    '<div class="ts">' + esc(fmtTime(e.ts)) + '</div>'
-            +    '<div class="msg">' + esc(e.msg) + '</div>'
-            +  '</div>';
-        }).join('');
-      }
-
-      async function loadEvents(reqId) {
-        var r = await state.sb.from('service_request_events')
-          .select('*').eq('request_id', reqId).order('created_at', { ascending: true });
-        if (!r.error) {
-          state.events[reqId] = r.data || [];
-          renderGrid();
-        }
-      }
-
-      async function refresh() {
-        var r = await state.sb.from('service_requests_public').select('*').order('created_at', { ascending: false });
-        if (r.error) { console.error('[services] load:', r.error); return; }
-        state.requests = r.data || [];
-        renderStats();
-        renderGrid();
-      }
-
-      function openNewForm() {
-        $('hx-svc-brief').value = '';
-        $('hx-svc-type').value = 'agents';
-        $('hx-svc-budget').value = 'open';
-        $('hx-svc-start').value = '';
-        $('hx-svc-new-form').classList.add('open');
-        setTimeout(function () { $('hx-svc-brief').focus(); }, 30);
-      }
-      function closeNewForm() {
-        $('hx-svc-new-form').classList.remove('open');
-        $('hx-svc-status-msg').textContent = '';
-      }
-
-      async function submitRequest() {
-        var brief  = ($('hx-svc-brief').value || '').trim();
-        var type   = $('hx-svc-type').value;
-        var budget = $('hx-svc-budget').value;
-        var start  = $('hx-svc-start').value || null;
-        if (brief.length < 20) {
-          $('hx-svc-status-msg').textContent = 'Brief must be at least 20 characters.';
-          return;
-        }
-        var btn = $('hx-svc-submit');
-        btn.disabled = true; btn.textContent = 'Submitting…';
-        try {
-          var ins = await state.sb.from('service_requests').insert({
-            owner_id: state.owner,
-            service_type: type,
-            scope_brief: brief,
-            budget_band: budget,
-            preferred_start: start,
-          }).select().single();
-          if (ins.error) throw ins.error;
-
-          // Fire notification emails — team gets an alert, customer
-          // gets a "received" confirmation. Non-blocking: a failure
-          // here doesn't roll back the insert. The DB row is the
-          // source of truth; mail is a courtesy.
-          fireServiceNotify(ins.data.id);
-
-          closeNewForm();
-          await refresh();
-          state.openId = ins.data.id;
-          renderGrid();
-        } catch (err) {
-          $('hx-svc-status-msg').textContent = (err && err.message) || 'Submit failed.';
-        } finally {
-          btn.disabled = false; btn.textContent = 'Submit request';
-        }
-      }
-
-      async function fireServiceNotify(requestId) {
-        try {
-          var sess = (await state.sb.auth.getSession()).data.session;
-          if (!sess || !sess.access_token) return;
-          await fetch('/api/notify', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + sess.access_token,
-            },
-            body: JSON.stringify({ kind: 'service_request', request_id: requestId }),
-          });
-        } catch (_) { /* silent — notification failure is non-critical */ }
-      }
-
-      async function approveQuote(card, id) {
-        var status = card.querySelector('[data-role="status"]');
-        status.textContent = 'Approving…';
-        // Customer-side approval — the team will then move to in_progress.
-        var r = await state.sb.from('service_requests')
-          .update({ status: 'approved', approved_at: new Date().toISOString() })
-          .eq('id', id);
-        if (r.error) { status.textContent = r.error.message; return; }
-        await state.sb.from('service_request_events').insert({
-          request_id: id, actor_kind: 'customer', actor_id: state.owner,
-          kind: 'status_change', payload: { to: 'approved', message: 'You approved the quote — work can start.' },
-        });
-        status.textContent = 'Approved.';
-        await refresh();
-      }
-
-      async function cancelRequest(card, id, btn) {
-        if (btn.dataset.armed !== '1') {
-          btn.dataset.armed = '1';
-          btn.dataset.original = btn.textContent;
-          btn.textContent = 'Click again to cancel';
-          btn.classList.add('armed');
-          setTimeout(function () {
-            if (btn.dataset.armed === '1') {
-              btn.dataset.armed = ''; btn.classList.remove('armed');
-              btn.textContent = btn.dataset.original || 'Cancel request';
-            }
-          }, 3000);
-          return;
-        }
-        btn.dataset.armed = ''; btn.classList.remove('armed');
-        var status = card.querySelector('[data-role="status"]');
-        status.textContent = 'Cancelling…';
-        var r = await state.sb.from('service_requests')
-          .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
-          .eq('id', id);
-        if (r.error) { status.textContent = r.error.message; return; }
-        await state.sb.from('service_request_events').insert({
-          request_id: id, actor_kind: 'customer', actor_id: state.owner,
-          kind: 'status_change', payload: { to: 'cancelled', message: 'Request cancelled.' },
-        });
-        await refresh();
-      }
-
-      // UI listeners wire IMMEDIATELY so buttons are alive even if
-      // Supabase auth is slow or fails. Data-side fetches still wait
-      // for whenAuthReady below.
-      function wireServicesUI() {
-        var nb = $('hx-svc-new');    if (nb) nb.addEventListener('click', openNewForm);
-        var nc = $('hx-svc-cancel'); if (nc) nc.addEventListener('click', closeNewForm);
-        var ns = $('hx-svc-submit'); if (ns) ns.addEventListener('click', submitRequest);
-      }
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', wireServicesUI, { once: true });
-      } else { wireServicesUI(); }
-
-      whenAuthReady(async function () {
-        state.sb = window.HX.supabase;
-        var u = (await state.sb.auth.getUser()).data.user;
-        if (!u) return;
-        state.owner = u.id;
-
-        // Realtime — when the HelveX team updates a request (status,
-        // quote, etc.), the customer's view reflects it immediately
-        // without a page reload.
-        try {
-          state.sb.channel('hx-svc-' + u.id)
-            .on('postgres_changes',
-                { event: '*', schema: 'public', table: 'service_requests', filter: 'owner_id=eq.' + u.id },
-                function () { refresh(); })
-            .subscribe();
-        } catch (_) {}
-
-        await refresh();
-      });
-    })();
+    var qt; $('svc-q').oninput=function(e){ST.q=e.target.value.trim();clearTimeout(qt);qt=setTimeout(render,140);};
+    render();
+    WB.ready(function(s,u){ sb=s; owner=u?u.id:null; db=(s&&u)?WB.tbl(s,'integrations',owner):null; load(); });
+  })();
   </script>
 </body>
 </html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>HelveX · Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="os.css">
+<style>
+  /* Chat-specific layout */
+  .chat-wrap { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+  .thread { flex: 1; overflow-y: auto; }
+  .thread-inner { max-width: 740px; margin: 0 auto; padding: 28px 20px 40px; }
+
+  /* Empty state — Claude/ChatGPT style centred greeting */
+  .empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 24px; text-align: center; }
+  .empty h2 { font-size: 30px; font-weight: 650; letter-spacing: -0.025em; }
+  .empty h2 span { color: var(--accent); }
+  .suggest { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; width: min(620px, 92vw); margin-top: 6px; }
+  .suggest button { text-align: left; padding: 13px 15px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface-1); transition: border-color var(--fast), background var(--fast); }
+  .suggest button:hover { border-color: var(--line-strong); background: var(--surface-2); }
+  .suggest .st { font-size: 13px; font-weight: 550; }
+  .suggest .ss { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+  /* Messages */
+  .msg { display: flex; gap: 14px; padding: 18px 0; }
+  .msg + .msg { border-top: 1px solid var(--line-soft); }
+  .msg .av { width: 28px; height: 28px; border-radius: var(--r-sm); flex-shrink: 0; display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+  .msg.user .av { background: var(--surface-3); color: var(--text-mid); }
+  .msg.ai .av { background: var(--ai-soft); color: var(--ai); }
+  .msg .body { min-width: 0; flex: 1; }
+  .msg .who { font-size: 12.5px; font-weight: 600; margin-bottom: 4px; }
+  .msg .txt { font-size: 14.5px; line-height: 1.7; color: var(--text); }
+  .msg .txt p { margin: 0 0 10px; }
+  .msg .txt code { font-family: var(--mono); font-size: 12.5px; background: var(--surface-inset); padding: 1px 5px; border-radius: 4px; }
+  .codeblock { background: var(--surface-inset); border: 1px solid var(--line); border-radius: var(--r-md); margin: 6px 0 12px; overflow: hidden; }
+  .codeblock .cb-head { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px; border-bottom: 1px solid var(--line-soft); font-size: 11.5px; color: var(--text-dim); }
+  .codeblock pre { margin: 0; padding: 13px 14px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.6; color: var(--text); }
+  .cursor-blink::after { content: "▍"; color: var(--accent); animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+
+  /* Composer */
+  .composer-wrap { flex-shrink: 0; padding: 12px 20px calc(18px + env(safe-area-inset-bottom)); }
+  .composer { max-width: 740px; margin: 0 auto; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 10px 12px; transition: border-color var(--fast), box-shadow var(--fast); }
+  .composer:focus-within { border-color: var(--accent-line); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .composer textarea { width: 100%; border: none; background: none; resize: none; outline: none; font-size: 14.5px; line-height: 1.6; max-height: 200px; color: var(--text); }
+  .composer textarea::placeholder { color: var(--text-faint); }
+  .composer-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .composer-row .grow { flex: 1; }
+  .send { width: 34px; height: 34px; border-radius: var(--r-sm); background: var(--accent); color: #1a1500; display: grid; place-items: center; }
+  .send:disabled { background: var(--surface-3); color: var(--text-faint); cursor: not-allowed; }
+  .send svg { width: 17px; height: 17px; }
+  .tool-btn { width: 32px; height: 32px; border-radius: var(--r-sm); color: var(--text-dim); display: grid; place-items: center; }
+  .tool-btn:hover { background: var(--surface-3); color: var(--text); }
+  .tool-btn svg { width: 18px; height: 18px; }
+
+  /* Model picker */
+  .model-pick { position: relative; }
+  .model-btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border-radius: var(--r-sm); font-size: 12.5px; color: var(--text-mid); border: 1px solid var(--line); }
+  .model-btn:hover { background: var(--surface-3); color: var(--text); }
+  .model-btn .dot { width: 6px; height: 6px; background: var(--ai); }
+  .model-menu { position: absolute; bottom: calc(100% + 6px); left: 0; width: 260px; background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-lg); padding: 6px; z-index: 30; }
+  .model-menu.hidden { display: none; }
+  .model-opt { display: flex; align-items: flex-start; gap: 9px; padding: 9px 10px; border-radius: var(--r-sm); cursor: pointer; }
+  .model-opt:hover { background: var(--surface-2); }
+  .model-opt .mt { font-size: 13px; font-weight: 550; }
+  .model-opt .ms { font-size: 11.5px; color: var(--text-dim); }
+
+  .pin-ic { color: var(--accent); }
+  .new-chat-btn { margin: 0 6px 6px; }
+</style>
+</head>
+<body data-section="chat">
+<div class="os-app">
+
+  <!-- Contextual panel: conversation list -->
+  <aside class="os-panel">
+    <div class="os-panel-head">
+      <h2 class="grow">Chats</h2>
+      <button class="btn-icon btn btn-sm" title="Search chats" onclick="document.getElementById('chat-search').focus()">__SEARCH__</button>
+    </div>
+    <div style="padding:0 12px 8px"><a class="btn btn-primary btn-block new-chat-btn" href="?new=1">__PLUS__ New chat</a></div>
+    <div style="padding:0 12px 6px"><input id="chat-search" class="field" placeholder="Search conversations…" oninput="filterChats(this.value)"></div>
+    <div class="os-panel-body" id="chat-list"></div>
+  </aside>
+
+  <!-- Main -->
+  <main class="os-main">
+    <header class="os-topbar">
+      <button class="btn-icon btn btn-sm mobile-only" data-panel-toggle title="Conversations">__MENU__</button>
+      <h1 id="chat-title">New chat</h1>
+      <span class="crumb desktop-only" id="chat-model-crumb">· HeliX Sonnet</span>
+      <div class="os-topbar-spacer"></div>
+      <button class="btn btn-sm btn-ghost" onclick="OS.openPalette()">__SEARCH__ <span class="desktop-only">Search</span> <kbd class="desktop-only" style="font-family:var(--mono);font-size:11px;color:var(--text-faint)">⌘K</kbd></button>
+      <a class="btn btn-sm btn-primary mobile-only" href="?new=1">__PLUS__</a>
+    </header>
+
+    <div class="chat-wrap">
+      <div class="thread" id="thread">
+        <!-- empty state injected here, replaced by messages -->
+      </div>
+
+      <div class="composer-wrap">
+        <div class="composer">
+          <textarea id="input" rows="1" placeholder="Message HeliX…  (⏎ to send, ⇧⏎ for new line)"></textarea>
+          <div class="composer-row">
+            <div class="model-pick">
+              <button class="model-btn" id="model-btn" onclick="toggleModel()"><span class="dot"></span><span id="model-label">HeliX Sonnet</span></button>
+              <div class="model-menu hidden" id="model-menu"></div>
+            </div>
+            <button class="tool-btn desktop-only" title="Attach file">__CLIP__</button>
+            <span class="grow"></span>
+            <button class="send" id="send" disabled onclick="send()">__ARROW__</button>
+          </div>
+        </div>
+        <p class="dim" style="text-align:center;font-size:11px;margin-top:8px">HeliX can make mistakes. Verify important information. Everything here belongs to your active project.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="os.js"></script>
+<script>
+/* ---- inline SVG swap (keeps markup readable) ---- */
+(function(){
+  var defs={
+    SEARCH:'<circle cx="11" cy="11" r="7.5"/><line x1="21" y1="21" x2="16.8" y2="16.8"/>',
+    PLUS:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+    MENU:'<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>',
+    CLIP:'<path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3.5 3.5 0 0 1 4.95 4.95l-8.49 8.49a2 2 0 0 1-2.83-2.83l8.49-8.49"/>',
+    ARROW:'<line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/>'
+  };
+  var html=document.body.innerHTML;
+  Object.keys(defs).forEach(function(k){
+    html=html.split('__'+k+'__').join('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:inline-block;vertical-align:-3px">'+defs[k]+'</svg>');
+  });
+  document.body.innerHTML=html;
+})();
+
+/* ---- mock data ---- */
+var MODELS=[
+  {id:'sonnet',name:'HeliX Sonnet',desc:'Fast, balanced — best for everyday work'},
+  {id:'opus',name:'HeliX Opus',desc:'Most capable — deep reasoning & long tasks'},
+  {id:'haiku',name:'HeliX Haiku',desc:'Instant — quick answers, drafting'},
+  {id:'vision',name:'HeliX Vision',desc:'Images, diagrams, screenshots'}
+];
+var CHATS=[
+  {id:1,pin:true, title:'Q3 go-to-market plan', last:'Draft the launch checklist…', when:'2m'},
+  {id:2,pin:true, title:'Refactor billing module', last:'Here is the migration…', when:'1h'},
+  {id:3,pin:false,title:'Customer churn analysis', last:'The top driver is…', when:'3h'},
+  {id:4,pin:false,title:'Landing page copy', last:'Three headline options…', when:'Yesterday'},
+  {id:5,pin:false,title:'Investor update email', last:'Subject: March recap', when:'2d'},
+  {id:6,pin:false,title:'SQL: monthly cohorts', last:'WITH cohorts AS (…', when:'4d'}
+];
+
+var currentModel=MODELS[0];
+var hasConversation=false;
+
+/* ---- model picker ---- */
+function renderModelMenu(){
+  document.getElementById('model-menu').innerHTML=MODELS.map(function(m){
+    return '<div class="model-opt" onclick="pickModel(\''+m.id+'\')"><div><div class="mt">'+m.name+'</div><div class="ms">'+m.desc+'</div></div></div>';
+  }).join('');
+}
+function toggleModel(){document.getElementById('model-menu').classList.toggle('hidden');}
+function pickModel(id){
+  currentModel=MODELS.filter(function(m){return m.id===id;})[0];
+  document.getElementById('model-label').textContent=currentModel.name;
+  document.getElementById('chat-model-crumb').textContent='· '+currentModel.name;
+  document.getElementById('model-menu').classList.add('hidden');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.model-pick')) document.getElementById('model-menu').classList.add('hidden');
+});
+
+/* ---- conversation list ---- */
+function renderChats(filter){
+  filter=(filter||'').toLowerCase();
+  var list=document.getElementById('chat-list');
+  var pin=CHATS.filter(function(c){return c.pin && c.title.toLowerCase().indexOf(filter)>-1;});
+  var rest=CHATS.filter(function(c){return !c.pin && c.title.toLowerCase().indexOf(filter)>-1;});
+  function row(c){
+    return '<div class="os-list-link" onclick="openChat('+c.id+')"><div class="t">'+(c.pin?'<span class="pin-ic">★</span> ':'')+c.title+'</div><div class="s">'+c.last+' · '+c.when+'</div></div>';
+  }
+  var h='';
+  if(pin.length){h+='<div class="os-group-label">Pinned</div>'+pin.map(row).join('');}
+  h+='<div class="os-group-label">Recent</div>'+rest.map(row).join('');
+  list.innerHTML=h;
+}
+function filterChats(v){renderChats(v);}
+function openChat(id){
+  var c=CHATS.filter(function(x){return x.id===id;})[0];
+  document.getElementById('chat-title').textContent=c.title;
+  showConversation([
+    {role:'user',text:'Give me a concise launch checklist for the Q3 go-to-market plan.'},
+    {role:'ai',text:'demo'}
+  ]);
+  document.querySelector('.os-app').classList.remove('panel-open');
+}
+
+/* ---- thread rendering ---- */
+function emptyState(){
+  document.getElementById('thread').innerHTML=
+    '<div class="empty">'+
+      '<div style="width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:var(--ai-soft);color:var(--ai)">'+OS.icon('chat')+'</div>'+
+      '<h2>What should we build, <span>today</span>?</h2>'+
+      '<div class="suggest">'+
+        sg('Draft a product update','Summarise this week\'s changelog for customers')+
+        sg('Analyse a CSV','Upload data and ask for trends & charts')+
+        sg('Write & run code','Prototype a function with a live preview')+
+        sg('Plan a project','Turn a goal into tasks, owners and a timeline')+
+      '</div>'+
+    '</div>';
+}
+function sg(t,s){return '<button onclick="seed(\''+t+'\')"><div class="st">'+t+'</div><div class="ss">'+s+'</div></button>';}
+function seed(t){var i=document.getElementById('input');i.value=t;i.dispatchEvent(new Event('input'));i.focus();}
+
+function bubble(m){
+  if(m.role==='user'){
+    return '<div class="msg user"><div class="av">A</div><div class="body"><div class="who">You</div><div class="txt"><p>'+escapeHtml(m.text)+'</p></div></div></div>';
+  }
+  return '<div class="msg ai"><div class="av">H</div><div class="body"><div class="who">HeliX</div><div class="txt" id="'+(m.id||'')+'">'+(m.text==='demo'?demoAnswer():m.text)+'</div></div></div>';
+}
+function showConversation(msgs){
+  hasConversation=true;
+  document.getElementById('thread').innerHTML='<div class="thread-inner">'+msgs.map(bubble).join('')+'</div>';
+  scrollBottom();
+}
+function demoAnswer(){
+  return '<p>Here\'s a tight launch checklist, grouped by phase:</p>'+
+    '<p><strong>2 weeks out</strong> — finalise positioning, freeze pricing, brief support.<br>'+
+    '<strong>1 week out</strong> — ship docs, schedule the changelog post, warm up email.<br>'+
+    '<strong>Launch day</strong> — flip the feature flag, publish, post to channels, monitor.</p>'+
+    '<div class="codeblock"><div class="cb-head"><span>checklist.md</span><span>copy</span></div>'+
+    '<pre>- [ ] Positioning sign-off\n- [ ] Pricing locked in Stripe\n- [ ] Docs + changelog ready\n- [ ] Feature flag staged\n- [ ] Monitoring dashboard pinned</pre></div>'+
+    '<p>Want me to turn this into tasks in the current project?</p>';
+}
+
+/* ---- send + simulated streaming ---- */
+var input=document.getElementById('input');
+input.addEventListener('input',function(){
+  this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,200)+'px';
+  document.getElementById('send').disabled=!this.value.trim();
+});
+input.addEventListener('keydown',function(e){
+  if(e.key==='Enter' && !e.shiftKey){e.preventDefault(); if(this.value.trim()) send();}
+});
+function send(){
+  var text=input.value.trim(); if(!text) return;
+  if(!hasConversation){document.getElementById('thread').innerHTML='<div class="thread-inner"></div>'; hasConversation=true; document.getElementById('chat-title').textContent=text.slice(0,40);}
+  var inner=document.querySelector('.thread-inner')||(function(){var d=document.createElement('div');d.className='thread-inner';document.getElementById('thread').appendChild(d);return d;})();
+  inner.insertAdjacentHTML('beforeend',bubble({role:'user',text:text}));
+  input.value=''; input.style.height='auto'; document.getElementById('send').disabled=true;
+  scrollBottom();
+  var id='ai-'+Date.now();
+  inner.insertAdjacentHTML('beforeend','<div class="msg ai"><div class="av">H</div><div class="body"><div class="who">HeliX <span class="chip chip-ai" style="margin-left:4px">'+currentModel.name+'</span></div><div class="txt cursor-blink" id="'+id+'"></div></div></div>');
+  scrollBottom();
+  streamReply(id,'Got it. Here\'s how I\'d approach that — I can refine, expand, or turn any part into project tasks. This is a front-end prototype, so the response is simulated, but in production it streams token-by-token from '+currentModel.name+' with full project context, attachments, and tool use.');
+}
+function streamReply(id,full){
+  var el=document.getElementById(id),i=0;
+  (function tick(){
+    if(i>full.length){el.classList.remove('cursor-blink'); el.innerHTML='<p>'+full+'</p>'; scrollBottom(); return;}
+    el.textContent=full.slice(0,i); i+=2; scrollBottom();
+    setTimeout(tick,12);
+  })();
+}
+function scrollBottom(){var t=document.getElementById('thread'); t.scrollTop=t.scrollHeight;}
+function escapeHtml(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+
+/* ---- init ---- */
+renderModelMenu(); renderChats();
+emptyState();
+</script>
+</body>
+</html>

@@ -2918,3 +2918,36 @@ html[data-theme="dark"] .hx-table td { color: var(--hx-text, #fff); }
   .hx-nav-item[data-hx-helix] span::after{ animation:none !important; }
   .hx-nav-item[data-hx-helix]::before{ opacity:.5; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Sidebar refinement — calmer, more premium navigation. Tightens the
+   item rhythm, smooths hover, and makes the active state cleaner and
+   more legible (especially in dark mode) without the heavy inner glow.
+   Appended last so it refines the earlier rules by source order.
+   ═══════════════════════════════════════════════════════════════════ */
+.hx-nav-item { gap:11px; padding:8px 11px; font-size:14px; font-weight:500; border-radius:9px; }
+.hx-nav-item svg { width:18px; height:18px; stroke-width:1.7; opacity:.72; transition:opacity .16s, color .16s, transform .18s cubic-bezier(.2,.8,.2,1); }
+/* smoother, quieter hover — no horizontal icon nudge */
+.hx-nav-item:hover { background:var(--hx-bg-2); color:var(--hx-text); }
+.hx-nav-item:hover svg { opacity:1; transform:none; }
+/* refined active state: clean surface chip + crisp brass marker */
+.hx-nav-item.active {
+  background:var(--hx-bg-3);
+  color:var(--hx-text);
+  font-weight:600;
+  box-shadow:none;
+}
+.hx-nav-item.active svg { color:var(--hx-yellow); opacity:1; }
+.hx-nav-item.active::before {
+  left:0; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0;
+  background:var(--hx-yellow);
+  box-shadow:0 0 6px color-mix(in srgb, var(--hx-yellow) 45%, transparent);
+  animation:none;
+}
+/* tighter, quieter group labels for a cleaner hierarchy */
+.hx-nav-label { font-size:10.5px; letter-spacing:.1em; color:var(--hx-text-faint); opacity:.9; }
+.hx-nav-section + .hx-nav-section { margin-top:14px; }
+/* the diagonal shimmer was a touch much — soften it */
+.hx-nav-item::after { background:linear-gradient(105deg, transparent 0%, color-mix(in srgb, var(--hx-yellow) 7%, transparent) 50%, transparent 100%); }
+html[data-theme="dark"] .hx-nav-item.active { background:rgba(255,255,255,0.05); }
+html[data-theme="dark"] .hx-nav-item:hover { background:rgba(255,255,255,0.035); }

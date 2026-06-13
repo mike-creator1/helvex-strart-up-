@@ -214,7 +214,11 @@
         }
         window.location.href = 'dashboard.html';
       } catch (err) {
-        _showErr((err && err.message) || 'Could not update password.');
+        var emsg = (err && err.message) || 'Could not update password.';
+        if (/load failed|failed to fetch|networkerror|network request failed|connection|err_network|timed?\s*out/i.test(emsg)) {
+          emsg = 'Can’t reach the server right now. Please check your connection and try again in a moment.';
+        }
+        _showErr(emsg);
         if (btn) { btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = ''; }
       }
     });

@@ -253,7 +253,11 @@
             showAlert('verify-success', 'Email verified. Redirecting…');
             setTimeout(function () { window.location.replace('/dashboard'); }, 600);
           } catch (err) {
-            showAlert('verify-error', (err && err.message) || 'That code did not work.');
+            var vmsg = (err && err.message) || 'That code did not work.';
+            if (/load failed|failed to fetch|networkerror|network request failed|connection|err_network|timed?\s*out/i.test(vmsg)) {
+              vmsg = 'Can’t reach the server right now. Please check your connection and try again in a moment.';
+            }
+            showAlert('verify-error', vmsg);
             setBusy(btn, false);
             submitInFlight = false;
             clearAll();

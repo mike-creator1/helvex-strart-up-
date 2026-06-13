@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>HelveX · Deploy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="os.css">
+<style>
+  .prod { padding: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .prod .preview { width: 130px; height: 84px; border-radius: var(--r-sm); background: linear-gradient(135deg,#1a1a1a,#0c0c0c); border: 1px solid var(--line); flex-shrink: 0; display: grid; place-items: center; color: var(--text-faint); font-family: var(--mono); font-size: 11px; }
+  .dep { display: flex; align-items: center; gap: 14px; padding: 14px 16px; }
+  .dep + .dep { border-top: 1px solid var(--line-soft); }
+  .dep .st { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .dep .grow { flex: 1; min-width: 0; }
+  .dep .h { font-size: 13.5px; font-weight: 550; display: flex; align-items: center; gap: 8px; }
+  .dep .meta { font-size: 11.5px; color: var(--text-dim); font-family: var(--mono); }
+  .dep .when { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .kv { display: flex; align-items: center; gap: 10px; padding: 11px 14px; }
+  .kv + .kv { border-top: 1px solid var(--line-soft); }
+  .kv .k { font-family: var(--mono); font-size: 12.5px; color: var(--text-mid); width: 200px; }
+  .kv .v { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); flex: 1; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 22px; }
+  @media (max-width:760px){ .two { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body data-section="deploy" data-no-panel>
+<div class="os-app" data-no-panel>
+  <main class="os-main">
+    <header class="os-topbar">
+      <h1>Deploy</h1>
+      <span class="crumb desktop-only">· Acme GTM</span>
+      <div class="os-topbar-spacer"></div>
+      <button class="btn btn-sm">View logs</button>
+      <button class="btn btn-sm btn-primary" onclick="deployNow()">Deploy</button>
+    </header>
+    <div class="os-content">
+      <div class="os-content-pad">
+
+        <h3 class="eyebrow" style="margin-bottom:10px">Production</h3>
+        <div class="card prod">
+          <div class="preview">helvex.app</div>
+          <div class="grow" style="min-width:200px">
+            <div class="row gap-2"><span class="chip chip-ok"><span class="dot"></span>Ready</span><span class="dim" style="font-size:12px">helvex.app · main</span></div>
+            <div style="font-size:14px;font-weight:600;margin:8px 0 2px">Q3 launch — pricing update</div>
+            <div class="dim" style="font-size:12px;font-family:var(--mono)">a3f9c21 · deployed 12m ago · 18s build</div>
+          </div>
+          <div class="row gap-2">
+            <button class="btn btn-sm">Visit</button>
+            <button class="btn btn-sm" onclick="alert('Instant rollback to previous deployment (prototype)')">Rollback</button>
+          </div>
+        </div>
+
+        <h3 class="eyebrow" style="margin:26px 0 10px">Deployment history</h3>
+        <div class="card" id="hist"></div>
+
+        <div class="two">
+          <div>
+            <h3 class="eyebrow" style="margin-bottom:10px">Environment variables</h3>
+            <div class="card" id="env"></div>
+            <button class="btn btn-sm" style="margin-top:10px">Add variable</button>
+          </div>
+          <div>
+            <h3 class="eyebrow" style="margin-bottom:10px">Domains</h3>
+            <div class="card" id="domains"></div>
+            <button class="btn btn-sm" style="margin-top:10px">Add domain</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="os.js"></script>
+<script>
+var C={ok:'#3FB950',build:'#D29922',err:'#F85149'};
+var HIST=[
+  {s:'ok',h:'Q3 launch — pricing update',sha:'a3f9c21',by:'main',t:'12m ago',k:'Production'},
+  {s:'ok',h:'Fix hero CTA spacing',sha:'7b1de44',by:'main',t:'2h ago',k:'Preview'},
+  {s:'build',h:'Add testimonials section',sha:'c92aa10',by:'feat/social',t:'now',k:'Building'},
+  {s:'err',h:'Migrate to new analytics',sha:'4f0b8e2',by:'feat/track',t:'yesterday',k:'Failed'},
+  {s:'ok',h:'Initial production deploy',sha:'1a2b3c4',by:'main',t:'3d ago',k:'Production'}
+];
+document.getElementById('hist').innerHTML=HIST.map(function(d){
+  return '<div class="dep"><span class="st" style="background:'+C[d.s]+(d.s==='build'?';animation:blink 1s infinite':'')+'"></span>'+
+    '<div class="grow"><div class="h">'+d.h+' <span class="chip" style="height:18px">'+d.k+'</span></div>'+
+    '<div class="meta">'+d.sha+' · '+d.by+'</div></div>'+
+    '<div class="when">'+d.t+'</div>'+
+    '<button class="btn btn-sm btn-ghost desktop-only">···</button></div>';
+}).join('');
+var ENV=[['DATABASE_URL','••••••••••••'],['STRIPE_SECRET_KEY','••••••••••••'],['NEXT_PUBLIC_API','https://api.helvex.app'],['HELIX_MODEL','helix-sonnet']];
+document.getElementById('env').innerHTML=ENV.map(function(e){return '<div class="kv"><span class="k">'+e[0]+'</span><span class="v">'+e[1]+'</span></div>';}).join('');
+var DOM=[['helvex.app','Production'],['www.helvex.app','Redirect'],['preview.helvex.app','Preview']];
+document.getElementById('domains').innerHTML=DOM.map(function(d){return '<div class="kv"><span class="k" style="color:var(--text)">'+d[0]+'</span><span class="chip chip-ok" style="margin-left:auto"><span class="dot"></span>'+d[1]+'</span></div>';}).join('');
+function deployNow(){
+  var c=document.getElementById('hist');
+  c.insertAdjacentHTML('afterbegin','<div class="dep"><span class="st" style="background:'+C.build+';animation:blink 1s infinite"></span><div class="grow"><div class="h">Deploying current project… <span class="chip" style="height:18px">Building</span></div><div class="meta">queued · main</div></div><div class="when">now</div></div>');
+}
+</script>
+</body>
+</html>
