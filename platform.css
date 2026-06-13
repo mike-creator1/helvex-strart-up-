@@ -215,22 +215,35 @@ code { font-family: var(--hx-mono); font-size: 0.92em; }
   .hx-app { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* Desktop "faux column": the sidebar is position:sticky/height:100dvh, so
-   when the main column is taller than the viewport the left track would
-   otherwise show the page background below the sidebar (a white gap at the
-   bottom-left). Paint the sidebar surface — plus its 1px hairline — across
-   the full page height behind the sticky sidebar so the column always
-   reads as one continuous panel. */
+/* Desktop app shell: fixed sidebar, independently scrolling content.
+   The app fills the viewport and never scrolls itself. The sidebar is a
+   full-height static panel with its own internal scroll (only when the nav
+   actually overflows), the account/user block stays pinned at its bottom,
+   and ONLY .hx-main scrolls. This removes the white gap that appeared when
+   the page was taller than the sticky sidebar. Scoped away from the chat
+   page, which manages its own full-height panes. */
 @media (min-width: 901px) {
-  .hx-app {
-    background:
-      linear-gradient(to right,
-        var(--hx-surface) 0,
-        var(--hx-surface) calc(var(--hx-sidebar-w) - 1px),
-        var(--hx-line)    calc(var(--hx-sidebar-w) - 1px),
-        var(--hx-line)    var(--hx-sidebar-w),
-        var(--hx-bg)      var(--hx-sidebar-w),
-        var(--hx-bg)      100%);
+  body:not([data-active="chat"]) .hx-app {
+    height: 100vh;
+    overflow: hidden;
+  }
+  body:not([data-active="chat"]) .hx-sidebar {
+    position: static;
+    height: 100vh;
+  }
+  body:not([data-active="chat"]) .hx-app > div {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    min-height: 0;
+    overflow: hidden;
+  }
+  body:not([data-active="chat"]) .hx-topbar { flex-shrink: 0; }
+  body:not([data-active="chat"]) .hx-main {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 }
 
