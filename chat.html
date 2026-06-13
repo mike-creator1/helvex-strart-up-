@@ -32426,6 +32426,9 @@
       // straight to the saved artifact. Dismisses itself after 5s.
       function showWorkbenchToast(artifact) {
         if (!artifact) return;
+        // Workbench page was removed from the platform — keep capturing
+        // artifacts silently, but no longer surface a link to a dead page.
+        return;
         var prev = document.getElementById('hx-wb-toast');
         if (prev) prev.remove();
         var el = document.createElement('a');

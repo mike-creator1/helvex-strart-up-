@@ -108,7 +108,6 @@
     home:     '<path d="M3 12l9-9 9 9M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/>',
     chat:     '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
     folder:   '<path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
-    workbench:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 17.9V21h3.1l6.2-6.2a4 4 0 0 0 5.4-5.4l-3 3-1.4-1.4 3-3z"/>',
     memory:   '<path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0-3 3v1a3 3 0 0 0-1 5.83V18a3 3 0 0 0 3 3h1.5a2.5 2.5 0 0 0 5 0H16a3 3 0 0 0 3-3v-2.17A3 3 0 0 0 18 10V9a3 3 0 0 0-3-3V5a3 3 0 0 0-3-3z"/><path d="M12 7v10"/>',
     grid:     '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
     briefcase:'<rect x="2.5" y="7.5" width="19" height="13" rx="2"/><path d="M16 21V5.5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2V21"/><line x1="2.5" y1="13" x2="21.5" y2="13"/>',
@@ -196,7 +195,6 @@
     html +=     '<a class="hx-workspace-menu-item" href="/settings.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>';
     html +=     '<a class="hx-workspace-menu-item" href="/billing.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><line x1="2" y1="11" x2="22" y2="11"/><line x1="6" y1="16" x2="10" y2="16"/></svg>Billing &amp; Plan</a>';
     html +=     '<a class="hx-workspace-menu-item" href="/team.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team</a>';
-    html +=     '<a class="hx-workspace-menu-item" href="/api-keys.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>API Keys</a>';
     html +=     '<div class="hx-workspace-menu-sep"></div>';
     html +=     '<button type="button" class="hx-workspace-menu-item" data-action="theme"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Toggle theme</button>';
     html +=     '<a class="hx-workspace-menu-item" href="/tickets.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Help &amp; support</a>';
@@ -561,10 +559,6 @@
         notifications: { href: '/notifications.html',  label: 'Notifications' },
         security:      { href: '/security.html',       label: 'Security' },
         sessions:      { href: '/sessions.html',       label: 'Sessions' },
-        connected:     { href: '/connected.html',      label: 'Connected' },
-        'api-keys':    { href: '/api-keys.html',       label: 'API Keys' },
-        integrations:  { href: '/integrations.html',   label: 'Integrations' },
-        domains:       { href: '/domains.html',        label: 'Domains' },
         billing:       { href: '/billing.html',        label: 'Billing' },
         'audit-log':   { href: '/audit-log.html',      label: 'Audit log' },
         support:       { href: '/tickets.html',        label: 'Support' }
@@ -695,14 +689,10 @@
   var PAGES = [
     { title: 'Overview',          href: '/dashboard.html',  hint: 'Workspace' },
     { title: 'HeliX',             href: '/chat.html',       hint: 'Workspace' },
-    { title: 'Workbench',         href: '/workbench.html',  hint: 'Workspace' },
     { title: 'Memory',            href: '/memory.html',     hint: 'Workspace' },
     { title: 'Projects',          href: '/projects.html',   hint: 'Workspace' },
     { title: 'Services',          href: '/services.html',   hint: 'Workspace' },
-    { title: 'CRM',               href: '/app-crm.html',         hint: 'Toolkit' },
-    { title: 'Marketing Tools',   href: '/app-marketing.html',   hint: 'Toolkit' },
-    { title: 'Automation',        href: '/app-automation.html',  hint: 'Toolkit' },
-    { title: 'Business Assistant',href: '/app-assistant.html',   hint: 'Toolkit' },
+    { title: 'Business Assistant',href: '/app-assistant.html',   hint: 'AI' },
     { title: 'Models',            href: '/models.html',          hint: 'AI' },
     { title: 'Workflows',         href: '/workflows.html',       hint: 'AI' },
     { title: 'Deployments',       href: '/deployments.html',     hint: 'AI' },
@@ -710,9 +700,6 @@
     { title: 'Usage',             href: '/usage.html',           hint: 'Observability' },
     { title: 'Logs',              href: '/logs.html',            hint: 'Observability' },
     { title: 'Monitoring',        href: '/monitoring.html',      hint: 'Observability' },
-    { title: 'API Keys',          href: '/api-keys.html',        hint: 'Developer' },
-    { title: 'Integrations',      href: '/integrations.html',    hint: 'Developer' },
-    { title: 'Domains',           href: '/domains.html',         hint: 'Developer' },
     { title: 'API Docs',          href: '/docs.html',            hint: 'Developer' },
     { title: 'Credits',           href: '/credits.html',         hint: 'Billing' },
     { title: 'Pricing',           href: '/billing.html',         hint: 'Billing' },
@@ -731,7 +718,6 @@
     return [
       { title: 'New project',  hint: 'Open the new-project form',  exec: function () { window.location.href = '/projects.html?new=1'; } },
       { title: 'New memory',   hint: 'Drop a fact for the assistant', exec: function () { window.location.href = '/memory.html?new=1'; } },
-      { title: 'New artifact', hint: 'Open the Workbench composer', exec: function () { window.location.href = '/workbench.html?new=1'; } },
       { title: 'Open API docs',hint: 'Endpoints, auth, streaming',  href:  '/docs.html' },
       { title: 'Live status',  hint: 'System health right now',     href:  '/status.html' },
       { title: 'Sign out',     hint: 'End this session',            exec: function () {
@@ -773,18 +759,14 @@
     if (!sb) return { projects: [], memories: [], artifacts: [], leads: [] };
     var like = '%' + q.replace(/%/g, '') + '%';
     var seq = ++hxCmd.reqSeq;
-    var [pr, me, ar, ld] = await Promise.all([
+    var [pr, me] = await Promise.all([
       sb.from('projects').select('id, name, slug, status').ilike('name', like).limit(5),
       sb.from('memories').select('id, content, tags').ilike('content', like).limit(5),
-      sb.from('artifacts').select('id, title, kind').ilike('title', like).limit(5),
-      sb.from('leads').select('id, name, company, email').ilike('name', like).limit(5),
-    ]).catch(function () { return [{}, {}, {}, {}]; });
+    ]).catch(function () { return [{}, {}]; });
     if (seq !== hxCmd.reqSeq) return null; // outpaced by a newer query
     return {
       projects:  (pr && pr.data) || [],
       memories:  (me && me.data) || [],
-      artifacts: (ar && ar.data) || [],
-      leads:     (ld && ld.data) || [],
     };
   }
 
@@ -865,12 +847,6 @@
         var s = String(m.content || '').slice(0, 70);
         return { icon: 'Me', title: s, sub: (m.tags || []).join(' · ') || 'Memory', hint: 'Enter', href: '/memory.html' };
       }) });
-      if (res.artifacts.length) merged.push({ label: 'Workbench', items: res.artifacts.map(function (a) {
-        return { icon: 'Wb', title: a.title, sub: 'Artifact · ' + (a.kind || 'note'), hint: 'Enter', href: '/workbench.html' };
-      }) });
-      if (res.leads.length) merged.push({ label: 'CRM leads', items: res.leads.map(function (l) {
-        return { icon: 'Ld', title: l.name || l.email || 'Lead', sub: l.company || l.email || '', hint: 'Enter', href: '/app-crm.html' };
-      }) });
       renderResults(merged);
     }, 180);
   }
@@ -903,7 +879,7 @@
       '<div class="hx-cmdp" role="dialog" aria-label="Command palette">' +
         '<div class="hx-cmdp-input-row">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
-          '<input id="hx-cmdp-input" class="hx-cmdp-input" type="text" placeholder="Jump to a page, search projects, memories, leads…" spellcheck="false" autocomplete="off" />' +
+          '<input id="hx-cmdp-input" class="hx-cmdp-input" type="text" placeholder="Jump to a page, search projects, memories…" spellcheck="false" autocomplete="off" />' +
           '<button type="button" class="hx-cmdp-close" id="hx-cmdp-close" aria-label="Close">' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
           '</button>' +
