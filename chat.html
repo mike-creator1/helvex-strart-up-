@@ -30784,6 +30784,33 @@
     @media (prefers-reduced-motion: reduce){
       .hx-amk.is-thinking, .hx-amk.is-thinking::after, .hx-amk-shimmer{ animation:none; }
     }
+    /* Live "thinking" — keyword chips pulled from the user's own prompt */
+    body[data-active="chat"] .hx-think-live{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:2px; }
+    body[data-active="chat"] .hx-think-pulse{ width:8px; height:8px; border-radius:50%; background:var(--hx-mc,#6d5efc); animation:hxThinkPulse 1.3s ease-out infinite; flex-shrink:0; }
+    @keyframes hxThinkPulse{ 0%{ box-shadow:0 0 0 0 color-mix(in srgb,var(--hx-mc,#6d5efc) 55%,transparent);} 70%{ box-shadow:0 0 0 7px transparent;} 100%{ box-shadow:0 0 0 0 transparent;} }
+    body[data-active="chat"] .hx-think-now{ font-size:13.5px; font-weight:650; letter-spacing:-.01em; color:var(--hx-text-mid); }
+    body[data-active="chat"] .hx-think-kw{ display:inline-flex; flex-wrap:wrap; gap:6px; }
+    body[data-active="chat"] .hx-think-kw-chip{
+      font-size:11.5px; font-weight:600; letter-spacing:-.01em; padding:3px 9px; border-radius:999px;
+      color:var(--hx-mc,#6d5efc); background:color-mix(in srgb,var(--hx-mc,#6d5efc) 12%, transparent);
+      border:1px solid color-mix(in srgb,var(--hx-mc,#6d5efc) 24%, transparent);
+      opacity:0; transform:translateY(4px); animation:hxKwIn .42s cubic-bezier(.2,.8,.2,1) forwards, hxKwGlow 2.4s ease-in-out infinite;
+    }
+    @keyframes hxKwIn{ to{ opacity:1; transform:none; } }
+    @keyframes hxKwGlow{ 0%,100%{ box-shadow:0 0 0 0 transparent; } 50%{ box-shadow:0 0 12px -4px color-mix(in srgb,var(--hx-mc,#6d5efc) 55%, transparent); } }
+    @media (prefers-reduced-motion: reduce){ body[data-active="chat"] .hx-think-kw-chip{ animation:hxKwIn .3s forwards; } }
+    /* Suggested follow-up prompts after an answer */
+    body[data-active="chat"] .hx-followups{ display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 2px; }
+    body[data-active="chat"] .hx-followup{
+      display:inline-flex; align-items:center; gap:7px; padding:8px 13px; border-radius:999px;
+      font:inherit; font-size:13px; font-weight:550; letter-spacing:-.01em; cursor:pointer;
+      color:var(--hx-text); background:var(--hx-surface); border:1px solid var(--hx-line);
+      transition:border-color .14s, background .14s, transform .12s; -webkit-tap-highlight-color:transparent;
+    }
+    body[data-active="chat"] .hx-followup:hover{ border-color:var(--hx-mc,#6d5efc); background:color-mix(in srgb,var(--hx-mc,#6d5efc) 8%, var(--hx-surface)); }
+    body[data-active="chat"] .hx-followup:active{ transform:scale(.97); }
+    body[data-active="chat"] .hx-followup svg{ width:14px; height:14px; color:var(--hx-mc,#6d5efc); flex-shrink:0; }
+    body[data-active="chat"] .hx-followups-label{ width:100%; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--hx-text-dim); margin-bottom:2px; }
     /* ── Per-category Conversations drawer: branded header + accent ─────── */
     .hx-chat-rail[data-wsmode] .hx-chat-rail-title{ display:flex; align-items:center; gap:9px; }
     .hx-rail-wsico{
@@ -33420,6 +33447,38 @@
             var thinkLabel = activeModel === 'prometheus' ? 'Planning'
                           : activeModel === 'nexus'      ? 'Reasoning'
                           : 'Thinking';
+            // Live thinking keywords — pulled from the user's own prompt so the
+            // loader reflects what's actually being worked on, not generic dots.
+            var hxLastUser = '';
+            for (var __i = state.messages.length - 1; __i >= 0; __i--) {
+              if (state.messages[__i] && state.messages[__i].role === 'user') { hxLastUser = state.messages[__i].content || ''; break; }
+            }
+            var hxKw = (function (t) {
+              t = String(t || '').toLowerCase();
+              var map = [
+                [/\b(code|bug|debug|function|error|refactor|api|compile)\b/, ['Syntax','Logic','Edge cases','Tests']],
+                [/\b(email|reply|message|write|draft|copy|letter)\b/,        ['Tone','Structure','Clarity','Draft']],
+                [/\b(plan|roadmap|launch|timeline|schedule|step|milestone)\b/,['Steps','Milestones','Priorities','Timeline']],
+                [/\b(analy|data|metric|chart|trend|report|kpi|forecast)\b/,  ['Data','Trends','Metrics','Insight']],
+                [/\b(research|find|compare|source|fact|explore|search)\b/,   ['Sources','Facts','Compare','Verify']],
+                [/\b(idea|brainstorm|create|design|name|content)\b/,         ['Angles','Concepts','Variations']],
+                [/\b(decide|decision|option|choose|versus|vs)\b/,            ['Trade-offs','Criteria','Recommendation']],
+                [/\b(learn|explain|teach|understand|summar)\b/,              ['Concept','Example','Breakdown']]
+              ];
+              var intent = [];
+              for (var k = 0; k < map.length; k++) { if (map[k][0].test(t)) { intent = map[k][1]; break; } }
+              var stop = {the:1,a:1,an:1,and:1,or:1,to:1,of:1,in:1,on:1,for:1,with:1,is:1,are:1,was:1,me:1,my:1,you:1,your:1,it:1,this:1,that:1,how:1,what:1,why:1,can:1,could:1,would:1,please:1,help:1,need:1,want:1,give:1,make:1,from:1,about:1,into:1,over:1,
+                          'και':1,'τον':1,'την':1,'τους':1,'της':1,'του':1,'των':1,'να':1,'με':1,'σε':1,'για':1,'που':1,'μου':1,'ένα':1,'μία':1,'μια':1,'στο':1,'στη':1,'είναι':1,'θέλω':1,'κάνε':1,'πώς':1,'μπορείς':1};
+              var words = t.replace(/[^a-zα-ωά-ώ0-9\s]/gi, ' ').split(/\s+/).filter(function (w) { return w.length > 3 && !stop[w]; });
+              var picks = []; words.forEach(function (w) { if (picks.indexOf(w) < 0) picks.push(w); });
+              picks = picks.slice(0, 3).map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); });
+              var all = intent.concat(picks), seen = {}, out = [];
+              all.forEach(function (w) { var l = w.toLowerCase(); if (!seen[l]) { seen[l] = 1; out.push(w); } });
+              return out.slice(0, 5);
+            })(hxLastUser);
+            var hxKwChips = hxKw.length
+              ? '<span class="hx-think-kw">' + hxKw.map(function (w, i) { return '<span class="hx-think-kw-chip" style="animation-delay:' + (i * 0.14) + 's, ' + (1 + i * 0.18) + 's">' + escape(w) + '</span>'; }).join('') + '</span>'
+              : '';
             // Model-specific cognition mark — each model has its own
             // identity icon + signature motion that signals active
             // intelligence. Real AI cognition presence, not generic dots.
@@ -33475,12 +33534,53 @@
                 hxAssistMark(true) +
               '</div>' +
               '<div class="hx-msg-body">' +
+                '<div class="hx-think-live"><span class="hx-think-pulse" aria-hidden="true"></span><span class="hx-think-now">' + escape(thinkLabel) + '…</span>' + hxKwChips + '</div>' +
                 '<span class="hx-amk-shimmer" role="status" aria-label="' + escape(thinkLabel) + '"></span>' +
               '</div>' +
             '</div>';
           }
+          // Suggested follow-ups after the latest answer (not while streaming).
+          if (!state.sending && state.messages.length) {
+            var __lm = state.messages[state.messages.length - 1];
+            if (__lm && __lm.role === 'assistant' && (__lm.content || '').length) {
+              var __lu = '';
+              for (var __j = state.messages.length - 2; __j >= 0; __j--) { if (state.messages[__j] && state.messages[__j].role === 'user') { __lu = state.messages[__j].content || ''; break; } }
+              var __fu = (function (t) {
+                t = String(t || '').toLowerCase();
+                var m = [
+                  [/\b(code|bug|debug|function|error|refactor|api)\b/, ['Add error handling','Write tests for this','Explain how it works']],
+                  [/\b(email|reply|message|write|draft|copy)\b/,       ['Make it shorter','Make it more formal','Add a clear call to action']],
+                  [/\b(plan|roadmap|launch|timeline|step|milestone)\b/, ['Break it into weekly tasks','What are the risks?','Turn this into a checklist']],
+                  [/\b(analy|data|metric|chart|trend|report|kpi)\b/,    ['Summarize the key insight','What should I do next?','Visualize this as a chart']],
+                  [/\b(research|find|compare|source|fact|explore)\b/,   ['Give me the sources','Compare the top options','Go deeper on the best one']],
+                  [/\b(idea|brainstorm|create|design|name)\b/,          ['Give me 5 more','Refine the best one','Make it bolder']],
+                  [/\b(decide|decision|option|choose|vs)\b/,            ['Recommend one','What are the trade-offs?','What would you do?']],
+                  [/\b(learn|explain|teach|understand|summar)\b/,       ['Explain it simpler','Give a real example','Quiz me on this']]
+                ];
+                for (var k = 0; k < m.length; k++) { if (m[k][0].test(t)) return m[k][1]; }
+                return ['Go deeper on this','Summarize the key points','What should I do next?'];
+              })(__lu);
+              var __ar = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>';
+              html += '<div class="hx-followups"><span class="hx-followups-label">Suggested follow-ups</span>' +
+                __fu.map(function (f) { return '<button type="button" class="hx-followup" data-followup="' + escape(f) + '">' + __ar + escape(f) + '</button>'; }).join('') +
+              '</div>';
+            }
+          }
           html += '</div>';
           thread.innerHTML = html;
+          // Wire follow-up chips → seed the composer and send.
+          thread.querySelectorAll('.hx-followup[data-followup]').forEach(function (b) {
+            b.addEventListener('click', function () {
+              var txt = b.getAttribute('data-followup') || '';
+              var ri = document.getElementById('hx-c-input');
+              var rs = document.getElementById('hx-c-send');
+              if (!ri) return;
+              ri.value = txt;
+              try { ri.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {}
+              ri.focus();
+              if (rs) { rs.removeAttribute('disabled'); rs.click(); }
+            });
+          });
           // ─── Wire every action button — no fake placeholders ────────
           thread.querySelectorAll('button[data-act]').forEach(function (b) {
             var actType = b.getAttribute('data-act');
