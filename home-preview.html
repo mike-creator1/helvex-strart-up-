@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Helix Home — mobile preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* Faithful reproduction of the production mobile home: the same markup
+     classes and the same declarations injected at runtime by chat.html
+     (premium + black/white/red/yellow mobile rebuild). Self-contained so
+     it renders identically without the app shell, auth or network. */
+  *{box-sizing:border-box;margin:0;}
+  :root{
+    --hx-text:#fff; --hx-text-mid:#9A9A9A; --hx-text-dim:#5E5E5E;
+    --hx-bg:#0A0A0A; --hx-bg-2:#141414; --hx-bg-3:#1B1B1B;
+    --hx-surface:#121212; --hx-line:#242424; --hx-line-strong:#383838;
+    --hx-violet:#FF2E2E;
+    font-family:'Inter',system-ui,sans-serif;
+  }
+  html,body{background:#1c1c1c;}
+  body{display:flex;justify-content:center;padding:0;}
+  /* phone frame */
+  #hx-home{
+    width:390px; min-height:844px; position:relative; display:flex; flex-direction:column;
+    --hx-violet:#FF2E2E;
+    background:radial-gradient(130% 42% at 100% -10%,rgba(255,46,46,.12),transparent 58%),radial-gradient(120% 40% at 0% -8%,rgba(255,212,0,.08),transparent 52%),#0A0A0A;
+    color:#fff;
+  }
+  .hx-home-scroll{flex:1;display:flex;flex-direction:column;padding:18px 18px 26px;}
+  /* header */
+  .hx-home-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px 10px;border-bottom:1px solid #1A1A1A;}
+  .hx-home-menu{width:42px;height:42px;border-radius:13px;background:#141414;border:1px solid #262626;color:#fff;display:grid;place-items:center;}
+  .hx-home-menu svg{width:19px;height:19px;}
+  .hx-home-brand{display:flex;align-items:center;gap:10px;}
+  .hx-home-brand::before{content:"";width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#FF2E2E 0 55%,#FFD400 55% 100%);box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;}
+  .hx-home-brand-name{font-size:23px;font-weight:900;letter-spacing:-.03em;color:#fff;}
+  .hx-home-brand-pro{font-size:10px;font-weight:800;color:#FFD400;border:1px solid rgba(255,212,0,.5);background:rgba(255,212,0,.12);border-radius:6px;letter-spacing:.12em;padding:3px 8px;}
+  .hx-home-status{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;color:#B5B5B5;background:#141414;border:1px solid #262626;white-space:nowrap;}
+  .hx-home-status-dot{width:7px;height:7px;border-radius:50%;background:#FF2E2E;}
+  /* hero */
+  .hx-home-greet{font-weight:900;letter-spacing:-.045em;text-transform:uppercase;line-height:.92;font-size:56px;color:#fff;margin-top:8px;}
+  .hx-home-greet::before{content:"AI COMMAND CENTER";display:block;font-size:11px;font-weight:800;letter-spacing:.32em;color:#FFD400;margin-bottom:14px;}
+  .hx-home-greet-2{color:#FF2E2E;}
+  .hx-home-sub{color:#9A9A9A;font-size:14px;margin-top:14px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+  /* composer */
+  .hx-home-composer{margin-top:20px;background:#121212;border:1px solid #2A2A2A;border-radius:18px;padding:14px;}
+  .hx-home-inrow{display:flex;align-items:center;gap:10px;}
+  .hx-home-input{flex:1;border:0;background:transparent;color:#fff;font-size:16px;outline:none;font-family:inherit;}
+  .hx-home-input::placeholder{color:#5E5E5E;}
+  .hx-home-inbtns{display:flex;gap:8px;}
+  .hx-home-mic{width:38px;height:38px;background:#1C1C1C;border:1px solid #2A2A2A;color:#BBB;border-radius:12px;display:grid;place-items:center;}
+  .hx-home-mic svg{width:18px;height:18px;}
+  .hx-home-send{width:40px;height:40px;background:#FF2E2E;border:0;border-radius:12px;color:#fff;display:grid;place-items:center;box-shadow:0 8px 22px -8px rgba(255,46,46,.65);}
+  .hx-home-send svg{width:19px;height:19px;}
+  .hx-home-pills{display:flex;gap:8px;margin-top:14px;}
+  .hx-home-pill{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:11px;background:transparent;border:1px solid #2A2A2A;color:#CFCFCF;font-size:13px;font-weight:600;}
+  .hx-home-pill svg{width:16px;height:16px;}
+  .hx-home-pill.is-on{color:#FF5A5A;border-color:#FF2E2E;background:rgba(255,46,46,.14);}
+  /* section labels */
+  .hx-w-sughead{display:flex;align-items:center;margin:30px 0 13px;}
+  .hx-w-sec-label{color:#FFD400;font-weight:800;letter-spacing:.18em;font-size:11px;}
+  .hx-w-seeall{margin-left:auto;display:inline-flex;align-items:center;gap:3px;background:none;border:0;color:#FF2E2E;font:inherit;font-size:13px;font-weight:600;}
+  .hx-w-seeall svg{width:15px;height:15px;}
+  /* capability cards */
+  .hx-home-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:26px;counter-reset:hxidx;}
+  .hx-home-card{background:#121212;border:1px solid #242424;border-radius:16px;padding:16px 14px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;text-align:left;color:inherit;}
+  .hx-home-card::before{counter-increment:hxidx;content:counter(hxidx,decimal-leading-zero);position:absolute;top:13px;right:14px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#3A3A3A;}
+  .hx-home-card-ic{margin-bottom:30px;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#1B1B1B;border:1px solid #2C2C2C;}
+  .hx-home-card-ic svg{width:22px;height:22px;}
+  .hx-home-card:nth-child(3n+1) .hx-home-card-ic{color:#FF2E2E;}
+  .hx-home-card:nth-child(3n+2) .hx-home-card-ic{color:#FFD400;}
+  .hx-home-card:nth-child(3n) .hx-home-card-ic{color:#fff;}
+  .hx-home-card-t{color:#fff;font-size:15px;font-weight:800;text-transform:uppercase;}
+  .hx-home-card-d{color:#8A8A8A;font-size:11px;margin-top:6px;}
+  /* chips */
+  .hx-ws-cats{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 18px;}
+  .hx-ws-cat{background:#141414;border:1px solid #2A2A2A;color:#fff;border-radius:10px;font-size:13.5px;font-weight:700;padding:8px 13px;}
+  /* smart cards */
+  .hx-smart-grid{display:grid;gap:12px;}
+  .hx-smart-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:16px 44px 16px 16px;border-radius:16px;background:#121212;border:1px solid #242424;}
+  .hx-smart-tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#FFD400;background:rgba(255,212,0,.14);padding:2px 8px;border-radius:5px;}
+  .hx-smart-t{font-size:15px;font-weight:700;color:#fff;text-transform:uppercase;}
+  .hx-smart-d{font-size:12.5px;color:#8A8A8A;}
+  .hx-smart-arr{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#FF2E2E;}
+  .hx-smart-arr svg{width:18px;height:18px;}
+  /* workflows */
+  .hx-wf-grid{display:grid;gap:12px;}
+  .hx-wf-card{display:flex;align-items:center;gap:13px;text-align:left;padding:14px 16px;border-radius:16px;background:#121212;border:1px solid #242424;}
+  .hx-wf-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#1B1B1B;border:1px solid #2C2C2C;color:#fff;}
+  .hx-wf-ic svg{width:21px;height:21px;}
+  .hx-wf-card:nth-child(odd) .hx-wf-ic{color:#FF2E2E;}
+  .hx-wf-card:nth-child(even) .hx-wf-ic{color:#FFD400;}
+  .hx-wf-body{flex:1;display:flex;flex-direction:column;gap:3px;}
+  .hx-wf-t{font-size:14.5px;font-weight:700;color:#fff;text-transform:uppercase;}
+  .hx-wf-d{font-size:12.5px;color:#8A8A8A;}
+  .hx-wf-arr{color:#FF2E2E;}.hx-wf-arr svg{width:18px;height:18px;}
+  /* recent */
+  .hx-home-rec-empty{padding:18px 16px;border:1px dashed #333;border-radius:14px;color:#8A8A8A;font-size:13.5px;text-align:center;}
+  /* bottom nav */
+  .hx-home-tabs{display:flex;align-items:center;justify-content:space-around;padding:9px 22px 16px;border-top:1px solid #1C1C1C;background:#0A0A0A;}
+  .hx-home-tab{width:56px;height:40px;border-radius:12px;display:grid;place-items:center;background:transparent;border:0;color:#5E5E5E;}
+  .hx-home-tab svg{width:22px;height:22px;}
+  .hx-home-tab.is-on{color:#FF2E2E;background:rgba(255,46,46,.14);}
+  button{cursor:pointer;font-family:inherit;}
+</style>
+</head>
+<body>
+<div id="hx-home">
+  <div class="hx-home-bar">
+    <button class="hx-home-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
+    <div class="hx-home-brand"><span class="hx-home-brand-name">Helix</span><span class="hx-home-brand-pro">PRO</span></div>
+    <div class="hx-home-status"><span class="hx-home-status-dot"></span><span>All systems · Pro</span></div>
+  </div>
+  <div class="hx-home-scroll">
+    <h1 class="hx-home-greet"><span class="hx-home-greet-1">Good afternoon</span><span class="hx-home-greet-2">.</span></h1>
+    <p class="hx-home-sub">What would you like to achieve today?</p>
+    <div class="hx-home-composer">
+      <div class="hx-home-inrow">
+        <input class="hx-home-input" placeholder="Ask Helix anything…">
+        <div class="hx-home-inbtns">
+          <button class="hx-home-mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg></button>
+          <button class="hx-home-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5"/><path d="m6 11 6-6 6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="hx-home-pills">
+        <button class="hx-home-pill is-on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg><span>Web search</span></button>
+        <button class="hx-home-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/></svg><span>Sources</span></button>
+        <button class="hx-home-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg><span>Focus</span></button>
+      </div>
+    </div>
+    <div class="hx-home-cards">
+      <button class="hx-home-card"><span class="hx-home-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span><span class="hx-home-card-t">Research</span><span class="hx-home-card-d">Find, verify and explore anything</span></button>
+      <button class="hx-home-card"><span class="hx-home-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h8"/><path d="M4 11h5"/><path d="m4 16 2 2 3.5-3.5"/><path d="M14 4h6v6"/><path d="M20 4 12 12"/></svg></span><span class="hx-home-card-t">Plan</span><span class="hx-home-card-d">Turn ideas into actionable plans</span></button>
+      <button class="hx-home-card"><span class="hx-home-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 3 4-6"/></svg></span><span class="hx-home-card-t">Analyze</span><span class="hx-home-card-d">Extract insights from your data</span></button>
+      <button class="hx-home-card"><span class="hx-home-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span><span class="hx-home-card-t">Code</span><span class="hx-home-card-d">Build, debug and ship faster</span></button>
+      <button class="hx-home-card"><span class="hx-home-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21.17 6.81a1 1 0 0 0-3.98-3.98L3.84 16.17a2 2 0 0 0-.5.83l-1.32 4.35a.5.5 0 0 0 .62.62l4.35-1.32a2 2 0 0 0 .83-.5z"/><path d="m15 5 4 4"/></svg></span><span class="hx-home-card-t">Create</span><span class="hx-home-card-d">Generate, write and build content</span></button>
+      <button class="hx-home-card"><span class="hx-home-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span><span class="hx-home-card-t">Learn</span><span class="hx-home-card-d">Master any topic with AI tutoring</span></button>
+    </div>
+    <div class="hx-w-sughead"><span class="hx-w-sec-label">QUICK START</span></div>
+    <div class="hx-ws-cats"><button class="hx-ws-cat">Quick answer</button><button class="hx-ws-cat">Summarize</button><button class="hx-ws-cat">Draft</button><button class="hx-ws-cat">Decide</button><button class="hx-ws-cat">Brainstorm</button></div>
+    <div class="hx-smart-grid">
+      <button class="hx-smart-card"><span class="hx-smart-tag">Write</span><span class="hx-smart-t">Draft a polished email</span><span class="hx-smart-d">Turn a few notes into a ready-to-send message.</span><span class="hx-smart-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></button>
+      <button class="hx-smart-card"><span class="hx-smart-tag">Decide</span><span class="hx-smart-t">Weigh two options</span><span class="hx-smart-d">Lay out the trade-offs and get a recommendation.</span><span class="hx-smart-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></button>
+    </div>
+    <div class="hx-w-sughead"><span class="hx-w-sec-label">SUGGESTED WORKFLOWS</span></div>
+    <div class="hx-wf-grid">
+      <button class="hx-wf-card"><span class="hx-wf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 3 4-6"/></svg></span><span class="hx-wf-body"><span class="hx-wf-t">Analyze data</span><span class="hx-wf-d">Paste a CSV → trends, a chart and a recommendation.</span></span><span class="hx-wf-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></button>
+      <button class="hx-wf-card"><span class="hx-wf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h8"/><path d="M4 11h5"/><path d="m4 16 2 2 3.5-3.5"/><path d="M14 4h6v6"/></svg></span><span class="hx-wf-body"><span class="hx-wf-t">Plan a launch</span><span class="hx-wf-d">Turn a goal into a 30-day weekly timeline.</span></span><span class="hx-wf-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></button>
+    </div>
+    <div class="hx-w-sughead"><span class="hx-w-sec-label">RECENT SESSIONS</span><button class="hx-w-seeall">View all<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+    <div class="hx-home-rec-empty">No sessions yet — start a conversation and it will appear here.</div>
+  </div>
+  <nav class="hx-home-tabs">
+    <button class="hx-home-tab is-on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></button>
+    <button class="hx-home-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg></button>
+    <button class="hx-home-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 3 15 9.5 22 10.3 17 15 18.3 22 12 18.5 5.7 22 7 15 2 10.3 9 9.5 12 3"/></svg></button>
+    <button class="hx-home-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="1.5"/><circle cx="12" cy="6" r="1.5"/><circle cx="18" cy="6" r="1.5"/><circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/><circle cx="6" cy="18" r="1.5"/><circle cx="12" cy="18" r="1.5"/><circle cx="18" cy="18" r="1.5"/></svg></button>
+  </nav>
+</div>
+</body>
+</html>
