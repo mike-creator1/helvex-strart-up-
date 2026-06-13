@@ -63,19 +63,10 @@
       items: [
         { id: 'dashboard',   href: '/dashboard.html',   label: 'Overview',    icon: 'home' },
         { id: 'chat',        href: '/chat.html',        label: 'HeliX',       icon: 'chat' },
-        { id: 'workbench',   href: '/workbench.html',   label: 'Workbench',   icon: 'workbench' },
         { id: 'memory',      href: '/memory.html',      label: 'Memory',      icon: 'memory' },
         { id: 'projects',    href: '/projects.html',    label: 'Projects',    icon: 'folder' },
         { id: 'deployments', href: '/deployments.html', label: 'Deployments', icon: 'cloud' },
         { id: 'services',    href: '/services.html',    label: 'Services',    icon: 'grid' }
-      ]
-    },
-    {
-      label: 'Toolkit',
-      items: [
-        { id: 'app-crm',         href: '/app-crm',         label: 'CRM',             icon: 'contacts' },
-        { id: 'app-marketing',   href: '/app-marketing',   label: 'Marketing Tools', icon: 'megaphone' },
-        { id: 'app-automation',  href: '/app-automation',  label: 'Automation',      icon: 'flow' }
       ]
     },
     {
@@ -93,14 +84,6 @@
       ]
     },
     {
-      label: 'Developer',
-      items: [
-        { id: 'api-keys',     href: '/api-keys.html',     label: 'API Keys',     icon: 'key' },
-        { id: 'integrations', href: '/integrations.html', label: 'Integrations', icon: 'plug' },
-        { id: 'domains',      href: '/domains.html',      label: 'Domains',      icon: 'globe' }
-      ]
-    },
-    {
       label: 'Billing',
       items: [
         { id: 'billing', href: '/billing.html', label: 'Billing & Plan', icon: 'card' }
@@ -112,7 +95,6 @@
         { id: 'profile',       href: '/profile.html',         label: 'Profile',           icon: 'user'      },
         { id: 'notifications', href: '/notifications.html',   label: 'Notifications',     icon: 'bell'      },
         { id: 'sessions',      href: '/sessions.html',        label: 'Sessions',          icon: 'monitor'   },
-        { id: 'connected',     href: '/connected.html',       label: 'Connected accounts', icon: 'link'     },
         { id: 'security',      href: '/security.html',        label: 'Password & MFA',    icon: 'shield'    },
         { id: 'team',          href: '/team.html',            label: 'Team members',      icon: 'users'     },
         { id: 'audit-log',     href: '/audit-log.html',       label: 'Audit log',         icon: 'history'   },
