@@ -35865,10 +35865,13 @@
               P+'.hx-home-rec-m{color:#8A8A8A !important;}',
               P+'.hx-home-rec-act{color:#5A5A62 !important;}',
               /* bottom nav */
-              P+'.hx-home-tabs{background:rgba(6,6,7,.85) !important;border-top:1px solid rgba(255,255,255,.06) !important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}',
-              P+'.hx-home-tab{color:#56565E !important;border-radius:12px !important;position:relative;}',
-              P+'.hx-home-tab.is-on{color:#F4F4F5 !important;background:transparent !important;}',
-              P+'.hx-home-tab.is-on::after{content:"" !important;position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:#F4F4F5;box-shadow:0 0 8px rgba(255,255,255,.4);}',
+              P+'.hx-home-tabs{background:rgba(8,8,10,.82) !important;border-top:1px solid rgba(255,255,255,.07) !important;backdrop-filter:saturate(160%) blur(20px);-webkit-backdrop-filter:saturate(160%) blur(20px);padding:8px 10px calc(env(safe-area-inset-bottom,0px) + 9px) !important;gap:4px !important;}',
+              P+'.hx-home-tab{flex:1 !important;display:flex !important;flex-direction:column;align-items:center;justify-content:center;gap:4px !important;width:auto !important;height:auto !important;min-height:52px;padding:7px 4px !important;border-radius:14px !important;color:#6B6B73 !important;background:transparent !important;position:relative;transition:color .16s, background .16s !important;}',
+              P+'.hx-home-tab svg{width:21px !important;height:21px !important;}',
+              P+'.hx-home-tab .hx-tab-l{font-size:10.5px !important;font-weight:600 !important;letter-spacing:.01em;line-height:1;}',
+              P+'.hx-home-tab:active{background:rgba(255,255,255,.05) !important;}',
+              P+'.hx-home-tab.is-on{color:#F4F4F5 !important;background:rgba(255,255,255,.06) !important;}',
+              P+'.hx-home-tab.is-on::after{content:"" !important;position:absolute;top:5px;left:50%;transform:translateX(-50%);width:20px;height:2.5px;border-radius:2px;background:#E5484D;box-shadow:0 0 10px rgba(229,72,77,.5);}',
               /* Clean chat: no hamburger, no categories / quick-start / workflows */
               P+'.hx-home-menu{display:none !important;}',
               P+'.hx-home-cards,'+P+'.hx-ws-cats,'+P+'.hx-smart-grid,'+P+'.hx-wf-grid,'+P+'.hx-sec-quickstart,'+P+'.hx-sec-workflows{display:none !important;}',
@@ -35917,10 +35920,10 @@
               '<div class="hx-home-recent" id="hx-home-recent"></div>' +
             '</div>' +
             '<nav class="hx-home-tabs" aria-label="Sections">' +
-              '<button class="hx-home-tab is-on" type="button" data-tab="home" aria-label="Home">' + S.home + '</button>' +
-              '<button class="hx-home-tab" type="button" data-tab="history" aria-label="History">' + S.clock + '</button>' +
-              '<button class="hx-home-tab" type="button" data-tab="fav" aria-label="Favorites">' + S.star + '</button>' +
-              '<button class="hx-home-tab" type="button" data-tab="apps" aria-label="Apps">' + S.grid + '</button>' +
+              '<button class="hx-home-tab is-on" type="button" data-tab="home" aria-label="Home"><span class="hx-tab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg></span><span class="hx-tab-l">Home</span></button>' +
+              '<button class="hx-home-tab" type="button" data-tab="history" aria-label="Sessions"><span class="hx-tab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8 8 0 0 1-8.5 8 9 9 0 0 1-4-.9L3 20l1.4-4.5A8 8 0 0 1 4 11.5 8 8 0 0 1 12.5 3.5 8 8 0 0 1 21 11.5z"/></svg></span><span class="hx-tab-l">Sessions</span></button>' +
+              '<button class="hx-home-tab" type="button" data-tab="fav" aria-label="Saved"><span class="hx-tab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></span><span class="hx-tab-l">Saved</span></button>' +
+              '<button class="hx-home-tab" type="button" data-tab="apps" aria-label="More"><span class="hx-tab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg></span><span class="hx-tab-l">More</span></button>' +
             '</nav>';
           pane.appendChild(el);
 
@@ -36220,10 +36223,10 @@
                 renderBody(c) +
               '</div>' +
               '<nav class="hx-home-tabs" aria-label="Sections">' +
-                '<button class="hx-home-tab" type="button" data-tab="home" aria-label="Home">' + S.home + '</button>' +
-                '<button class="hx-home-tab" type="button" data-tab="history" aria-label="History">' + S.clock + '</button>' +
-                '<button class="hx-home-tab" type="button" data-tab="fav" aria-label="Favorites">' + S.star + '</button>' +
-                '<button class="hx-home-tab" type="button" data-tab="apps" aria-label="Apps">' + S.grid + '</button>' +
+                '<button class="hx-home-tab" type="button" data-tab="home" aria-label="Home"><span class="hx-tab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg></span><span class="hx-tab-l">Home</span></button>' +
+                '<button class="hx-home-tab" type="button" data-tab="history" aria-label="Sessions"><span class="hx-tab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8 8 0 0 1-8.5 8 9 9 0 0 1-4-.9L3 20l1.4-4.5A8 8 0 0 1 4 11.5 8 8 0 0 1 12.5 3.5 8 8 0 0 1 21 11.5z"/></svg></span><span class="hx-tab-l">Sessions</span></button>' +
+                '<button class="hx-home-tab" type="button" data-tab="fav" aria-label="Saved"><span class="hx-tab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></span><span class="hx-tab-l">Saved</span></button>' +
+                '<button class="hx-home-tab" type="button" data-tab="apps" aria-label="More"><span class="hx-tab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg></span><span class="hx-tab-l">More</span></button>' +
               '</nav>';
           }
 

@@ -44,11 +44,12 @@
   .seeall{margin-left:auto;color:#B0B0B6;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:3px;}
   .seeall svg{width:15px;height:15px;}
   .rec-empty{padding:18px 16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);color:#7A7A82;border-radius:14px;font-size:13.5px;text-align:center;}
-  .tabs{display:flex;align-items:center;justify-content:space-around;padding:9px 22px 16px;border-top:1px solid rgba(255,255,255,.06);background:rgba(6,6,7,.85);backdrop-filter:blur(16px);}
-  .tab{width:56px;height:40px;border:0;background:transparent;border-radius:12px;display:grid;place-items:center;color:#56565E;position:relative;}
-  .tab svg{width:22px;height:22px;}
-  .tab.on{color:#F4F4F5;}
-  .tab.on::after{content:"";position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:#F4F4F5;box-shadow:0 0 8px rgba(255,255,255,.4);}
+  .tabs{display:flex;align-items:stretch;gap:4px;padding:8px 10px 16px;border-top:1px solid rgba(255,255,255,.07);background:rgba(8,8,10,.82);backdrop-filter:saturate(160%) blur(20px);}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:52px;padding:7px 4px;border:0;background:transparent;border-radius:14px;color:#6B6B73;position:relative;}
+  .tab svg{width:21px;height:21px;}
+  .tab .l{font-size:10.5px;font-weight:600;letter-spacing:.01em;line-height:1;}
+  .tab.on{color:#F4F4F5;background:rgba(255,255,255,.06);}
+  .tab.on::after{content:"";position:absolute;top:5px;left:50%;transform:translateX(-50%);width:20px;height:2.5px;border-radius:2px;background:#E5484D;box-shadow:0 0 10px rgba(229,72,77,.5);}
   button{cursor:pointer;font-family:inherit;}
 </style>
 </head>
@@ -78,10 +79,10 @@
     <div class="rec-empty">No sessions yet — start a conversation and it will appear here.</div>
   </div>
   <nav class="tabs">
-    <button class="tab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></button>
-    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg></button>
-    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 3 15 9.5 22 10.3 17 15 18.3 22 12 18.5 5.7 22 7 15 2 10.3 9 9.5 12 3"/></svg></button>
-    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="1.5"/><circle cx="12" cy="6" r="1.5"/><circle cx="18" cy="6" r="1.5"/><circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/><circle cx="6" cy="18" r="1.5"/><circle cx="12" cy="18" r="1.5"/><circle cx="18" cy="18" r="1.5"/></svg></button>
+    <button class="tab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg><span class="l">Home</span></button>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8 8 0 0 1-8.5 8 9 9 0 0 1-4-.9L3 20l1.4-4.5A8 8 0 0 1 4 11.5 8 8 0 0 1 12.5 3.5 8 8 0 0 1 21 11.5z"/></svg><span class="l">Sessions</span></button>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg><span class="l">Saved</span></button>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg><span class="l">More</span></button>
   </nav>
 </div>
 </body>
