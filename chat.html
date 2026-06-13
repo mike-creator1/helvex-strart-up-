@@ -35766,6 +35766,10 @@
               P+'.hx-home-tabs{background:#0A0A0A !important;border-top:1px solid #1C1C1C !important;}',
               P+'.hx-home-tab{color:#5E5E5E !important;border-radius:12px !important;}',
               P+'.hx-home-tab.is-on{color:#FF2E2E !important;background:rgba(255,46,46,.14) !important;}',
+              /* Clean chat: no hamburger, no categories / quick-start / workflows */
+              P+'.hx-home-menu{display:none !important;}',
+              P+'.hx-home-cards,'+P+'.hx-ws-cats,'+P+'.hx-smart-grid,'+P+'.hx-wf-grid,'+P+'.hx-sec-quickstart,'+P+'.hx-sec-workflows{display:none !important;}',
+              P+'.hx-home-greet{margin-top:14px !important;}',
               '}'
             ].join('\n');
             document.head.appendChild(st);
@@ -35798,10 +35802,10 @@
                 '</div>' +
               '</div>' +
               '<div class="hx-home-cards" role="group" aria-label="Helix modes">' + cards + '</div>' +
-              '<div class="hx-w-sughead"><span class="hx-w-sec-label">Quick start</span></div>' +
+              '<div class="hx-w-sughead hx-sec-quickstart"><span class="hx-w-sec-label">Quick start</span></div>' +
               '<div class="hx-ws-cats">' + homeCats + '</div>' +
               '<div class="hx-smart-grid">' + smartCards + '</div>' +
-              '<div class="hx-w-sughead"><span class="hx-w-sec-label">Suggested workflows</span></div>' +
+              '<div class="hx-w-sughead hx-sec-workflows"><span class="hx-w-sec-label">Suggested workflows</span></div>' +
               '<div class="hx-wf-grid">' + wfCards + '</div>' +
               '<div class="hx-w-sughead">' +
                 '<span class="hx-w-sec-label">Recent sessions</span>' +
