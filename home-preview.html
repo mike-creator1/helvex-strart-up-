@@ -16,13 +16,15 @@
     background:radial-gradient(120% 48% at 50% -14%, rgba(255,255,255,.05), transparent 62%), #060607;
   }
   .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 18px 12px;border-bottom:1px solid rgba(255,255,255,.06);}
+  .menu{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#F4F4F5;}
+  .menu svg{width:19px;height:19px;}
   .brand{display:flex;align-items:center;gap:9px;}
   .brand::before{content:"";width:7px;height:7px;border-radius:50%;background:#C8A24A;box-shadow:0 0 10px rgba(200,162,74,.6);}
   .brand-name{font-size:23px;font-weight:700;letter-spacing:-.02em;color:#F4F4F5;}
   .pro{font-size:10px;font-weight:600;color:#9A9AA0;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);border-radius:5px;letter-spacing:.14em;padding:3px 8px;}
   .status{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:500;color:#9A9AA0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(10px);}
   .status .d{width:7px;height:7px;border-radius:50%;background:#C9C9CF;box-shadow:0 0 7px rgba(255,255,255,.35);}
-  .scroll{flex:1;padding:18px 18px 26px;}
+  .scroll{flex:1;padding:18px 18px 32px;}
   .overline{font-size:10.5px;font-weight:600;letter-spacing:.34em;color:#6E6E76;margin-bottom:16px;}
   .greet{font-size:54px;font-weight:800;letter-spacing:-.03em;line-height:1.0;color:#F4F4F5;margin-top:6px;}
   .greet .dot{color:#6E6E76;}
@@ -56,6 +58,7 @@
 <body>
 <div id="home">
   <div class="bar">
+    <button class="menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
     <div class="brand"><span class="brand-name">Helix</span><span class="pro">PRO</span></div>
     <div class="status"><span class="d"></span>All systems · Pro</div>
   </div>
@@ -78,12 +81,6 @@
     <div class="sughead"><span class="sec-label">RECENT SESSIONS</span><span class="seeall">View all<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
     <div class="rec-empty">No sessions yet — start a conversation and it will appear here.</div>
   </div>
-  <nav class="tabs">
-    <button class="tab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg><span class="l">Home</span></button>
-    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8 8 0 0 1-8.5 8 9 9 0 0 1-4-.9L3 20l1.4-4.5A8 8 0 0 1 4 11.5 8 8 0 0 1 12.5 3.5 8 8 0 0 1 21 11.5z"/></svg><span class="l">Sessions</span></button>
-    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg><span class="l">Saved</span></button>
-    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg><span class="l">More</span></button>
-  </nav>
 </div>
 </body>
 </html>
