@@ -32968,7 +32968,7 @@
           var buckets = [
             { key: 'today',     label: 'Today',        items: [] },
             { key: 'yesterday', label: 'Yesterday',    items: [] },
-            { key: 'week',      label: 'Last 7 days',  items: [] },
+            { key: 'week',      label: 'This Week',    items: [] },
             { key: 'older',     label: 'Older',        items: [] },
           ];
           var now = Date.now();
@@ -40290,6 +40290,207 @@
     @keyframes hxEnterDot{ 0%{ box-shadow:0 0 0 0 rgba(125,240,160,.7);} 70%{ box-shadow:0 0 0 11px rgba(125,240,160,0);} 100%{ box-shadow:0 0 0 0 rgba(125,240,160,0);} }
     @media (prefers-reduced-motion: reduce){
       #hx-enter .hx-enter-pill,#hx-enter .hx-enter-pill::before,#hx-enter .hx-enter-pill::after,#hx-enter .hx-enter-dot{ animation:none !important; }
+    }
+  </style>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       CONVERSATION RAIL → HOME DESIGN LANGUAGE (definitive dark override)
+       The rail used to render as a light/white panel on the dark app, which
+       clashed with the dark-premium Home. This block — last in source order
+       and theme-proof ([data-theme] specificity) — rewrites the rail to the
+       exact Home palette: near-black base, hairline white borders, glass
+       cards, white/grey type, gold the single accent, red only on the one
+       primary CTA. Applies on every breakpoint and in both themes so opening
+       Home → Conversations feels like one product.
+       Palette: bg #08080A · glass rgba(255,255,255,.04) · line rgba(255,255,255,.08)
+                ink #F4F4F5 · ink2 #8C8C94 · gold #C8A24A · red #E5484D
+       ════════════════════════════════════════════════════════════════════ -->
+  <style id="hx-convo-darkmatch">
+    /* ─── Rail shell ─────────────────────────────────────────────── */
+    html[data-theme] body[data-active="chat"] .hx-chat-rail{
+      background:linear-gradient(180deg,#0A0A0C 0%,#08080A 60%,#070708 100%) !important;
+      border-right:1px solid rgba(255,255,255,.07) !important;
+      backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+      box-shadow:none !important;
+    }
+    /* subtle ambient — gold whisper, not orange glow */
+    html[data-theme] body[data-active="chat"] .hx-rail-aura{
+      background:radial-gradient(120% 80% at 50% 0%, rgba(200,162,74,.10), transparent 70%) !important;
+      opacity:.5 !important;
+    }
+
+    /* ─── Header ─────────────────────────────────────────────────── */
+    html[data-theme] body[data-active="chat"] .hx-chat-rail-head{
+      border-bottom:1px solid rgba(255,255,255,.06) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-rail-head::after{ display:none !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-rail-title{
+      color:#F4F4F5 !important; font-weight:680 !important; letter-spacing:-.02em !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-rail-title::before,
+    html[data-theme] body[data-active="chat"] .hx-chat-rail-title::after{ content:none !important; display:none !important; }
+    html[data-theme] body[data-active="chat"] .hx-rail-status{
+      color:#8C8C94 !important; font-weight:600 !important;
+    }
+    /* status dot → gold (the single brand accent), not green */
+    html[data-theme] body[data-active="chat"] .hx-rail-status-dot{
+      background:#C8A24A !important;
+      box-shadow:0 0 0 0 rgba(200,162,74,.5) !important;
+      animation:hxRailDotGold 2.4s ease-out infinite !important;
+    }
+    @keyframes hxRailDotGold{
+      0%{box-shadow:0 0 0 0 rgba(200,162,74,.45);}
+      70%{box-shadow:0 0 0 6px rgba(200,162,74,0);}
+      100%{box-shadow:0 0 0 0 rgba(200,162,74,0);}
+    }
+
+    /* collapse → ghost icon button */
+    html[data-theme] body[data-active="chat"] .hx-chat-rail-collapse{
+      background:transparent !important; color:#8C8C94 !important;
+      border:1px solid transparent !important; box-shadow:none !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-rail-collapse:hover{
+      background:rgba(255,255,255,.06) !important; color:#F4F4F5 !important;
+    }
+
+    /* New-chat → the one red primary CTA */
+    html[data-theme] body[data-active="chat"] .hx-chat-new{
+      background:#E5484D !important; color:#fff !important;
+      border:1px solid rgba(255,255,255,.12) !important;
+      box-shadow:0 6px 18px -8px rgba(229,72,77,.55) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-new:hover{
+      filter:brightness(1.06) !important;
+      box-shadow:0 8px 22px -8px rgba(229,72,77,.6) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-new svg{ color:#fff !important; }
+
+    /* mobile floating new-chat → same red language */
+    html[data-theme] body[data-active="chat"] .hx-chat-new-fab{
+      background:#E5484D !important; color:#fff !important;
+      box-shadow:0 12px 30px -10px rgba(229,72,77,.6), 0 0 0 1px rgba(255,255,255,.12) inset !important;
+    }
+
+    /* ─── Search — styled like the Home composer ─────────────────── */
+    html[data-theme] body[data-active="chat"] .hx-rail-search-row{
+      background:rgba(255,255,255,.04) !important;
+      border:1px solid rgba(255,255,255,.08) !important;
+      box-shadow:none !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-rail-search-row:focus-within{
+      background:rgba(255,255,255,.06) !important;
+      border-color:rgba(255,255,255,.18) !important;
+      box-shadow:0 0 0 3px rgba(255,255,255,.04) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-rail-search{
+      color:#F4F4F5 !important; background:transparent !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-rail-search::placeholder{ color:#6E6E76 !important; }
+    html[data-theme] body[data-active="chat"] .hx-rail-search-ico{ color:#7A7A82 !important; }
+    html[data-theme] body[data-active="chat"] .hx-rail-search-kbd{
+      color:#6E6E76 !important; background:rgba(255,255,255,.05) !important;
+      border:1px solid rgba(255,255,255,.08) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-rail-search-kbd span{ color:#8C8C94 !important; }
+
+    /* ─── Group headers (Today / Yesterday / This Week / Pinned) ──── */
+    html[data-theme] body[data-active="chat"] .hx-rail-group-head{
+      color:#6E6E76 !important; opacity:1 !important;
+      font-weight:700 !important; letter-spacing:.14em !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-rail-group-count{
+      color:#9A9AA2 !important;
+      background:rgba(255,255,255,.06) !important;
+    }
+
+    /* ─── Session cards — premium glass, monochrome ──────────────── */
+    html[data-theme] body[data-active="chat"] .hx-chat-item{
+      background:rgba(255,255,255,.035) !important;
+      border:1px solid rgba(255,255,255,.07) !important;
+      box-shadow:none !important;
+      transition:background .15s, border-color .15s, transform .12s !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-item:hover{
+      background:rgba(255,255,255,.06) !important;
+      border-color:rgba(255,255,255,.12) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-item:active{ transform:scale(.985) !important; }
+    /* active session — gold hairline accent (the single accent), not orange glow */
+    html[data-theme] body[data-active="chat"] .hx-chat-item.is-active{
+      background:rgba(255,255,255,.075) !important;
+      border-color:rgba(200,162,74,.45) !important;
+      box-shadow:inset 2px 0 0 #C8A24A !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-item.is-active::before{ display:none !important; }
+
+    /* model glyph → monochrome, subtle */
+    html[data-theme] body[data-active="chat"] .hx-chat-item-glyph,
+    html[data-theme] body[data-active="chat"] .hx-chat-item-glyph.hx-mg-ether,
+    html[data-theme] body[data-active="chat"] .hx-chat-item-glyph.hx-mg-nexus,
+    html[data-theme] body[data-active="chat"] .hx-chat-item-glyph.hx-mg-prometheus{
+      color:#B9B9C0 !important;
+      background:rgba(255,255,255,.05) !important;
+      border:1px solid rgba(255,255,255,.07) !important;
+      box-shadow:none !important;
+    }
+
+    /* title + meta */
+    html[data-theme] body[data-active="chat"] .hx-chat-item-title{ color:#F1F1F3 !important; font-weight:600 !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-item.is-active .hx-chat-item-title{ color:#FFFFFF !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-item-meta{ color:#7E7E86 !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-item-meta .dot{ background:#5A5A62 !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-item-chip{
+      color:#9A9AA2 !important; background:rgba(255,255,255,.06) !important;
+      border:1px solid rgba(255,255,255,.06) !important;
+    }
+
+    /* pinned card → gold whisper */
+    html[data-theme] body[data-active="chat"] .hx-chat-item.is-pinned{
+      background:rgba(200,162,74,.06) !important;
+      border-color:rgba(200,162,74,.22) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-item.is-pinned{ box-shadow:inset 2px 0 0 rgba(200,162,74,.55) !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-item-pinmark,
+    html[data-theme] body[data-active="chat"] .hx-chat-item-pinmark svg{ color:#C8A24A !important; }
+
+    /* 3-dot options */
+    html[data-theme] body[data-active="chat"] .hx-chat-item-more{ color:#7E7E86 !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-item-more:hover{
+      background:rgba(255,255,255,.08) !important; color:#F4F4F5 !important;
+    }
+
+    /* scrollbar */
+    html[data-theme] body[data-active="chat"] .hx-chat-list::-webkit-scrollbar-thumb{
+      background:rgba(255,255,255,.10) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-list:hover::-webkit-scrollbar-thumb{
+      background:rgba(255,255,255,.16) !important;
+    }
+
+    /* ─── Empty state — premium, neutral (no white space, no orange) ─ */
+    html[data-theme] body[data-active="chat"] .hx-rail-empty{ padding-top:48px !important; }
+    html[data-theme] body[data-active="chat"] .hx-rail-empty-orb{
+      background:rgba(255,255,255,.04) !important;
+      border:1px solid rgba(255,255,255,.09) !important;
+      color:#C8A24A !important;
+      box-shadow:0 14px 34px -18px rgba(0,0,0,.6) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-rail-empty-title{ color:#E7E7EA !important; font-weight:600 !important; }
+    html[data-theme] body[data-active="chat"] .hx-rail-empty-meta,
+    html[data-theme] body[data-active="chat"] .hx-chat-empty-list{ color:#7E7E86 !important; }
+    html[data-theme] body[data-active="chat"] .hx-rail-empty-meta kbd{
+      color:#C8C8CE !important; background:rgba(255,255,255,.07) !important;
+      border:1px solid rgba(255,255,255,.10) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-rail-empty em{ color:#C8A24A !important; font-style:normal !important; }
+
+    /* reopen tab when collapsed */
+    html[data-theme] body[data-active="chat"] .hx-chat-rail-reopen{
+      background:rgba(255,255,255,.05) !important; color:#B9B9C0 !important;
+      border:1px solid rgba(255,255,255,.08) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-rail-reopen:hover{
+      background:rgba(255,255,255,.09) !important; color:#F4F4F5 !important;
     }
   </style>
   <div id="hx-enter" role="status" aria-label="HeliX">
