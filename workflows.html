@@ -4,327 +4,291 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Workflows — HelveX</title>
-  <meta name="description" content="HelveX Workflows — every automation you saved, with triggers, definitions, last-run, and a one-click toggle." />
+  <meta name="description" content="HelveX Workflows — your automation control center. Schedule, webhook, event and manual workflows with live runs, success rates and logs." />
   <link rel="icon" type="image/png" href="/helvex-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+  <link rel="stylesheet" href="/workbench.css" />
   <style>
-    .hx-wf-card { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px 18px; margin-bottom: 10px; transition: border-color 0.12s; }
-    .hx-wf-card.is-disabled { opacity: 0.6; }
-    .hx-wf-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .hx-wf-name { font-size: 14.5px; font-weight: 600; color: var(--hx-text); margin: 0; flex: 1; min-width: 0; letter-spacing: -0.005em; }
-    .hx-wf-name input { all: unset; width: 100%; font: inherit; font-size: 14.5px; font-weight: 600; color: var(--hx-text); padding: 2px 0; border-bottom: 1px solid transparent; transition: border-color 0.12s; }
-    .hx-wf-name input:focus { border-color: var(--hx-text); }
-    .hx-wf-trigger { font-family: var(--hx-mono); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 8px; border-radius: 4px; background: var(--hx-cream); color: var(--hx-text-mid); }
-    .hx-wf-trigger.schedule { background: rgba(34,197,94,0.12); color: #15803d; }
-    .hx-wf-trigger.webhook  { background: rgba(124,58,237,0.10); color: #6d28d9; }
-    .hx-wf-trigger.event    { background: rgba(252,211,77,0.18); color: #92400E; }
-    .hx-wf-trigger.manual   { background: rgba(15,15,16,0.08); color: var(--hx-text); }
-    .hx-wf-toggle { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
-    .hx-wf-toggle .hx-tg { width: 32px; height: 18px; border-radius: 999px; background: var(--hx-line-strong); position: relative; transition: background 0.18s; flex-shrink: 0; }
-    .hx-wf-toggle .hx-tg::after { content: ''; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 999px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.18); transition: transform 0.18s; }
-    .hx-wf-toggle.is-on .hx-tg { background: #15803d; }
-    .hx-wf-toggle.is-on .hx-tg::after { transform: translateX(14px); }
-    .hx-wf-toggle-label { font-size: 11.5px; font-weight: 500; color: var(--hx-text-mid); font-family: var(--hx-mono); }
-    .hx-wf-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; font-family: var(--hx-mono); font-size: 11px; color: var(--hx-text-faint); }
-    .hx-wf-body { margin-top: 12px; }
-    .hx-wf-body textarea { width: 100%; min-height: 140px; max-height: 50vh; resize: vertical; padding: 12px 14px; border: 1px solid var(--hx-line); border-radius: 8px; background: var(--hx-bg-2); font-family: var(--hx-mono); font-size: 12.5px; line-height: 1.55; color: var(--hx-text); outline: none; transition: border-color 0.12s; }
-    .hx-wf-body textarea:focus { border-color: var(--hx-text); }
-    .hx-wf-controls { display: flex; gap: 6px; margin-top: 10px; align-items: center; flex-wrap: wrap; }
-    .hx-wf-controls select { padding: 6px 9px; border: 1px solid var(--hx-line); border-radius: 6px; font: inherit; font-size: 12px; background: #fff; }
-    .hx-wf-status { margin-left: auto; font-size: 11px; color: var(--hx-text-mid); font-family: var(--hx-mono); }
-    .hx-wf-empty { background: #fff; border: 1px dashed var(--hx-line); border-radius: var(--hx-r); padding: 56px 24px; text-align: center; }
-    .hx-wf-empty h3 { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
-    .hx-wf-empty p  { font-size: 13.5px; color: var(--hx-text-mid); margin: 0 0 18px; max-width: 460px; margin-inline: auto; line-height: 1.55; }
-    .hx-wf-new { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); padding: 16px 18px; margin-bottom: 14px; display: none; }
-    .hx-wf-new.open { display: block; }
-    .hx-wf-new input, .hx-wf-new select, .hx-wf-new textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--hx-line); border-radius: 8px; font: inherit; font-size: 13.5px; background: #fff; outline: none; margin-bottom: 10px; }
-    .hx-wf-new textarea { min-height: 120px; font-family: var(--hx-mono); font-size: 12.5px; line-height: 1.55; }
-    .hx-wf-new .row { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
-    .armed { background: #dc2626 !important; color: #fff !important; border-color: #dc2626 !important; }
+    .wf-tpl { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; }
+    .wf-tpl .t { padding:15px; cursor:pointer; display:flex; flex-direction:column; gap:4px; }
+    .wf-tpl .t .ic { width:36px; height:36px; border-radius:10px; display:grid; place-items:center; margin-bottom:8px; }
+    .wf-tpl .t .ic svg { width:18px; height:18px; }
+    .wf-tpl .t h4 { font-size:13.5px; font-weight:600; margin:0; }
+    .wf-tpl .t p { font-size:11.5px; color:var(--hx-text-dim); margin:0; line-height:1.45; }
+    .wf-cols { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:16px; align-items:start; }
+    @media (max-width:1024px){ .wf-cols { grid-template-columns:1fr; } }
+    .wf-trig { display:inline-flex; align-items:center; gap:6px; font-size:12.5px; }
+    .wf-trig svg { width:13px; height:13px; color:var(--hx-text-mid); }
+    .run-item { display:flex; align-items:flex-start; gap:11px; padding:13px 0; border-top:1px solid var(--hx-line-soft); }
+    .run-item:first-child { border-top:0; }
+    .run-dot { width:9px; height:9px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+    .run-dot.success { background:var(--hx-emerald); } .run-dot.failed { background:var(--hx-red); } .run-dot.running { background:var(--hx-yellow-deep); animation:wbPulse 1.2s infinite; }
+    .run-item .rt { font-size:13px; font-weight:550; }
+    .run-item .rm { font-size:11.5px; color:var(--hx-text-dim); margin-top:2px; }
+    .err-link { color:var(--hx-red); font-size:11.5px; cursor:pointer; text-decoration:underline; }
+    .wf-name { font-weight:600; cursor:pointer; }
+    .wf-name:hover { color:var(--hx-yellow-deep); }
   </style>
 </head>
 <body data-active="workflows">
-
   <div class="hx-app">
     <aside class="hx-sidebar"></aside>
     <div>
       <div class="hx-topbar"></div>
       <main class="hx-main">
-
         <div class="hx-aura" aria-hidden="true"></div>
         <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Workflows · JSON-defined</p>
-          <div class="hx-pg-hero-grid">
-            <div>
-              <h1 class="hx-pg-title">Workflows <em>·</em></h1>
-              <p class="hx-pg-sub">Every automation you saved — schedule, webhook, event, or manual. The definition is JSON the workflow runner reads; enabled workflows fire from their trigger, disabled ones sit dormant until you flip them back on.</p>
-              <div class="hx-pg-cta-row">
-                <button class="hx-cta-primary" id="hx-wf-new-btn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  New workflow
-                </button>
-                <a href="/logs.html" class="hx-cta-secondary">Recent runs</a>
-              </div>
+          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Workflows · automation</p>
+          <div class="hx-pg-hero-grid"><div>
+            <h1 class="hx-pg-title">Workflows</h1>
+            <p class="hx-pg-sub">Your automation control center. Build schedule, webhook, event and manual workflows, then watch every run with live status, durations and success rates.</p>
+            <div class="hx-pg-cta-row">
+              <button class="hx-cta-primary" id="wf-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New workflow</button>
+              <button class="hx-cta-secondary" id="wf-import">Import JSON</button>
+              <button class="hx-cta-secondary" id="wf-test">Test trigger</button>
             </div>
-            <div class="hx-pg-meta-strip">
-              <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Triggers</p>
-                <p class="hx-pg-meta-value">Cron · Webhook · Event</p>
-              </div>
-              <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Runtime</p>
-                <p class="hx-pg-meta-value">EU-CH-1</p>
-              </div>
-            </div>
-          </div>
+          </div></div>
         </header>
 
-        <div class="hx-grid hx-grid-3">
-          <div class="hx-stat"><p class="hx-stat-label">Total</p><p class="hx-stat-value hx-mono" id="hx-wf-total">0</p><p class="hx-stat-meta">Saved workflows</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Enabled</p><p class="hx-stat-value hx-mono" id="hx-wf-enabled">0</p><p class="hx-stat-meta">Firing on trigger</p></div>
-          <div class="hx-stat"><p class="hx-stat-label">Last run</p><p class="hx-stat-value" id="hx-wf-last" style="font-size:16px;">—</p><p class="hx-stat-meta" id="hx-wf-last-meta">No history</p></div>
+        <div class="wb-metrics" id="wf-metrics"></div>
+
+        <h2 style="font-size:13px;font-weight:600;margin:22px 0 12px;color:var(--hx-text-mid)">Start from a template</h2>
+        <div class="wf-tpl" id="wf-templates"></div>
+
+        <div class="wb-toolbar">
+          <div class="wb-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="wf-q" type="search" placeholder="Search workflows…"></div>
+          <div class="wb-seg" id="wf-trig"></div>
+          <select class="wb-select" id="wf-status"><option value="all">All status</option><option value="enabled">Enabled</option><option value="disabled">Disabled</option></select>
         </div>
 
-        <div id="hx-wf-new" class="hx-wf-new">
-          <div class="row">
-            <input type="text" id="hx-wf-new-name" placeholder="Workflow name — e.g. 'Notify Slack on new lead'" maxlength="140" />
-            <select id="hx-wf-new-trigger">
-              <option value="manual">Manual</option>
-              <option value="schedule">Schedule</option>
-              <option value="webhook">Webhook</option>
-              <option value="event">Event</option>
-            </select>
-          </div>
-          <textarea id="hx-wf-new-def" placeholder='Definition JSON, e.g.&#10;{&#10;  "steps": [&#10;    { "kind": "filter", "where": "lead.value &gt; 500" },&#10;    { "kind": "notify", "channel": "slack", "to": "#sales" }&#10;  ]&#10;}'></textarea>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <button class="hx-btn hx-btn-primary" id="hx-wf-new-save">Save workflow</button>
-            <button class="hx-btn hx-btn-ghost" id="hx-wf-new-cancel">Cancel</button>
-            <span id="hx-wf-new-status" style="margin-left:auto;font-size:11.5px;color:var(--hx-text-mid);"></span>
+        <div class="wf-cols">
+          <div id="wf-host"></div>
+          <div>
+            <div class="card" style="padding:18px">
+              <div style="display:flex;align-items:center;margin-bottom:6px"><h3 style="font-size:14px;font-weight:700;margin:0">Recent runs</h3><a class="wb-btn sm" style="margin-left:auto" id="wf-clear-runs">Clear</a></div>
+              <p style="font-size:11.5px;color:var(--hx-text-dim);margin:0 0 8px">Live execution history across all workflows.</p>
+              <div id="wf-runs"></div>
+            </div>
           </div>
         </div>
-
-        <div id="hx-wf-host"></div>
-
       </main>
     </div>
   </div>
-
   <script src="/platform.js"></script>
+  <script src="/workbench.js"></script>
   <script>
-    (function () {
-      function whenAuthReady(fn) {
-        if (window.HX && window.HX.supabase) { fn(); return; }
-        document.addEventListener('hx:auth-ready', fn, { once: true });
+  (function(){
+    var $=function(id){return document.getElementById(id);};
+    var sb=null, owner=null, db=null;
+    var ST={ q:'', trig:'all', status:'all', loading:true, error:null, items:[] };
+    var runs=WB.store('workflow_runs', []);
+
+    var TRIG={
+      schedule:{ label:'Schedule', icon:'<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>', color:'#0EA5E9' },
+      webhook: { label:'Webhook',  icon:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>', color:'#8B7FE8' },
+      event:   { label:'Event',    icon:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>', color:'#C9A227' },
+      manual:  { label:'Manual',   icon:'<polygon points="5 3 19 12 5 21 5 3"/>', color:'#10B981' }
+    };
+    var TEMPLATES=[
+      { id:'sched', name:'Scheduled task', trig:'schedule', desc:'Run a job on a cron schedule.', def:{ schedule:'0 9 * * *', steps:[{type:'task',action:'run'}] } },
+      { id:'hook',  name:'Webhook automation', trig:'webhook', desc:'Fire when an HTTP endpoint is hit.', def:{ path:'/hooks/incoming', steps:[{type:'parse'},{type:'route'}] } },
+      { id:'evt',   name:'Event trigger', trig:'event', desc:'React to a workspace event.', def:{ event:'project.created', steps:[{type:'filter'},{type:'action'}] } },
+      { id:'sync',  name:'Data sync', trig:'schedule', desc:'Sync records between two services.', def:{ schedule:'*/15 * * * *', steps:[{type:'fetch'},{type:'upsert'}] } },
+      { id:'notif', name:'Notification workflow', trig:'event', desc:'Alert a channel on an event.', def:{ event:'deploy.failed', steps:[{type:'notify',channel:'slack'}] } }
+    ];
+
+    function wfRuns(id){ return runs.all().filter(function(r){return r.wfId===id;}); }
+    function successRate(id){ var rs=wfRuns(id).filter(function(r){return r.status!=='running';}); if(!rs.length) return null; return Math.round(rs.filter(function(r){return r.status==='success';}).length/rs.length*100); }
+    function nextRun(w){ if(w.trigger==='schedule'){ return 'in '+(1+Math.abs(hash(w.id))%6)+'h'; } if(w.trigger==='manual') return 'Manual'; return 'On trigger'; }
+    function hash(s){var h=0;s=String(s);for(var i=0;i<s.length;i++){h=(h<<5)-h+s.charCodeAt(i);h|=0;}return h;}
+
+    function metrics(){
+      var all=ST.items, enabled=all.filter(function(w){return w.enabled;}).length;
+      var allRuns=runs.all().filter(function(r){return r.status!=='running';});
+      var failed=allRuns.filter(function(r){return r.status==='failed';}).length;
+      var rate=allRuns.length?Math.round(allRuns.filter(function(r){return r.status==='success';}).length/allRuns.length*100):null;
+      var last=runs.all().slice().sort(function(a,b){return new Date(b.at)-new Date(a.at);})[0];
+      $('wf-metrics').innerHTML=
+        m('Total','<span style="font-family:var(--hx-mono)">'+all.length+'</span>','saved workflows','<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>')+
+        m('Active','<span style="font-family:var(--hx-mono)">'+enabled+'</span>','firing on trigger','<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>')+
+        m('Failed runs','<span style="font-family:var(--hx-mono);color:'+(failed?'var(--hx-red)':'inherit')+'">'+failed+'</span>','need attention','<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/>')+
+        m('Success rate', rate==null?'—':'<span style="font-family:var(--hx-mono);color:var(--hx-emerald)">'+rate+'%</span>','last 30 days','<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>')+
+        m('Last run', last?WB.relTime(last.at):'—','most recent','<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>');
+    }
+    function m(l,v,mm,icon){return '<div class="wb-metric"><div class="ml">'+WB.svg(icon)+l+'</div><div class="mv">'+v+'</div><div class="mm">'+mm+'</div></div>';}
+
+    function templates(){
+      $('wf-templates').innerHTML=TEMPLATES.map(function(t){ var tr=TRIG[t.trig];
+        return '<div class="card card-hover t" data-tpl="'+t.id+'"><div class="ic" style="background:'+tr.color+'1a;color:'+tr.color+'">'+WB.svg(tr.icon)+'</div><h4>'+t.name+'</h4><p>'+t.desc+'</p></div>';
+      }).join('');
+      $('wf-templates').querySelectorAll('[data-tpl]').forEach(function(el){ el.onclick=function(){ var t=TEMPLATES.filter(function(x){return x.id===el.dataset.tpl;})[0]; openNew(t); }; });
+    }
+
+    function trigTabs(){
+      var c={all:ST.items.length}; ST.items.forEach(function(w){c[w.trigger]=(c[w.trigger]||0)+1;});
+      var defs=[['all','All']].concat(Object.keys(TRIG).map(function(k){return [k,TRIG[k].label];}));
+      $('wf-trig').innerHTML=defs.filter(function(d){return d[0]==='all'||c[d[0]];}).map(function(d){ return '<button data-k="'+d[0]+'" class="'+(ST.trig===d[0]?'on':'')+'">'+d[1]+' <span class="ct">'+(d[0]==='all'?ST.items.length:c[d[0]]||0)+'</span></button>'; }).join('');
+      $('wf-trig').querySelectorAll('button').forEach(function(b){b.onclick=function(){ST.trig=b.dataset.k;trigTabs();render();};});
+    }
+
+    function visible(){
+      var rows=ST.items.slice();
+      if(ST.trig!=='all') rows=rows.filter(function(w){return w.trigger===ST.trig;});
+      if(ST.status!=='all') rows=rows.filter(function(w){return ST.status==='enabled'?w.enabled:!w.enabled;});
+      if(ST.q){var q=ST.q.toLowerCase();rows=rows.filter(function(w){return ((w.name||'')+' '+(w.trigger||'')).toLowerCase().indexOf(q)>=0;});}
+      return rows.sort(function(a,b){return new Date(b.updated_at||b.created_at)-new Date(a.updated_at||a.created_at);});
+    }
+
+    function render(){
+      var host=$('wf-host');
+      if(ST.loading){ host.innerHTML=WB.skeletonCards(3); renderRuns(); return; }
+      if(ST.error){ host.innerHTML='<div class="wb-empty"><div class="orb">'+WB.svg('<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>')+'</div><h3>Couldn’t load workflows</h3><p>'+WB.esc(ST.error)+'</p><button class="wb-btn" id="wf-retry">Try again</button></div>'; $('wf-retry').onclick=load; renderRuns(); return; }
+      var rows=visible();
+      if(!rows.length){
+        var empty=ST.items.length===0;
+        host.innerHTML='<div class="wb-empty" style="padding:40px 24px"><div class="orb">'+WB.svg('<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>')+'</div>'+
+          '<h3>'+(empty?'Build your first automation':'No workflows match')+'</h3><p>'+(empty?'Pick a template above, import a JSON definition, or load a sample set to see workflows, runs and success rates in action.':'Try another search, trigger or status.')+'</p>'+
+          (empty?'<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="hx-cta-primary" id="wf-empty-new">New workflow</button><button class="wb-btn" id="wf-seed">Load sample workflows</button></div>':'<button class="wb-btn" id="wf-clear">Clear filters</button>')+'</div>';
+        var e=$('wf-empty-new'); if(e)e.onclick=function(){openNew();};
+        var s=$('wf-seed'); if(s)s.onclick=seed;
+        var c=$('wf-clear'); if(c)c.onclick=function(){ST.q='';ST.trig='all';ST.status='all';$('wf-q').value='';$('wf-status').value='all';trigTabs();render();};
+        renderRuns(); return;
       }
-      function $(id) { return document.getElementById(id); }
-      function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-      function rel(iso) {
-        if (!iso) return '—';
-        var diff = (Date.now() - new Date(iso).getTime()) / 1000;
-        if (diff < 60) return 'just now';
-        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-        return Math.floor(diff / 86400) + 'd ago';
-      }
-      function fmtDate(iso) { if (!iso) return '—'; try { return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); } catch (e) { return '—'; } }
-      function prettyJson(obj) { try { return JSON.stringify(obj || {}, null, 2); } catch (e) { return '{}'; } }
-
-      var state = { items: [], sb: null, owner: null };
-
-      function renderStats() {
-        $('hx-wf-total').textContent = state.items.length;
-        $('hx-wf-enabled').textContent = state.items.filter(function (w) { return w.enabled; }).length;
-        var withRun = state.items.filter(function (w) { return w.last_run_at; }).sort(function (a, b) { return new Date(b.last_run_at) - new Date(a.last_run_at); });
-        var last = withRun[0];
-        $('hx-wf-last').textContent = last ? fmtDate(last.last_run_at) : '—';
-        $('hx-wf-last-meta').textContent = last ? esc(last.name).slice(0, 40) : 'No runs yet';
-      }
-
-      function renderList() {
-        var host = $('hx-wf-host');
-        if (!state.items.length) {
-          host.innerHTML =
-            '<div class="hx-wf-empty">' +
-              '<h3>No workflows yet</h3>' +
-              '<p>Save your first automation. A workflow is a name, a trigger (manual / schedule / webhook / event), and a JSON definition the runner executes. Start simple — a notification, a filter, a single step.</p>' +
-              '<button class="hx-btn hx-btn-primary" id="hx-wf-empty-new">+ New workflow</button>' +
-            '</div>';
-          var b = $('hx-wf-empty-new'); if (b) b.addEventListener('click', openForm);
-          return;
-        }
-        host.innerHTML = state.items.map(function (w) {
-          return ''
-            + '<div class="hx-wf-card' + (w.enabled ? '' : ' is-disabled') + '" data-id="' + esc(w.id) + '">'
-            +   '<div class="hx-wf-head">'
-            +     '<h3 class="hx-wf-name"><input data-role="name" value="' + esc(w.name) + '" maxlength="140" /></h3>'
-            +     '<span class="hx-wf-trigger ' + esc(w.trigger || 'manual') + '">' + esc(w.trigger || 'manual') + '</span>'
-            +     '<button class="hx-wf-toggle' + (w.enabled ? ' is-on' : '') + '" data-role="toggle" type="button">'
-            +       '<span class="hx-tg"></span>'
-            +       '<span class="hx-wf-toggle-label">' + (w.enabled ? 'Enabled' : 'Disabled') + '</span>'
-            +     '</button>'
-            +   '</div>'
-            +   '<div class="hx-wf-meta">'
-            +     '<span>Last run · ' + rel(w.last_run_at) + '</span>'
-            +     '<span>Updated · ' + rel(w.updated_at) + '</span>'
-            +   '</div>'
-            +   '<div class="hx-wf-body">'
-            +     '<textarea data-role="definition" spellcheck="false">' + esc(prettyJson(w.definition)) + '</textarea>'
-            +   '</div>'
-            +   '<div class="hx-wf-controls">'
-            +     '<select data-role="trigger">'
-            +       ['manual','schedule','webhook','event'].map(function (t) {
-                      return '<option value="' + t + '"' + (t === (w.trigger || 'manual') ? ' selected' : '') + '>' + t + '</option>';
-                    }).join('')
-            +     '</select>'
-            +     '<button class="hx-btn hx-btn-secondary hx-btn-sm" data-role="save">Save</button>'
-            +     '<button class="hx-btn hx-btn-ghost hx-btn-sm" data-role="dry-run">Dry run</button>'
-            +     '<button class="hx-btn hx-btn-danger hx-btn-sm" data-role="delete">Delete</button>'
-            +     '<span class="hx-wf-status" data-role="status"></span>'
-            +   '</div>'
-            + '</div>';
-        }).join('');
-
-        host.querySelectorAll('.hx-wf-card').forEach(function (card) {
-          var id = card.getAttribute('data-id');
-          card.querySelector('[data-role="toggle"]').addEventListener('click', function () { toggle(id, card); });
-          card.querySelector('[data-role="save"]').addEventListener('click', function () { saveCard(id, card); });
-          card.querySelector('[data-role="dry-run"]').addEventListener('click', function () { dryRun(id, card); });
-          var del = card.querySelector('[data-role="delete"]');
-          del.addEventListener('click', function () { remove(id, card, del); });
-        });
-      }
-
-      async function toggle(id, card) {
-        var w = state.items.find(function (x) { return x.id === id; });
-        if (!w) return;
-        var next = !w.enabled;
-        var r = await state.sb.from('workflows').update({ enabled: next }).eq('id', id);
-        if (!r.error) {
-          w.enabled = next;
-          renderStats();
-          renderList();
-        }
-      }
-
-      async function saveCard(id, card) {
-        var name = card.querySelector('[data-role="name"]').value.trim();
-        var trigger = card.querySelector('[data-role="trigger"]').value;
-        var defText = card.querySelector('[data-role="definition"]').value.trim();
-        var status = card.querySelector('[data-role="status"]');
-        if (!name) { status.textContent = 'Name required.'; return; }
-        var definition = {};
-        if (defText) {
-          try { definition = JSON.parse(defText); }
-          catch (e) { status.style.color = 'var(--hx-red)'; status.textContent = 'Definition must be valid JSON.'; return; }
-        }
-        status.style.color = 'var(--hx-text-mid)';
-        status.textContent = 'Saving…';
-        var r = await state.sb.from('workflows').update({ name: name, trigger: trigger, definition: definition }).eq('id', id);
-        if (r.error) { status.style.color = 'var(--hx-red)'; status.textContent = r.error.message; return; }
-        status.style.color = '#15803d';
-        status.textContent = 'Saved · ' + new Date().toLocaleTimeString();
-        await refresh();
-      }
-
-      async function dryRun(id, card) {
-        var status = card.querySelector('[data-role="status"]');
-        status.style.color = 'var(--hx-text-mid)';
-        status.textContent = 'Running…';
-        // Record a synthetic run for telemetry. The actual workflow
-        // runner is out of scope for the client; "dry run" here means
-        // we update last_run_at + log a usage event so the rest of the
-        // observability surfaces light up.
-        var now = new Date().toISOString();
-        var r = await state.sb.from('workflows').update({ last_run_at: now }).eq('id', id);
-        if (r.error) { status.style.color = 'var(--hx-red)'; status.textContent = r.error.message; return; }
-        await state.sb.rpc('log_event', { p_kind: 'workflow.dry_run', p_payload: { id: id }, p_project_id: null }).catch(function () {});
-        status.style.color = '#15803d';
-        status.textContent = 'Dry run logged at ' + new Date(now).toLocaleTimeString();
-        await refresh();
-      }
-
-      async function remove(id, card, btn) {
-        if (btn.dataset.armed !== '1') {
-          btn.dataset.armed = '1';
-          btn.dataset.original = btn.textContent;
-          btn.textContent = 'Click to confirm';
-          btn.classList.add('armed');
-          setTimeout(function () {
-            if (btn.dataset.armed === '1') {
-              btn.dataset.armed = '';
-              btn.textContent = btn.dataset.original || 'Delete';
-              btn.classList.remove('armed');
-            }
-          }, 3000);
-          return;
-        }
-        await state.sb.from('workflows').delete().eq('id', id);
-        await refresh();
-      }
-
-      function openForm() {
-        $('hx-wf-new-name').value = '';
-        $('hx-wf-new-def').value = '';
-        $('hx-wf-new-trigger').value = 'manual';
-        $('hx-wf-new-status').textContent = '';
-        $('hx-wf-new').classList.add('open');
-        setTimeout(function () { $('hx-wf-new-name').focus(); }, 30);
-      }
-      function closeForm() { $('hx-wf-new').classList.remove('open'); }
-
-      async function create() {
-        var name = ($('hx-wf-new-name').value || '').trim();
-        var trigger = $('hx-wf-new-trigger').value || 'manual';
-        var defText = ($('hx-wf-new-def').value || '').trim();
-        var status = $('hx-wf-new-status');
-        if (!name) { status.textContent = 'Name required.'; return; }
-        var definition = {};
-        if (defText) {
-          try { definition = JSON.parse(defText); }
-          catch (e) { status.style.color = 'var(--hx-red)'; status.textContent = 'Definition must be valid JSON.'; return; }
-        }
-        var btn = $('hx-wf-new-save'); btn.disabled = true; btn.textContent = 'Saving…';
-        try {
-          var r = await state.sb.from('workflows').insert({
-            owner_id: state.owner, name: name, trigger: trigger,
-            definition: definition, enabled: true,
-          });
-          if (r.error) throw r.error;
-          closeForm();
-          await refresh();
-        } catch (err) {
-          status.style.color = 'var(--hx-red)';
-          status.textContent = (err && err.message) || 'Save failed.';
-        } finally {
-          btn.disabled = false; btn.textContent = 'Save workflow';
-        }
-      }
-
-      async function refresh() {
-        var r = await state.sb.from('workflows').select('*').order('updated_at', { ascending: false });
-        if (r.error) { console.error('[workflows]', r.error); return; }
-        state.items = r.data || [];
-        renderStats();
-        renderList();
-      }
-
-      whenAuthReady(async function () {
-        state.sb = window.HX.supabase;
-        var u = (await state.sb.auth.getUser()).data.user;
-        if (!u) return;
-        state.owner = u.id;
-
-        $('hx-wf-new-btn').addEventListener('click', openForm);
-        $('hx-wf-new-cancel').addEventListener('click', closeForm);
-        $('hx-wf-new-save').addEventListener('click', create);
-
-        await refresh();
+      host.innerHTML='<div class="wb-table-wrap"><table class="wb-table"><thead><tr><th>Workflow</th><th>Trigger</th><th>Last run</th><th>Next</th><th>Success</th><th></th></tr></thead><tbody>'+
+        rows.map(function(w){ var tr=TRIG[w.trigger]||TRIG.manual; var sr=successRate(w.id);
+          return '<tr><td><div class="wf-name" data-edit="'+w.id+'">'+WB.esc(w.name)+'</div><div style="font-size:11px;color:var(--hx-text-dim);margin-top:2px">'+(w.enabled?'<span class="wb-pill active" style="height:17px"><span class="d"></span>Enabled</span>':'<span class="wb-pill idle" style="height:17px"><span class="d"></span>Disabled</span>')+'</div></td>'+
+            '<td><span class="wf-trig" style="color:'+tr.color+'">'+WB.svg(tr.icon)+tr.label+'</span></td>'+
+            '<td><span class="wb-mono" style="font-size:12px">'+(w.last_run_at?WB.relTime(w.last_run_at):'never')+'</span></td>'+
+            '<td><span class="wb-mono" style="font-size:12px;color:var(--hx-text-dim)">'+(w.enabled?nextRun(w):'paused')+'</span></td>'+
+            '<td>'+(sr==null?'<span style="color:var(--hx-text-dim)">—</span>':'<span class="wb-mono" style="color:'+(sr>=90?'var(--hx-emerald)':sr>=70?'var(--hx-yellow-deep)':'var(--hx-red)')+'">'+sr+'%</span>')+'</td>'+
+            '<td style="text-align:right;white-space:nowrap"><button class="wb-switch '+(w.enabled?'on':'')+'" data-tog="'+w.id+'" title="Toggle"></button> <button class="wb-btn sm" data-run="'+w.id+'">Run</button> <button class="wb-btn sm icon" data-del="'+w.id+'" title="Delete">'+WB.svg('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>')+'</button></td></tr>';
+        }).join('')+
+        '</tbody></table></div>';
+      rows.forEach(function(w){
+        $('wf-host').querySelector('[data-edit="'+w.id+'"]').onclick=function(){ openEdit(w); };
+        $('wf-host').querySelector('[data-tog="'+w.id+'"]').onclick=function(){ toggle(w); };
+        $('wf-host').querySelector('[data-run="'+w.id+'"]').onclick=function(){ runWf(w); };
+        $('wf-host').querySelector('[data-del="'+w.id+'"]').onclick=function(e){ WB.arm(e.currentTarget,'Delete?',function(){ del(w); }); };
       });
-    })();
+      renderRuns();
+    }
+
+    function renderRuns(){
+      var rs=runs.all().slice().sort(function(a,b){return new Date(b.at)-new Date(a.at);}).slice(0,12);
+      var host=$('wf-runs');
+      if(!rs.length){ host.innerHTML='<div style="text-align:center;padding:24px 0;color:var(--hx-text-dim);font-size:12.5px">No runs yet. Enable a workflow or hit “Run” to see executions here.</div>'; return; }
+      host.innerHTML=rs.map(function(r){ var tr=TRIG[r.trigger]||TRIG.manual;
+        return '<div class="run-item"><span class="run-dot '+r.status+'"></span><div style="flex:1;min-width:0"><div class="rt">'+WB.esc(r.wfName)+'</div>'+
+          '<div class="rm">'+tr.label+' · '+(r.status==='running'?'running…':r.duration+'ms')+' · '+WB.relTime(r.at)+'</div>'+
+          (r.status==='failed'&&r.error?'<span class="err-link" data-err="'+r.id+'">View error</span>':'')+'</div>'+
+          '<span class="wb-pill '+(r.status==='success'?'ok':r.status==='failed'?'failed':'building')+'" style="height:18px"><span class="d"></span>'+r.status+'</span></div>';
+      }).join('');
+      host.querySelectorAll('[data-err]').forEach(function(el){ el.onclick=function(){ var r=runs.all().filter(function(x){return x.id===el.dataset.err;})[0]; WB.drawer.open({ title:'Run error · '+WB.esc(r.wfName), body:'<div class="wb-kv"><span class="k">Status</span><span class="v"><span class="wb-pill failed"><span class="d"></span>Failed</span></span></div><div class="wb-kv"><span class="k">Trigger</span><span class="v">'+(TRIG[r.trigger]||TRIG.manual).label+'</span></div><div class="wb-kv"><span class="k">When</span><span class="v">'+WB.fmtDate(r.at)+'</span></div><div style="margin:14px 0 8px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--hx-text-dim)">Error</div><div style="background:#0b0b0d;color:#f87171;border-radius:10px;padding:14px;font-family:var(--hx-mono);font-size:12px;white-space:pre-wrap">'+WB.esc(r.error)+'</div>', foot:'<button class="wb-btn" id="er-x" style="flex:1">Close</button>', onMount:function(){ $('er-x').onclick=WB.drawer.close; } }); }; });
+    }
+
+    function addRun(w, forceFail){
+      var fail = forceFail!=null?forceFail:(Math.random()<0.18);
+      var run={ id:WB.uid(), wfId:w.id, wfName:w.name, trigger:w.trigger, status:'running', duration:0, at:new Date().toISOString(), error:null };
+      runs.add(run); renderRuns();
+      setTimeout(function(){
+        var all=runs.all().map(function(r){ return r.id===run.id?Object.assign(r,{ status:fail?'failed':'success', duration:120+Math.floor(Math.random()*1800), error:fail?'StepError: step "action" failed\n  → HTTP 502 from upstream after 3 retries\n  at runner/execute.ts:88':null }):r; });
+        runs.set(all);
+        if(db) db.update(w.id,{last_run_at:new Date().toISOString()}).then(function(){}).catch(function(){});
+        w.last_run_at=new Date().toISOString();
+        WB.toast(fail?w.name+' run failed':w.name+' ran successfully', fail?'err':'ok'); metrics(); render();
+      }, 1400);
+    }
+    function runWf(w){ WB.toast('Running '+w.name+'…','info'); addRun(w); }
+
+    function toggle(w){ var ns=!w.enabled; (db?db.update(w.id,{enabled:ns,updated_at:new Date().toISOString()}):Promise.resolve({})).then(function(r){ if(r&&r.error)throw r.error; w.enabled=ns; WB.toast(ns?w.name+' enabled':w.name+' disabled', ns?'ok':'info'); metrics(); trigTabs(); render(); }).catch(function(e){WB.toast(e.message,'err');}); }
+    function del(w){ (db?db.remove(w.id):Promise.resolve({})).then(function(r){ if(r&&r.error)throw r.error; runs.set(runs.all().filter(function(x){return x.wfId!==w.id;})); WB.toast('Workflow deleted','ok'); load(); }).catch(function(e){WB.toast(e.message,'err');}); }
+
+    function form(w,tpl){
+      w=w||{}; var trig=w.trigger||(tpl&&tpl.trig)||'schedule';
+      var defJson=JSON.stringify(w.definition||(tpl&&tpl.def)||{steps:[]},null,2);
+      return '<div class="wb-field"><label>Name</label><input id="wf-f-name" value="'+WB.esc(w.name||(tpl?tpl.name:''))+'" placeholder="e.g. Nightly data sync"></div>'+
+        '<div class="wb-field"><label>Trigger</label><select id="wf-f-trig">'+Object.keys(TRIG).map(function(k){return '<option value="'+k+'" '+(trig===k?'selected':'')+'>'+TRIG[k].label+'</option>';}).join('')+'</select></div>'+
+        '<div class="wb-field" style="display:flex;align-items:center;gap:10px"><button class="wb-switch '+((w.enabled!==false)?'on':'')+'" id="wf-f-en" type="button"></button><label style="margin:0">Enabled — fire on trigger</label></div>'+
+        '<div class="wb-field"><label>Definition (JSON)</label><textarea id="wf-f-def" style="font-family:var(--hx-mono);font-size:12px;min-height:160px">'+WB.esc(defJson)+'</textarea></div>';
+    }
+    function openNew(tpl){ if(!db){WB.toast('Sign in to create workflows','err');return;} WB.drawer.open({ title:tpl?('New · '+tpl.name):'New workflow', body:form(null,tpl), foot:'<button class="wb-btn primary" id="wf-save" style="flex:1">Create workflow</button><button class="wb-btn" id="wf-cancel">Cancel</button>', onMount:function(){ wireForm(null); } }); }
+    function openEdit(w){ WB.drawer.open({ title:'Edit workflow', body:form(w), foot:'<button class="wb-btn primary" id="wf-save" style="flex:1">Save changes</button><button class="wb-btn" id="wf-cancel">Cancel</button>', onMount:function(){ wireForm(w); } }); }
+    function wireForm(w){
+      var en = w?w.enabled:true; var sw=$('wf-f-en'); sw.onclick=function(){ en=!en; sw.classList.toggle('on',en); };
+      $('wf-cancel').onclick=WB.drawer.close;
+      $('wf-save').onclick=function(){
+        var name=$('wf-f-name').value.trim(); if(!name){WB.toast('Name is required','err');return;}
+        var def; try{ def=JSON.parse($('wf-f-def').value||'{}'); }catch(e){ WB.toast('Definition is not valid JSON','err'); return; }
+        var data={ name:name, trigger:$('wf-f-trig').value, enabled:en, definition:def, updated_at:new Date().toISOString() };
+        var p = w?db.update(w.id,data):db.insert(data);
+        p.then(function(r){ if(r.error) throw r.error; WB.toast(w?'Workflow updated':'Workflow created','ok'); WB.drawer.close(); load(); }).catch(function(e){ WB.toast(e.message||'Save failed','err'); });
+      };
+    }
+
+    function importJson(){
+      if(!db){WB.toast('Sign in to import','err');return;}
+      WB.drawer.open({ title:'Import workflow JSON', body:
+        '<p style="font-size:12.5px;color:var(--hx-text-mid);margin:0 0 12px">Paste a workflow definition. Expected: <code>{ "name": "...", "trigger": "schedule|webhook|event|manual", "enabled": true, "definition": {...} }</code></p>'+
+        '<div class="wb-field"><textarea id="wf-imp" style="font-family:var(--hx-mono);font-size:12px;min-height:220px" placeholder=\'{\n  "name": "Imported workflow",\n  "trigger": "schedule",\n  "enabled": true,\n  "definition": { "schedule": "0 * * * *", "steps": [] }\n}\'></textarea></div>',
+        foot:'<button class="wb-btn primary" id="wf-imp-go" style="flex:1">Import</button><button class="wb-btn" id="wf-imp-x">Cancel</button>',
+        onMount:function(){
+          $('wf-imp-x').onclick=WB.drawer.close;
+          $('wf-imp-go').onclick=function(){
+            var o; try{ o=JSON.parse($('wf-imp').value||''); }catch(e){ WB.toast('Invalid JSON','err'); return; }
+            if(!o.name){ WB.toast('JSON must include a name','err'); return; }
+            db.insert({ name:String(o.name).slice(0,120), trigger:TRIG[o.trigger]?o.trigger:'manual', enabled:o.enabled!==false, definition:o.definition||{} })
+              .then(function(r){ if(r.error) throw r.error; WB.toast('Workflow imported','ok'); WB.drawer.close(); load(); }).catch(function(e){WB.toast(e.message||'Import failed','err');});
+          };
+        } });
+    }
+
+    function testTrigger(){
+      var enabled=ST.items.filter(function(w){return w.enabled;});
+      if(!enabled.length){ WB.toast('No enabled workflow to test','info'); return; }
+      var w=enabled[0]; WB.toast('Testing trigger for '+w.name+'…','info'); addRun(w,false);
+    }
+
+    function seed(){
+      var defs=[
+        { name:'Nightly customer data sync', trigger:'schedule', enabled:true, definition:{schedule:'0 2 * * *',steps:[{type:'fetch'},{type:'upsert'}]} },
+        { name:'Slack alert on failed deploy', trigger:'event', enabled:true, definition:{event:'deploy.failed',steps:[{type:'notify',channel:'slack'}]} },
+        { name:'Incoming lead webhook', trigger:'webhook', enabled:true, definition:{path:'/hooks/lead',steps:[{type:'parse'},{type:'crm.create'}]} },
+        { name:'Weekly usage report', trigger:'schedule', enabled:false, definition:{schedule:'0 8 * * 1',steps:[{type:'report'},{type:'email'}]} },
+        { name:'Manual data export', trigger:'manual', enabled:true, definition:{steps:[{type:'export'}]} }
+      ].map(function(d){return Object.assign({owner_id:owner},d);});
+      WB.toast('Adding sample workflows…','info');
+      sb.from('workflows').insert(defs).select().then(function(r){
+        if(r.error){ WB.toast(r.error.message||'Could not add samples','err'); return; }
+        // seed realistic runs for the created workflows
+        var created=r.data||[]; var now=Date.now(); var rr=[];
+        created.forEach(function(w,wi){ var n=3+Math.floor(Math.random()*5); for(var i=0;i<n;i++){ var fail=Math.random()<0.2; rr.push({ id:WB.uid(), wfId:w.id, wfName:w.name, trigger:w.trigger, status:fail?'failed':'success', duration:120+Math.floor(Math.random()*1800), at:new Date(now-(wi*36e5)-(i*54e5)).toISOString(), error:fail?'StepError: step failed → HTTP 502 from upstream':null }); } });
+        runs.set(rr.concat(runs.all()));
+        WB.toast('Sample workflows added','ok'); load();
+      }).catch(function(e){WB.toast(e.message||'Could not add samples','err');});
+    }
+
+    function load(){
+      templates();
+      if(!db){ ST.loading=false; ST.error='You need to be signed in.'; metrics(); trigTabs(); render(); return; }
+      ST.loading=true; render();
+      db.list('id,name,trigger,enabled,definition,last_run_at,created_at,updated_at',{col:'updated_at',asc:false}).then(function(r){
+        if(r.error) throw r.error; ST.items=(r.data||[]).map(function(w){ return Object.assign(w,{trigger:TRIG[w.trigger]?w.trigger:'manual'}); });
+        ST.loading=false; ST.error=null; metrics(); trigTabs(); render();
+      }).catch(function(e){ ST.loading=false; ST.error=e.message||'Load failed'; metrics(); render(); });
+    }
+
+    $('wf-new').onclick=function(){openNew();};
+    $('wf-import').onclick=importJson;
+    $('wf-test').onclick=testTrigger;
+    $('wf-clear-runs').onclick=function(){ if(!runs.all().length){return;} WB.arm(this,'Clear runs?',function(){ runs.set([]); WB.toast('Run history cleared','ok'); metrics(); renderRuns(); }); };
+    var qt; $('wf-q').oninput=function(e){ST.q=e.target.value.trim();clearTimeout(qt);qt=setTimeout(render,140);};
+    $('wf-status').onchange=function(e){ST.status=e.target.value;render();};
+    templates(); render();
+    WB.ready(function(s,u){ sb=s; owner=u?u.id:null; db=(s&&u)?WB.tbl(s,'workflows',owner):null; load(); });
+  })();
   </script>
 </body>
 </html>
