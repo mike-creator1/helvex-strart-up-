@@ -35961,6 +35961,24 @@
               R + '.hxn-model:hover{background:var(--surf2);border-color:var(--line2);}',
               R + '.hxn-model-dot{width:6px;height:6px;border-radius:50%;background:var(--v);box-shadow:0 0 7px rgba(124,92,255,.7);}',
               R + '.hxn-model svg{width:14px !important;height:14px !important;color:var(--mid);}',
+              R + '.hxn-modelwrap{position:relative;flex-shrink:0;}',
+              R + '.hxn-model-ic{display:grid;place-items:center;color:var(--v) !important;}',
+              R + '.hxn-model-ic svg{width:14px !important;height:14px !important;color:var(--v) !important;}',
+              R + '.hxn-model-name{color:var(--ink);}',
+              R + '.hxn-mm{position:absolute;top:calc(100% + 8px);right:0;width:244px;background:#15151C;border:1px solid var(--line2);border-radius:14px;padding:6px;box-shadow:0 26px 64px -20px rgba(0,0,0,.85);z-index:60;display:flex;flex-direction:column;gap:2px;}',
+              R + '.hxn-mm[hidden]{display:none !important;}',
+              R + '.hxn-mm-item{display:flex;align-items:center;gap:11px;width:100%;padding:9px 10px;border-radius:10px;background:transparent;border:0;cursor:pointer;text-align:left;transition:background .14s;}',
+              R + '.hxn-mm-item:hover{background:rgba(255,255,255,.05);}',
+              R + '.hxn-mm-item.is-on{background:rgba(255,255,255,.05);}',
+              R + '.hxn-mm-ic{width:32px;height:32px;flex-shrink:0;border-radius:9px;display:grid;place-items:center;background:rgba(124,92,255,.12);border:1px solid rgba(124,92,255,.22);color:var(--v);}',
+              R + '.hxn-mm-ic svg{width:16px;height:16px;}',
+              R + '.hxn-mm-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}',
+              R + '.hxn-mm-t{font-size:14px;font-weight:600;color:var(--ink);letter-spacing:-.01em;}',
+              R + '.hxn-mm-d{font-size:11.5px;color:var(--mid);}',
+              R + '.hxn-mm-check{width:18px;flex-shrink:0;display:grid;place-items:center;color:var(--v);opacity:0;}',
+              R + '.hxn-mm-item.is-on .hxn-mm-check{opacity:1;}',
+              R + '.hxn-mm-check svg{width:16px;height:16px;}',
+              R + '.hxn-mm-learn{display:block;text-align:left;padding:10px 10px 6px;margin-top:3px;border-top:1px solid var(--line);color:var(--v);font-size:12.5px;font-weight:500;text-decoration:none;cursor:pointer;}',
 
               /* ── scroll region ───────────────────────────────────── */
               R + '.hx-home-scroll{position:relative;z-index:1;flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;display:flex !important;flex-direction:column !important;align-items:center !important;padding:0 16px calc(env(safe-area-inset-bottom,0px) + 28px) !important;}',
@@ -36021,9 +36039,30 @@
             '<header class="hxn-bar">' +
               '<button class="hxn-logo" type="button" id="hx-home-menu" aria-label="Menu">' + glyph + '</button>' +
               '<span class="hxn-title">Helix</span>' +
-              '<button class="hxn-model" type="button" id="hx-home-model" aria-label="Model">' +
-                '<span class="hxn-model-dot"></span><span>Helix Ultra</span>' + S.chevD +
-              '</button>' +
+              '<div class="hxn-modelwrap">' +
+                '<button class="hxn-model" type="button" id="hx-home-model" aria-haspopup="menu" aria-expanded="false">' +
+                  '<span class="hxn-model-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.5 5L19 8.5l-5.5 1.5L12 15l-1.5-5L5 8.5 10.5 7z"/></svg></span>' +
+                  '<span class="hxn-model-name" id="hx-home-model-name">Ether</span>' + S.chevD +
+                '</button>' +
+                '<div class="hxn-mm" id="hx-home-modelmenu" role="menu" hidden>' +
+                  '<button class="hxn-mm-item" type="button" role="menuitemradio" data-model="ether">' +
+                    '<span class="hxn-mm-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.5 5L19 8.5l-5.5 1.5L12 15l-1.5-5L5 8.5 10.5 7z"/></svg></span>' +
+                    '<span class="hxn-mm-body"><span class="hxn-mm-t">Ether</span><span class="hxn-mm-d">Fast &amp; intelligent</span></span>' +
+                    '<span class="hxn-mm-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+                  '</button>' +
+                  '<button class="hxn-mm-item" type="button" role="menuitemradio" data-model="nexus">' +
+                    '<span class="hxn-mm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l8 4.5-8 4.5-8-4.5z"/><path d="M4 12l8 4.5 8-4.5"/></svg></span>' +
+                    '<span class="hxn-mm-body"><span class="hxn-mm-t">Nexus</span><span class="hxn-mm-d">Balanced &amp; powerful</span></span>' +
+                    '<span class="hxn-mm-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+                  '</button>' +
+                  '<button class="hxn-mm-item" type="button" role="menuitemradio" data-model="prometheus">' +
+                    '<span class="hxn-mm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-2 4-2 7a2 2 0 0 0 4 0c2 2 2 4 2 5a4 4 0 0 1-8 0c0-4 4-5 4-12z"/></svg></span>' +
+                    '<span class="hxn-mm-body"><span class="hxn-mm-t">Prometheus</span><span class="hxn-mm-d">Advanced reasoning</span></span>' +
+                    '<span class="hxn-mm-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+                  '</button>' +
+                  '<a class="hxn-mm-learn" href="/models">Learn more about models</a>' +
+                '</div>' +
+              '</div>' +
             '</header>' +
             '<div class="hx-home-scroll">' +
               '<section class="hxn-hero">' +
@@ -36090,11 +36129,40 @@
           document.getElementById('hx-home-send').addEventListener('click', doSend);
           document.getElementById('hx-home-mic').addEventListener('click', function () { var m = document.getElementById('hx-c-mic'); if (m) m.click(); });
           document.getElementById('hx-home-menu').addEventListener('click', function () { var d = document.getElementById('hx-c-drawer-toggle'); if (d) d.click(); });
-          var homeModelBtn = document.getElementById('hx-home-model');
-          if (homeModelBtn) homeModelBtn.addEventListener('click', function () {
-            var b = document.getElementById('hx-c-model-badge'); if (b) { b.click(); return; }
-            var d = document.getElementById('hx-c-drawer-toggle'); if (d) d.click();
+          // Model selector dropdown (Ether / Nexus / Prometheus).
+          var homeModelBtn  = document.getElementById('hx-home-model');
+          var homeModelMenu = document.getElementById('hx-home-modelmenu');
+          var homeModelName = document.getElementById('hx-home-model-name');
+          var modelSelEl    = document.getElementById('hx-c-model');
+          var MODEL_NAMES   = { ether:'Ether', nexus:'Nexus', prometheus:'Prometheus' };
+          function hxModelCur(){ return (modelSelEl && modelSelEl.value) || 'ether'; }
+          function hxSyncModelUI(){
+            var cur = hxModelCur();
+            if (homeModelName) homeModelName.textContent = MODEL_NAMES[cur] || 'Ether';
+            if (homeModelMenu) homeModelMenu.querySelectorAll('.hxn-mm-item').forEach(function (it) {
+              it.classList.toggle('is-on', it.getAttribute('data-model') === cur);
+            });
+          }
+          function hxCloseModelMenu(){ if (homeModelMenu) homeModelMenu.hidden = true; if (homeModelBtn) homeModelBtn.setAttribute('aria-expanded','false'); }
+          if (homeModelBtn) homeModelBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (!homeModelMenu) return;
+            if (!homeModelMenu.hidden) { hxCloseModelMenu(); return; }
+            hxSyncModelUI();
+            homeModelMenu.hidden = false;
+            homeModelBtn.setAttribute('aria-expanded','true');
           });
+          if (homeModelMenu) homeModelMenu.addEventListener('click', function (e) {
+            var it = e.target.closest && e.target.closest('.hxn-mm-item');
+            if (!it) return;   // let the "Learn more" link navigate
+            e.stopPropagation();
+            var k = it.getAttribute('data-model'); if (!k) return;
+            if (modelSelEl) { modelSelEl.value = k; try { modelSelEl.dispatchEvent(new Event('change', { bubbles: true })); } catch (_) {} }
+            hxSyncModelUI();
+            hxCloseModelMenu();
+          });
+          document.addEventListener('click', function () { hxCloseModelMenu(); });
+          hxSyncModelUI();
 
           // Feature cards → each opens its dedicated, functional workspace.
           el.querySelectorAll('.hx-home-cards .hx-home-card[data-mode]').forEach(function (p) {
