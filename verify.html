@@ -128,7 +128,7 @@
           var session = res && res.data ? res.data.session : null;
           if (session) {
             // Magic-link sign-in succeeded — straight into the portal.
-            window.location.replace('/dashboard');
+            window.location.replace('/chat');
             return;
           }
           if (!email) {
@@ -251,7 +251,7 @@
             }
             // Success: leave submitInFlight = true so we can never re-submit on the redirect tick
             showAlert('verify-success', 'Email verified. Redirecting…');
-            setTimeout(function () { window.location.replace('/dashboard'); }, 600);
+            setTimeout(function () { window.location.replace('/chat'); }, 600);
           } catch (err) {
             var vmsg = (err && err.message) || 'That code did not work.';
             if (/load failed|failed to fetch|networkerror|network request failed|connection|err_network|timed?\s*out/i.test(vmsg)) {

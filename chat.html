@@ -31032,6 +31032,179 @@
         <!-- Mobile drawer backdrop -->
         <div class="hx-chat-backdrop" id="hx-c-backdrop" aria-hidden="true"></div>
 
+        <!-- ── Create with Helix — action sheet (opens from composer +) ── -->
+        <style id="hx-create-sheet-css">
+        #hxcr-back{position:fixed;inset:0;z-index:300;background:rgba(4,4,8,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .22s ease;}
+        #hxcr-back.is-open{opacity:1;pointer-events:auto;}
+        #hxcr-sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,16px);width:100%;max-width:520px;z-index:301;background:linear-gradient(180deg,#14141B,#0C0C12);border:1px solid rgba(255,255,255,.1);border-bottom:0;border-radius:24px 24px 0 0;box-shadow:0 -30px 80px -28px rgba(0,0,0,.9);max-height:90vh;overflow-y:auto;scrollbar-width:none;opacity:0;pointer-events:none;transition:transform .26s cubic-bezier(.2,.8,.2,1),opacity .2s;padding:0 16px calc(env(safe-area-inset-bottom,0px) + 18px);}
+        #hxcr-sheet::-webkit-scrollbar{display:none;}
+        #hxcr-back.is-open #hxcr-sheet{opacity:1;pointer-events:auto;transform:translate(-50%,0);}
+        .hxcr-grab{width:38px;height:4px;border-radius:3px;background:rgba(255,255,255,.18);margin:9px auto 4px;}
+        .hxcr-head{display:flex;align-items:center;justify-content:center;position:relative;padding:8px 0 14px;}
+        .hxcr-x{position:absolute;left:0;top:2px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#ECECF1;cursor:pointer;}
+        .hxcr-x svg{width:17px;height:17px;}
+        .hxcr-title{font-size:16px;font-weight:700;letter-spacing:-.01em;color:#F4F4F5;}
+        .hxcr-sec-l{font:700 10.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;color:#6A6A78;margin:16px 4px 9px;}
+        .hxcr-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+        .hxcr-tile{display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:11px 9px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer;text-align:left;transition:transform .14s,border-color .16s,background .16s;}
+        .hxcr-tile:hover{transform:translateY(-2px);border-color:rgba(124,92,255,.4);background:rgba(124,92,255,.08);}
+        .hxcr-tile:active{transform:scale(.97);}
+        .hxcr-tile-ic{color:#9b7dff;margin-bottom:9px;}
+        .hxcr-tile-ic svg{width:20px;height:20px;}
+        .hxcr-tile-t{font-size:12px;font-weight:700;color:#F4F4F5;letter-spacing:-.01em;}
+        .hxcr-tile-d{font-size:9.5px;color:#8A8A94;line-height:1.3;margin-top:3px;}
+        .hxcr-rows{display:flex;flex-direction:column;gap:7px;}
+        .hxcr-row{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer;text-align:left;transition:background .16s,border-color .16s;}
+        .hxcr-row:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);}
+        .hxcr-row-ic{width:36px;height:36px;flex-shrink:0;border-radius:10px;display:grid;place-items:center;color:#9b7dff;background:rgba(124,92,255,.13);border:1px solid rgba(124,92,255,.22);}
+        .hxcr-row-ic svg{width:18px;height:18px;}
+        .hxcr-row-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+        .hxcr-row-t{font-size:14px;font-weight:600;color:#F4F4F5;letter-spacing:-.01em;}
+        .hxcr-row-d{font-size:11.5px;color:#8A8A94;line-height:1.3;}
+        .hxcr-chev{flex-shrink:0;color:#5A5A66;display:flex;}
+        .hxcr-chev svg{width:18px;height:18px;}
+        .hxcr-meta{flex-shrink:0;color:#9b7dff;font-size:13px;font-weight:600;margin-right:2px;}
+        .hxcr-sw{flex-shrink:0;width:44px;height:26px;border-radius:999px;border:0;background:rgba(255,255,255,.14);position:relative;cursor:pointer;transition:background .18s;padding:0;}
+        .hxcr-sw .hxcr-sw-k{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .18s;box-shadow:0 1px 3px rgba(0,0,0,.4);}
+        .hxcr-sw.is-on{background:linear-gradient(135deg,#8B6CFF,#6D28D9);}
+        .hxcr-sw.is-on .hxcr-sw-k{transform:translateX(18px);}
+        </style>
+        <div id="hxcr-back" aria-hidden="true">
+          <div id="hxcr-sheet" role="dialog" aria-label="Create with Helix">
+            <div class="hxcr-grab"></div>
+            <div class="hxcr-head">
+              <button class="hxcr-x" type="button" id="hxcr-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+              <span class="hxcr-title">Create with Helix</span>
+            </div>
+            <div class="hxcr-sec-l">Start something new</div>
+            <div class="hxcr-tiles">
+              <button class="hxcr-tile" type="button" data-act="newchat">
+                <span class="hxcr-tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg></span>
+                <span class="hxcr-tile-t">New Chat</span><span class="hxcr-tile-d">Start a new conversation</span>
+              </button>
+              <button class="hxcr-tile" type="button" data-act="seed" data-seed="Help me with code — write, fix or improve: ">
+                <span class="hxcr-tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+                <span class="hxcr-tile-t">Code</span><span class="hxcr-tile-d">Open a new code editor</span>
+              </button>
+              <button class="hxcr-tile" type="button" data-act="seed" data-seed="Help me solve this — problem solving and debugging: ">
+                <span class="hxcr-tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2l9 10-9 10-9-10z"/><path d="M7.5 12h9"/></svg></span>
+                <span class="hxcr-tile-t">AI Resolving</span><span class="hxcr-tile-d">Solve problems &amp; debug</span>
+              </button>
+              <button class="hxcr-tile" type="button" data-act="seed" data-seed="Research this — search, analyze and compare information: ">
+                <span class="hxcr-tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg></span>
+                <span class="hxcr-tile-t">Research</span><span class="hxcr-tile-d">Deep research &amp; analyze</span>
+              </button>
+            </div>
+            <div class="hxcr-sec-l">Add content</div>
+            <div class="hxcr-rows">
+              <button class="hxcr-row" type="button" data-act="file">
+                <span class="hxcr-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/></svg></span>
+                <span class="hxcr-row-b"><span class="hxcr-row-t">Upload File</span><span class="hxcr-row-d">Add files or documents</span></span>
+                <span class="hxcr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+              </button>
+              <button class="hxcr-row" type="button" data-act="file">
+                <span class="hxcr-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
+                <span class="hxcr-row-b"><span class="hxcr-row-t">Camera</span><span class="hxcr-row-d">Take a photo</span></span>
+                <span class="hxcr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+              </button>
+              <button class="hxcr-row" type="button" data-act="voice">
+                <span class="hxcr-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg></span>
+                <span class="hxcr-row-b"><span class="hxcr-row-t">Voice Mode</span><span class="hxcr-row-d">Talk with Helix</span></span>
+                <span class="hxcr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+              </button>
+            </div>
+            <div class="hxcr-sec-l">Smart tools</div>
+            <div class="hxcr-rows">
+              <div class="hxcr-row" data-static>
+                <span class="hxcr-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg></span>
+                <span class="hxcr-row-b"><span class="hxcr-row-t">Web Search</span><span class="hxcr-row-d">Search the web in real-time</span></span>
+                <button class="hxcr-sw" type="button" data-tool="web" aria-label="Web Search"><span class="hxcr-sw-k"></span></button>
+              </div>
+              <div class="hxcr-row" data-static>
+                <span class="hxcr-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 3 4-6"/></svg></span>
+                <span class="hxcr-row-b"><span class="hxcr-row-t">Research Mode</span><span class="hxcr-row-d">Deeper, more detailed answers</span></span>
+                <button class="hxcr-sw" type="button" data-tool="research" aria-label="Research Mode"><span class="hxcr-sw-k"></span></button>
+              </div>
+              <div class="hxcr-row" data-static>
+                <span class="hxcr-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></span>
+                <span class="hxcr-row-b"><span class="hxcr-row-t">Deep Thinking</span><span class="hxcr-row-d">Use advanced reasoning</span></span>
+                <button class="hxcr-sw" type="button" data-tool="deep" aria-label="Deep Thinking"><span class="hxcr-sw-k"></span></button>
+              </div>
+              <div class="hxcr-row" data-static>
+                <span class="hxcr-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+                <span class="hxcr-row-b"><span class="hxcr-row-t">Code Interpreter</span><span class="hxcr-row-d">Run code &amp; analyze results</span></span>
+                <button class="hxcr-sw" type="button" data-tool="code" aria-label="Code Interpreter"><span class="hxcr-sw-k"></span></button>
+              </div>
+            </div>
+            <div class="hxcr-sec-l">Workspace</div>
+            <div class="hxcr-rows">
+              <button class="hxcr-row" type="button" data-act="close">
+                <span class="hxcr-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                <span class="hxcr-row-b"><span class="hxcr-row-t">Add to Project</span><span class="hxcr-row-d">Organize in a project</span></span>
+                <span class="hxcr-meta">None</span>
+                <span class="hxcr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+              </button>
+              <button class="hxcr-row" type="button" data-act="close">
+                <span class="hxcr-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="12" r="3"/><path d="M8.5 7.5l7 3M8.5 16.5l7-3"/></svg></span>
+                <span class="hxcr-row-b"><span class="hxcr-row-t">Connectors</span><span class="hxcr-row-d">Connect external tools</span></span>
+                <span class="hxcr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <script>
+        (function(){
+          var back=document.getElementById('hxcr-back');
+          var sheet=document.getElementById('hxcr-sheet');
+          if(!back||!sheet) return;
+          function open(){ syncToggles(); back.classList.add('is-open'); document.body.style.overflow='hidden'; }
+          function close(){ back.classList.remove('is-open'); document.body.style.overflow=''; }
+          window.hxOpenCreate=open; window.hxCloseCreate=close;
+          back.addEventListener('click',function(e){ if(e.target===back) close(); });
+          var x=document.getElementById('hxcr-close'); if(x) x.addEventListener('click',close);
+          // open from any composer "+" trigger
+          document.addEventListener('click',function(e){
+            var t=e.target.closest && e.target.closest('[data-open-create]');
+            if(t){ e.preventDefault(); e.stopPropagation(); open(); }
+          },true);
+          function seed(text){
+            var i=document.getElementById('hx-home-input');
+            if(i && i.offsetParent!==null){ i.value=text; try{i.dispatchEvent(new Event('input',{bubbles:true}));}catch(_){ } i.focus(); return; }
+            var c=document.getElementById('hx-c-input');
+            if(c){ c.value=text; try{c.dispatchEvent(new Event('input',{bubbles:true}));}catch(_){ } c.focus(); }
+          }
+          function clickId(id){ var el=document.getElementById(id); if(el) el.click(); }
+          sheet.addEventListener('click',function(e){
+            var sw=e.target.closest && e.target.closest('.hxcr-sw');
+            if(sw){ var on=sw.classList.toggle('is-on'); applyTool(sw.getAttribute('data-tool'),on); return; }
+            var a=e.target.closest && e.target.closest('[data-act]'); if(!a) return;
+            var act=a.getAttribute('data-act');
+            if(act==='newchat'){ close(); try{ if(typeof newConversation==='function') newConversation(); }catch(_){ } }
+            else if(act==='seed'){ close(); seed(a.getAttribute('data-seed')||''); }
+            else if(act==='file'){ close(); var f=document.getElementById('hx-c-file'); var at=document.getElementById('hx-c-attach'); if(f) f.click(); else if(at) at.click(); }
+            else if(act==='voice'){ close(); clickId('hx-home-mic'); if(!document.getElementById('hx-home-mic')) clickId('hx-c-mic'); }
+            else if(act==='close'){ close(); }
+          });
+          function applyTool(tool,on){
+            try{
+              if(typeof state==='undefined') return;
+              if(tool==='web') state.webEnabled=on;
+              else if(tool==='deep') state.focusMode=on;
+              else if(tool==='code') state.codeEnabled=on;
+              else if(tool==='research') state.researchMode=on;
+            }catch(_){ }
+          }
+          function setSw(tool,on){ var s=sheet.querySelector('.hxcr-sw[data-tool="'+tool+'"]'); if(s) s.classList.toggle('is-on',!!on); }
+          function syncToggles(){
+            var st=(typeof state!=='undefined')?state:{};
+            setSw('web', st.webEnabled!==false);
+            setSw('research', st.researchMode!==undefined?st.researchMode:true);
+            setSw('deep', !!st.focusMode);
+            setSw('code', st.codeEnabled!==undefined?st.codeEnabled:true);
+          }
+        })();
+        </script>
+
         <!-- Main chat pane -->
         <section class="hx-chat-pane">
           <!-- Per-model ambient atmosphere layers — particles tied to data-model -->
@@ -36078,7 +36251,7 @@
                 '<textarea class="hxn-input" id="hx-home-input" rows="1" placeholder="Ask anything…" autocomplete="off" spellcheck="true"></textarea>' +
                 '<div class="hxn-row">' +
                   '<div class="hxn-tools">' +
-                    '<button class="hxn-ic" type="button" data-pill="sources" aria-label="Attach">' + icPlus + '</button>' +
+                    '<button class="hxn-ic" type="button" data-pill="sources" data-open-create aria-label="Create">' + icPlus + '</button>' +
                     '<button class="hxn-ic" type="button" data-pill="web" aria-label="Web search">' + S.web + '</button>' +
                     '<button class="hxn-ic" type="button" data-pill="focus" aria-label="Focus">' + homeSpark + '</button>' +
                   '</div>' +
