@@ -35965,18 +35965,19 @@
               R + '.hxn-model-ic{display:grid;place-items:center;color:var(--v) !important;}',
               R + '.hxn-model-ic svg{width:14px !important;height:14px !important;color:var(--v) !important;}',
               R + '.hxn-model-name{color:var(--ink);}',
-              R + '.hxn-mm{position:absolute;top:calc(100% + 8px);right:0;width:248px;background:linear-gradient(180deg,rgba(26,26,34,.93),rgba(16,16,22,.93));-webkit-backdrop-filter:blur(30px) saturate(185%);backdrop-filter:blur(30px) saturate(185%);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:6px;box-shadow:0 40px 90px -22px rgba(0,0,0,.95),0 6px 20px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.07);z-index:60;display:flex;flex-direction:column;gap:1px;transform-origin:top right;animation:hxMmIn .19s cubic-bezier(.2,.8,.2,1) both;}',
+              R + '.hxn-mm{position:absolute;top:calc(100% + 7px);right:0;width:168px;background:linear-gradient(180deg,rgba(26,26,34,.94),rgba(16,16,22,.94));-webkit-backdrop-filter:blur(30px) saturate(185%);backdrop-filter:blur(30px) saturate(185%);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:4px;box-shadow:0 40px 90px -22px rgba(0,0,0,.95),0 6px 20px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.07);z-index:60;display:flex;flex-direction:column;gap:1px;transform-origin:top right;animation:hxMmIn .19s cubic-bezier(.2,.8,.2,1) both;}',
               '@keyframes hxMmIn{0%{opacity:0;transform:translateY(-8px) scale(.96);}100%{opacity:1;transform:translateY(0) scale(1);}}',
               R + '.hxn-mm[hidden]{display:none !important;}',
-              R + '.hxn-mm-item{position:relative;display:flex;align-items:center;gap:10px;width:100%;padding:7px 9px;border-radius:10px;background:transparent;border:0;cursor:pointer;text-align:left;transition:background .16s,transform .12s;}',
+              R + '.hxn-mm-item{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;padding:7px 10px;border-radius:9px;background:transparent;border:0;cursor:pointer;text-align:left;transition:background .16s,transform .12s;}',
               R + '.hxn-mm-item:hover{background:rgba(255,255,255,.06);}',
               R + '.hxn-mm-item:active{transform:scale(.985);}',
               R + '.hxn-mm-item.is-on{background:linear-gradient(180deg,rgba(124,92,255,.14),rgba(124,92,255,.07));box-shadow:inset 0 0 0 1px rgba(124,92,255,.22);}',
               R + '.hxn-mm-ic{width:30px;height:30px;flex-shrink:0;border-radius:8px;display:grid;place-items:center;background:rgba(124,92,255,.14);border:1px solid rgba(124,92,255,.26);color:var(--v);box-shadow:0 0 14px -4px rgba(124,92,255,.5);}',
               R + '.hxn-mm-ic svg{width:15px;height:15px;}',
               R + '.hxn-mm-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}',
-              R + '.hxn-mm-t{font-size:14px;font-weight:600;color:var(--ink);letter-spacing:-.01em;}',
-              R + '.hxn-mm-d{font-size:10.5px;color:var(--mid);}',
+              R + '.hxn-mm-t{font-size:13.5px;font-weight:600;color:var(--ink);letter-spacing:-.01em;}',
+              R + '.hxn-mm-item.is-on .hxn-mm-t{color:var(--v);}',
+              R + '.hxn-mm-d{font-size:10.5px;color:var(--mid);line-height:1.25;}',
               R + '.hxn-mm-check{width:16px;flex-shrink:0;margin-right:4px;display:grid;place-items:center;color:var(--v);opacity:0;}',
               R + '.hxn-mm-item.is-on .hxn-mm-check{opacity:1;}',
               R + '.hxn-mm-check svg{width:16px;height:16px;}',
@@ -36044,26 +36045,18 @@
               '<span class="hxn-title">Helix</span>' +
               '<div class="hxn-modelwrap">' +
                 '<button class="hxn-model" type="button" id="hx-home-model" aria-haspopup="menu" aria-expanded="false">' +
-                  '<span class="hxn-model-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.5 5L19 8.5l-5.5 1.5L12 15l-1.5-5L5 8.5 10.5 7z"/></svg></span>' +
                   '<span class="hxn-model-name" id="hx-home-model-name">Ether</span>' + S.chevD +
                 '</button>' +
                 '<div class="hxn-mm" id="hx-home-modelmenu" role="menu" hidden>' +
                   '<button class="hxn-mm-item" type="button" role="menuitemradio" data-model="ether">' +
-                    '<span class="hxn-mm-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.5 5L19 8.5l-5.5 1.5L12 15l-1.5-5L5 8.5 10.5 7z"/></svg></span>' +
-                    '<span class="hxn-mm-body"><span class="hxn-mm-t">Ether</span><span class="hxn-mm-d">Fast &amp; intelligent</span></span>' +
-                    '<span class="hxn-mm-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+                    '<span class="hxn-mm-t">Ether</span><span class="hxn-mm-d">Γρήγορες απαντήσεις</span>' +
                   '</button>' +
                   '<button class="hxn-mm-item" type="button" role="menuitemradio" data-model="nexus">' +
-                    '<span class="hxn-mm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l8 4.5-8 4.5-8-4.5z"/><path d="M4 12l8 4.5 8-4.5"/></svg></span>' +
-                    '<span class="hxn-mm-body"><span class="hxn-mm-t">Nexus</span><span class="hxn-mm-d">Balanced &amp; powerful</span></span>' +
-                    '<span class="hxn-mm-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+                    '<span class="hxn-mm-t">Nexus</span><span class="hxn-mm-d">Σύνθετες εργασίες</span>' +
                   '</button>' +
                   '<button class="hxn-mm-item" type="button" role="menuitemradio" data-model="prometheus">' +
-                    '<span class="hxn-mm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-2 4-2 7a2 2 0 0 0 4 0c2 2 2 4 2 5a4 4 0 0 1-8 0c0-4 4-5 4-12z"/></svg></span>' +
-                    '<span class="hxn-mm-body"><span class="hxn-mm-t">Prometheus</span><span class="hxn-mm-d">Advanced reasoning</span></span>' +
-                    '<span class="hxn-mm-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+                    '<span class="hxn-mm-t">Prometheus</span><span class="hxn-mm-d">Βαθιά ανάλυση και reasoning</span>' +
                   '</button>' +
-                  '<a class="hxn-mm-learn" href="/models">Learn more about models</a>' +
                 '</div>' +
               '</div>' +
             '</header>' +
