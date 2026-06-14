@@ -31419,9 +31419,16 @@
                     class="hx-chat-tool-btn"
                     id="hx-c-attach"
                     type="button"
-                    aria-label="Attach files"
-                    title="Attach an image or document">
+                    data-open-create
+                    aria-label="Create"
+                    title="Create with Helix">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  </button>
+                  <button class="hx-chat-tool-btn hx-cc-web" id="hx-c-web" type="button" aria-label="Web search" title="Web search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg>
+                  </button>
+                  <button class="hx-chat-tool-btn hx-cc-focus" id="hx-c-focus" type="button" aria-label="Focus" title="Focus">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/></svg>
                   </button>
                   <input
                     type="file"
@@ -41026,5 +41033,53 @@
     html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content{ line-height:1.6; }
     html body[data-active="chat"] .hx-msg-followups{ margin-top:14px; }
   </style>
+  <!-- Final 1:1 parity: identical chatbar, purple user bubble, violet send, clean header -->
+  <style id="hx-convo-final">
+    /* User message bubble — purple, right (beats dark-theme specificity) */
+    html[data-theme] body[data-active="chat"] .hx-msg.is-user .hx-msg-content{
+      background:linear-gradient(135deg,#7C5CFF,#6D28D9) !important; color:#fff !important;
+      border:0 !important; border-radius:18px 18px 6px 18px !important; padding:11px 15px !important;
+      max-width:80%; margin-left:auto !important; width:fit-content; box-shadow:0 8px 22px -12px rgba(124,92,255,.6) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-msg.is-user{ justify-content:flex-end !important; }
+    html[data-theme] body[data-active="chat"] .hx-msg.is-user .hx-msg-body{ align-items:flex-end !important; }
+    /* Composer chatbar — identical to Helix Home: dark, + web focus … mic, violet send */
+    html[data-theme] body[data-active="chat"] .hx-chat-input-bar{
+      background:rgba(255,255,255,.04) !important; border:1px solid rgba(255,255,255,.09) !important;
+      border-radius:18px !important; box-shadow:none !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-input-bar:focus-within{ border-color:rgba(124,92,255,.5) !important; box-shadow:0 0 0 3px rgba(124,92,255,.1) !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-textarea{ color:#ECECF1 !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-textarea::placeholder{ color:#6A6A78 !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-tool-btn{ color:#9A9AA6 !important; background:transparent !important; border:0 !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-tool-btn:hover{ color:#ECECF1 !important; background:rgba(255,255,255,.06) !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-tool-btn.is-on{ color:#9b7dff !important; }
+    /* Send — violet circle (never orange) */
+    html[data-theme] body[data-active="chat"] .hx-chat-send{
+      background:linear-gradient(135deg,#8B6CFF,#6D28D9) !important; color:#fff !important;
+      border:0 !important; border-radius:50% !important; box-shadow:0 8px 22px -8px rgba(124,92,255,.7) !important;
+    }
+    html[data-theme] body[data-active="chat"] .hx-chat-send:disabled{ opacity:.45 !important; box-shadow:none !important; background:rgba(255,255,255,.10) !important; color:#8A8A94 !important; }
+    /* Header — Helix logo (set by JS), clean: no ⋮, no Share */
+    html body[data-active="chat"] #hx-c-more-btn,
+    html body[data-active="chat"] #hx-c-share-btn,
+    html body[data-active="chat"] .hx-chat-head-actions,
+    html body[data-active="chat"] .hx-chat-head-divider{ display:none !important; }
+    /* Sources label cosmetics to match reference ("Sources", not SOURCES) */
+    html body[data-active="chat"] .hx-msg-sources-head span{ text-transform:none !important; letter-spacing:0 !important; }
+  </style>
+  <script>
+  (function(){
+    function wire(){
+      var w=document.getElementById('hx-c-web'), f=document.getElementById('hx-c-focus');
+      if(w && !w.__hxw){ w.__hxw=1; try{ w.classList.toggle('is-on', !(window.state)|| state.webEnabled!==false); }catch(e){}
+        w.addEventListener('click',function(){ this.classList.toggle('is-on'); try{ state.webEnabled=this.classList.contains('is-on'); }catch(e){} }); }
+      if(f && !f.__hxw){ f.__hxw=1; try{ f.classList.toggle('is-on', !!(window.state&&state.focusMode)); }catch(e){}
+        f.addEventListener('click',function(){ this.classList.toggle('is-on'); try{ state.focusMode=this.classList.contains('is-on'); }catch(e){} }); }
+    }
+    wire(); try{ document.addEventListener('DOMContentLoaded', wire); }catch(e){}
+    setTimeout(wire,300); setTimeout(wire,1200);
+  })();
+  </script>
 </body>
 </html>
