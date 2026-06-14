@@ -31794,6 +31794,17 @@
   </div>
 
   <script src="/platform.js"></script>
+  <script>
+    /* Helix conversation is always the dark Helix experience — never the
+       legacy light/white chat. Force dark right after platform.js sets the
+       global (light-default) theme, so there's no flash and no legacy look. */
+    (function(){
+      function dark(){ try{ document.documentElement.setAttribute('data-theme','dark'); document.documentElement.style.colorScheme='dark'; }catch(e){} }
+      dark();
+      try{ document.addEventListener('DOMContentLoaded', dark); }catch(e){}
+      setTimeout(dark,0); setTimeout(dark,200);
+    })();
+  </script>
   <script src="/hx-workbench.js"></script>
   <script>
     /* HelveX Chat workspace.
@@ -40907,6 +40918,22 @@
     strip();
     try { document.addEventListener('DOMContentLoaded', strip); } catch(e){}
     setTimeout(strip, 0); setTimeout(strip, 300); setTimeout(strip, 1200);
+  })();
+  </script>
+  <!-- Conversation header: Helix logo (opens Conversations) instead of a hamburger; clean actions. -->
+  <style id="hx-convo-helix">
+    html body[data-active="chat"] #hx-c-drawer-toggle{ display:grid !important; place-items:center; width:40px; height:40px; border-radius:12px; background:transparent !important; border:0 !important; color:#9b7dff !important; cursor:pointer; }
+    html body[data-active="chat"] #hx-c-drawer-toggle svg{ width:24px !important; height:24px !important; filter:drop-shadow(0 0 8px rgba(124,92,255,.55)); }
+    html body[data-active="chat"] #hx-c-share-btn,
+    html body[data-active="chat"] #hx-c-more-btn,
+    html body[data-active="chat"] .hx-chat-head-divider{ display:none !important; }
+  </style>
+  <script>
+  (function(){
+    var GLYPH='<svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><defs><linearGradient id="hxtg" x1="16" y1="2" x2="16" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c2a9ff"/><stop offset="1" stop-color="#6d28d9"/></linearGradient></defs><path d="M27.5 16A11.5 11.5 0 1 0 16 27.5" stroke="url(#hxtg)" stroke-width="3.5" stroke-linecap="round"/><path d="M16 21.5A5.5 5.5 0 1 1 21.5 16" stroke="url(#hxtg)" stroke-width="3.5" stroke-linecap="round"/><path d="M16 1.6l2.6 2.9L16 7.4 13.4 4.5z" fill="url(#hxtg)"/></svg>';
+    function logo(){ var b=document.getElementById('hx-c-drawer-toggle'); if(b && b.getAttribute('data-hx-logo')!=='1'){ b.innerHTML=GLYPH; b.setAttribute('data-hx-logo','1'); b.setAttribute('aria-label','Conversations'); } }
+    logo(); try{ document.addEventListener('DOMContentLoaded', logo); }catch(e){}
+    setTimeout(logo,0); setTimeout(logo,300); setTimeout(logo,1200);
   })();
   </script>
 </body>
