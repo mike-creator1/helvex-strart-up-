@@ -35901,43 +35901,227 @@
             document.head.appendChild(st);
           })();
 
+          // ═══════════════════════════════════════════════════════════
+          // HOME — full rebuild as the "Helix Console": a dark, dense
+          // premium AI product dashboard. New header, hero, command
+          // center, capability grid, quick actions and a sidebar. All
+          // original JS hooks (ids + data-* + reused hook classes) are
+          // preserved so the existing wiring keeps working untouched.
+          // Styled under #hx-home.hxd with high-specificity overrides so
+          // none of the legacy home CSS leaks through.
+          // ═══════════════════════════════════════════════════════════
+          (function injectHomeConsoleV3(){
+            if (document.getElementById('hx-home-console-v3')) return;
+            var st = document.createElement('style'); st.id = 'hx-home-console-v3';
+            var R0 = 'body[data-active="chat"] #hx-home.hxd';
+            var R  = R0 + ' ';
+            st.textContent = [
+              /* ── canvas / tokens ─────────────────────────────────── */
+              R0 + '{--v:#7C5CFF;--v2:#22D3EE;--ink:#F5F5F7;--mid:#A6A6B2;--dim:#6C6C78;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.15);--surf:rgba(255,255,255,.035);--surf2:rgba(255,255,255,.07);--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;display:flex !important;flex-direction:column !important;background:radial-gradient(120% 62% at 10% -10%,rgba(124,92,255,.18),transparent 58%),radial-gradient(90% 60% at 102% -4%,rgba(34,211,238,.11),transparent 52%),#07070B !important;animation:hxHomeIn .42s cubic-bezier(.16,1,.3,1) both !important;}',
+              R0 + '::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:46px 46px;-webkit-mask:radial-gradient(120% 70% at 50% 0%,#000,transparent 72%);mask:radial-gradient(120% 70% at 50% 0%,#000,transparent 72%);z-index:0;}',
+
+              /* ── top app bar ─────────────────────────────────────── */
+              R + '.hxd-bar{position:relative;z-index:5;display:flex;align-items:center;gap:16px;flex-shrink:0;padding:15px clamp(18px,4vw,52px);background:rgba(7,7,11,.66);backdrop-filter:saturate(160%) blur(18px);-webkit-backdrop-filter:saturate(160%) blur(18px);border-bottom:1px solid var(--line);}',
+              R + '.hxd-bar-l{display:flex;align-items:center;gap:13px;min-width:0;}',
+              R + '.hxd-menu{width:40px;height:40px;flex-shrink:0;border-radius:12px;display:grid;place-items:center;background:var(--surf);border:1px solid var(--line);color:var(--ink);cursor:pointer;transition:background .16s,border-color .16s;}',
+              R + '.hxd-menu:hover{background:var(--surf2);border-color:var(--line2);}',
+              R + '.hxd-menu svg{width:19px;height:19px;}',
+              R + '.hxd-brand{display:flex;align-items:center;gap:9px;min-width:0;}',
+              R + '.hxd-brand .hx-home-glyph{width:24px !important;height:24px !important;filter:drop-shadow(0 0 8px rgba(124,92,255,.55));}',
+              R + '.hxd-brand-name{font-size:17px;font-weight:800;letter-spacing:-.02em;color:var(--ink);}',
+              R + '.hxd-brand-tag{font:600 9.5px/1 var(--mono);letter-spacing:.24em;color:var(--dim);border:1px solid var(--line2);padding:4px 7px;border-radius:6px;}',
+              R + '.hxd-bar-r{margin-left:auto;display:flex;align-items:center;gap:9px;}',
+              R + '.hxd-kbd{display:none;align-items:center;gap:7px;font:600 11.5px/1 var(--mono);color:var(--dim);background:var(--surf);border:1px solid var(--line);padding:8px 11px;border-radius:9px;}',
+              R + '.hxd-kbd b{color:var(--mid);font-weight:700;}',
+              R + '.hxd-live{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--mid);background:var(--surf);border:1px solid var(--line);padding:7px 13px;border-radius:999px;white-space:nowrap;}',
+              R + '.hxd-live b{color:var(--v);font-weight:700;}',
+              R + '.hxd-live-dot{width:7px;height:7px;border-radius:50%;background:#34d27b;animation:hxdPulse 2.4s ease-out infinite;}',
+              '@keyframes hxdPulse{0%{box-shadow:0 0 0 0 rgba(52,210,123,.5);}70%{box-shadow:0 0 0 7px rgba(52,210,123,0);}100%{box-shadow:0 0 0 0 rgba(52,210,123,0);}}',
+
+              /* ── scroll region ───────────────────────────────────── */
+              R + '.hx-home-scroll{position:relative;z-index:1;display:block !important;max-width:1280px !important;margin:0 auto !important;width:100% !important;box-sizing:border-box;padding:30px clamp(18px,4vw,52px) 84px !important;}',
+
+              /* ── hero ────────────────────────────────────────────── */
+              R + '.hxd-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:28px;flex-wrap:wrap;margin:6px 0 4px;}',
+              R + '.hxd-hero-main{min-width:0;}',
+              R + '.hxd-eyebrow{display:inline-flex;align-items:center;gap:10px;font:600 11px/1 var(--mono);letter-spacing:.3em;color:var(--dim);}',
+              R + '.hxd-eyebrow i{width:26px;height:1.5px;background:linear-gradient(90deg,var(--v),transparent);}',
+              R + '.hxd-greet{font-size:clamp(34px,5.2vw,54px) !important;font-weight:800 !important;letter-spacing:-.038em !important;line-height:1.0 !important;margin:15px 0 0 !important;color:var(--ink) !important;text-align:left !important;text-transform:none !important;font-family:Inter,system-ui,sans-serif !important;}',
+              R + '.hxd-greet::after{content:none !important;}',
+              R + '.hxd-greet .hx-home-greet-1{display:inline !important;white-space:normal !important;color:var(--ink) !important;}',
+              R + '.hxd-greet .hx-home-greet-2{display:inline !important;white-space:normal !important;color:var(--v) !important;margin-left:.32em;}',
+              R + '.hxd-sub{font-size:15.5px !important;color:var(--mid) !important;margin:15px 0 0 !important;text-align:left !important;letter-spacing:-.01em !important;font-weight:400 !important;max-width:580px;}',
+              R + '.hxd-hero-stats{display:flex;gap:9px;}',
+              R + '.hxd-stat{min-width:92px;padding:11px 14px;border-radius:13px;background:var(--surf);border:1px solid var(--line);}',
+              R + '.hxd-stat-k{display:block;font:600 9px/1 var(--mono);letter-spacing:.16em;color:var(--dim);margin-bottom:8px;}',
+              R + '.hxd-stat-v{display:block;font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em;}',
+
+              /* ── 2-col dashboard body ────────────────────────────── */
+              R + '.hxd-body{display:grid;grid-template-columns:1fr;gap:20px;margin-top:24px;}',
+
+              /* ── command center ──────────────────────────────────── */
+              R + '.hxd-cmd{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02));border:1px solid var(--line2);border-radius:22px;padding:15px 15px 13px;box-shadow:0 34px 80px -46px rgba(0,0,0,.95);transition:border-color .18s,box-shadow .18s;}',
+              R + '.hxd-cmd:focus-within{border-color:rgba(124,92,255,.55);box-shadow:0 0 0 4px rgba(124,92,255,.13),0 34px 80px -46px rgba(0,0,0,.95);}',
+              R + '.hxd-cmd-head{display:flex;align-items:center;gap:9px;margin:2px 4px 11px;}',
+              R + '.hxd-cmd-dot{width:8px;height:8px;border-radius:50%;background:var(--v);box-shadow:0 0 10px rgba(124,92,255,.75);}',
+              R + '.hxd-cmd-label{font:600 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mid);}',
+              R + '.hxd-cmd-hint{margin-left:auto;font:500 11px/1 var(--mono);color:var(--dim);}',
+              R + '.hxd-input{width:100% !important;border:0 !important;outline:0 !important;background:transparent !important;resize:none !important;color:var(--ink) !important;font-size:17px !important;line-height:1.5 !important;font-weight:450 !important;padding:4px 6px !important;min-height:30px;max-height:160px;letter-spacing:-.01em;font-family:Inter,system-ui,sans-serif !important;}',
+              R + '.hxd-input::placeholder{color:var(--dim) !important;}',
+              R + '.hxd-cmd-bar{display:flex;align-items:center;gap:9px;margin-top:11px;flex-wrap:wrap;}',
+              R + '.hxd-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}',
+              R + '.hxd-tool{display:inline-flex !important;align-items:center;gap:7px;padding:9px 13px !important;border-radius:11px !important;background:var(--surf) !important;border:1px solid var(--line) !important;color:var(--mid) !important;font-size:13px !important;font-weight:600 !important;letter-spacing:-.01em;cursor:pointer;transition:color .16s,background .16s,border-color .16s !important;box-shadow:none !important;}',
+              R + '.hxd-tool svg{width:16px;height:16px;}',
+              R + '.hxd-tool:hover{color:var(--ink) !important;border-color:var(--line2) !important;background:var(--surf2) !important;}',
+              R + '.hxd-tool.is-on{color:#fff !important;background:color-mix(in srgb,var(--v) 28%,transparent) !important;border-color:color-mix(in srgb,var(--v) 58%,transparent) !important;}',
+              R + '.hxd-cmd-actions{margin-left:auto;display:flex;align-items:center;gap:9px;}',
+              R + '.hxd-mic{width:42px;height:42px;flex-shrink:0;border-radius:12px;display:grid;place-items:center;background:var(--surf) !important;border:1px solid var(--line) !important;color:var(--mid) !important;cursor:pointer;transition:color .16s,border-color .16s;}',
+              R + '.hxd-mic:hover{color:var(--ink) !important;border-color:var(--line2) !important;}',
+              R + '.hxd-mic svg{width:19px;height:19px;}',
+              R + '.hxd-send{display:inline-flex !important;align-items:center;gap:8px;height:42px;padding:0 18px !important;border-radius:12px !important;border:0 !important;cursor:pointer;font-size:14px;font-weight:700;letter-spacing:-.01em;color:#fff !important;background:linear-gradient(135deg,#8B6CFF,#6D28D9) !important;box-shadow:0 14px 32px -14px rgba(124,92,255,.75) !important;transition:transform .14s,box-shadow .18s;}',
+              R + '.hxd-send:hover{transform:translateY(-1px);box-shadow:0 18px 40px -14px rgba(124,92,255,.85) !important;}',
+              R + '.hxd-send svg{width:17px;height:17px;}',
+
+              /* ── section labels ──────────────────────────────────── */
+              R + '.hxd-sec{display:flex;align-items:center;gap:12px;margin:28px 2px 13px;}',
+              R + '.hxd-sec-t{font:700 11.5px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--mid);white-space:nowrap;}',
+              R + '.hxd-sec::after{content:"";flex:1;height:1px;background:var(--line);}',
+              R + '.hxd-sec-meta{font:700 11.5px/1 var(--mono);color:var(--dim);letter-spacing:.1em;}',
+
+              /* ── capabilities (reuses .hx-home-card hooks) ───────── */
+              R + '.hxd-caps{display:grid !important;grid-template-columns:repeat(2,1fr) !important;gap:11px !important;margin:0 !important;counter-reset:hxcap;}',
+              R + '.hxd-caps .hx-home-card{position:relative !important;display:flex !important;flex-direction:column !important;align-items:flex-start !important;text-align:left !important;gap:0 !important;padding:17px 15px 15px !important;border-radius:16px !important;background:var(--surf) !important;border:1px solid var(--line) !important;box-shadow:none !important;cursor:pointer;overflow:hidden;transition:transform .16s cubic-bezier(.2,.8,.2,1),border-color .16s,background .16s !important;}',
+              R + '.hxd-caps .hx-home-card::before{counter-increment:hxcap;content:counter(hxcap,decimal-leading-zero);position:absolute;top:14px;right:15px;font:700 11px/1 var(--mono);color:var(--dim);}',
+              R + '.hxd-caps .hx-home-card::after{content:"" !important;position:absolute !important;left:0;top:15px;bottom:15px;width:2px;border-radius:2px;background:var(--wc,var(--v));opacity:0;transition:opacity .16s;display:block !important;}',
+              R + '.hxd-caps .hx-home-card:hover{transform:translateY(-3px) !important;border-color:color-mix(in srgb,var(--wc,var(--v)) 50%,var(--line)) !important;background:var(--surf2) !important;}',
+              R + '.hxd-caps .hx-home-card:hover::after,' + R + '.hxd-caps .hx-home-card.is-on::after{opacity:1;}',
+              R + '.hxd-caps .hx-home-card.is-on{border-color:color-mix(in srgb,var(--wc,var(--v)) 60%,transparent) !important;}',
+              R + '.hxd-caps .hx-home-card-ic{width:44px !important;height:44px !important;border-radius:13px !important;display:grid !important;place-items:center !important;margin:0 0 28px !important;color:var(--wc,var(--v)) !important;background:color-mix(in srgb,var(--wc,var(--v)) 15%,transparent) !important;border:1px solid color-mix(in srgb,var(--wc,var(--v)) 26%,transparent) !important;filter:none !important;}',
+              R + '.hxd-caps .hx-home-card-ic svg{width:22px !important;height:22px !important;}',
+              R + '.hxd-caps .hx-home-card-t{font-size:15.5px !important;font-weight:700 !important;letter-spacing:-.02em !important;color:var(--ink) !important;text-transform:none !important;}',
+              R + '.hxd-caps .hx-home-card-d{font-size:12.5px !important;color:var(--mid) !important;margin-top:6px !important;line-height:1.45 !important;text-align:left !important;}',
+
+              /* ── quick actions (reuses .hx-ws-cat hooks) ─────────── */
+              R + '.hxd-quick{display:flex;flex-wrap:wrap;gap:9px;margin:0;}',
+              R + '.hxd-quick .hx-ws-cat{padding:10px 15px !important;border-radius:11px !important;background:var(--surf) !important;border:1px solid var(--line) !important;color:var(--mid) !important;font-size:13px !important;font-weight:600 !important;letter-spacing:-.01em;cursor:pointer;transition:color .16s,background .16s,border-color .16s !important;}',
+              R + '.hxd-quick .hx-ws-cat::before{content:"/";color:var(--dim);margin-right:7px;font-family:var(--mono);}',
+              R + '.hxd-quick .hx-ws-cat:hover{color:var(--ink) !important;border-color:color-mix(in srgb,var(--v) 45%,var(--line)) !important;background:var(--surf2) !important;}',
+
+              /* ── smart cards (reuses .hx-smart-card hooks) ───────── */
+              R + '.hxd-smart{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:13px;}',
+              R + '.hxd-smart .hx-smart-card{position:relative !important;display:flex !important;flex-direction:column;align-items:flex-start;gap:7px !important;text-align:left;padding:15px 42px 15px 15px !important;border-radius:15px !important;background:var(--surf) !important;border:1px solid var(--line) !important;box-shadow:none !important;cursor:pointer;transition:transform .16s,background .16s,border-color .16s !important;}',
+              R + '.hxd-smart .hx-smart-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--v2) 45%,var(--line)) !important;background:var(--surf2) !important;}',
+              R + '.hxd-smart .hx-smart-tag{font:700 10px/1 var(--mono) !important;letter-spacing:.08em;text-transform:uppercase;color:var(--v2) !important;background:color-mix(in srgb,var(--v2) 15%,transparent) !important;padding:4px 8px !important;border-radius:6px !important;}',
+              R + '.hxd-smart .hx-smart-t{font-size:14.5px !important;font-weight:700 !important;color:var(--ink) !important;letter-spacing:-.01em;text-transform:none !important;}',
+              R + '.hxd-smart .hx-smart-d{font-size:12px !important;color:var(--mid) !important;line-height:1.45;}',
+              R + '.hxd-smart .hx-smart-arr{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--dim) !important;display:flex;}',
+              R + '.hxd-smart .hx-smart-arr svg{width:17px;height:17px;}',
+
+              /* ── sidebar panels ──────────────────────────────────── */
+              R + '.hxd-col-side{display:flex;flex-direction:column;gap:15px;}',
+              R + '.hxd-panel{background:var(--surf);border:1px solid var(--line);border-radius:18px;padding:15px;}',
+              R + '.hxd-panel-h{display:flex;align-items:center;gap:10px;margin-bottom:12px;}',
+              R + '.hxd-panel-h>span{font:700 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mid);}',
+              R + '.hxd-panel-link{margin-left:auto;background:none !important;border:0 !important;color:var(--v) !important;font-size:12.5px !important;font-weight:600 !important;cursor:pointer;padding:0 !important;}',
+              R + '.hxd-wf{display:flex;flex-direction:column;gap:9px;}',
+              R + '.hxd-wf .hx-wf-card{display:flex !important;flex-direction:row !important;align-items:center;gap:12px;padding:11px 12px !important;border-radius:13px !important;background:var(--surf) !important;border:1px solid var(--line) !important;box-shadow:none !important;cursor:pointer;transition:background .16s,border-color .16s !important;}',
+              R + '.hxd-wf .hx-wf-card:hover{border-color:color-mix(in srgb,var(--wc,var(--v)) 50%,var(--line)) !important;background:var(--surf2) !important;transform:none !important;}',
+              R + '.hxd-wf .hx-wf-ic{width:38px !important;height:38px !important;flex-shrink:0;border-radius:11px !important;display:grid;place-items:center;color:var(--wc,var(--v)) !important;background:color-mix(in srgb,var(--wc,var(--v)) 15%,transparent) !important;}',
+              R + '.hxd-wf .hx-wf-ic svg{width:19px;height:19px;}',
+              R + '.hxd-wf .hx-wf-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}',
+              R + '.hxd-wf .hx-wf-t{font-size:13.5px !important;font-weight:700 !important;color:var(--ink) !important;text-transform:none !important;letter-spacing:-.01em;}',
+              R + '.hxd-wf .hx-wf-d{font-size:11.5px !important;color:var(--mid) !important;line-height:1.35;}',
+              R + '.hxd-wf .hx-wf-arr{display:none !important;}',
+
+              /* ── recent sessions (reuses #hx-home-recent hooks) ──── */
+              R + '.hxd-recent{display:flex !important;flex-direction:column !important;gap:8px !important;grid-template-columns:none !important;}',
+              R + '.hxd-recent .hx-home-rec{display:flex !important;align-items:center;gap:11px;padding:10px 11px !important;border-radius:12px !important;background:var(--surf) !important;border:1px solid var(--line) !important;box-shadow:none !important;cursor:pointer;transition:background .16s,border-color .16s !important;}',
+              R + '.hxd-recent .hx-home-rec:hover{border-color:var(--line2) !important;background:var(--surf2) !important;}',
+              R + '.hxd-recent .hx-home-rec-ic{width:34px !important;height:34px !important;flex-shrink:0;border-radius:10px !important;display:grid;place-items:center;background:var(--surf2) !important;color:var(--mid) !important;border:1px solid var(--line) !important;}',
+              R + '.hxd-recent .hx-home-rec-ic svg{width:17px;height:17px;}',
+              R + '.hxd-recent .hx-home-rec-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}',
+              R + '.hxd-recent .hx-home-rec-t{font-size:13px !important;font-weight:600 !important;color:var(--ink) !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}',
+              R + '.hxd-recent .hx-home-rec-m{font:500 11px/1 var(--mono) !important;color:var(--dim) !important;}',
+              R + '.hxd-recent .hx-home-rec-act{flex-shrink:0;color:var(--dim) !important;}',
+              R + '.hxd-recent .hx-home-rec-empty{grid-column:1/-1;padding:16px 14px !important;border-radius:12px !important;background:var(--surf) !important;border:1px dashed var(--line2) !important;color:var(--mid) !important;font-size:12.5px !important;text-align:left;line-height:1.5;}',
+              R + '.hxd-tip-text{font-size:12.5px;color:var(--mid);line-height:1.55;margin:0;}',
+              R + '.hxd-tip-text b{color:var(--ink);font-weight:650;}',
+
+              /* ── responsive ──────────────────────────────────────── */
+              '@media (max-width:719px){' + R + '.hxd-hero-stats{display:none;}}',
+              '@media (max-width:540px){' + R + '.hxd-caps{grid-template-columns:1fr !important;}' + R + '.hxd-smart{grid-template-columns:1fr;}' + R + '.hxd-send span{display:none;}' + R + '.hxd-send{padding:0 13px !important;}}',
+              '@media (min-width:760px){' + R + '.hxd-kbd{display:inline-flex;}}',
+              '@media (min-width:1080px){' + R + '.hxd-body{grid-template-columns:minmax(0,1fr) 348px;gap:24px;align-items:start;}' + R + '.hxd-col-side{position:sticky;top:18px;}}'
+            ].join('\n');
+            document.head.appendChild(st);
+          })();
+
+          var sendArrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+
           var el = document.createElement('div');
-          el.id = 'hx-home'; el.hidden = true;
+          el.id = 'hx-home'; el.className = 'hxd'; el.hidden = true;
           el.innerHTML =
-            '<div class="hx-home-bar">' +
-              '<button class="hx-home-menu" type="button" id="hx-home-menu" aria-label="Menu">' + S.menu + '</button>' +
-              '<div class="hx-home-brand">' + glyph + '<span class="hx-home-brand-name">Helix</span><span class="hx-home-brand-pro">PRO</span></div>' +
-              aiStatus +
-            '</div>' +
+            '<header class="hxd-bar">' +
+              '<div class="hxd-bar-l">' +
+                '<button class="hxd-menu" type="button" id="hx-home-menu" aria-label="Menu">' + S.menu + '</button>' +
+                '<div class="hxd-brand">' + glyph + '<span class="hxd-brand-name">Helix</span><span class="hxd-brand-tag">CONSOLE</span></div>' +
+              '</div>' +
+              '<div class="hxd-bar-r">' +
+                '<span class="hxd-kbd"><b>Enter</b> to run</span>' +
+                '<div class="hxd-live"><span class="hxd-live-dot"></span><span>All systems</span><b>Pro</b></div>' +
+              '</div>' +
+            '</header>' +
             '<div class="hx-home-scroll">' +
-              '<h1 class="hx-home-greet" id="hx-home-greet"><span class="hx-home-greet-1">Good morning,</span><span class="hx-home-greet-2"></span></h1>' +
-              '<p class="hx-home-sub" id="hx-home-sub">What would you like to achieve today?</p>' +
-              '<div class="hx-home-composer">' +
-                '<div class="hx-home-inrow">' +
-                  '<textarea class="hx-home-input" id="hx-home-input" rows="1" placeholder="Ask Helix anything…" autocomplete="off" spellcheck="true"></textarea>' +
-                  '<div class="hx-home-inbtns">' +
-                    '<button class="hx-home-mic" type="button" id="hx-home-mic" aria-label="Voice input">' + S.mic + '</button>' +
-                    '<button class="hx-home-send" type="button" id="hx-home-send" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5"/><path d="m6 11 6-6 6 6"/></svg></button>' +
+              '<section class="hxd-hero">' +
+                '<div class="hxd-hero-main">' +
+                  '<span class="hxd-eyebrow"><i></i>AI COMMAND CENTER</span>' +
+                  '<h1 class="hx-home-greet hxd-greet" id="hx-home-greet"><span class="hx-home-greet-1">Good morning</span><span class="hx-home-greet-2"></span></h1>' +
+                  '<p class="hx-home-sub hxd-sub" id="hx-home-sub">Type a command, pick a workspace, or run a quick action.</p>' +
+                '</div>' +
+                '<div class="hxd-hero-stats">' +
+                  '<div class="hxd-stat"><span class="hxd-stat-k">MODEL</span><span class="hxd-stat-v">Helix Pro</span></div>' +
+                  '<div class="hxd-stat"><span class="hxd-stat-k">CONTEXT</span><span class="hxd-stat-v">128K</span></div>' +
+                  '<div class="hxd-stat"><span class="hxd-stat-k">STATUS</span><span class="hxd-stat-v">Ready</span></div>' +
+                '</div>' +
+              '</section>' +
+              '<div class="hxd-body">' +
+                '<main class="hxd-col-main">' +
+                  '<div class="hxd-cmd">' +
+                    '<div class="hxd-cmd-head"><span class="hxd-cmd-dot"></span><span class="hxd-cmd-label">Command input</span><span class="hxd-cmd-hint">↵ run · ⇧↵ newline</span></div>' +
+                    '<textarea class="hx-home-input hxd-input" id="hx-home-input" rows="1" placeholder="Ask Helix anything…" autocomplete="off" spellcheck="true"></textarea>' +
+                    '<div class="hxd-cmd-bar">' +
+                      '<div class="hxd-tools">' +
+                        '<button class="hx-home-pill hxd-tool" type="button" data-pill="web">' + S.web + '<span>Web search</span></button>' +
+                        '<button class="hx-home-pill hxd-tool" type="button" data-pill="sources">' + S.doc + '<span>Sources</span></button>' +
+                        '<button class="hx-home-pill hxd-tool" type="button" data-pill="focus">' + S.focus + '<span>Focus</span></button>' +
+                      '</div>' +
+                      '<div class="hxd-cmd-actions">' +
+                        '<button class="hx-home-mic hxd-mic" type="button" id="hx-home-mic" aria-label="Voice input">' + S.mic + '</button>' +
+                        '<button class="hx-home-send hxd-send" type="button" id="hx-home-send" aria-label="Send"><span>Run</span>' + sendArrow + '</button>' +
+                      '</div>' +
+                    '</div>' +
                   '</div>' +
-                '</div>' +
-                '<div class="hx-home-pills">' +
-                  '<button class="hx-home-pill" type="button" data-pill="web">' + S.web + '<span>Web search</span></button>' +
-                  '<button class="hx-home-pill" type="button" data-pill="sources">' + S.doc + '<span>Sources</span></button>' +
-                  '<button class="hx-home-pill" type="button" data-pill="focus">' + S.focus + '<span>Focus</span></button>' +
-                  '<button class="hx-home-pill hx-home-pill-more" type="button" data-pill="more" aria-label="More">' + S.chevD + '</button>' +
-                '</div>' +
+                  '<div class="hxd-sec"><span class="hxd-sec-t">Workspaces</span><span class="hxd-sec-meta">06</span></div>' +
+                  '<div class="hx-home-cards hxd-caps" role="group" aria-label="Helix workspaces">' + cards + '</div>' +
+                  '<div class="hxd-sec"><span class="hxd-sec-t">Quick actions</span></div>' +
+                  '<div class="hxd-quick">' + homeCats + '</div>' +
+                  '<div class="hxd-smart">' + smartCards + '</div>' +
+                '</main>' +
+                '<aside class="hxd-col-side">' +
+                  '<div class="hxd-panel">' +
+                    '<div class="hxd-panel-h"><span>Suggested workflows</span></div>' +
+                    '<div class="hxd-wf">' + wfCards + '</div>' +
+                  '</div>' +
+                  '<div class="hxd-panel">' +
+                    '<div class="hxd-panel-h"><span>Recent sessions</span><button class="hxd-panel-link hx-w-seeall" type="button">View all</button></div>' +
+                    '<div class="hx-home-recent hxd-recent" id="hx-home-recent"></div>' +
+                  '</div>' +
+                  '<div class="hxd-panel">' +
+                    '<div class="hxd-panel-h"><span>Pro tip</span></div>' +
+                    '<p class="hxd-tip-text">Turn on <b>Web search</b> for live, cited answers — or <b>Focus</b> for deep, no-fluff responses.</p>' +
+                  '</div>' +
+                '</aside>' +
               '</div>' +
-              '<div class="hx-home-cards" role="group" aria-label="Helix modes">' + cards + '</div>' +
-              '<div class="hx-w-sughead hx-sec-quickstart"><span class="hx-w-sec-label">Quick start</span></div>' +
-              '<div class="hx-ws-cats">' + homeCats + '</div>' +
-              '<div class="hx-smart-grid">' + smartCards + '</div>' +
-              '<div class="hx-w-sughead hx-sec-workflows"><span class="hx-w-sec-label">Suggested workflows</span></div>' +
-              '<div class="hx-wf-grid">' + wfCards + '</div>' +
-              '<div class="hx-w-sughead">' +
-                '<span class="hx-w-sec-label">Recent sessions</span>' +
-                '<button class="hx-w-seeall" type="button">View all' + S.chevR + '</button>' +
-              '</div>' +
-              '<div class="hx-home-recent" id="hx-home-recent"></div>' +
             '</div>';
           pane.appendChild(el);
 
