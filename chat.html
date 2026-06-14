@@ -33919,6 +33919,46 @@
         }
 
         function srcKey(c) { return (c || '').replace(/\s+/g, ' ').trim().slice(0, 140); }
+
+        // Pull web citations out of the answer body and return clean text +
+        // a structured source list, so they render as Source cards instead of
+        // raw inline URLs. Frontend-only (no API change).
+        function hxExtractSources(text) {
+          text = String(text || '');
+          var sources = [], seen = {};
+          function add(url, title) {
+            url = (url || '').trim().replace(/[)\].,;]+$/, '');
+            if (!/^https?:\/\//.test(url) || seen[url]) return;
+            seen[url] = 1;
+            var dom = url; try { dom = new URL(url).hostname.replace(/^www\./, ''); } catch (e) {}
+            sources.push({ url: url, title: (title || '').trim() || dom, domain: dom });
+          }
+          var clean = text;
+          // 1) Trailing "Sources:" block appended by the proxy ("n. Title — url")
+          var blockRe = /\n*(?:-{2,}\s*\n)?[ \t]*Sources:[ \t]*\n([\s\S]*)$/i;
+          var mb = clean.match(blockRe);
+          if (mb) {
+            mb[1].split('\n').forEach(function (line) {
+              var lm = line.match(/^\s*\d+[.)]\s*(.*?)\s*[—–-]\s*(https?:\/\/\S+)/);
+              if (lm) { add(lm[2], lm[1]); return; }
+              var um = line.match(/(https?:\/\/\S+)/);
+              if (um) add(um[1], line.replace(um[1], '').replace(/^[\s\d.)\-—–]+/, '').trim());
+            });
+            clean = clean.slice(0, mb.index);
+          }
+          // 2) Inline markdown-link citations: ([title](url)) or [title](url)
+          clean = clean.replace(/\(?\[([^\]]+)\]\((https?:\/\/[^)]+)\)\)?/g, function (_, t, url) { add(url, t); return ''; });
+          // 3) Inline "([title] https://url)" style (no markdown)
+          clean = clean.replace(/\(\s*\[([^\]]+)\]\s*(https?:\/\/[^)\s]+)\s*\)/g, function (_, t, url) { add(url, t); return ''; });
+          // 4) Tidy leftovers: empty brackets, doubled spaces, dangling parens
+          clean = clean.replace(/\(\s*\[[^\]]*\]\s*\)/g, '')
+                       .replace(/\(\s*\)/g, '')
+                       .replace(/[ \t]{2,}/g, ' ')
+                       .replace(/[ \t]+([.,;)])/g, '$1')
+                       .replace(/\n{3,}/g, '\n\n')
+                       .trim();
+          return { text: clean, sources: sources };
+        }
         function renderMessage(m) {
           var i = state.messages.indexOf(m);
           var isAssist = m.role === 'assistant';
@@ -33970,8 +34010,12 @@
             '</div>';
           }
 
+          // Assistant body: strip web citations out of the prose so they
+          // render as Source cards (reference parity), not raw inline URLs.
+          var __parsed = (isAssist && m.content) ? hxExtractSources(m.content) : { text: (m.content || ''), sources: [] };
+          var __bodyText = __parsed.text;
           var contentHtml = '';
-          if (m.content) contentHtml = '<div class="hx-msg-content">' + renderRichContent(m.content, isAssist) + '</div>';
+          if (m.content) contentHtml = '<div class="hx-msg-content">' + renderRichContent(__bodyText, isAssist) + '</div>';
           else if (!atts.length) contentHtml = '<div class="hx-msg-content"></div>';
 
           var msgModel = (m && m.model) ||
@@ -34004,22 +34048,35 @@
             }
           }
 
-          // Sources panel — web-search citations captured this turn
+          // Sources panel — merge stream-captured + parsed-from-text citations.
           var sourcesHtml = '';
-          var __src = (isAssist && m.content && !m.__streaming)
-            ? (m.__sources || (state.sourcesMap && state.sourcesMap[srcKey(m.content)]))
-            : null;
-          if (__src && __src.length) {
+          var __src = [];
+          (function () {
+            var seen = {};
+            function push(list) {
+              (list || []).forEach(function (sc) {
+                if (!sc || !sc.url || seen[sc.url]) return; seen[sc.url] = 1; __src.push(sc);
+              });
+            }
+            if (isAssist && m.content && !m.__streaming) {
+              push(m.__sources);
+              push(state.sourcesMap && state.sourcesMap[srcKey(m.content)]);
+              push(__parsed.sources);
+            }
+          })();
+          if (__src.length) {
             sourcesHtml = '<div class="hx-msg-sources"><div class="hx-msg-sources-head">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="16.65" y2="16.65"/></svg>' +
               '<span>Sources</span><span class="hx-msg-sources-count">' + __src.length + '</span></div>' +
               '<div class="hx-msg-sources-list">';
-            __src.slice(0, 8).forEach(function (sc, n) {
-              var dom = sc.url; try { dom = new URL(sc.url).hostname.replace(/^www\./, ''); } catch (e) {}
-              sourcesHtml += '<a class="hx-source-chip" href="' + escape(sc.url) + '" target="_blank" rel="noopener noreferrer">' +
-                '<span class="hx-source-num">' + (n + 1) + '</span>' +
+            __src.slice(0, 8).forEach(function (sc) {
+              var dom = sc.domain || sc.url; try { dom = new URL(sc.url).hostname.replace(/^www\./, ''); } catch (e) {}
+              var fav = 'https://www.google.com/s2/favicons?sz=64&domain=' + encodeURIComponent(dom);
+              sourcesHtml += '<a class="hx-source-card" href="' + escape(sc.url) + '" target="_blank" rel="noopener noreferrer">' +
+                '<span class="hx-source-fav"><img src="' + escape(fav) + '" alt="" loading="lazy" onerror="this.style.display=\'none\'"/></span>' +
                 '<span class="hx-source-meta"><span class="hx-source-title">' + escape(sc.title || dom) + '</span>' +
-                '<span class="hx-source-domain">' + escape(dom) + '</span></span></a>';
+                '<span class="hx-source-domain">' + escape(dom) + '</span></span>' +
+                '<span class="hx-source-ext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span></a>';
             });
             sourcesHtml += '</div></div>';
           }
@@ -40936,5 +40993,40 @@
     setTimeout(logo,0); setTimeout(logo,300); setTimeout(logo,1200);
   })();
   </script>
+  <!-- Conversation parity: source cards, always-visible actions, purple user bubble, spacing -->
+  <style id="hx-convo-parity">
+    /* Source cards */
+    html body[data-active="chat"] .hx-msg-sources{ margin-top:16px; }
+    html body[data-active="chat"] .hx-msg-sources-head{ display:flex; align-items:center; gap:8px; margin:0 0 9px; color:#8A8A94; font-size:12px; font-weight:600; }
+    html body[data-active="chat"] .hx-msg-sources-head svg{ width:15px; height:15px; }
+    html body[data-active="chat"] .hx-msg-sources-count{ margin-left:2px; color:#6A6A78; font-weight:700; }
+    html body[data-active="chat"] .hx-msg-sources-list{ display:flex; flex-direction:column; gap:8px; }
+    html body[data-active="chat"] .hx-source-card{ display:flex; align-items:center; gap:12px; padding:11px 13px; border-radius:14px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); text-decoration:none; transition:background .15s,border-color .15s; }
+    html body[data-active="chat"] .hx-source-card:hover{ background:rgba(255,255,255,.07); border-color:rgba(124,92,255,.4); }
+    html body[data-active="chat"] .hx-source-fav{ width:30px; height:30px; flex-shrink:0; border-radius:8px; display:grid; place-items:center; background:rgba(124,92,255,.13); border:1px solid rgba(124,92,255,.22); overflow:hidden; }
+    html body[data-active="chat"] .hx-source-fav img{ width:18px; height:18px; border-radius:4px; }
+    html body[data-active="chat"] .hx-source-meta{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+    html body[data-active="chat"] .hx-source-title{ font-size:13.5px; font-weight:600; color:#ECECF1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    html body[data-active="chat"] .hx-source-domain{ font-size:11.5px; color:#8A8A94; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    html body[data-active="chat"] .hx-source-ext{ flex-shrink:0; color:#6A6A78; display:flex; }
+    html body[data-active="chat"] .hx-source-ext svg{ width:16px; height:16px; }
+    /* Action buttons — always visible under assistant answers (mobile has no hover) */
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-actions{ opacity:1 !important; margin-top:12px; display:flex; gap:4px; flex-wrap:wrap; }
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act{ width:34px; height:34px; display:grid; place-items:center; border-radius:9px; background:transparent; border:0; color:#9A9AA6; cursor:pointer; transition:background .15s,color .15s; }
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act:hover{ background:rgba(255,255,255,.06); color:#ECECF1; }
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act svg{ width:18px; height:18px; }
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[aria-pressed="true"]{ color:#9b7dff; }
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[data-act="share"],
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[data-act="regenerate"],
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[data-act="pdf"],
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-act[data-act="more"]{ display:none !important; }
+    /* User bubble — purple, right, rounded */
+    html body[data-active="chat"] .hx-msg.is-user{ justify-content:flex-end; }
+    html body[data-active="chat"] .hx-msg.is-user .hx-msg-content{ background:linear-gradient(135deg,rgba(124,92,255,.30),rgba(109,40,217,.30)) !important; border:1px solid rgba(124,92,255,.35) !important; color:#F4F4F5 !important; border-radius:18px 18px 6px 18px !important; padding:11px 15px !important; max-width:80%; margin-left:auto; width:fit-content; }
+    html body[data-active="chat"] .hx-msg.is-user .hx-msg-body{ align-items:flex-end; }
+    /* Spacing */
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-content{ line-height:1.6; }
+    html body[data-active="chat"] .hx-msg-followups{ margin-top:14px; }
+  </style>
 </body>
 </html>
