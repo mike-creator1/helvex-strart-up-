@@ -36012,6 +36012,15 @@
 
               /* ── recent chats ────────────────────────────────────── */
               R + '.hxn-recent{width:100%;max-width:640px;margin-top:22px;}',
+              R + '.hxn-caps{width:100%;max-width:640px;margin-top:22px;}',
+              R + '.hxn-caps-list{display:flex;flex-direction:column;gap:8px;}',
+              R + '.hxn-cap{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;border-radius:13px;background:var(--surf);border:1px solid rgba(255,255,255,.07);cursor:pointer;text-align:left;transition:background .16s,border-color .16s,transform .12s;}',
+              R + '.hxn-cap:hover{background:var(--surf2);border-color:rgba(124,92,255,.4);}',
+              R + '.hxn-cap:active{transform:scale(.99);}',
+              R + '.hxn-cap-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}',
+              R + '.hxn-cap-t{font-size:14px;font-weight:600;color:var(--ink);letter-spacing:-.01em;}',
+              R + '.hxn-cap-d{font-size:12px;color:var(--mid);line-height:1.35;}',
+              R + '.hxn-cap>svg{width:17px;height:17px;flex-shrink:0;color:var(--dim);}',
               R + '.hxn-rec-empty{padding:24px 16px;text-align:center;color:var(--dim);font-size:13px;font-weight:500;letter-spacing:-.01em;border:1px dashed rgba(255,255,255,.09);border-radius:13px;background:rgba(255,255,255,.02);}',
               R + '.hxn-rec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}',
               R + '.hxn-rec-head-t{font-size:13.5px;font-weight:600;color:var(--mid);letter-spacing:-.01em;}',
@@ -36079,7 +36088,21 @@
                   '</div>' +
                 '</div>' +
               '</div>' +
-              '<section class="hxn-recent">' +
+              '<section class="hxn-caps" id="hx-home-caps">' +
+                '<div class="hxn-rec-head"><span class="hxn-rec-head-t">Capabilities</span></div>' +
+                '<div class="hxn-caps-list">' +
+                  '<button class="hxn-cap" type="button" data-home-seed="Βοήθησέ με με κώδικα — γράψε, βελτίωσε, κάνε refactor ή εξήγησε: ">' +
+                    '<span class="hxn-cap-body"><span class="hxn-cap-t">Κώδικας</span><span class="hxn-cap-d">Για γράψιμο, βελτίωση, refactor και εξήγηση κώδικα.</span></span>' + S.chevR +
+                  '</button>' +
+                  '<button class="hxn-cap" type="button" data-home-seed="Βοήθησέ με να το λύσω — debugging, λογική σκέψη και απόφαση: ">' +
+                    '<span class="hxn-cap-body"><span class="hxn-cap-t">AI Resolving</span><span class="hxn-cap-d">Για επίλυση προβλημάτων, debugging, λογική σκέψη και αποφάσεις.</span></span>' + S.chevR +
+                  '</button>' +
+                  '<button class="hxn-cap" type="button" data-home-seed="Κάνε έρευνα και δώσε καθαρή απάντηση — αναζήτηση, σύγκριση, περίληψη: ">' +
+                    '<span class="hxn-cap-body"><span class="hxn-cap-t">Research</span><span class="hxn-cap-d">Για αναζήτηση, σύγκριση, περίληψη και καθαρές απαντήσεις.</span></span>' + S.chevR +
+                  '</button>' +
+                '</div>' +
+              '</section>' +
+              '<section class="hxn-recent" id="hx-home-recent-sec" hidden>' +
                 '<div class="hxn-rec-head">' +
                   '<span class="hxn-rec-head-t">Recent chats</span>' +
                   '<button class="hxn-rec-all" type="button">View all' + S.chevR + '</button>' +
@@ -36248,13 +36271,16 @@
               '</span></button>';
           }
           // Real conversations only — never any sample/demo content.
+          // No conversations → show Capabilities; otherwise → show recent chats.
           function hxRenderHomeRecent(){
-            var box = document.getElementById('hx-home-recent'); if (!box) return;
             var convs = (typeof state !== 'undefined' && state && state.conversations) ? state.conversations : [];
-            if (!convs.length){
-              box.innerHTML = '<div class="hxn-rec-empty">No conversations yet</div>';
-              return;
-            }
+            var hasConvs = convs.length > 0;
+            var caps = document.getElementById('hx-home-caps');
+            var recSec = document.getElementById('hx-home-recent-sec');
+            if (caps) caps.hidden = hasConvs;
+            if (recSec) recSec.hidden = !hasConvs;
+            var box = document.getElementById('hx-home-recent'); if (!box) return;
+            if (!hasConvs){ box.innerHTML = ''; return; }
             box.innerHTML = convs.slice(0, 4).map(function (c){
               var sub = (typeof c.preview === 'string' && c.preview) ? c.preview : (c.model ? hxCap(c.model) : 'Conversation');
               var time = (typeof relTime === 'function' ? relTime(c.updated_at) : '');
