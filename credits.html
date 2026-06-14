@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<script>location.replace('/chat'+location.search+location.hash);</script>
+<meta http-equiv="refresh" content="0;url=/chat">
+<title>HelveX</title>
+=======
   <script>location.replace('/chat'+location.search+location.hash);</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -11,183 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+>>>>>>> origin/main
 </head>
-<body data-active="credits">
-
-  <div class="hx-app">
-    <aside class="hx-sidebar"></aside>
-    <div>
-      <div class="hx-topbar"></div>
-      <main class="hx-main">
-
-        <div class="hx-aura" aria-hidden="true"></div>
-        <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Credits · never expire</p>
-          <div class="hx-pg-hero-grid">
-            <div>
-              <h1 class="hx-pg-title">Credits <em>·</em></h1>
-              <p class="hx-pg-sub">Credits fund engagements at HelveX. Each service has a transparent credit cost. They never expire while your subscription is active.</p>
-              <div class="hx-pg-cta-row">
-                <a href="/buy-credits.html" class="hx-cta-primary">
-                  Buy credits
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-                <a href="/billing.html" class="hx-cta-secondary">View plans</a>
-              </div>
-            </div>
-            <div class="hx-pg-meta-strip">
-              <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Currency</p>
-                <p class="hx-pg-meta-value hx-mono">CHF</p>
-              </div>
-              <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Expiry</p>
-                <p class="hx-pg-meta-value">Never · active</p>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <div class="hx-card">
-          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;">
-            <div>
-              <p class="hx-card-eyebrow">Current balance</p>
-              <div class="hx-mono" id="hx-credit-balance" style="font-size:44px;font-weight:600;letter-spacing:-0.025em;line-height:1;color:var(--hx-text);">0 <span style="color:var(--hx-text-dim);font-weight:500;font-size:0.55em;letter-spacing:0;">cr</span></div>
-              <p id="hx-credit-balance-meta" style="margin:12px 0 0;color:var(--hx-text-mid);font-size:13px;">No credits yet. Pick a plan or top up to start engagements.</p>
-            </div>
-            <div style="display:flex;gap:24px;flex-wrap:wrap;">
-              <div>
-                <p class="hx-stat-label">Total granted</p>
-                <p class="hx-mono" id="hx-credit-total" style="font-size:18px;font-weight:600;margin:6px 0 0;color:var(--hx-text);">0</p>
-              </div>
-              <div>
-                <p class="hx-stat-label">Used</p>
-                <p class="hx-mono" id="hx-credit-used" style="font-size:18px;font-weight:600;margin:6px 0 0;color:var(--hx-text);">0</p>
-              </div>
-              <div>
-                <p class="hx-stat-label">Plan</p>
-                <p id="hx-credit-plan" style="font-size:18px;font-weight:600;margin:6px 0 0;color:var(--hx-text-dim);">Free</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="hx-section-head">
-          <h2>Top up packs</h2>
-          <a href="/buy-credits.html">All packs</a>
-        </div>
-        <div class="hx-grid hx-grid-3">
-          <div class="hx-card">
-            <p class="hx-card-eyebrow">Pack</p>
-            <h3>500 credits</h3>
-            <p class="desc">Quick top-up. Stacks on your monthly allowance and never expires.</p>
-            <p class="hx-mono" style="margin:18px 0 0;font-size:20px;font-weight:600;color:var(--hx-text);">€600</p>
-            <a href="/buy-credits.html" class="hx-card-link">Top up</a>
-          </div>
-          <div class="hx-card">
-            <p class="hx-card-eyebrow">Pack</p>
-            <h3>1,000 credits</h3>
-            <p class="desc">Funds a full medium-sized engagement — internal copilot, CRM rebuild cycle, etc.</p>
-            <p class="hx-mono" style="margin:18px 0 0;font-size:20px;font-weight:600;color:var(--hx-text);">€1,200</p>
-            <a href="/buy-credits.html" class="hx-card-link">Top up</a>
-          </div>
-          <div class="hx-card">
-            <p class="hx-card-eyebrow">Subscription</p>
-            <h3>Pick a plan</h3>
-            <p class="desc">Plans include a monthly credit allowance, priority delivery, and a senior engineer.</p>
-            <p class="hx-mono" style="margin:18px 0 0;font-size:20px;font-weight:600;color:var(--hx-text);">From €25 / mo</p>
-            <a href="/billing.html" class="hx-card-link">Compare plans</a>
-          </div>
-        </div>
-
-        <div class="hx-section-head">
-          <h2>Credit activity</h2>
-          <a href="/orders.html">All transactions</a>
-        </div>
-        <div id="hx-credit-history-host"></div>
-
-      </main>
-    </div>
-  </div>
-
-  <script src="/platform.js"></script>
-  <script>
-    /* Real credits balance + grant history. */
-    (function () {
-      function whenAuthReady(fn) {
-        if (window.HX && window.HX.supabase) { fn(); return; }
-        document.addEventListener('hx:auth-ready', fn, { once: true });
-      }
-      var $ = function (id) { return document.getElementById(id); };
-      function escape(s) {
-        return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-      }
-      function fmtDate(iso) {
-        if (!iso) return '—';
-        try { return new Date(iso).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); } catch (e) { return '—'; }
-      }
-      function badgeFor(source) {
-        if (source === 'purchase')   return '<span class="hx-badge hx-badge-emerald"><span class="hx-badge-dot"></span>Purchase</span>';
-        if (source === 'grant')      return '<span class="hx-badge hx-badge-yellow"><span class="hx-badge-dot"></span>Grant</span>';
-        if (source === 'refund')     return '<span class="hx-badge hx-badge-neutral"><span class="hx-badge-dot"></span>Refund</span>';
-        if (source === 'expiration') return '<span class="hx-badge hx-badge-red"><span class="hx-badge-dot"></span>Expired</span>';
-        return '<span class="hx-badge hx-badge-neutral">' + escape(source) + '</span>';
-      }
-
-      whenAuthReady(function () {
-        var sb = window.HX.supabase;
-        sb.auth.getUser().then(async function (res) {
-          var u = res && res.data ? res.data.user : null;
-          if (!u) return;
-
-          var [bal, sub, grants] = await Promise.all([
-            sb.from('credits_balance').select('credits_total,credits_used').maybeSingle(),
-            sb.from('subscriptions').select('plan,status,current_period_end').maybeSingle(),
-            sb.from('credit_grants').select('*').order('created_at', { ascending: false }).limit(50)
-          ]);
-
-          var total = (bal && bal.data && bal.data.credits_total) || 0;
-          var used  = (bal && bal.data && bal.data.credits_used)  || 0;
-          var avail = Math.max(0, total - used);
-
-          $('hx-credit-balance').innerHTML = avail.toLocaleString() + ' <span style="color:var(--hx-text-dim);font-weight:500;font-size:0.55em;letter-spacing:0;">cr</span>';
-          $('hx-credit-balance-meta').textContent = avail === 0
-            ? 'No credits yet. Pick a plan or top up to start engagements.'
-            : 'Available across the workspace';
-          $('hx-credit-total').textContent = total.toLocaleString();
-          $('hx-credit-used').textContent  = used.toLocaleString();
-          if (sub && sub.data) {
-            var planLabel = (sub.data.plan || 'free').charAt(0).toUpperCase() + (sub.data.plan || 'free').slice(1);
-            $('hx-credit-plan').textContent = planLabel;
-            $('hx-credit-plan').style.color = sub.data.plan === 'free' ? 'var(--hx-text-dim)' : 'var(--hx-text)';
-          }
-
-          var host = $('hx-credit-history-host');
-          var rows = (grants && grants.data) || [];
-          if (rows.length === 0) {
-            host.innerHTML =
-              '<div class="hx-empty">' +
-                '<div class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9.5h4a1.5 1.5 0 0 1 0 3h-2a1.5 1.5 0 0 0 0 3h4"/></svg></div>' +
-                '<h3>No credit activity yet</h3>' +
-                '<p>Top-ups, monthly refills, and project spend will show up here once you start.</p>' +
-                '<a href="/buy-credits.html" class="hx-btn hx-btn-secondary">Buy credits</a>' +
-              '</div>';
-          } else {
-            var html = '<div style="overflow-x:auto;"><table class="hx-table"><thead><tr><th>Date</th><th>Source</th><th>Reference</th><th class="right">Amount</th></tr></thead><tbody>';
-            rows.forEach(function (g) {
-              html += '<tr>' +
-                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + fmtDate(g.created_at) + '</span></td>' +
-                '<td>' + badgeFor(g.source) + '</td>' +
-                '<td><span class="hx-mono" style="font-size:12.5px;color:var(--hx-text-mid);">' + escape(g.reference || '—') + '</span></td>' +
-                '<td class="right hx-mono" style="font-weight:600;">' + (g.amount > 0 ? '+' : '') + (g.amount || 0).toLocaleString() + ' cr</td>' +
-              '</tr>';
-            });
-            html += '</tbody></table></div>';
-            host.innerHTML = html;
-          }
-        });
-      });
-    })();
-  </script>
-</body>
+<body></body>
 </html>

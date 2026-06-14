@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<script>location.replace('/chat'+location.search+location.hash);</script>
+<meta http-equiv="refresh" content="0;url=/chat">
+<title>HelveX</title>
+=======
   <script>location.replace('/chat'+location.search+location.hash);</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -11,162 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/platform.css" />
+>>>>>>> origin/main
 </head>
-<body data-active="invoices">
-
-  <div class="hx-app">
-    <aside class="hx-sidebar"></aside>
-    <div>
-      <div class="hx-topbar"></div>
-      <main class="hx-main">
-
-        <div class="hx-aura" aria-hidden="true"></div>
-        <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Invoices · accounting-ready</p>
-          <div class="hx-pg-hero-grid">
-            <div>
-              <h1 class="hx-pg-title">Invoices <em>·</em></h1>
-              <p class="hx-pg-sub">Every charge in one place. PDFs are accounting-ready, with VAT, your billing details, and a per-line breakdown.</p>
-              <div class="hx-pg-cta-row">
-                <a href="/billing.html" class="hx-cta-primary">Billing details</a>
-                <a href="/orders.html" class="hx-cta-secondary">Orders</a>
-              </div>
-            </div>
-            <div class="hx-pg-meta-strip">
-              <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Format</p>
-                <p class="hx-pg-meta-value">PDF · VAT</p>
-              </div>
-              <div class="hx-pg-meta-item">
-                <p class="hx-pg-meta-label">Retention</p>
-                <p class="hx-pg-meta-value">Forever</p>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <div class="hx-grid hx-grid-3">
-          <div class="hx-stat">
-            <p class="hx-stat-label">Total paid (YTD)</p>
-            <p class="hx-stat-value hx-mono" id="hx-inv-ytd">—</p>
-            <p class="hx-stat-meta" id="hx-inv-ytd-meta">Loading…</p>
-          </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Last charge</p>
-            <p class="hx-stat-value" id="hx-inv-last" style="font-size:18px;color:var(--hx-text-dim);">—</p>
-            <p class="hx-stat-meta" id="hx-inv-last-meta">Loading…</p>
-          </div>
-          <div class="hx-stat">
-            <p class="hx-stat-label">Charges count</p>
-            <p class="hx-stat-value hx-mono" id="hx-inv-count">—</p>
-            <p class="hx-stat-meta">Lifetime</p>
-          </div>
-        </div>
-
-        <div class="hx-section-head">
-          <h2>All charges</h2>
-          <span class="meta" id="hx-inv-meta">—</span>
-        </div>
-        <div id="hx-inv-host">
-          <div class="hx-empty"><h3>Loading…</h3></div>
-        </div>
-
-      </main>
-    </div>
-  </div>
-
-  <script src="/platform.js"></script>
-  <script>
-    (function () {
-      function whenAuthReady(fn) {
-        if (window.HX && window.HX.supabase) { fn(); return; }
-        document.addEventListener('hx:auth-ready', fn, { once: true });
-      }
-      function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-      function fmtDate(iso) {
-        if (!iso) return '—';
-        try { return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); }
-        catch (e) { return '—'; }
-      }
-      function fmtMoney(cents, currency) {
-        var amount = Number(cents || 0) / 100;
-        var cur = (currency || 'usd').toUpperCase();
-        var symbol = cur === 'EUR' ? '€' : cur === 'CHF' ? 'CHF ' : cur === 'GBP' ? '£' : '$';
-        return (symbol === 'CHF ' ? symbol : symbol) + amount.toFixed(2);
-      }
-      function statusBadge(s) {
-        var cls = /paid/.test(s) ? '#15803d' : /open|draft/.test(s) ? '#b45309' : /void|uncollectible/.test(s) ? '#b91c1c' : 'var(--hx-text-dim)';
-        return '<span class="hx-mono" style="font-size:11px;color:' + cls + ';text-transform:uppercase;letter-spacing:.04em;">' + esc(s || '—') + '</span>';
-      }
-
-      function renderEmpty(host) {
-        host.innerHTML =
-          '<div class="hx-empty">' +
-            '<div class="icon" aria-hidden="true">' +
-              '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
-                '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/>' +
-              '</svg>' +
-            '</div>' +
-            '<h3>No charges yet</h3>' +
-            '<p>Once you choose a plan or buy a credit pack, your invoices and charges will appear here.</p>' +
-            '<a href="/billing.html" class="hx-btn hx-btn-primary">Choose a plan</a>' +
-          '</div>';
-      }
-
-      whenAuthReady(function () {
-        var sb = window.HX.supabase;
-        var host = document.getElementById('hx-inv-host');
-        sb.from('invoices').select('id, stripe_invoice_id, amount_cents, currency, status, hosted_url, pdf_url, period_start, period_end, created_at').order('created_at', { ascending: false }).limit(200)
-          .then(function (r) {
-            var rows = r && r.data ? r.data : [];
-            var paid = rows.filter(function (inv) { return /paid/.test(inv.status || ''); });
-            var ytdCents = 0;
-            var thisYear = new Date().getFullYear();
-            var currency = (paid[0] && paid[0].currency) || (rows[0] && rows[0].currency) || 'usd';
-            paid.forEach(function (inv) {
-              if (new Date(inv.created_at).getFullYear() === thisYear) ytdCents += Number(inv.amount_cents || 0);
-            });
-            document.getElementById('hx-inv-ytd').textContent = fmtMoney(ytdCents, currency);
-            document.getElementById('hx-inv-ytd-meta').textContent = thisYear + ' to date';
-            document.getElementById('hx-inv-count').textContent = String(rows.length);
-            var last = rows[0];
-            document.getElementById('hx-inv-last').textContent = last ? fmtMoney(last.amount_cents, last.currency) : '—';
-            document.getElementById('hx-inv-last-meta').textContent = last ? fmtDate(last.created_at) : 'No history';
-            document.getElementById('hx-inv-meta').textContent = rows.length + (rows.length === 1 ? ' invoice' : ' invoices');
-
-            if (!rows.length) { renderEmpty(host); return; }
-
-            var html = '<div class="hx-card" style="padding:0;overflow:hidden;">';
-            rows.forEach(function (inv, i) {
-              var period = (inv.period_start || inv.period_end) ? (fmtDate(inv.period_start) + ' → ' + fmtDate(inv.period_end)) : fmtDate(inv.created_at);
-              var links = '';
-              if (inv.hosted_url) links += '<a href="' + esc(inv.hosted_url) + '" target="_blank" rel="noopener" class="hx-mono" style="font-size:11.5px;color:var(--hx-text);text-decoration:underline;">View</a>';
-              if (inv.pdf_url) links += (links ? ' · ' : '') + '<a href="' + esc(inv.pdf_url) + '" target="_blank" rel="noopener" class="hx-mono" style="font-size:11.5px;color:var(--hx-text);text-decoration:underline;">PDF</a>';
-              html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;' + (i > 0 ? 'border-top:1px solid var(--hx-line);' : '') + '">' +
-                '<div style="flex:1;min-width:0;">' +
-                  '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
-                    '<span style="font-size:13.5px;font-weight:500;">Invoice ' + esc(String(inv.stripe_invoice_id || inv.id).slice(0, 16)) + '</span>' +
-                    statusBadge(inv.status) +
-                  '</div>' +
-                  '<div class="hx-mono" style="font-size:11.5px;color:var(--hx-text-dim);margin-top:2px;">' + period + (links ? ' · ' + links : '') + '</div>' +
-                '</div>' +
-                '<span class="hx-mono" style="font-size:13px;font-weight:500;">' + fmtMoney(inv.amount_cents, inv.currency) + '</span>' +
-              '</div>';
-            });
-            html += '</div>';
-            host.innerHTML = html;
-          })
-          .catch(function () {
-            renderEmpty(host);
-            document.getElementById('hx-inv-ytd').textContent = fmtMoney(0, 'usd');
-            document.getElementById('hx-inv-ytd-meta').textContent = 'No history';
-            document.getElementById('hx-inv-count').textContent = '0';
-            document.getElementById('hx-inv-last').textContent = '—';
-            document.getElementById('hx-inv-last-meta').textContent = 'No history';
-            document.getElementById('hx-inv-meta').textContent = '0 invoices';
-          });
-      });
-    })();
-  </script>
-</body>
+<body></body>
 </html>

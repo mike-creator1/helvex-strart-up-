@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<script>location.replace('/chat'+location.search+location.hash);</script>
+<meta http-equiv="refresh" content="0;url=/chat">
+<title>HelveX</title>
+=======
   <script>location.replace('/chat'+location.search+location.hash);</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -16,82 +23,7 @@
     .sess-ic { width:36px; height:36px; border-radius:9px; display:grid; place-items:center; background:var(--hx-bg-2); border:1px solid var(--hx-line); flex-shrink:0; }
     .sess-ic svg { width:18px; height:18px; color:var(--hx-text-mid); }
   </style>
+>>>>>>> origin/main
 </head>
-<body data-active="sessions">
-  <div class="hx-app">
-    <aside class="hx-sidebar"></aside>
-    <div>
-      <div class="hx-topbar"></div>
-      <main class="hx-main">
-        <div class="hx-aura" aria-hidden="true"></div>
-        <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Account · sessions</p>
-          <div class="hx-pg-hero-grid"><div>
-            <h1 class="hx-pg-title">Sessions</h1>
-            <p class="hx-pg-sub">Every device signed in to your account. Spot anything unfamiliar and revoke it instantly — your current device is always marked.</p>
-            <div class="hx-pg-cta-row"><button class="hx-cta-secondary" id="ss-revoke-all">Sign out all other devices</button></div>
-          </div></div>
-        </header>
-        <div class="wb-metrics" id="ss-metrics"></div>
-        <h2 style="font-size:13px;font-weight:600;margin:22px 0 12px;color:var(--hx-text-mid)">This device</h2>
-        <div id="ss-current"></div>
-        <h2 style="font-size:13px;font-weight:600;margin:22px 0 12px;color:var(--hx-text-mid)">Other active sessions</h2>
-        <div id="ss-host"></div>
-      </main>
-    </div>
-  </div>
-  <script src="/platform.js"></script>
-  <script src="/workbench.js"></script>
-  <script>
-  (function(){
-    var $=function(id){return document.getElementById(id);};
-    var sb=null, user=null;
-    function ua(){ var u=navigator.userAgent; var br=/edg/i.test(u)?'Edge':/chrome/i.test(u)?'Chrome':/safari/i.test(u)?'Safari':/firefox/i.test(u)?'Firefox':'Browser'; var os=/iphone|ipad/i.test(u)?'iOS':/android/i.test(u)?'Android':/mac/i.test(u)?'macOS':/win/i.test(u)?'Windows':/linux/i.test(u)?'Linux':'Unknown'; return {br:br,os:os}; }
-    function devIcon(os){ if(os==='iOS'||os==='Android') return '<rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/>'; return '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>'; }
-
-    var store=WB.store('sessions', function(){
-      return [
-        { id:WB.uid(), os:'iOS', br:'Safari', device:'iPhone 15 Pro', loc:'Zürich, CH', last:WB.ago(35) },
-        { id:WB.uid(), os:'macOS', br:'Chrome', device:'MacBook Pro', loc:'Zürich, CH', last:WB.ago(60*26) },
-        { id:WB.uid(), os:'Windows', br:'Edge', device:'Surface Laptop', loc:'Geneva, CH', last:WB.ago(60*24*4) }
-      ];
-    });
-
-    function metrics(){
-      var others=store.all().length;
-      $('ss-metrics').innerHTML=
-        m('Active sessions',others+1,'including this device','<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/>')+
-        m('This device','1','current session','<circle cx="12" cy="12" r="3"/><path d="M5 12a7 7 0 0 1 14 0"/>')+
-        m('Other devices',others,'tap to revoke','<path d="M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8"/>');
-    }
-    function m(l,v,mm,icon){return '<div class="wb-metric"><div class="ml">'+WB.svg(icon)+l+'</div><div class="mv">'+v+'</div><div class="mm">'+mm+'</div></div>';}
-
-    function renderCurrent(){
-      var d=ua();
-      $('ss-current').innerHTML='<div class="card" style="padding:16px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-color:var(--hx-emerald);box-shadow:0 0 0 1px var(--hx-emerald-soft)">'+
-        '<span class="sess-ic" style="background:var(--hx-emerald-soft);border-color:transparent">'+WB.svg(devIcon(d.os))+'</span>'+
-        '<div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600">'+d.br+' on '+d.os+' <span class="wb-pill active" style="margin-left:6px"><span class="d"></span>Current session</span></div>'+
-        '<div style="font-size:12px;color:var(--hx-text-dim);margin-top:3px">'+WB.esc((user&&user.email)||'')+' · active now</div></div>'+
-        '<button class="wb-btn" id="ss-signout">Sign out</button></div>';
-      $('ss-signout').onclick=function(){ if(sb){ try{ sb.auth.signOut().finally(function(){location.href='/signup';}); return; }catch(e){} } location.href='/signup'; };
-    }
-
-    function render(){
-      var rows=store.all();
-      if(!rows.length){ $('ss-host').innerHTML='<div class="wb-empty"><div class="orb">'+WB.svg('<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/>')+'</div><h3>No other active sessions</h3><p>You’re only signed in on this device. That’s the most secure state.</p></div>'; metrics(); return; }
-      $('ss-host').innerHTML='<div class="wb-table-wrap"><table class="wb-table"><thead><tr><th>Device</th><th>Location</th><th>Last activity</th><th></th></tr></thead><tbody>'+
-        rows.map(function(s){ return '<tr><td><div class="sess-dev"><span class="sess-ic">'+WB.svg(devIcon(s.os))+'</span><div><div style="font-weight:600">'+WB.esc(s.device)+'</div><div style="font-size:11.5px;color:var(--hx-text-dim)">'+WB.esc(s.br)+' · '+WB.esc(s.os)+'</div></div></div></td>'+
-          '<td>'+WB.esc(s.loc)+'</td><td><span class="wb-mono" style="font-size:12px">'+WB.relTime(s.last)+'</span></td>'+
-          '<td style="text-align:right"><button class="wb-btn sm" data-id="'+s.id+'">Revoke</button></td></tr>'; }).join('')+
-        '</tbody></table></div>';
-      $('ss-host').querySelectorAll('button[data-id]').forEach(function(b){ b.onclick=function(){ WB.arm(b,'Confirm',function(){ store.remove(b.dataset.id); WB.toast('Session revoked','ok'); metrics(); render(); }); }; });
-      metrics();
-    }
-
-    $('ss-revoke-all').onclick=function(e){ if(!store.all().length){ WB.toast('No other sessions','info'); return; } WB.arm(e.currentTarget,'Sign out all others?',function(){ store.set([]); WB.toast('All other sessions signed out','ok'); metrics(); render(); }); };
-
-    WB.ready(function(s,u){ sb=s; user=u; renderCurrent(); render(); });
-  })();
-  </script>
-</body>
+<body></body>
 </html>

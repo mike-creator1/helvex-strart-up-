@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<script>location.replace('/chat'+location.search+location.hash);</script>
+<meta http-equiv="refresh" content="0;url=/chat">
+<title>HelveX</title>
+=======
   <script>location.replace('/chat'+location.search+location.hash);</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -23,98 +30,7 @@
     .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
     @media (max-width:560px){ .form-grid { grid-template-columns:1fr; } }
   </style>
+>>>>>>> origin/main
 </head>
-<body data-active="profile">
-  <div class="hx-app">
-    <aside class="hx-sidebar"></aside>
-    <div>
-      <div class="hx-topbar"></div>
-      <main class="hx-main">
-        <div class="hx-aura" aria-hidden="true"></div>
-        <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Account · profile</p>
-          <div class="hx-pg-hero-grid"><div>
-            <h1 class="hx-pg-title">Profile</h1>
-            <p class="hx-pg-sub">Your personal details, avatar and workspace identity. This is how you appear across HelveX and on shared work.</p>
-          </div></div>
-        </header>
-
-        <div id="pf-host"></div>
-      </main>
-    </div>
-  </div>
-  <script src="/platform.js"></script>
-  <script src="/workbench.js"></script>
-  <script>
-  (function(){
-    var $=function(id){return document.getElementById(id);};
-    var sb=null, user=null, profile=null, sub=null;
-    var host=$('pf-host');
-    host.innerHTML=WB.skeletonCards(2);
-
-    function initials(){ var f=(profile&&profile.first_name)||'', l=(profile&&profile.last_name)||''; var s=(f[0]||'')+(l[0]||''); return (s|| ((user&&user.email)||'?')[0]).toUpperCase(); }
-    function fullName(){ return [(profile&&profile.first_name)||'',(profile&&profile.last_name)||''].join(' ').trim() || 'Unnamed'; }
-
-    function render(){
-      var av = profile&&profile.avatar_url ? '<img src="'+WB.esc(profile.avatar_url)+'" alt="">' : WB.esc(initials());
-      var plan = sub&&sub.plan ? sub.plan : 'Free';
-      host.innerHTML=
-        '<div class="card pf-id" style="margin-bottom:18px">'+
-          '<div class="pf-av">'+av+'</div>'+
-          '<div style="flex:1;min-width:0"><h2>'+WB.esc(fullName())+'</h2>'+
-            '<div class="role">'+WB.esc((profile&&profile.title)||'Member')+(profile&&profile.company?' · '+WB.esc(profile.company):'')+'</div>'+
-            '<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap"><span class="wb-pill active"><span class="d"></span>Active</span><span class="wb-pill"><span class="d" style="background:var(--hx-yellow-deep)"></span>'+WB.esc(plan)+' plan</span></div></div>'+
-          '<button class="wb-btn" id="pf-avbtn">Change avatar</button>'+
-        '</div>'+
-        '<div class="pf-grid">'+
-          '<div class="card" style="padding:20px"><div class="sec-h" style="margin-top:0">Personal details</div>'+
-            '<div class="form-grid">'+
-              fld('First name','pf-first',(profile&&profile.first_name)||'')+
-              fld('Last name','pf-last',(profile&&profile.last_name)||'')+
-            '</div>'+
-            '<div style="margin-top:14px">'+fld('Job title','pf-title',(profile&&profile.title)||'')+'</div>'+
-            '<div style="margin-top:14px">'+fld('Company','pf-company',(profile&&profile.company)||'')+'</div>'+
-            '<div style="margin-top:14px">'+fld('Avatar URL','pf-avatar',(profile&&profile.avatar_url)||'','https://…')+'</div>'+
-            '<div style="display:flex;gap:8px;margin-top:18px"><button class="wb-btn primary" id="pf-save">Save changes</button><button class="wb-btn" id="pf-reset">Reset</button></div>'+
-          '</div>'+
-          '<div class="card" style="padding:20px"><div class="sec-h" style="margin-top:0">Account</div>'+
-            kv('Email', WB.esc((user&&user.email)||'—')+' <span class="wb-pill active" style="height:18px;margin-left:6px"><span class="d"></span>Verified</span>')+
-            kv('Account ID','<span class="wb-mono" style="font-size:11.5px">'+WB.esc((user&&user.id||'').slice(0,18))+'…</span>')+
-            kv('Workspace', WB.esc((profile&&profile.company)||'Personal workspace'))+
-            kv('Plan', WB.esc(plan)+' · <a href="/billing.html" style="color:var(--hx-yellow-deep)">manage</a>')+
-            kv('Member since', WB.fmtDate((profile&&profile.created_at)||(user&&user.created_at)))+
-            kv('Sign-in method', WB.esc((user&&user.app_metadata&&user.app_metadata.provider)||'email'))+
-            '<div class="sec-h">Security</div>'+
-            '<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="wb-btn" href="/security.html">Password &amp; MFA</a><a class="wb-btn" href="/sessions.html">Active sessions</a></div>'+
-          '</div>'+
-        '</div>';
-      $('pf-save').onclick=save; $('pf-reset').onclick=render; $('pf-avbtn').onclick=function(){ $('pf-avatar').focus(); $('pf-avatar').scrollIntoView({block:'center'}); };
-    }
-    function fld(label,id,val,ph){ return '<div class="wb-field" style="margin:0"><label>'+label+'</label><input id="'+id+'" value="'+WB.esc(val)+'" placeholder="'+(ph||'')+'"></div>'; }
-    function kv(k,v){ return '<div class="wb-kv"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>'; }
-
-    function save(){
-      if(!sb||!user){ WB.toast('Sign in required','err'); return; }
-      var patch={ first_name:$('pf-first').value.trim()||null, last_name:$('pf-last').value.trim()||null, title:$('pf-title').value.trim()||null, company:$('pf-company').value.trim()||null, avatar_url:$('pf-avatar').value.trim()||null, updated_at:new Date().toISOString() };
-      var btn=$('pf-save'); btn.disabled=true; btn.textContent='Saving…';
-      sb.from('profiles').update(patch).eq('id',user.id).select().single().then(function(r){
-        if(r.error) throw r.error; profile=r.data; WB.toast('Profile updated','ok'); render();
-      }).catch(function(e){ btn.disabled=false; btn.textContent='Save changes'; WB.toast(e.message||'Save failed','err'); });
-    }
-
-    WB.ready(function(s,u){
-      sb=s; user=u;
-      if(!s||!u){ host.innerHTML='<div class="wb-empty"><h3>Sign in required</h3><p>Sign in to manage your profile.</p><a class="hx-cta-primary" href="/signup">Sign in</a></div>'; return; }
-      Promise.all([
-        sb.from('profiles').select('*').eq('id',u.id).maybeSingle(),
-        sb.from('subscriptions').select('plan,status').eq('owner_id',u.id).maybeSingle()
-      ]).then(function(res){
-        profile=(res[0]&&res[0].data)|| { id:u.id, email:u.email };
-        sub=(res[1]&&res[1].data)||null;
-        render();
-      }).catch(function(){ profile={ id:u.id, email:u.email }; render(); });
-    });
-  })();
-  </script>
-</body>
+<body></body>
 </html>

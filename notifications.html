@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<script>location.replace('/chat'+location.search+location.hash);</script>
+<meta http-equiv="refresh" content="0;url=/chat">
+<title>HelveX</title>
+=======
   <script>location.replace('/chat'+location.search+location.hash);</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -22,91 +29,7 @@
     .wb-switch { display:inline-block; }
     .save-bar { position:sticky; bottom:16px; display:flex; align-items:center; gap:12px; margin-top:20px; padding:12px 16px; background:var(--hx-surface); border:1px solid var(--hx-line); border-radius:12px; box-shadow:var(--hx-shadow); }
   </style>
+>>>>>>> origin/main
 </head>
-<body data-active="notifications">
-  <div class="hx-app">
-    <aside class="hx-sidebar"></aside>
-    <div>
-      <div class="hx-topbar"></div>
-      <main class="hx-main">
-        <div class="hx-aura" aria-hidden="true"></div>
-        <header class="hx-pg-hero">
-          <p class="hx-pg-eyebrow"><span class="hx-pg-eyebrow-dot" aria-hidden="true"></span>Account · notifications</p>
-          <div class="hx-pg-hero-grid"><div>
-            <h1 class="hx-pg-title">Notifications</h1>
-            <p class="hx-pg-sub">Choose exactly what HelveX tells you about, and where. Per-category control over email and push, plus how often we batch them.</p>
-          </div></div>
-        </header>
-        <div id="nt-host"></div>
-      </main>
-    </div>
-  </div>
-  <script src="/platform.js"></script>
-  <script src="/workbench.js"></script>
-  <script>
-  (function(){
-    var $=function(id){return document.getElementById(id);};
-    var sb=null, user=null, dirty=false;
-    var host=$('nt-host'); host.innerHTML=WB.skeletonCards(1);
-
-    var CATS=[
-      { id:'product',  name:'Product updates',  desc:'New features, changelog and improvements.' },
-      { id:'security', name:'Security alerts',   desc:'New sign-ins, password and MFA changes.', locked:true },
-      { id:'billing',  name:'Billing & invoices',desc:'Receipts, payment failures, plan changes.' },
-      { id:'mentions', name:'Mentions & comments',desc:'When someone @mentions you or replies.' },
-      { id:'deploys',  name:'Deployments',       desc:'Build success, failures and rollbacks.' },
-      { id:'digest',   name:'Weekly digest',     desc:'A Monday summary of workspace activity.' }
-    ];
-    // defaults
-    var prefs={};
-    CATS.forEach(function(c){ prefs[c.id]={ email:true, push:c.id!=='digest' }; });
-    var freq='realtime';
-
-    function render(){
-      host.innerHTML=
-        '<div class="card" style="padding:22px">'+
-          '<table class="nt-table"><thead><tr><th>Notification</th><th class="c">Email</th><th class="c">Push</th></tr></thead><tbody>'+
-          CATS.map(function(c){
-            var p=prefs[c.id]||{email:false,push:false};
-            return '<tr class="nt-row"><td><div class="nt-name">'+WB.esc(c.name)+(c.locked?' <span class="wb-pill" style="height:18px;margin-left:4px">Required</span>':'')+'</div><div class="nt-desc">'+WB.esc(c.desc)+'</div></td>'+
-              '<td class="c"><button class="wb-switch '+(p.email?'on':'')+'" data-cat="'+c.id+'" data-ch="email" '+(c.locked?'data-locked="1"':'')+'></button></td>'+
-              '<td class="c"><button class="wb-switch '+(p.push?'on':'')+'" data-cat="'+c.id+'" data-ch="push"></button></td></tr>';
-          }).join('')+
-          '</tbody></table>'+
-        '</div>'+
-        '<div class="card" style="padding:20px;margin-top:16px"><div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">'+
-          '<div style="flex:1;min-width:200px"><div class="nt-name">Delivery frequency</div><div class="nt-desc">How often non-urgent emails are batched. Security alerts are always realtime.</div></div>'+
-          '<select class="wb-select" id="nt-freq"><option value="realtime">Realtime</option><option value="daily">Daily digest</option><option value="weekly">Weekly digest</option></select>'+
-        '</div></div>'+
-        '<div class="save-bar"><span id="nt-state" class="dim" style="color:var(--hx-text-dim);font-size:12.5px">All changes saved</span><span style="flex:1"></span><button class="wb-btn primary" id="nt-save">Save preferences</button></div>';
-      $('nt-freq').value=freq;
-      $('nt-freq').onchange=function(){ freq=this.value; markDirty(); };
-      host.querySelectorAll('.wb-switch').forEach(function(sw){
-        sw.onclick=function(){ if(sw.dataset.locked){ WB.toast('Security alerts can’t be turned off','info'); return; } var c=sw.dataset.cat, ch=sw.dataset.ch; prefs[c][ch]=!prefs[c][ch]; sw.classList.toggle('on',prefs[c][ch]); markDirty(); };
-      });
-      $('nt-save').onclick=save;
-    }
-    function markDirty(){ dirty=true; var s=$('nt-state'); if(s){ s.textContent='Unsaved changes'; s.style.color='var(--hx-yellow-deep)'; } }
-
-    function save(){
-      if(!sb||!user){ WB.toast('Sign in required','err'); return; }
-      var btn=$('nt-save'); btn.disabled=true; btn.textContent='Saving…';
-      var payload={ user_id:user.id, notification_prefs:{ categories:prefs, frequency:freq }, email_product:!!prefs.product.email, email_security:!!prefs.security.email, email_billing:!!prefs.billing.email, updated_at:new Date().toISOString() };
-      sb.from('user_settings').upsert(payload,{onConflict:'user_id'}).then(function(r){
-        if(r.error) throw r.error; dirty=false; btn.disabled=false; btn.textContent='Save preferences';
-        var s=$('nt-state'); s.textContent='All changes saved'; s.style.color='var(--hx-emerald)'; WB.toast('Preferences saved','ok');
-      }).catch(function(e){ btn.disabled=false; btn.textContent='Save preferences'; WB.toast(e.message||'Save failed','err'); });
-    }
-
-    WB.ready(function(s,u){
-      sb=s; user=u;
-      if(!s||!u){ render(); return; }
-      sb.from('user_settings').select('notification_prefs,email_product,email_security,email_billing').eq('user_id',u.id).maybeSingle().then(function(r){
-        var d=r&&r.data; if(d&&d.notification_prefs&&d.notification_prefs.categories){ prefs=Object.assign(prefs,d.notification_prefs.categories); freq=d.notification_prefs.frequency||freq; }
-        prefs.security.email=true; render();
-      }).catch(render);
-    });
-  })();
-  </script>
-</body>
+<body></body>
 </html>
