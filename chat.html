@@ -41085,5 +41085,37 @@
     setTimeout(wire,300); setTimeout(wire,1200);
   })();
   </script>
+  <!-- Helix is violet-only: kill every legacy orange/gold/amber accent in the chat (desktop + mobile) -->
+  <style id="hx-no-orange">
+    html body[data-active="chat"],
+    html body[data-active="chat"][data-model="ether"],
+    html body[data-active="chat"][data-model="nexus"],
+    html body[data-active="chat"][data-model="prometheus"],
+    html body[data-active="chat"][data-wsmode],
+    html body[data-active="chat"][data-wsmode="code"],
+    html body[data-active="chat"][data-wsmode="compare"]{
+      --hx-mc:#7C5CFF !important; --hx-mc-deep:#6D28D9 !important;
+      --hx-mc-soft:rgba(124,92,255,.14) !important; --hx-mc-glow:rgba(124,92,255,.32) !important;
+      --hx-yellow:#7C5CFF !important; --hx-yellow-deep:#6D28D9 !important; --hx-yellow-soft:rgba(124,92,255,.14) !important;
+      --hxm-accent:#7C5CFF !important; --cg-orange:#7C5CFF !important; --hx-ws:#7C5CFF !important;
+    }
+    html body[data-active="chat"] .hx-chat-send,
+    html body[data-active="chat"] .hx-chat-new,
+    html body[data-active="chat"] .hx-chat-new-fab,
+    html body[data-active="chat"] .hx-cc-send{ background:linear-gradient(135deg,#8B6CFF,#6D28D9) !important; color:#fff !important; }
+    html body[data-active="chat"] .hx-md-list-num>li::before,
+    html body[data-active="chat"] .hx-chart-bar-fill,
+    html body[data-active="chat"] .hx-diagram-node.is-end{ background:linear-gradient(135deg,#8B6CFF,#6D28D9) !important; color:#fff !important; }
+    html body[data-active="chat"] .hx-code-body .tok-number{ color:#c4b5fd !important; }
+    html body[data-active="chat"] .hx-msg-avatar.hx-mg-nexus,
+    html body[data-active="chat"] .hx-chat-item-glyph.hx-mg-nexus,
+    html body[data-active="chat"] .hx-msg-avatar.hx-mg-ether,
+    html body[data-active="chat"] .hx-chat-item-glyph.hx-mg-ether{ color:#9b7dff !important; background:rgba(124,92,255,.18) !important; box-shadow:inset 0 0 0 1px rgba(124,92,255,.30) !important; }
+    html body[data-active="chat"] .hx-art-col-risk .hx-art-col-head{ color:#c4b5fd !important; }
+    html body[data-active="chat"] .hx-iq-eyebrow{ background:linear-gradient(90deg,#9db4ff,#b388ff 60%,#c2a9ff) !important; }
+    html body[data-active="chat"] .hx-iq-card.is-active::before{ background:linear-gradient(120deg,#7db4ff,#8B6CFF 50%,#c2a9ff) !important; }
+    html #hx-enter .hx-enter-pill::before{ background:linear-gradient(120deg,#7db4ff,#8B6CFF 45%,#c2a9ff) !important; }
+    html #hx-enter .hx-enter-dot{ background:#7C5CFF !important; }
+  </style>
 </body>
 </html>
