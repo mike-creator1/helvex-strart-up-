@@ -36013,14 +36013,14 @@
               /* ── recent chats ────────────────────────────────────── */
               R + '.hxn-recent{width:100%;max-width:640px;margin-top:22px;}',
               R + '.hxn-caps{width:100%;max-width:640px;margin-top:22px;}',
-              R + '.hxn-caps-list{display:flex;flex-direction:column;gap:8px;}',
-              R + '.hxn-cap{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;border-radius:13px;background:var(--surf);border:1px solid rgba(255,255,255,.07);cursor:pointer;text-align:left;transition:background .16s,border-color .16s,transform .12s;}',
-              R + '.hxn-cap:hover{background:var(--surf2);border-color:rgba(124,92,255,.4);}',
-              R + '.hxn-cap:active{transform:scale(.99);}',
-              R + '.hxn-cap-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}',
-              R + '.hxn-cap-t{font-size:14px;font-weight:600;color:var(--ink);letter-spacing:-.01em;}',
-              R + '.hxn-cap-d{font-size:12px;color:var(--mid);line-height:1.35;}',
-              R + '.hxn-cap>svg{width:17px;height:17px;flex-shrink:0;color:var(--dim);}',
+              R + '.hxn-caps-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}',
+              R + '.hxn-tool{display:flex;flex-direction:column;align-items:flex-start;padding:14px;border-radius:15px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.09);cursor:pointer;text-align:left;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:transform .14s,border-color .16s,background .16s,box-shadow .16s;}',
+              R + '.hxn-tool:hover{transform:translateY(-2px);border-color:rgba(124,92,255,.45);background:linear-gradient(180deg,rgba(124,92,255,.10),rgba(255,255,255,.03));box-shadow:0 18px 38px -22px rgba(124,92,255,.65);}',
+              R + '.hxn-tool:active{transform:scale(.98);}',
+              R + '.hxn-tool-ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;color:var(--v);background:rgba(124,92,255,.14);border:1px solid rgba(124,92,255,.26);box-shadow:0 0 16px -4px rgba(124,92,255,.55);margin-bottom:12px;}',
+              R + '.hxn-tool-ic svg{width:21px;height:21px;}',
+              R + '.hxn-tool-t{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em;}',
+              R + '.hxn-tool-d{font-size:11.5px;color:var(--mid);line-height:1.35;margin-top:5px;}',
               R + '.hxn-rec-empty{padding:24px 16px;text-align:center;color:var(--dim);font-size:13px;font-weight:500;letter-spacing:-.01em;border:1px dashed rgba(255,255,255,.09);border-radius:13px;background:rgba(255,255,255,.02);}',
               R + '.hxn-rec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}',
               R + '.hxn-rec-head-t{font-size:13.5px;font-weight:600;color:var(--mid);letter-spacing:-.01em;}',
@@ -36090,15 +36090,21 @@
               '</div>' +
               '<section class="hxn-caps" id="hx-home-caps">' +
                 '<div class="hxn-rec-head"><span class="hxn-rec-head-t">Capabilities</span></div>' +
-                '<div class="hxn-caps-list">' +
-                  '<button class="hxn-cap" type="button" data-home-seed="Βοήθησέ με με κώδικα — γράψε, βελτίωσε, κάνε refactor ή εξήγησε: ">' +
-                    '<span class="hxn-cap-body"><span class="hxn-cap-t">Κώδικας</span><span class="hxn-cap-d">Για γράψιμο, βελτίωση, refactor και εξήγηση κώδικα.</span></span>' + S.chevR +
+                '<div class="hxn-caps-grid">' +
+                  '<button class="hxn-tool" type="button" data-home-seed="Βοήθησέ με με κώδικα — γράψε, διόρθωσε ή βελτίωσε: ">' +
+                    '<span class="hxn-tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>' +
+                    '<span class="hxn-tool-t">Κώδικας</span>' +
+                    '<span class="hxn-tool-d">Γράψε, διόρθωσε και βελτίωσε κώδικα.</span>' +
                   '</button>' +
-                  '<button class="hxn-cap" type="button" data-home-seed="Βοήθησέ με να το λύσω — debugging, λογική σκέψη και απόφαση: ">' +
-                    '<span class="hxn-cap-body"><span class="hxn-cap-t">AI Resolving</span><span class="hxn-cap-d">Για επίλυση προβλημάτων, debugging, λογική σκέψη και αποφάσεις.</span></span>' + S.chevR +
+                  '<button class="hxn-tool" type="button" data-home-seed="Βοήθησέ με να το λύσω — επίλυση προβλήματος και debugging: ">' +
+                    '<span class="hxn-tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2l9 10-9 10-9-10z"/><path d="M7.5 12h9"/></svg></span>' +
+                    '<span class="hxn-tool-t">AI Resolving</span>' +
+                    '<span class="hxn-tool-d">Επίλυση προβλημάτων και debugging.</span>' +
                   '</button>' +
-                  '<button class="hxn-cap" type="button" data-home-seed="Κάνε έρευνα και δώσε καθαρή απάντηση — αναζήτηση, σύγκριση, περίληψη: ">' +
-                    '<span class="hxn-cap-body"><span class="hxn-cap-t">Research</span><span class="hxn-cap-d">Για αναζήτηση, σύγκριση, περίληψη και καθαρές απαντήσεις.</span></span>' + S.chevR +
+                  '<button class="hxn-tool" type="button" data-home-seed="Κάνε έρευνα — αναζήτηση, ανάλυση και σύγκριση πληροφοριών: ">' +
+                    '<span class="hxn-tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></span>' +
+                    '<span class="hxn-tool-t">Research</span>' +
+                    '<span class="hxn-tool-d">Αναζήτηση, ανάλυση και σύγκριση πληροφοριών.</span>' +
                   '</button>' +
                 '</div>' +
               '</section>' +
