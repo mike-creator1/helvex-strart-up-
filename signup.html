@@ -242,7 +242,7 @@
               // Verify it's actually live (not just stale localStorage data)
               var u = await window.HX.supabase.auth.getUser();
               if (u && u.data && u.data.user) {
-                window.location.replace('/dashboard');
+                window.location.replace('/chat');
                 return;
               }
             }
@@ -286,7 +286,7 @@
             if (res.error) throw res.error;
             // Remember the email locally — so next visit pre-fills.
             try { localStorage.setItem(REMEMBERED_EMAIL, String(email || '').trim().toLowerCase()); } catch (_) {}
-            window.location.replace('/dashboard');
+            window.location.replace('/chat');
           } catch (err) {
             var msg = err && err.message ? err.message : 'Could not sign in.';
             if (/email\s*not\s*confirmed/i.test(msg)) {

@@ -141,71 +141,7 @@
         <a href="/" class="brand-mark flex items-center flex-shrink-0">
           <span class="brand-logo"><img src="/helvex-logo.png" alt="HelveX" class="w-auto" /></span>
         </a>
-        <div class="hidden lg:flex items-center gap-1" id="nav-main">
-          <a href="/" class="nav-link">Home</a>
-          <div class="nav-dropdown relative group">
-            <button type="button" class="nav-link nav-link-dropdown" aria-haspopup="true" aria-expanded="false">
-              Toolkit
-              <svg class="w-3 h-3 ml-0.5 text-ink-light group-hover:text-ink transition-all group-hover:rotate-180" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="nav-dropdown-menu absolute top-full left-0 pt-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-all duration-200 z-50">
-              <div class="w-72 bg-white border border-line rounded-2xl shadow-[0_24px_60px_-20px_rgba(10,10,10,0.18)] p-2.5">
-                <a href="/crm" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-red flex items-center justify-center"><svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">AI CRM</span><span class="block text-[11px] text-ink-mid">Clients, leads, follow-ups</span></span>
-                </a>
-                <a href="/marketing-tools" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-yellow flex items-center justify-center"><svg class="w-3.5 h-3.5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">AI Marketing Tools</span><span class="block text-[11px] text-ink-mid">Posts · ads · email · SEO</span></span>
-                </a>
-                <a href="/automation" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-ink flex items-center justify-center"><svg class="w-3.5 h-3.5 text-yellow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Automation</span><span class="block text-[11px] text-ink-mid">Workflows that run themselves</span></span>
-                </a>
-                <a href="/business-assistant" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-red-soft flex items-center justify-center"><svg class="w-3.5 h-3.5 text-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Business Assistant</span><span class="block text-[11px] text-ink-mid">Plans · contracts · invoices</span></span>
-                </a>
-                <div class="border-t border-line my-1.5"></div>
-                <a href="/toolkit" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-cream/60 transition-colors text-[12px] font-semibold text-ink-mid hover:text-ink">
-                  <span>View all toolkit</span>
-                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="nav-dropdown relative group">
-            <button type="button" class="nav-link nav-link-dropdown" aria-haspopup="true" aria-expanded="false">
-              Services
-              <svg class="w-3 h-3 ml-0.5 text-ink-light group-hover:text-ink transition-all group-hover:rotate-180" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="nav-dropdown-menu absolute top-full left-0 pt-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-all duration-200 z-50">
-              <div class="w-72 bg-white border border-line rounded-2xl shadow-[0_24px_60px_-20px_rgba(10,10,10,0.18)] p-2.5">
-                <a href="/ai-automation.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-yellow flex items-center justify-center"><svg class="w-3.5 h-3.5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 11h.01M15 11h.01"/><path d="M12 7V3"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">AI &amp; Automation</span><span class="block text-[11px] text-ink-mid">Agents that handle the work</span></span>
-                </a>
-                <a href="/digital-services.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-ink flex items-center justify-center"><svg class="w-3.5 h-3.5 text-yellow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Digital Services</span><span class="block text-[11px] text-ink-mid">Sites · CRM · APIs · cloud</span></span>
-                </a>
-                <a href="/growth-marketing.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-yellow flex items-center justify-center"><svg class="w-3.5 h-3.5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Growth &amp; Marketing</span><span class="block text-[11px] text-ink-mid">Systems that compound</span></span>
-                </a>
-                <a href="/enterprise.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-cream/60 transition-colors">
-                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-red flex items-center justify-center"><svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/></svg></span>
-                  <span class="flex-1"><span class="block text-[13px] font-semibold text-ink">Enterprise</span><span class="block text-[11px] text-ink-mid">Internal AI · secure · audited</span></span>
-                </a>
-              </div>
-            </div>
-          </div>
-          <a href="/models" class="nav-link">Models</a>
-          <a href="/workspace" class="nav-link">Workspace</a>
-          <a href="/research" class="nav-link">Research</a>
-          <a href="/customer-stories" class="nav-link">Customers</a>
-          <a href="/resources" class="nav-link">Resources</a>
-        </div>
+        <div class="hidden lg:flex items-center gap-1" id="nav-main"></div>
       </div>
       <div class="flex items-center gap-2">
         <a href="/signup.html" class="hx-signin hidden sm:inline-flex">Sign in</a>
@@ -230,36 +166,6 @@
       </div>
       <nav class="mobile-menu-nav" aria-label="Main">
         <a href="/" class="mobile-menu-link">Home</a>
-        <details class="mobile-menu-services">
-          <summary class="mobile-menu-link" style="list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
-            <span>Toolkit</span>
-            <svg class="w-4 h-4 text-ink-light transition-transform" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </summary>
-          <div class="pl-4 mt-1 mb-2 space-y-0.5 border-l border-line">
-            <a href="/crm" class="mobile-menu-link">AI CRM</a>
-            <a href="/marketing-tools" class="mobile-menu-link">AI Marketing Tools</a>
-            <a href="/automation" class="mobile-menu-link">Automation</a>
-            <a href="/business-assistant" class="mobile-menu-link">Business Assistant</a>
-            <a href="/toolkit" class="mobile-menu-link" style="font-weight:600;">All toolkit →</a>
-          </div>
-        </details>
-        <details class="mobile-menu-services">
-          <summary class="mobile-menu-link" style="list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
-            <span>Services</span>
-            <svg class="w-4 h-4 text-ink-light transition-transform" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </summary>
-          <div class="pl-4 mt-1 mb-2 space-y-0.5 border-l border-line">
-            <a href="/ai-automation.html" class="mobile-menu-link">AI &amp; Automation</a>
-            <a href="/digital-services.html" class="mobile-menu-link">Digital Services</a>
-            <a href="/growth-marketing.html" class="mobile-menu-link">Growth &amp; Marketing</a>
-            <a href="/enterprise.html" class="mobile-menu-link">Enterprise</a>
-          </div>
-        </details>
-        <a href="/models" class="mobile-menu-link">Models</a>
-        <a href="/workspace" class="mobile-menu-link">Workspace</a>
-        <a href="/research" class="mobile-menu-link">Research</a>
-        <a href="/customer-stories" class="mobile-menu-link">Customers</a>
-        <a href="/resources" class="mobile-menu-link">Resources</a>
       </nav>
       <div class="mobile-menu-cta">
         <a href="/signup.html" class="primary">
