@@ -32971,7 +32971,7 @@
                 '<span class="hx-rail-empty-orb" aria-hidden="true">' +
                   '<svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hxorbg" x1="16" y1="2" x2="16" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c2a9ff"/><stop offset="1" stop-color="#6d28d9"/></linearGradient></defs><path d="M27.5 16A11.5 11.5 0 1 0 16 27.5" stroke="url(#hxorbg)" stroke-width="3.5" stroke-linecap="round"/><path d="M16 21.5A5.5 5.5 0 1 1 21.5 16" stroke="url(#hxorbg)" stroke-width="3.5" stroke-linecap="round"/><path d="M16 1.6l2.6 2.9L16 7.4 13.4 4.5z" fill="url(#hxorbg)"/></svg>' +
                 '</span>' +
-                '<span class="hx-rail-empty-title">Start your first conversation</span>' +
+                '<span class="hx-rail-empty-title">No conversations yet</span>' +
               '</div>';
             return;
           }
@@ -36011,6 +36011,7 @@
 
               /* ── recent chats ────────────────────────────────────── */
               R + '.hxn-recent{width:100%;max-width:640px;margin-top:22px;}',
+              R + '.hxn-rec-empty{padding:24px 16px;text-align:center;color:var(--dim);font-size:13px;font-weight:500;letter-spacing:-.01em;border:1px dashed rgba(255,255,255,.09);border-radius:13px;background:rgba(255,255,255,.02);}',
               R + '.hxn-rec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}',
               R + '.hxn-rec-head-t{font-size:13.5px;font-weight:600;color:var(--mid);letter-spacing:-.01em;}',
               R + '.hxn-rec-all{display:inline-flex;align-items:center;gap:3px;background:none !important;border:0 !important;color:var(--v) !important;font-size:13px !important;font-weight:600 !important;cursor:pointer;padding:0 !important;}',
@@ -36253,21 +36254,12 @@
                 '<span class="hx-home-rec-act" aria-hidden="true">' + hxRecChev + '</span>' +
               '</span></button>';
           }
-          // Sample chats shown until the user has real conversations, so the
-          // home matches the product design. Tapping one seeds the composer.
-          var HX_SAMPLE_RECENT = [
-            { title:'Q1 Growth analysis',       sub:'Analyze our Q1 growth data and highlight key insights.', time:'9:41 AM',   seed:'Analyze our Q1 growth data and highlight the key insights.' },
-            { title:'Marketing strategy 2026',  sub:'Help me create a go-to-market strategy for our new product.', time:'Yesterday', seed:'Help me create a go-to-market strategy for our new product.' },
-            { title:'User research synthesis',  sub:'Summarize the key findings from user interviews.', time:'2d ago',    seed:'Summarize the key findings from our user interviews.' },
-            { title:'Competitor benchmarking',  sub:'Compare our product with top competitors in the market.', time:'3d ago',    seed:'Compare our product with the top competitors in the market.' }
-          ];
+          // Real conversations only — never any sample/demo content.
           function hxRenderHomeRecent(){
             var box = document.getElementById('hx-home-recent'); if (!box) return;
             var convs = (typeof state !== 'undefined' && state && state.conversations) ? state.conversations : [];
             if (!convs.length){
-              box.innerHTML = HX_SAMPLE_RECENT.map(function (s){
-                return hxRecRow({ attr:'data-home-seed="' + escape(s.seed) + '"', title:escape(s.title), sub:escape(s.sub), time:escape(s.time) });
-              }).join('');
+              box.innerHTML = '<div class="hxn-rec-empty">No conversations yet</div>';
               return;
             }
             box.innerHTML = convs.slice(0, 4).map(function (c){
