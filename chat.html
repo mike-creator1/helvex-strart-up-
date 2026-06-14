@@ -33615,31 +33615,9 @@
         function renderThread() {
           var thread = $('hx-c-thread');
           if (!state.conversation) {
-            var active = getActiveProject();
-            if (!active || !active.id) {
-              // No project selected — guide the user to pick one (or create
-              // their first project) before they can start chatting.
-              var hasProjects = !!(state.projectCount && state.projectCount > 0);
-              if (hasProjects) {
-                thread.innerHTML =
-                  '<div class="hx-chat-blank">' +
-                    '<span class="hx-chat-blank-mark" aria-hidden="true"></span>' +
-                    '<span class="hx-chat-blank-eyebrow">Choose a project</span>' +
-                    '<h2>Pick a project</h2>' +
-                    '<p>Use the <strong>Project</strong> selector above to choose what you are working on. Every chat is saved under the active project.</p>' +
-                  '</div>';
-              } else {
-                thread.innerHTML =
-                  '<div class="hx-chat-blank">' +
-                    '<span class="hx-chat-blank-mark" aria-hidden="true"></span>' +
-                    '<span class="hx-chat-blank-eyebrow">Get started</span>' +
-                    '<h2>Create your first project</h2>' +
-                    '<p>Chats live inside projects. Open <a href="/projects.html?new=1" style="text-decoration:underline;">Projects</a> to create one, then come back here.</p>' +
-                  '</div>';
-              }
-              return;
-            }
-            thread.innerHTML = buildWelcome(active);
+            // Helix is the only product — no project gate; always show the
+            // Helix welcome so the user can start chatting immediately.
+            thread.innerHTML = buildWelcome(getActiveProject());
             wireWelcome(thread);
             return;
           }
@@ -34170,24 +34148,10 @@
         // ─── New conversation ────────────────────────────────
         async function newConversation() {
           var u = (await sb.auth.getUser()).data.user; if (!u) return;
+          // Helix is the only product — a chat does not require a project.
           var active = getActiveProject();
-          // Guard: a chat must always live inside a project once the user
-          // has projects available. If they have none, route them to create
-          // one first. If they have projects but none is selected, surface
-          // the dropdown.
-          if (!active || !active.id) {
-            if (state.projectCount && state.projectCount > 0) {
-              $('hx-c-project').focus();
-              renderThread();
-              return;
-            } else {
-              if (window.cxToast) window.cxToast('Create a project to start a new chat.', 'info');
-              window.location.href = '/projects.html?new=1';
-              return;
-            }
-          }
           var model = $('hx-c-model').value || 'ether';
-          var proj  = active.id;
+          var proj  = (active && active.id) ? active.id : null;
           var ins = await sb.from('conversations').insert({
             owner_id: u.id, project_id: proj, model: model, title: 'New chat',
             workspace: state.workspace || 'home'
