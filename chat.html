@@ -36702,7 +36702,7 @@
             if(t.closest('#hx-ws-back')){ window.hxHideWorkspace(); return; }
             if(t.closest('#hx-ws-send')){ wsSend(); return; }
             if(t.closest('#hx-ws-mic')){ var m = document.getElementById('hx-c-mic'); if(m) m.click(); return; }
-            if(t.closest('.hx-home-avatar')){ try { window.location.href = 'profile.html'; } catch(e){} return; }
+            if(t.closest('.hx-home-avatar')){ return; }
             var pill = t.closest('.hx-home-pill[data-pill]');
             if(pill){ var pk = pill.getAttribute('data-pill');
               if(pk === 'web'){ pill.classList.toggle('is-on'); try { state.webEnabled = pill.classList.contains('is-on'); } catch(e){} }
