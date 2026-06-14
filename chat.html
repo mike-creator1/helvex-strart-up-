@@ -40886,5 +40886,28 @@
     setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); }, dur+800);
   })();
   </script>
+  <!-- Helix-only shell: never show the legacy platform sidebar/topbar around the chat (all viewports). -->
+  <style id="hx-helix-only-shell">
+    html body[data-active="chat"] .hx-sidebar,
+    html body[data-active="chat"] .hx-topbar,
+    html body[data-active="chat"] .hx-mobile-backdrop { display: none !important; }
+    html body[data-active="chat"] .hx-app { display: block !important; min-height: 0 !important; }
+    html body[data-active="chat"] .hx-app > div { display: flex !important; flex-direction: column !important; height: 100dvh !important; height: 100vh !important; min-height: 0 !important; }
+    html body[data-active="chat"] .hx-main { flex: 1 1 auto !important; min-height: 0 !important; }
+  </style>
+  <script>
+  // Defensive: if platform.js (or any legacy script) injects the global
+  // sidebar/topbar into the chat, strip it so the chat stays pure Helix.
+  (function(){
+    function strip(){
+      if ((document.body.getAttribute('data-active') || '') !== 'chat') return;
+      var s = document.querySelector('.hx-sidebar'); if (s) s.remove();
+      var t = document.querySelector('.hx-topbar'); if (t) t.remove();
+    }
+    strip();
+    try { document.addEventListener('DOMContentLoaded', strip); } catch(e){}
+    setTimeout(strip, 0); setTimeout(strip, 300); setTimeout(strip, 1200);
+  })();
+  </script>
 </body>
 </html>
