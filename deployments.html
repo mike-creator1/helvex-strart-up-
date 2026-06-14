@@ -1,11 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
 <script>location.replace('/chat'+location.search+location.hash);</script>
 <meta http-equiv="refresh" content="0;url=/chat">
 <title>HelveX</title>
+=======
+  <script>location.replace('/chat'+location.search+location.hash);</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Deployments — HelveX</title>
+  <meta name="description" content="HelveX Deployments — environments, build history, status, logs, redeploy and rollback." />
+  <link rel="icon" type="image/png" href="/helvex-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
+  <link rel="stylesheet" href="/workbench.css" />
+  <style>
+    .env-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-bottom:8px; }
+    .env-card { background:var(--hx-surface); border:1px solid var(--hx-line); border-radius:var(--hx-r); padding:18px; }
+    .env-card .top { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+    .env-card .top .nm { font-size:14.5px; font-weight:600; }
+    .env-card .top .nm small { display:block; font-family:var(--hx-mono); font-size:11px; color:var(--hx-text-dim); font-weight:400; margin-top:2px; }
+    .timeline { position:relative; padding-left:26px; }
+    .timeline::before { content:""; position:absolute; left:8px; top:6px; bottom:6px; width:2px; background:var(--hx-line); }
+    .tl-item { position:relative; padding:0 0 22px; }
+    .tl-item:last-child { padding-bottom:0; }
+    .tl-dot { position:absolute; left:-22px; top:3px; width:14px; height:14px; border-radius:50%; border:3px solid var(--hx-surface); }
+    .tl-dot.live { background:var(--hx-emerald); } .tl-dot.pending { background:var(--hx-yellow-deep); } .tl-dot.failed { background:var(--hx-red); } .tl-dot.degraded{ background:var(--hx-yellow); } .tl-dot.stopped { background:var(--hx-text-faint); }
+    .log { background:#0b0b0d; border-radius:10px; padding:14px 16px; font-family:var(--hx-mono); font-size:12px; line-height:1.75; color:#d4d4d8; max-height:340px; overflow:auto; white-space:pre-wrap; }
+    .log .t { color:#6b7280; } .log .ok { color:#4ade80; } .log .warn { color:#fbbf24; } .log .err { color:#f87171; } .log .dim { color:#9ca3af; }
+  </style>
+>>>>>>> origin/main
 </head>
 <body></body>
 </html>

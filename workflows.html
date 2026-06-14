@@ -1,11 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
 <script>location.replace('/chat'+location.search+location.hash);</script>
 <meta http-equiv="refresh" content="0;url=/chat">
 <title>HelveX</title>
+=======
+  <script>location.replace('/chat'+location.search+location.hash);</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Workflows — HelveX</title>
+  <meta name="description" content="HelveX Workflows — your automation control center. Schedule, webhook, event and manual workflows with live runs, success rates and logs." />
+  <link rel="icon" type="image/png" href="/helvex-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
+  <link rel="stylesheet" href="/workbench.css" />
+  <style>
+    .wf-tpl { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; }
+    .wf-tpl .t { padding:15px; cursor:pointer; display:flex; flex-direction:column; gap:4px; }
+    .wf-tpl .t .ic { width:36px; height:36px; border-radius:10px; display:grid; place-items:center; margin-bottom:8px; }
+    .wf-tpl .t .ic svg { width:18px; height:18px; }
+    .wf-tpl .t h4 { font-size:13.5px; font-weight:600; margin:0; }
+    .wf-tpl .t p { font-size:11.5px; color:var(--hx-text-dim); margin:0; line-height:1.45; }
+    .wf-cols { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:16px; align-items:start; }
+    @media (max-width:1024px){ .wf-cols { grid-template-columns:1fr; } }
+    .wf-trig { display:inline-flex; align-items:center; gap:6px; font-size:12.5px; }
+    .wf-trig svg { width:13px; height:13px; color:var(--hx-text-mid); }
+    .run-item { display:flex; align-items:flex-start; gap:11px; padding:13px 0; border-top:1px solid var(--hx-line-soft); }
+    .run-item:first-child { border-top:0; }
+    .run-dot { width:9px; height:9px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+    .run-dot.success { background:var(--hx-emerald); } .run-dot.failed { background:var(--hx-red); } .run-dot.running { background:var(--hx-yellow-deep); animation:wbPulse 1.2s infinite; }
+    .run-item .rt { font-size:13px; font-weight:550; }
+    .run-item .rm { font-size:11.5px; color:var(--hx-text-dim); margin-top:2px; }
+    .err-link { color:var(--hx-red); font-size:11.5px; cursor:pointer; text-decoration:underline; }
+    .wf-name { font-weight:600; cursor:pointer; }
+    .wf-name:hover { color:var(--hx-yellow-deep); }
+  </style>
+>>>>>>> origin/main
 </head>
 <body></body>
 </html>

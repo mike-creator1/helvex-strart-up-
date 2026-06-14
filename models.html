@@ -1,11 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
 <script>location.replace('/chat'+location.search+location.hash);</script>
 <meta http-equiv="refresh" content="0;url=/chat">
 <title>HelveX</title>
+=======
+  <script>location.replace('/chat'+location.search+location.hash);</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Models — HelveX</title>
+  <meta name="description" content="HelveX models — Ether, Nexus, Prometheus." />
+  <link rel="icon" type="image/png" href="/helvex-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
+  <style>
+    /* Model card — quieter, more product-page than dashboard */
+    .hx-model-card {
+      background: var(--hx-surface);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-lg);
+      padding: 22px 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .hx-model-card:hover { border-color: var(--hx-line-strong); }
+    .hx-model-card.is-featured { border-color: var(--hx-text); }
+
+    .hx-model-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--hx-r);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      color: var(--hx-text);
+    }
+    .hx-model-mark.yellow {
+      background: var(--hx-yellow-soft);
+      border-color: rgba(252, 211, 77, 0.4);
+      color: var(--hx-yellow-deep);
+    }
+    .hx-model-mark.red {
+      background: var(--hx-red-soft);
+      border-color: rgba(220, 38, 38, 0.22);
+      color: var(--hx-red);
+    }
+
+    .hx-model-name {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-size: 30px;
+      letter-spacing: -0.015em;
+      line-height: 1.05;
+      color: var(--hx-text);
+      margin: 0;
+    }
+    .hx-model-tag {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--hx-text-dim);
+      margin: 0;
+    }
+    .hx-model-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--hx-text-mid);
+      margin: 0;
+    }
+    .hx-model-suited {
+      font-size: 12.5px;
+      color: var(--hx-text-dim);
+      padding-top: 14px;
+      border-top: 1px solid var(--hx-line);
+      margin: 0;
+    }
+    .hx-model-suited strong {
+      color: var(--hx-text);
+      font-weight: 500;
+      display: block;
+      margin-bottom: 4px;
+      letter-spacing: -0.005em;
+    }
+    .hx-model-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--hx-text);
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+      transition: border-color 0.12s, gap 0.12s;
+      align-self: flex-start;
+    }
+    .hx-model-cta:hover { border-color: var(--hx-text); gap: 6px; }
+    .hx-model-cta::after { content: '→'; font-weight: 400; }
+
+    /* Playground */
+    .hx-pg-card { display: flex; flex-direction: column; gap: 14px; }
+    .hx-pg-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .hx-pg-row > label { font-size: 12.5px; font-weight: 500; color: var(--hx-text); min-width: 60px; }
+    .hx-pg-models { display: inline-flex; gap: 0; padding: 3px; background: var(--hx-bg-2); border: 1px solid var(--hx-line); border-radius: var(--hx-r); }
+    .hx-pg-models button {
+      padding: 6px 14px; font-size: 12.5px; font-weight: 500; color: var(--hx-text-mid);
+      background: transparent; border: none; border-radius: var(--hx-r-sm);
+      cursor: pointer; font-family: inherit; transition: color 0.12s, background 0.12s, box-shadow 0.12s;
+    }
+    .hx-pg-models button:hover { color: var(--hx-text); }
+    .hx-pg-models button.is-active { background: var(--hx-surface); color: var(--hx-text); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+    .hx-pg-meta {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      font-size: 12px; color: var(--hx-text-mid);
+      padding: 10px 12px; background: var(--hx-bg-2); border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm); margin-top: 6px;
+    }
+    .hx-pg-meta strong { display: inline; font-weight: 500; color: var(--hx-text-dim); margin-right: 4px; }
+    .hx-pg-response {
+      margin-top: 10px; padding: 16px; background: var(--hx-bg); border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm); font-size: 13.5px; line-height: 1.6; color: var(--hx-text);
+      white-space: pre-wrap; word-wrap: break-word; max-height: 500px; overflow-y: auto;
+    }
+    .hx-pg-error { border-color: rgba(220,38,38,0.3); background: var(--hx-red-soft); color: var(--hx-red); }
+  </style>
+>>>>>>> origin/main
 </head>
 <body></body>
 </html>

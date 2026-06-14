@@ -1,11 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
 <script>location.replace('/chat'+location.search+location.hash);</script>
 <meta http-equiv="refresh" content="0;url=/chat">
 <title>HelveX</title>
+=======
+  <script>location.replace('/chat'+location.search+location.hash);</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Business Assistant — HelveX</title>
+  <meta name="description" content="HelveX Business Assistant — persistent AI chat with custom personas. Plans, contracts, invoices, multilingual drafts." />
+  <link rel="icon" type="image/png" href="/helvex-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://yjmpallrtpeinpdilptj.supabase.co" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
+  <link rel="stylesheet" href="/platform-ai.css" />
+  <style>
+    /* Assistant layout: thread sidebar + chat area */
+    .hx-asst-layout { display: grid; grid-template-columns: 260px 1fr; gap: 14px; margin-top: 14px; height: calc(100vh - 280px); min-height: 560px; }
+    @media (max-width: 900px) { .hx-asst-layout { grid-template-columns: 1fr; height: auto; } .hx-thread-pane { max-height: 240px; } }
+
+    .hx-thread-pane { background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); display: flex; flex-direction: column; overflow: hidden; }
+    .hx-thread-head { padding: 12px 12px 10px; border-bottom: 1px solid var(--hx-line); display: flex; gap: 8px; }
+    .hx-thread-new { flex: 1; padding: 8px 12px; background: var(--hx-text); color: var(--hx-bg); border: 0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: background 0.12s; }
+    .hx-thread-new:hover { background: var(--hx-text-mid); }
+    .hx-thread-search-wrap { padding: 8px 12px; border-bottom: 1px solid var(--hx-line); }
+    .hx-thread-search { width: 100%; padding: 7px 10px; border: 1px solid var(--hx-line); border-radius: 8px; font: inherit; font-size: 12.5px; outline: none; }
+    .hx-thread-search:focus { border-color: var(--hx-yellow-deep); }
+    .hx-thread-list { flex: 1; overflow-y: auto; padding: 6px; }
+    .hx-thread-item { padding: 10px 10px; border-radius: 8px; cursor: pointer; transition: background 0.12s; position: relative; }
+    .hx-thread-item:hover { background: var(--hx-cream); }
+    .hx-thread-item.active { background: rgba(252,211,77,0.18); border-left: 3px solid var(--hx-yellow-deep); padding-left: 7px; }
+    .hx-thread-title { font-size: 12.5px; font-weight: 600; color: var(--hx-text); margin: 0 0 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hx-thread-meta { font-size: 10.5px; color: var(--hx-text-mid); font-family: var(--hx-mono); display: flex; justify-content: space-between; align-items: center; }
+    .hx-thread-del { background: transparent; border: 0; color: var(--hx-text-mid); cursor: pointer; opacity: 0; transition: opacity 0.12s, color 0.12s; padding: 0 2px; font-size: 12px; }
+    .hx-thread-item:hover .hx-thread-del { opacity: 1; }
+    .hx-thread-del:hover { color: #dc2626; }
+    .hx-thread-empty { padding: 18px 14px; font-size: 12px; color: var(--hx-text-mid); text-align: center; line-height: 1.5; }
+
+    .hx-asst-main { display: flex; flex-direction: column; overflow: hidden; background: #fff; border: 1px solid var(--hx-line); border-radius: var(--hx-r); }
+    .hx-asst-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid var(--hx-line); background: var(--hx-cream); }
+    .hx-persona-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: #fff; border: 1px solid var(--hx-line); border-radius: 8px; cursor: pointer; font-size: 12.5px; font-weight: 500; color: var(--hx-text); transition: border-color 0.12s; }
+    .hx-persona-pill:hover { border-color: var(--hx-text); }
+    .hx-persona-pill .ico { font-size: 14px; }
+    .hx-persona-pill .arrow { color: var(--hx-text-mid); font-size: 10px; }
+    .hx-asst-title { font-size: 13.5px; font-weight: 600; color: var(--hx-text); flex: 1; margin: 0 0 0 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .hxai-chat-scroll { flex: 1; overflow-y: auto; padding: 18px 18px 8px; display: flex; flex-direction: column; gap: 14px; }
+    .hxai-chat-input-row { padding: 12px 18px 14px; border-top: 1px solid var(--hx-line); }
+    .hxai-chat-input-row { display: flex; gap: 8px; }
+    .hxai-chat-input-row textarea { flex: 1; min-height: 44px; max-height: 160px; padding: 12px 14px; border: 1px solid var(--hx-line); border-radius: 12px; font: inherit; font-size: 13.5px; resize: vertical; line-height: 1.5; }
+    .hxai-chat-input-row textarea:focus { outline: none; border-color: var(--hx-yellow-deep); box-shadow: 0 0 0 3px rgba(252,211,77,0.18); }
+    .hxai-chat-send { padding: 0 18px; background: var(--hx-text); color: var(--hx-bg); border: 0; border-radius: 12px; font-weight: 600; font-size: 13px; cursor: pointer; transition: background 0.12s; }
+    .hxai-chat-send:hover:not(:disabled) { background: var(--hx-text-mid); }
+    .hxai-chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .hx-chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--hx-text-mid); padding: 28px; }
+    .hx-chat-empty h3 { font-size: 18px; color: var(--hx-text); margin: 0 0 6px; }
+    .hx-chat-empty p { font-size: 13.5px; margin: 0; max-width: 380px; line-height: 1.5; }
+    .hx-chat-empty .hx-empty-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--hx-cream); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .hx-chat-empty svg { width: 24px; height: 24px; color: var(--hx-yellow-deep); }
+    .hx-quick-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 20px; width: 100%; max-width: 540px; }
+    @media (max-width: 700px) { .hx-quick-grid { grid-template-columns: 1fr; } }
+    .hx-quick { padding: 12px 14px; background: var(--hx-cream); border: 1px solid var(--hx-line); border-radius: 10px; text-align: left; cursor: pointer; transition: border-color 0.12s, transform 0.12s; font-size: 12.5px; color: var(--hx-text); }
+    .hx-quick:hover { border-color: var(--hx-yellow-deep); transform: translateY(-1px); }
+    .hx-quick strong { display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 2px; color: var(--hx-text-mid); text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--hx-mono); }
+
+    /* Persona picker dropdown */
+    .hx-persona-menu { position: absolute; top: 100%; left: 0; margin-top: 4px; background: #fff; border: 1px solid var(--hx-line); border-radius: 10px; box-shadow: 0 12px 32px -8px rgba(15,15,16,0.18); padding: 6px; min-width: 280px; z-index: 100; display: none; }
+    .hx-persona-menu.open { display: block; }
+    .hx-persona-opt { padding: 10px 12px; border-radius: 7px; cursor: pointer; transition: background 0.10s; display: flex; gap: 10px; align-items: flex-start; }
+    .hx-persona-opt:hover { background: var(--hx-cream); }
+    .hx-persona-opt.active { background: rgba(252,211,77,0.15); }
+    .hx-persona-opt-ico { font-size: 18px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+    .hx-persona-opt-name { font-size: 13px; font-weight: 600; color: var(--hx-text); margin: 0; }
+    .hx-persona-opt-desc { font-size: 11.5px; color: var(--hx-text-mid); margin: 1px 0 0; line-height: 1.4; }
+    .hx-persona-menu-foot { border-top: 1px solid var(--hx-line); margin-top: 6px; padding: 8px 12px; }
+    .hx-persona-menu-foot button { width: 100%; padding: 6px 10px; background: transparent; border: 1px dashed var(--hx-line); border-radius: 7px; font-size: 11.5px; color: var(--hx-text-mid); cursor: pointer; transition: all 0.12s; }
+    .hx-persona-menu-foot button:hover { border-style: solid; color: var(--hx-text); border-color: var(--hx-text); }
+    .hx-persona-wrap { position: relative; }
+  </style>
+>>>>>>> origin/main
 </head>
 <body></body>
 </html>

@@ -1,11 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
 <script>location.replace('/chat'+location.search+location.hash);</script>
 <meta http-equiv="refresh" content="0;url=/chat">
 <title>HelveX</title>
+=======
+  <script>location.replace('/chat'+location.search+location.hash);</script>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Knowledge Base — HelveX</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>window.SUPABASE_URL='https://ikbdhxobdjlwirydhxym.supabase.co';window.SUPABASE_ANON='sb_publishable_chzlbY97SlQx_Apf4zqrTQ_mdwWhmyE';(function i(t){t=t||0;var l=window.supabase;if(l&&typeof l.createClient==='function'){try{window.sb=l.createClient(window.SUPABASE_URL,window.SUPABASE_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});}catch(e){}return;}if(t>80)return;setTimeout(function(){i(t+1);},40);})();</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}:root{--bg:#05070b;--line:rgba(255,255,255,.09);--cyan:#18d7ff;--violet:#7c3dff;--green:#39f58a}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:#f0f4ff;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+    .font-serif{font-family:'Playfair Display',serif}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@keyframes shimmer{from{background-position:0% center}to{background-position:-220% center}}@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
+    .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:28px 28px;opacity:.5}
+    .gradient-text{background:linear-gradient(120deg,#fff 0%,#18d7ff 30%,#7c3dff 58%,#39f58a 80%,#fff 100%);background-size:260% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 8s linear infinite}
+    .app-shell{display:grid;grid-template-columns:252px 1fr;min-height:100vh}
+    .sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:rgba(7,9,16,.97);border-right:1px solid rgba(255,255,255,.07);padding:20px 12px;display:flex;flex-direction:column;gap:2px;backdrop-filter:blur(24px)}
+    .main-area{display:flex;flex-direction:column;min-height:100vh}
+    .topbar{position:sticky;top:0;z-index:50;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(5,7,11,.85);border-bottom:1px solid rgba(255,255,255,.07);backdrop-filter:blur(24px)}
+    .topbar-title{font-size:15px;font-weight:800;letter-spacing:-.01em}
+    .btn-ghost{background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:12px;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:color .18s;font-weight:700}.btn-ghost:hover{color:#fff}
+    .btn-primary{background:linear-gradient(135deg,#19c9ff,#4d7dff,#7c3dff);background-size:190% auto;color:#fff;font-weight:800;border-radius:999px;border:0;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;cursor:pointer;font-family:inherit;transition:all .24s;box-shadow:0 12px 36px rgba(45,141,255,.2)}.btn-primary:hover{background-position:right center;transform:translateY(-2px)}
+    .btn-outline{border:1px solid rgba(24,215,255,.2);color:rgba(255,255,255,.72);background:rgba(24,215,255,.06);border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-weight:700;font-family:inherit;transition:all .2s;cursor:pointer}.btn-outline:hover{border-color:rgba(57,245,138,.32);color:#fff;background:rgba(57,245,138,.08)}
+    .main-content{padding:48px 40px 80px;flex:1;max-width:960px}
+    .online-dot{width:7px;height:7px;border-radius:50%;background:#39f58a;box-shadow:0 0 0 3px rgba(57,245,138,.14);animation:pulseDot 2.4s infinite;display:inline-block;flex-shrink:0}
+    .card{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.022));border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 60px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.06)}
+    .card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 10% 0%,rgba(124,61,255,.10),transparent 26%);pointer-events:none}
+    .card>*{position:relative;z-index:1}
+    .anim{animation:fadeUp .5s ease both}.d1{animation-delay:.04s}.d2{animation-delay:.12s}.d3{animation-delay:.20s}
+    .module-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;border:1px solid rgba(124,61,255,.25);background:rgba(124,61,255,.08);color:#b489ff;font-size:11px;font-weight:800;margin-bottom:18px;letter-spacing:.03em;text-transform:uppercase}
+    .module-title{font-size:42px;font-weight:900;line-height:1.06;letter-spacing:-.03em;margin-bottom:14px}
+    .module-desc{font-size:15px;color:rgba(255,255,255,.55);line-height:1.72;font-weight:600;max-width:580px;margin-bottom:28px}
+    .module-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px}
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:40px}
+    .feature-card{padding:24px}
+    .feature-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;color:#b489ff;background:rgba(124,61,255,.09);border:1px solid rgba(124,61,255,.16)}
+    .feature-title{font-size:15px;font-weight:800;margin-bottom:8px;letter-spacing:-.01em}
+    .feature-desc{font-size:12.5px;color:rgba(255,255,255,.48);line-height:1.6;font-weight:600}
+    .coming-banner{border:1px solid rgba(124,61,255,.18);border-radius:14px;padding:24px 28px;background:linear-gradient(135deg,rgba(124,61,255,.07),rgba(24,215,255,.03));display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    .coming-banner h3{font-size:17px;font-weight:850;margin-bottom:5px}
+    .coming-banner p{font-size:13px;color:rgba(255,255,255,.5);font-weight:600}
+    @media(max-width:1060px){.app-shell{grid-template-columns:1fr}.sidebar{display:none}.features-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:640px){.main-content{padding:28px 18px 60px}.features-grid{grid-template-columns:1fr}.module-title{font-size:32px}}
+  </style>
+>>>>>>> origin/main
 </head>
 <body></body>
 </html>

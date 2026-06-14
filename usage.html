@@ -1,11 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
 <script>location.replace('/chat'+location.search+location.hash);</script>
 <meta http-equiv="refresh" content="0;url=/chat">
 <title>HelveX</title>
+=======
+  <script>location.replace('/chat'+location.search+location.hash);</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Usage — HelveX</title>
+  <meta name="description" content="HelveX usage — credits spent, model calls, throughput, latency, and cost projection across your active deployments." />
+  <link rel="icon" type="image/png" href="/helvex-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/platform.css" />
+  <style>
+    .hx-range-bar {
+      display: inline-flex;
+      padding: 3px;
+      background: var(--hx-bg-2);
+      border: 1px solid var(--hx-line);
+      border-radius: var(--hx-r-sm);
+      gap: 2px;
+    }
+    .hx-range-bar button {
+      padding: 5px 12px;
+      font-size: 12px; font-weight: 500;
+      color: var(--hx-text-mid);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+      font-family: var(--hx-mono);
+      letter-spacing: 0.04em;
+    }
+    .hx-range-bar button:hover { color: var(--hx-text); }
+    .hx-range-bar button.is-active {
+      background: var(--hx-surface);
+      color: var(--hx-text);
+      border-color: var(--hx-line);
+      box-shadow: var(--hx-shadow-xs);
+    }
+
+    .hx-chart {
+      width: 100%; height: 220px;
+      display: block;
+    }
+    .hx-chart .grid { stroke: var(--hx-line-soft); stroke-width: 0.5; }
+    .hx-chart .axis { fill: var(--hx-text-dim); font-family: var(--hx-mono); font-size: 10px; }
+    .hx-chart .bar { fill: var(--hx-text); opacity: 0.85; transition: opacity 0.15s; }
+    .hx-chart .bar:hover { opacity: 1; fill: var(--hx-yellow-deep); }
+    .hx-chart .line { fill: none; stroke: var(--hx-text); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .hx-chart .area { fill: var(--hx-text); opacity: 0.06; }
+    .hx-chart .pt { fill: var(--hx-text); }
+
+    .hx-model-row {
+      display: grid;
+      grid-template-columns: 36px minmax(180px, 1fr) repeat(4, minmax(90px, 1fr)) 110px;
+      gap: 14px; align-items: center;
+      padding: 14px 16px;
+      border-top: 1px solid var(--hx-line-soft);
+    }
+    .hx-model-row:first-child { border-top: 0; }
+    .hx-model-row:hover { background: var(--hx-bg-2); }
+    .hx-model-row .ico {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--hx-bg-2), var(--hx-surface-3));
+      border: 1px solid var(--hx-line);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--hx-text);
+      font-family: var(--hx-mono); font-size: 11px; font-weight: 700;
+    }
+    .hx-model-row .name { font-weight: 600; font-size: 13.5px; }
+    .hx-model-row .name-sub { font-size: 11.5px; color: var(--hx-text-mid); margin-top: 2px; }
+    .hx-model-row .num { font-family: var(--hx-mono); font-size: 13px; font-variant-numeric: tabular-nums; text-align: right; }
+    .hx-model-row .pct { display: flex; align-items: center; gap: 8px; }
+    .hx-model-row .pct-bar { flex: 1; height: 4px; background: var(--hx-bg-2); border-radius: 999px; overflow: hidden; }
+    .hx-model-row .pct-fill { height: 100%; background: linear-gradient(90deg, var(--hx-yellow-deep), var(--hx-yellow)); border-radius: 999px; transition: width 0.4s; }
+    .hx-model-row .pct-val { font-family: var(--hx-mono); font-size: 11.5px; color: var(--hx-text-mid); }
+    @media (max-width: 1100px) {
+      .hx-model-row { grid-template-columns: 36px 1fr auto; grid-template-areas: "ico name pct"; }
+      .hx-model-row .ico { grid-area: ico; }
+      .hx-model-row .body { grid-area: name; }
+      .hx-model-row > .num:not(.is-keep) { display: none; }
+      .hx-model-row .pct { grid-area: pct; }
+    }
+
+    .hx-th-head {
+      display: grid;
+      grid-template-columns: 36px minmax(180px, 1fr) repeat(4, minmax(90px, 1fr)) 110px;
+      gap: 14px;
+      padding: 11px 16px;
+      background: var(--hx-bg-2);
+      border-bottom: 1px solid var(--hx-line);
+      font-family: var(--hx-mono);
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.10em;
+      color: var(--hx-text-dim);
+    }
+    .hx-th-head .right { text-align: right; }
+    @media (max-width: 1100px) {
+      .hx-th-head { display: none; }
+    }
+  </style>
+>>>>>>> origin/main
 </head>
 <body></body>
 </html>
