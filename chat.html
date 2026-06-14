@@ -30959,6 +30959,9 @@
         <style id="hx-rail-match">
         /* Conversations drawer — match reference exactly (mobile). */
         body[data-active="chat"] .hx-rail-newchat{display:none;}
+        html body[data-active="chat"] .hx-chat-new-fab,
+        html body[data-active="chat"] .hx-chat-rail .hx-chat-new-fab,
+        html body[data-active="chat"] .hx-chat-rail.is-open .hx-chat-new-fab{display:none !important;animation:none !important;}
         @media (max-width:900px){
           body[data-active="chat"] #hx-c-rail{top:0 !important;bottom:0 !important;width:min(86%,344px) !important;display:flex !important;flex-direction:column !important;background:radial-gradient(56% 26% at 50% 40%,rgba(124,92,255,.16),transparent 70%),#0A0A0F !important;border-right:1px solid rgba(255,255,255,.07) !important;box-shadow:0 30px 90px -18px rgba(0,0,0,.85) !important;}
           body[data-active="chat"] #hx-c-rail .hx-rail-aura{display:none !important;}
