@@ -30956,6 +30956,37 @@
       <main class="hx-main">
 
         <!-- Conversation rail -->
+        <style id="hx-rail-match">
+        /* Conversations drawer — match reference exactly (mobile). */
+        body[data-active="chat"] .hx-rail-newchat{display:none;}
+        @media (max-width:900px){
+          body[data-active="chat"] #hx-c-rail{top:0 !important;bottom:0 !important;width:min(86%,344px) !important;display:flex !important;flex-direction:column !important;background:radial-gradient(56% 26% at 50% 40%,rgba(124,92,255,.16),transparent 70%),#0A0A0F !important;border-right:1px solid rgba(255,255,255,.07) !important;box-shadow:0 30px 90px -18px rgba(0,0,0,.85) !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-aura{display:none !important;}
+          body[data-active="chat"] #hx-c-rail .hx-chat-rail-head{padding:calc(env(safe-area-inset-top,0px) + 20px) 18px 8px !important;border:0 !important;background:transparent !important;}
+          body[data-active="chat"] #hx-c-rail .hx-chat-rail-head::after{display:none !important;}
+          body[data-active="chat"] #hx-c-rail .hx-chat-rail-title{font-size:21px !important;font-weight:700 !important;letter-spacing:-.025em !important;color:#F4F4F5 !important;}
+          body[data-active="chat"] #hx-c-rail .hx-chat-rail-title::before{display:none !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-status,
+          body[data-active="chat"] #hx-c-rail .hx-chat-rail-collapse,
+          body[data-active="chat"] #hx-c-rail .hx-chat-new{display:none !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-search-row{margin:10px 18px 4px !important;height:44px !important;padding:0 13px !important;border-radius:12px !important;background:rgba(255,255,255,.04) !important;border:1px solid rgba(255,255,255,.08) !important;box-shadow:none !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-search{font-size:14px !important;color:#ECECF1 !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-search::placeholder{color:#6A6A78 !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-search-ico{color:#6A6A78 !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-search-ico svg{width:16px !important;height:16px !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-search-kbd{display:none !important;}
+          body[data-active="chat"] #hx-c-rail .hx-chat-list{flex:1 1 auto !important;min-height:0 !important;overflow-y:auto !important;padding:6px 14px !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-empty{display:flex !important;flex-direction:column !important;align-items:center !important;justify-content:center !important;height:100% !important;gap:0 !important;text-align:center !important;padding:0 24px !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-empty-orb{position:relative;width:64px !important;height:64px !important;border:0 !important;background:transparent !important;border-radius:0 !important;display:grid !important;place-items:center !important;margin:0 0 18px !important;box-shadow:none !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-empty-orb::before{content:"";position:absolute;width:124px;height:124px;border-radius:50%;background:radial-gradient(circle,rgba(124,92,255,.42),transparent 66%);filter:blur(8px);z-index:0;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-empty-orb svg{width:50px !important;height:50px !important;position:relative;z-index:1;filter:drop-shadow(0 0 12px rgba(124,92,255,.7));}
+          body[data-active="chat"] #hx-c-rail .hx-rail-empty-title{font-size:14.5px !important;font-weight:500 !important;color:#9A9AA6 !important;letter-spacing:-.01em !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-empty-meta{display:none !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-newchat{display:flex !important;align-items:center;justify-content:center;gap:9px;flex-shrink:0;margin:10px 18px calc(env(safe-area-inset-bottom,0px) + 18px) !important;height:50px;border-radius:14px;background:rgba(124,92,255,.10) !important;border:1px solid rgba(124,92,255,.50) !important;color:#fff !important;font-size:15px;font-weight:600;letter-spacing:-.01em;cursor:pointer;box-shadow:0 0 24px -4px rgba(124,92,255,.5),inset 0 0 18px -10px rgba(124,92,255,.6);transition:background .16s,box-shadow .16s;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-newchat:hover{background:rgba(124,92,255,.18) !important;}
+          body[data-active="chat"] #hx-c-rail .hx-rail-newchat svg{width:18px;height:18px;}
+        }
+        </style>
         <aside class="hx-chat-rail" id="hx-c-rail">
           <!-- Ambient gold glow behind the head -->
           <div class="hx-rail-aura" aria-hidden="true"></div>
@@ -30976,12 +31007,16 @@
             <span class="hx-rail-search-ico" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="16.65" y2="16.65"/></svg>
             </span>
-            <input type="text" id="hx-c-search" class="hx-rail-search" placeholder="Search sessions…" autocomplete="off" spellcheck="false" />
+            <input type="text" id="hx-c-search" class="hx-rail-search" placeholder="Search" autocomplete="off" spellcheck="false" />
             <span class="hx-rail-search-kbd" aria-hidden="true"><span>⌘</span><span>F</span></span>
           </div>
           <div class="hx-chat-list" id="hx-c-list">
             <div class="hx-chat-empty-list" id="hx-c-empty">Your conversations will appear here.</div>
           </div>
+          <button class="hx-rail-newchat" type="button" id="hx-c-new-bottom" aria-label="New chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>New chat</span>
+          </button>
         </aside>
         <!-- Floating reopen tab that appears when the rail is collapsed -->
         <button class="hx-chat-rail-reopen" type="button" id="hx-c-rail-reopen" aria-label="Show sidebar" title="Show sidebar" hidden>
@@ -32925,22 +32960,12 @@
           if (!state.conversations.length) {
             var active = getActiveProject();
             var hasProjects = !!(state.projectCount && state.projectCount > 0);
-            var msg, cta = '';
-            if (!active || !active.id) {
-              msg = hasProjects
-                ? 'Pick a project above to see its sessions.'
-                : 'Create your first project to start chatting.';
-            } else {
-              msg = 'No sessions in this project yet.';
-              cta = 'Click <kbd>+</kbd> above to start';
-            }
             host.innerHTML =
               '<div class="hx-chat-empty-list hx-rail-empty">' +
                 '<span class="hx-rail-empty-orb" aria-hidden="true">' +
-                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' +
+                  '<svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hxorbg" x1="16" y1="2" x2="16" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c2a9ff"/><stop offset="1" stop-color="#6d28d9"/></linearGradient></defs><path d="M27.5 16A11.5 11.5 0 1 0 16 27.5" stroke="url(#hxorbg)" stroke-width="3.5" stroke-linecap="round"/><path d="M16 21.5A5.5 5.5 0 1 1 21.5 16" stroke="url(#hxorbg)" stroke-width="3.5" stroke-linecap="round"/><path d="M16 1.6l2.6 2.9L16 7.4 13.4 4.5z" fill="url(#hxorbg)"/></svg>' +
                 '</span>' +
-                '<span class="hx-rail-empty-title">' + escape(msg) + '</span>' +
-                (cta ? '<span class="hx-rail-empty-meta">' + cta + '</span>' : '') +
+                '<span class="hx-rail-empty-title">Start your first conversation</span>' +
               '</div>';
             return;
           }
@@ -34589,6 +34614,7 @@
 
         // ─── Toolbar interactions ────────────────────────────
         $('hx-c-new').addEventListener('click', newConversation);
+        (function(){ var nb = document.getElementById('hx-c-new-bottom'); if (nb) nb.addEventListener('click', newConversation); })();
         $('hx-c-clear').addEventListener('click', deleteCurrent);
 
         // ─── Mobile drawer (conversations panel) ─────────────
