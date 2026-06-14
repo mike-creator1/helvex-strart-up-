@@ -40803,22 +40803,22 @@
       background:rgba(255,255,255,.06) !important; color:#F4F4F5 !important;
     }
 
-    /* New-chat → the one red primary CTA */
+    /* New-chat → Helix violet primary CTA */
     html[data-theme] body[data-active="chat"] .hx-chat-new{
-      background:#E5484D !important; color:#fff !important;
-      border:1px solid rgba(255,255,255,.12) !important;
-      box-shadow:0 6px 18px -8px rgba(229,72,77,.55) !important;
+      background:linear-gradient(135deg,#8B6CFF,#6D28D9) !important; color:#fff !important;
+      border:0 !important;
+      box-shadow:0 8px 22px -8px rgba(124,92,255,.7) !important;
     }
     html[data-theme] body[data-active="chat"] .hx-chat-new:hover{
       filter:brightness(1.06) !important;
-      box-shadow:0 8px 22px -8px rgba(229,72,77,.6) !important;
+      box-shadow:0 10px 26px -8px rgba(124,92,255,.8) !important;
     }
     html[data-theme] body[data-active="chat"] .hx-chat-new svg{ color:#fff !important; }
 
-    /* mobile floating new-chat → same red language */
+    /* mobile floating new-chat → violet */
     html[data-theme] body[data-active="chat"] .hx-chat-new-fab{
-      background:#E5484D !important; color:#fff !important;
-      box-shadow:0 12px 30px -10px rgba(229,72,77,.6), 0 0 0 1px rgba(255,255,255,.12) inset !important;
+      background:linear-gradient(135deg,#8B6CFF,#6D28D9) !important; color:#fff !important;
+      box-shadow:0 12px 30px -10px rgba(124,92,255,.6), 0 0 0 1px rgba(255,255,255,.12) inset !important;
     }
 
     /* ─── Search — styled like the Home composer ─────────────────── */
@@ -40865,11 +40865,11 @@
       border-color:rgba(255,255,255,.12) !important;
     }
     html[data-theme] body[data-active="chat"] .hx-chat-item:active{ transform:scale(.985) !important; }
-    /* active session — gold hairline accent (the single accent), not orange glow */
+    /* active session — Helix violet hairline accent */
     html[data-theme] body[data-active="chat"] .hx-chat-item.is-active{
-      background:rgba(255,255,255,.075) !important;
-      border-color:rgba(200,162,74,.45) !important;
-      box-shadow:inset 2px 0 0 #C8A24A !important;
+      background:rgba(124,92,255,.10) !important;
+      border-color:rgba(124,92,255,.45) !important;
+      box-shadow:inset 2px 0 0 #7C5CFF !important;
     }
     html[data-theme] body[data-active="chat"] .hx-chat-item.is-active::before{ display:none !important; }
 
@@ -40894,14 +40894,14 @@
       border:1px solid rgba(255,255,255,.06) !important;
     }
 
-    /* pinned card → gold whisper */
+    /* pinned card → violet whisper */
     html[data-theme] body[data-active="chat"] .hx-chat-item.is-pinned{
-      background:rgba(200,162,74,.06) !important;
-      border-color:rgba(200,162,74,.22) !important;
+      background:rgba(124,92,255,.07) !important;
+      border-color:rgba(124,92,255,.22) !important;
     }
-    html[data-theme] body[data-active="chat"] .hx-chat-item.is-pinned{ box-shadow:inset 2px 0 0 rgba(200,162,74,.55) !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-item.is-pinned{ box-shadow:inset 2px 0 0 rgba(124,92,255,.55) !important; }
     html[data-theme] body[data-active="chat"] .hx-chat-item-pinmark,
-    html[data-theme] body[data-active="chat"] .hx-chat-item-pinmark svg{ color:#C8A24A !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-item-pinmark svg{ color:#9b7dff !important; }
 
     /* 3-dot options */
     html[data-theme] body[data-active="chat"] .hx-chat-item-more{ color:#7E7E86 !important; }
@@ -41067,6 +41067,10 @@
     html body[data-active="chat"] .hx-chat-head-divider{ display:none !important; }
     /* Sources label cosmetics to match reference ("Sources", not SOURCES) */
     html body[data-active="chat"] .hx-msg-sources-head span{ text-transform:none !important; letter-spacing:0 !important; }
+    /* Conversations panel — kill remaining gold/red, no ⌘F */
+    html[data-theme] body[data-active="chat"] .hx-rail-status-dot,
+    html[data-theme] body[data-active="chat"] .hx-chat-rail[data-wsmode] .hx-rail-status-dot{ background:#34d27b !important; box-shadow:0 0 8px rgba(52,210,123,.5) !important; }
+    html[data-theme] body[data-active="chat"] .hx-rail-search-kbd{ display:none !important; }
   </style>
   <script>
   (function(){
