@@ -31099,12 +31099,17 @@
             <div class="hxcr-rows">
               <button class="hxcr-row" type="button" data-act="file">
                 <span class="hxcr-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/></svg></span>
-                <span class="hxcr-row-b"><span class="hxcr-row-t">Upload File</span><span class="hxcr-row-d">Add files or documents</span></span>
+                <span class="hxcr-row-b"><span class="hxcr-row-t">Upload Files</span><span class="hxcr-row-d">PDF, documents, images, code</span></span>
                 <span class="hxcr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
               </button>
               <button class="hxcr-row" type="button" data-act="file">
                 <span class="hxcr-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
-                <span class="hxcr-row-b"><span class="hxcr-row-t">Camera</span><span class="hxcr-row-d">Take a photo</span></span>
+                <span class="hxcr-row-b"><span class="hxcr-row-t">Take a Photo</span><span class="hxcr-row-d">Use your camera</span></span>
+                <span class="hxcr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+              </button>
+              <button class="hxcr-row" type="button" data-act="webon">
+                <span class="hxcr-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg></span>
+                <span class="hxcr-row-b"><span class="hxcr-row-t">Web Search</span><span class="hxcr-row-d">Search the web for up-to-date info</span></span>
                 <span class="hxcr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
               </button>
               <button class="hxcr-row" type="button" data-act="voice">
@@ -31182,6 +31187,7 @@
             if(act==='newchat'){ close(); try{ if(typeof newConversation==='function') newConversation(); }catch(_){ } }
             else if(act==='seed'){ close(); seed(a.getAttribute('data-seed')||''); }
             else if(act==='file'){ close(); var f=document.getElementById('hx-c-file'); var at=document.getElementById('hx-c-attach'); if(f) f.click(); else if(at) at.click(); }
+            else if(act==='webon'){ try{ if(typeof state!=='undefined') state.webEnabled=true; }catch(_){ } setSw('web',true); close(); }
             else if(act==='voice'){ close(); clickId('hx-home-mic'); if(!document.getElementById('hx-home-mic')) clickId('hx-c-mic'); }
             else if(act==='close'){ close(); }
           });
