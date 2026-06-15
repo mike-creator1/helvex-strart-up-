@@ -41205,30 +41205,28 @@
     setInterval(clean, 1200);
   })();
   </script>
-  <!-- Helix conversation message block: response card, avatar, tight flow -->
+  <!-- Helix conversation message block — 1:1 with reference (no card, circular avatar, plain text) -->
   <style id="hx-msg-redesign">
     html body[data-active="chat"] #hx-c-thread{ padding-top:10px !important; }
     html body[data-active="chat"] #hx-c-thread .hx-msg{ margin:0 !important; padding:0 !important; }
-    /* User bubble row — tight */
-    html body[data-active="chat"] #hx-c-thread .hx-msg.is-user{ display:flex !important; justify-content:flex-end !important; margin:0 0 12px !important; }
-    /* Assistant = a proper response card with the Helix mark on top */
-    html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant{ display:block !important; background:rgba(255,255,255,.03) !important; border:1px solid rgba(255,255,255,.07) !important; border-radius:16px !important; padding:14px 15px !important; margin:0 0 14px !important; }
+    /* User bubble — purple, right, tight above the answer */
+    html body[data-active="chat"] #hx-c-thread .hx-msg.is-user{ display:flex !important; justify-content:flex-end !important; margin:0 0 18px !important; }
+    /* Assistant — plain text with a small circular Helix avatar, NO card */
+    html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant{ display:block !important; background:transparent !important; border:0 !important; border-radius:0 !important; padding:0 !important; margin:0 0 22px !important; }
     html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-head,
-    html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-head-mark{ display:inline-grid !important; place-items:center !important; width:26px !important; height:26px !important; border-radius:8px !important; background:rgba(124,92,255,.16) !important; border:1px solid rgba(124,92,255,.28) !important; margin:0 0 10px !important; padding:0 !important; }
-    html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-head-mark svg{ width:15px !important; height:15px !important; color:#9b7dff !important; }
+    html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-head-mark{ display:inline-grid !important; place-items:center !important; width:28px !important; height:28px !important; border-radius:50% !important; background:rgba(124,92,255,.18) !important; border:1px solid rgba(124,92,255,.32) !important; margin:0 0 10px !important; padding:0 !important; }
+    html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-head-mark svg{ width:16px !important; height:16px !important; color:#9b7dff !important; }
     html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-avatar{ display:none !important; }
     html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-body{ display:block !important; width:100% !important; margin:0 !important; }
     html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-content{ margin:0 !important; line-height:1.6 !important; color:#E7E7EA !important; }
-    /* Actions: anchored under the answer, always visible, tight */
-    html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-actions{ position:static !important; opacity:1 !important; transform:none !important; margin:12px 0 0 !important; padding:0 !important; display:flex !important; gap:2px !important; background:transparent !important; border:0 !important; }
-    /* Sources inside the card */
-    html body[data-active="chat"] #hx-c-thread .hx-msg-sources{ margin:14px 0 0 !important; }
-    html body[data-active="chat"] #hx-c-thread .hx-msg-followups{ margin:12px 0 0 !important; }
-    /* Suggested follow-ups (thread-level) — Helix chips, integrated */
-    html body[data-active="chat"] #hx-c-thread .hx-followups{ margin:2px 0 0 !important; padding:0 !important; display:flex !important; flex-direction:column !important; align-items:flex-start !important; gap:8px !important; }
-    html body[data-active="chat"] #hx-c-thread .hx-followups-label{ font:700 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace !important; letter-spacing:.14em !important; text-transform:uppercase !important; color:#6A6A78 !important; margin:0 0 4px !important; }
-    html body[data-active="chat"] #hx-c-thread .hx-followup{ background:rgba(255,255,255,.04) !important; border:1px solid rgba(255,255,255,.08) !important; color:#ECECF1 !important; border-radius:12px !important; padding:11px 14px !important; font-weight:600 !important; }
-    html body[data-active="chat"] #hx-c-thread .hx-followup:hover{ background:rgba(124,92,255,.10) !important; border-color:rgba(124,92,255,.4) !important; }
+    /* Actions — compact row right under the answer */
+    html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-actions{ position:static !important; opacity:1 !important; transform:none !important; margin:14px 0 0 !important; padding:0 !important; display:flex !important; gap:6px !important; background:transparent !important; border:0 !important; }
+    html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-act{ width:30px !important; height:30px !important; color:#8A8A94 !important; }
+    /* Sources — dark cards (kept) */
+    html body[data-active="chat"] #hx-c-thread .hx-msg-sources{ margin:16px 0 0 !important; }
+    /* Follow-ups are not in the reference — hide them */
+    html body[data-active="chat"] #hx-c-thread .hx-followups,
+    html body[data-active="chat"] #hx-c-thread .hx-msg-followups{ display:none !important; }
   </style>
 </body>
 </html>
