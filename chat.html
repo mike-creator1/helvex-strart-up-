@@ -41193,8 +41193,13 @@
       // Make the toolbar toggle button the Helix logo (not a hamburger).
       var b=document.getElementById('hx-c-drawer-toggle');
       if(b){ b.style.setProperty('display','grid','important'); if(b.getAttribute('data-hx-logo')!=='1'){ b.innerHTML=GLYPH; b.setAttribute('data-hx-logo','1'); b.setAttribute('aria-label','Conversations'); } }
-      // Model badge to the right as the model pill.
-      var mb=document.getElementById('hx-c-model-badge'); if(mb){ mb.style.setProperty('margin-left','auto','important'); }
+      // Model badge to the right as the model pill — relocate it out of the
+      // centered title head so we can drop the "Helix ⌄" title without losing it.
+      var tb=document.getElementById('hx-c-toolbar');
+      var mb=document.getElementById('hx-c-model-badge');
+      if(mb){ if(tb && mb.parentNode!==tb){ tb.appendChild(mb); } mb.style.setProperty('margin-left','auto','important'); mb.style.setProperty('display','inline-flex','important'); }
+      // Remove the "Helix ⌄" title from the header entirely.
+      var head=document.querySelector('#hx-c-toolbar .hx-chat-head'); if(head){ head.style.setProperty('display','none','important'); }
       // Up-arrow inside the send circle.
       var sd=document.getElementById('hx-c-send');
       if(sd && sd.getAttribute('data-hx-arrow')!=='1'){ sd.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>'; sd.setAttribute('data-hx-arrow','1'); }
@@ -41227,9 +41232,11 @@
     /* Follow-ups are not in the reference — hide them */
     html body[data-active="chat"] #hx-c-thread .hx-followups,
     html body[data-active="chat"] #hx-c-thread .hx-msg-followups{ display:none !important; }
-    /* Keep the Helix logo vertically aligned (symmetric) with the "Helix" title in the header */
+    /* Keep the Helix logo vertically aligned with the model pill in the header */
     html body[data-active="chat"] #hx-c-toolbar{ align-items:center !important; }
     html body[data-active="chat"] #hx-c-toolbar #hx-c-drawer-toggle{ transform:none !important; align-self:center !important; }
+    /* Remove the centered "Helix ⌄" title from the conversation header */
+    html body[data-active="chat"] #hx-c-toolbar .hx-chat-head{ display:none !important; }
   </style>
 </body>
 </html>
