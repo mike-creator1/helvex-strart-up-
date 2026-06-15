@@ -41159,7 +41159,13 @@
     html body[data-active="chat"] .hx-chat-input-bar .hx-chat-tool-btn{ width:34px !important; height:34px !important; border-radius:50% !important; flex-shrink:0 !important; }
     html body[data-active="chat"] .hx-chat-input-bar .hx-chat-tool-btn.is-on{ color:#9b7dff !important; }
     html body[data-active="chat"] .hx-chat-send{ width:36px !important; height:36px !important; border-radius:50% !important; flex-shrink:0 !important; }
-  </style>
+    /* Kill the black seam between thread and composer — one flat surface */
+    html[data-theme] body[data-active="chat"] .hx-chat-pane,
+    html[data-theme] body[data-active="chat"] .hx-chat-thread,
+    html[data-theme] body[data-active="chat"] .hx-chat-compose,
+    html[data-theme] body[data-active="chat"] .hx-chat-compose-inner{ background:#0A0A0F !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-compose{ border:0 !important; box-shadow:none !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-compose::before{ display:none !important; content:none !important; }
   <script>
   /* Decisive header cleanup: keep ONLY the Helix logo + title + model pill.
      platform.js / legacy code re-injects a hamburger and ⋮ dynamically, so we
