@@ -41158,7 +41158,8 @@
     html body[data-active="chat"] .hx-chat-input-bar #hx-c-send{ order:6 !important; margin-left:2px !important; }
     html body[data-active="chat"] .hx-chat-input-bar .hx-chat-tool-btn{ width:34px !important; height:34px !important; border-radius:50% !important; flex-shrink:0 !important; }
     html body[data-active="chat"] .hx-chat-input-bar .hx-chat-tool-btn.is-on{ color:#9b7dff !important; }
-    html body[data-active="chat"] .hx-chat-send{ width:36px !important; height:36px !important; border-radius:50% !important; flex-shrink:0 !important; }
+    html body[data-active="chat"] .hx-chat-send{ width:36px !important; height:36px !important; border-radius:50% !important; flex-shrink:0 !important; display:grid !important; place-items:center !important; }
+    html body[data-active="chat"] .hx-chat-send svg{ width:18px !important; height:18px !important; display:block !important; color:#fff !important; stroke:#fff !important; opacity:1 !important; }
     /* Kill the black seam between thread and composer — one flat surface */
     html[data-theme] body[data-active="chat"] .hx-chat-pane,
     html[data-theme] body[data-active="chat"] .hx-chat-thread,
@@ -41191,6 +41192,9 @@
       if(b){ b.style.setProperty('display','grid','important'); if(b.getAttribute('data-hx-logo')!=='1'){ b.innerHTML=GLYPH; b.setAttribute('data-hx-logo','1'); b.setAttribute('aria-label','Conversations'); } }
       // Model badge to the right as the model pill.
       var mb=document.getElementById('hx-c-model-badge'); if(mb){ mb.style.setProperty('margin-left','auto','important'); }
+      // Up-arrow inside the send circle.
+      var sd=document.getElementById('hx-c-send');
+      if(sd && sd.getAttribute('data-hx-arrow')!=='1'){ sd.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>'; sd.setAttribute('data-hx-arrow','1'); }
     }
     clean();
     try{ document.addEventListener('DOMContentLoaded', clean); }catch(e){}
