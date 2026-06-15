@@ -41141,5 +41141,31 @@
     /* The drawer-toggle is the Helix logo (set by JS); keep it visible & violet */
     html body[data-active="chat"] #hx-c-drawer-toggle{ display:grid !important; place-items:center !important; width:38px !important; height:38px !important; border-radius:11px !important; background:transparent !important; border:0 !important; color:#9b7dff !important; }
   </style>
+  <script>
+  /* Decisive header cleanup: keep ONLY the Helix logo + title + model pill.
+     platform.js / legacy code re-injects a hamburger and ⋮ dynamically, so we
+     watch the DOM and strip them on every change (inline style beats any CSS). */
+  (function(){
+    var GLYPH='<svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><defs><linearGradient id="hxhg" x1="16" y1="2" x2="16" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c2a9ff"/><stop offset="1" stop-color="#6d28d9"/></linearGradient></defs><path d="M27.5 16A11.5 11.5 0 1 0 16 27.5" stroke="url(#hxhg)" stroke-width="3.5" stroke-linecap="round"/><path d="M16 21.5A5.5 5.5 0 1 1 21.5 16" stroke="url(#hxhg)" stroke-width="3.5" stroke-linecap="round"/><path d="M16 1.6l2.6 2.9L16 7.4 13.4 4.5z" fill="url(#hxhg)"/></svg>';
+    function clean(){
+      if((document.body.getAttribute('data-active')||'')!=='chat') return;
+      ['hx-c-mobile-menu','hx-c-more-btn','hx-c-share-btn'].forEach(function(id){
+        var e=document.getElementById(id); if(e){ e.style.setProperty('display','none','important'); }
+      });
+      document.querySelectorAll('.hx-mobile-menu-btn, .hx-chat-head-actions, .hx-chat-head-divider, .hx-chat-rail-reopen, .hx-chat-title-sep, .hx-chat-model-badge-tier').forEach(function(e){
+        e.style.setProperty('display','none','important');
+      });
+      // Make the toolbar toggle button the Helix logo (not a hamburger).
+      var b=document.getElementById('hx-c-drawer-toggle');
+      if(b){ b.style.setProperty('display','grid','important'); if(b.getAttribute('data-hx-logo')!=='1'){ b.innerHTML=GLYPH; b.setAttribute('data-hx-logo','1'); b.setAttribute('aria-label','Conversations'); } }
+      // Model badge to the right as the model pill.
+      var mb=document.getElementById('hx-c-model-badge'); if(mb){ mb.style.setProperty('margin-left','auto','important'); }
+    }
+    clean();
+    try{ document.addEventListener('DOMContentLoaded', clean); }catch(e){}
+    try{ var mo=new MutationObserver(function(){ clean(); }); mo.observe(document.documentElement,{childList:true,subtree:true}); }catch(e){}
+    setInterval(clean, 1200);
+  })();
+  </script>
 </body>
 </html>
