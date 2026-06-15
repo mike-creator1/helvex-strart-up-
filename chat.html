@@ -41283,38 +41283,63 @@
     html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-head,
     html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-head-mark,
     html body[data-active="chat"] #hx-c-thread .hx-msg.is-assistant .hx-msg-avatar{ display:none !important; }
-    /* Real model dropdown anchored under the Ether pill */
-    html body[data-active="chat"] #hx-c-modelmenu{ position:absolute !important; top:52px !important; right:14px !important; z-index:60 !important; min-width:172px !important; padding:6px !important; display:flex !important; flex-direction:column !important; gap:2px !important; background:#16161c !important; border:1px solid rgba(255,255,255,.1) !important; border-radius:14px !important; box-shadow:0 16px 44px rgba(0,0,0,.55) !important; }
+    /* Header model dropdown — IDENTICAL to the home (desktop) selector:
+       icon + name + description + check + "Learn more about models". */
+    html body[data-active="chat"] #hx-c-modelmenu{ position:absolute !important; top:calc(100% + 8px) !important; right:14px !important; z-index:60 !important; width:262px !important; display:flex !important; flex-direction:column !important; padding:6px !important; background:linear-gradient(180deg,rgba(22,22,29,.97),rgba(13,13,18,.97)) !important; -webkit-backdrop-filter:blur(30px) saturate(180%) !important; backdrop-filter:blur(30px) saturate(180%) !important; border:1px solid rgba(255,255,255,.1) !important; border-radius:18px !important; box-shadow:0 34px 80px -22px rgba(0,0,0,.95), inset 0 1px 0 rgba(255,255,255,.06) !important; }
     html body[data-active="chat"] #hx-c-modelmenu[hidden]{ display:none !important; }
-    html body[data-active="chat"] #hx-c-modelmenu .hx-c-modelopt{ display:flex !important; align-items:center !important; gap:9px !important; padding:9px 12px !important; border-radius:10px !important; background:transparent !important; border:0 !important; color:#ECECF1 !important; font-size:14px !important; font-weight:600 !important; cursor:pointer !important; text-align:left !important; width:100% !important; }
-    html body[data-active="chat"] #hx-c-modelmenu .hx-c-modelopt:hover{ background:rgba(255,255,255,.06) !important; }
-    html body[data-active="chat"] #hx-c-modelmenu .hx-c-modelopt.is-active{ background:rgba(124,92,255,.14) !important; }
-    html body[data-active="chat"] #hx-c-modelmenu .hx-c-modeldot{ width:7px !important; height:7px !important; border-radius:50% !important; background:#7C5CFF !important; box-shadow:0 0 7px rgba(124,92,255,.7) !important; flex-shrink:0 !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-item{ position:relative !important; display:flex !important; align-items:center !important; gap:14px !important; width:100% !important; padding:13px 12px !important; border-radius:12px !important; background:transparent !important; border:0 !important; cursor:pointer !important; text-align:left !important; transition:background .14s !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-item + .hxn-mm-item{ border-top:1px solid rgba(255,255,255,.06) !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-item:hover{ background:rgba(255,255,255,.05) !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-ic{ width:26px !important; flex-shrink:0 !important; display:grid !important; place-items:center !important; color:#7C5CFF !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-ic svg{ width:24px !important; height:24px !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-body{ flex:1 !important; min-width:0 !important; display:flex !important; flex-direction:column !important; gap:2px !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-t{ font-size:16px !important; font-weight:600 !important; color:#ECECF1 !important; letter-spacing:-.01em !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-d{ font-size:13px !important; color:#9A9AA6 !important; line-height:1.3 !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-check{ width:20px !important; flex-shrink:0 !important; display:grid !important; place-items:center !important; color:#7C5CFF !important; opacity:0 !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-item.is-on .hxn-mm-check{ opacity:1 !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-check svg{ width:19px !important; height:19px !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-learn{ display:flex !important; align-items:center !important; justify-content:space-between !important; gap:10px !important; padding:13px 12px 9px !important; margin-top:2px !important; border-top:1px solid rgba(255,255,255,.08) !important; color:#9A9AA6 !important; font-size:13.5px !important; font-weight:500 !important; text-decoration:none !important; cursor:pointer !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-learn:hover{ color:#ECECF1 !important; }
+    html body[data-active="chat"] #hx-c-modelmenu .hxn-mm-learn svg{ width:16px !important; height:16px !important; flex-shrink:0 !important; }
   </style>
   <script>
-  /* Make the header Ether pill a real dropdown (Ether / Nexus / Prometheus). */
+  /* Header Ether pill → the SAME rich dropdown as the home/desktop selector
+     (icon + name + description + check + "Learn more about models"). */
   (function(){
+    var IC={
+      ether:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.7 6.1L20 10l-6.3 1.9L12 18l-1.7-6.1L4 10l6.3-1.9z"/><path d="M19.2 2.4l.7 2.4 2.4.7-2.4.7-.7 2.4-.7-2.4L16.1 5.5l2.4-.7z"/></svg>',
+      nexus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="6" cy="6" r="2.4" fill="currentColor"/><circle cx="18" cy="6" r="2.4" fill="currentColor"/><circle cx="6" cy="18" r="2.4" fill="currentColor"/><circle cx="18" cy="18" r="2.4" fill="currentColor"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/><path d="M7.7 7.7l2.6 2.6M16.3 7.7l-2.6 2.6M7.7 16.3l2.6-2.6M16.3 16.3l-2.6-2.6"/></svg>',
+      prometheus:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1.2 3.2-2.2 4.4-2.2 7.4a2.2 2.2 0 0 0 4.4.2c2.1 1.8 3 3.9 3 5.9a5.2 5.2 0 0 1-10.4 0c0-4.2 5.2-6 5.2-13.5z"/></svg>'
+    };
+    var CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    var ARR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+    var MODELS=[['ether','Ether','Fast & intelligent'],['nexus','Nexus','Balanced & powerful'],['prometheus','Prometheus','Advanced reasoning']];
     function init(){
       if((document.body.getAttribute('data-active')||'')!=='chat') return;
       var badge=document.getElementById('hx-c-model-badge');
       var sel=document.getElementById('hx-c-model');
       var tb=document.getElementById('hx-c-toolbar');
       if(!badge||!sel||!tb||document.getElementById('hx-c-modelmenu')) return;
-      var models=[['ether','Ether'],['nexus','Nexus'],['prometheus','Prometheus']];
-      var menu=document.createElement('div'); menu.id='hx-c-modelmenu'; menu.hidden=true;
-      models.forEach(function(m){
-        var b=document.createElement('button'); b.type='button'; b.className='hx-c-modelopt'; b.setAttribute('data-model',m[0]);
-        b.innerHTML='<span class="hx-c-modeldot"></span><span class="hx-c-modelname">'+m[1]+'</span>';
-        b.addEventListener('click',function(e){
-          e.stopPropagation();
-          sel.value=m[0]; sel.dispatchEvent(new Event('change',{bubbles:true}));
-          var nm=document.getElementById('hx-c-head-model'); if(nm) nm.textContent=m[1];
-          mark(); menu.hidden=true;
-        });
-        menu.appendChild(b);
+      var menu=document.createElement('div'); menu.id='hx-c-modelmenu'; menu.className='hxn-mm'; menu.setAttribute('role','menu'); menu.hidden=true;
+      var html='';
+      MODELS.forEach(function(m){
+        html+='<button class="hxn-mm-item" type="button" role="menuitemradio" data-model="'+m[0]+'">'+
+          '<span class="hxn-mm-ic">'+IC[m[0]]+'</span>'+
+          '<span class="hxn-mm-body"><span class="hxn-mm-t">'+m[1]+'</span><span class="hxn-mm-d">'+m[2]+'</span></span>'+
+          '<span class="hxn-mm-check">'+CHK+'</span></button>';
       });
+      html+='<a class="hxn-mm-learn" href="/models"><span>Learn more about models</span>'+ARR+'</a>';
+      menu.innerHTML=html;
       tb.appendChild(menu);
-      function mark(){ var v=sel.value||'ether'; menu.querySelectorAll('.hx-c-modelopt').forEach(function(o){ o.classList.toggle('is-active',o.getAttribute('data-model')===v); }); }
+      function mark(){ var v=sel.value||'ether'; menu.querySelectorAll('.hxn-mm-item').forEach(function(o){ o.classList.toggle('is-on',o.getAttribute('data-model')===v); }); }
+      menu.addEventListener('click',function(e){
+        var it=e.target.closest&&e.target.closest('.hxn-mm-item'); if(!it) return;
+        e.stopPropagation();
+        var k=it.getAttribute('data-model'); if(!k) return;
+        sel.value=k; sel.dispatchEvent(new Event('change',{bubbles:true}));
+        var nm=document.getElementById('hx-c-head-model'); if(nm) nm.textContent=k.charAt(0).toUpperCase()+k.slice(1);
+        mark(); menu.hidden=true;
+      });
       mark();
       badge.addEventListener('click',function(e){ e.stopImmediatePropagation(); e.preventDefault(); mark(); menu.hidden=!menu.hidden; },true);
       document.addEventListener('click',function(e){ if(menu.hidden) return; if(!menu.contains(e.target)&&!badge.contains(e.target)&&e.target!==badge) menu.hidden=true; });
