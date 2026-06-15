@@ -41240,8 +41240,10 @@
   </style>
   <!-- Final conversation fixes: uniform bg, no user edit/copy, no assistant avatar, real model dropdown -->
   <style id="hx-convo-fixes">
-    /* One uniform background — no black/grey split between header, thread and composer */
-    html[data-theme] body[data-active="chat"],
+    /* One uniform background — no black/grey split between header, thread and composer.
+       Paint the colour ONCE on html/body and make every chat container transparent
+       so a single surface shows through with no possible seam. */
+    html[data-theme] body[data-active="chat"]{ background:#0A0A0F !important; }
     html[data-theme] body[data-active="chat"] .hx-chat,
     html[data-theme] body[data-active="chat"] .hx-chat-pane,
     html[data-theme] body[data-active="chat"] .hx-chat-toolbar,
@@ -41249,7 +41251,13 @@
     html[data-theme] body[data-active="chat"] .hx-chat-thread,
     html[data-theme] body[data-active="chat"] #hx-c-thread,
     html[data-theme] body[data-active="chat"] .hx-chat-compose,
-    html[data-theme] body[data-active="chat"] .hx-chat-compose-inner{ background:#0A0A0F !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-compose-inner{ background:transparent !important; background-color:transparent !important; background-image:none !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-pane::before,
+    html[data-theme] body[data-active="chat"] .hx-chat-pane::after,
+    html[data-theme] body[data-active="chat"] .hx-chat-thread::before,
+    html[data-theme] body[data-active="chat"] .hx-chat-thread::after,
+    html[data-theme] body[data-active="chat"] .hx-chat-compose::before,
+    html[data-theme] body[data-active="chat"] .hx-chat-compose::after{ background:none !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; content:none !important; }
     /* Remove the pencil (edit) + copy icons under the user bubble entirely */
     html body[data-active="chat"] .hx-msg.is-user .hx-msg-user-actions,
     html body[data-active="chat"] #hx-c-thread .hx-msg-user-actions{ display:none !important; }
