@@ -41166,6 +41166,12 @@
     html[data-theme] body[data-active="chat"] .hx-chat-compose-inner{ background:#0A0A0F !important; }
     html[data-theme] body[data-active="chat"] .hx-chat-compose{ border:0 !important; box-shadow:none !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
     html[data-theme] body[data-active="chat"] .hx-chat-compose::before{ display:none !important; content:none !important; }
+    /* Remove the assistant avatar/logo box next to responses */
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-head,
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-head-mark,
+    html body[data-active="chat"] .hx-msg.is-assistant .hx-msg-avatar{ display:none !important; }
+    html body[data-active="chat"] .hx-msg.is-assistant{ padding-left:0 !important; }
+  </style>
   <script>
   /* Decisive header cleanup: keep ONLY the Helix logo + title + model pill.
      platform.js / legacy code re-injects a hamburger and ⋮ dynamically, so we
