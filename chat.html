@@ -41286,6 +41286,14 @@
     html[data-theme] body[data-active="chat"] .hx-chat-thread-inner::after,
     html[data-theme] body[data-active="chat"] .hx-chat-compose::before,
     html[data-theme] body[data-active="chat"] .hx-chat-compose::after{ background:none !important; background-image:none !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; content:none !important; }
+    /* Make the DESKTOP chatbar identical to MOBILE:
+       hide the desktop-only quick-action chips (Plan/Research/Compare/…) and
+       the bottom "Ether · Elite" model pill (model lives in the header on both;
+       this also removes its gold dot). */
+    html body[data-active="chat"] .hx-conductor,
+    html body[data-active="chat"] #hx-c-conductor,
+    html body[data-active="chat"] .hx-cc-model-pick,
+    html body[data-active="chat"] #hx-cc-model-pick{ display:none !important; }
     /* Remove the pencil (edit) + copy icons under the user bubble entirely */
     html body[data-active="chat"] .hx-msg.is-user .hx-msg-user-actions,
     html body[data-active="chat"] #hx-c-thread .hx-msg-user-actions{ display:none !important; }
