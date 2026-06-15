@@ -41241,10 +41241,14 @@
   <!-- Final conversation fixes: uniform bg, no user edit/copy, no assistant avatar, real model dropdown -->
   <style id="hx-convo-fixes">
     /* ════ ONE uniform background — kill the black/grey dichromia ════
-       Root cause: separate dark-theme rules paint different "blacks" on
-       different layers — #000000 on .hx-chat-thread-inner/.hx-app/.hx-main,
-       #0d0d0d on the toolbar and the <html> root, and #0A0A0F on body.
-       Force EVERY layer (incl. the <html> root) to the SAME solid colour. */
+       ROOT CAUSE: platform.css dark theme sets --hx-bg:#000000 (pure black),
+       which every fade/scrim/ambient layer (linear-gradient → var(--hx-bg))
+       and many surfaces resolve to — clashing with the #0A0A0F canvas.
+       Fix the VARIABLE itself so every var(--hx-bg) usage is one colour, then
+       force every container (incl. the <html> root) to that same solid colour. */
+    html[data-theme="dark"]{ --hx-bg:#0A0A0F !important; }
+    html[data-theme="dark"] body[data-active="chat"]{ --hx-bg:#0A0A0F !important; }
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-ambient{ background:#0A0A0F !important; }
     html[data-theme="dark"]:has(body[data-active="chat"]),
     html[data-theme="dark"] body[data-active="chat"],
     html[data-theme] body[data-active="chat"],
