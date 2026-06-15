@@ -41246,10 +41246,12 @@
        and many surfaces resolve to — clashing with the #0A0A0F canvas.
        Fix the VARIABLE itself so every var(--hx-bg) usage is one colour, then
        force every container (incl. the <html> root) to that same solid colour. */
-    html[data-theme="dark"]{ --hx-bg:#0A0A0F !important; }
+    html[data-theme="dark"]{ --hx-bg:#0A0A0F !important; background:#0A0A0F !important; background-color:#0A0A0F !important; }
+    /* Standalone (never grouped) :has rule to out-specify the app's #0d0d0d root.
+       If :has is unsupported it is simply ignored and the plain rule above wins. */
+    html[data-theme="dark"]:has(body[data-active="chat"]){ background:#0A0A0F !important; background-color:#0A0A0F !important; }
     html[data-theme="dark"] body[data-active="chat"]{ --hx-bg:#0A0A0F !important; }
     html[data-theme="dark"] body[data-active="chat"] .hx-chat-ambient{ background:#0A0A0F !important; }
-    html[data-theme="dark"]:has(body[data-active="chat"]),
     html[data-theme="dark"] body[data-active="chat"],
     html[data-theme] body[data-active="chat"],
     html[data-theme="dark"] body[data-active="chat"] .hx-app,
@@ -41265,7 +41267,11 @@
     html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread-inner,
     html[data-theme="dark"] body[data-active="chat"] .hx-chat-compose,
     html[data-theme="dark"] body[data-active="chat"] .hx-chat-compose-inner,
+    html[data-theme] body[data-active="chat"] .hx-app,
+    html[data-theme] body[data-active="chat"] .hx-main,
     html[data-theme] body[data-active="chat"] .hx-chat-pane,
+    html[data-theme] body[data-active="chat"] .hx-chat-toolbar,
+    html[data-theme] body[data-active="chat"] #hx-c-toolbar,
     html[data-theme] body[data-active="chat"] .hx-chat-thread,
     html[data-theme] body[data-active="chat"] #hx-c-thread,
     html[data-theme] body[data-active="chat"] .hx-chat-thread-inner,
