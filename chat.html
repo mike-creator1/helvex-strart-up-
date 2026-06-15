@@ -41240,24 +41240,42 @@
   </style>
   <!-- Final conversation fixes: uniform bg, no user edit/copy, no assistant avatar, real model dropdown -->
   <style id="hx-convo-fixes">
-    /* One uniform background — no black/grey split between header, thread and composer.
-       Paint the colour ONCE on html/body and make every chat container transparent
-       so a single surface shows through with no possible seam. */
-    html[data-theme] body[data-active="chat"]{ background:#0A0A0F !important; }
-    html[data-theme] body[data-active="chat"] .hx-chat,
+    /* ════ ONE uniform background — kill the black/grey dichromia ════
+       Root cause: separate dark-theme rules paint different "blacks" on
+       different layers — #000000 on .hx-chat-thread-inner/.hx-app/.hx-main,
+       #0d0d0d on the toolbar and the <html> root, and #0A0A0F on body.
+       Force EVERY layer (incl. the <html> root) to the SAME solid colour. */
+    html[data-theme="dark"]:has(body[data-active="chat"]),
+    html[data-theme="dark"] body[data-active="chat"],
+    html[data-theme] body[data-active="chat"],
+    html[data-theme="dark"] body[data-active="chat"] .hx-app,
+    html[data-theme="dark"] body[data-active="chat"] .hx-main,
+    html[data-theme="dark"] body[data-active="chat"] .hx-sidebar,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-rail,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-pane,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-toolbar,
+    html[data-theme="dark"] body[data-active="chat"] #hx-c-toolbar,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread,
+    html[data-theme="dark"] body[data-active="chat"] #hx-c-thread,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-thread-inner,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-compose,
+    html[data-theme="dark"] body[data-active="chat"] .hx-chat-compose-inner,
     html[data-theme] body[data-active="chat"] .hx-chat-pane,
-    html[data-theme] body[data-active="chat"] .hx-chat-toolbar,
-    html[data-theme] body[data-active="chat"] #hx-c-toolbar,
     html[data-theme] body[data-active="chat"] .hx-chat-thread,
     html[data-theme] body[data-active="chat"] #hx-c-thread,
+    html[data-theme] body[data-active="chat"] .hx-chat-thread-inner,
     html[data-theme] body[data-active="chat"] .hx-chat-compose,
-    html[data-theme] body[data-active="chat"] .hx-chat-compose-inner{ background:transparent !important; background-color:transparent !important; background-image:none !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-compose-inner{ background:#0A0A0F !important; background-color:#0A0A0F !important; background-image:none !important; }
+    /* Kill fade/gradient overlays that introduce a second tone at the seam */
     html[data-theme] body[data-active="chat"] .hx-chat-pane::before,
     html[data-theme] body[data-active="chat"] .hx-chat-pane::after,
     html[data-theme] body[data-active="chat"] .hx-chat-thread::before,
     html[data-theme] body[data-active="chat"] .hx-chat-thread::after,
+    html[data-theme] body[data-active="chat"] .hx-chat-thread-inner::before,
+    html[data-theme] body[data-active="chat"] .hx-chat-thread-inner::after,
     html[data-theme] body[data-active="chat"] .hx-chat-compose::before,
-    html[data-theme] body[data-active="chat"] .hx-chat-compose::after{ background:none !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; content:none !important; }
+    html[data-theme] body[data-active="chat"] .hx-chat-compose::after{ background:none !important; background-image:none !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; content:none !important; }
     /* Remove the pencil (edit) + copy icons under the user bubble entirely */
     html body[data-active="chat"] .hx-msg.is-user .hx-msg-user-actions,
     html body[data-active="chat"] #hx-c-thread .hx-msg-user-actions{ display:none !important; }
